@@ -1,0 +1,14 @@
+{
+  "func": {
+    "list": ["t"], 
+    "extensions": [".js", ".jsx"] 
+  },
+  "output": "locales/$LOCALE/$NAMESPACE.json", 
+  "defaultNamespace": "translation", 
+  "keySeparator": false,
+  "namespaceSeparator": false,
+  "defaultValue": "", 
+  "useKeysAsDefaultValue": true, 
+  "locale": ["en", "hi"],
+  "createOldCatalogs": false 
+}

@@ -1,0 +1,8 @@
+{
+    "greeting": "Hello Supplier",
+    "description": {
+      "line1": "You're watching YouTube <1>{{channel}}</1>",
+      "line2": "This is an Internationalisation Tutorial"
+    }
+  }
+  
