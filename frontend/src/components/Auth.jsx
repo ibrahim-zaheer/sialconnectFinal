@@ -30,17 +30,51 @@ const Auth = () => {
     console.log("After Update:", formData); // Debugging the state after update
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const url = isRegister ? "/api/auth/register" : "/api/auth/login";
+  //     const { data } = await axios.post(url, formData);
+
+  //     console.log("Server Response:", data); // Check if data has name and email
+
+  //     setMessage(data.message || "Login successful!");
+
+  //     if (!isRegister) {
+  //       const userData = {
+  //         name: data.name,
+  //         email: data.email,
+  //         role: data.role,
+  //         profilePicture: data.profilePicture,
+  //       };
+  //       dispatch(setUser(userData));
+  //       localStorage.setItem("user", JSON.stringify(userData));
+  //       localStorage.setItem("token", data.token);
+  //       navigate("/profile");
+
+        
+  //     }
+  //   } catch (error) {
+  //     setMessage(error.response?.data?.message || "An error occurred");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const url = isRegister ? "/api/auth/register" : "/api/auth/login";
       const { data } = await axios.post(url, formData);
-
+  
       console.log("Server Response:", data); // Check if data has name and email
-
-      setMessage(data.message || "Login successful!");
-
-      if (!isRegister) {
+  
+      setMessage(data.message || (isRegister ? "Registration successful!" : "Login successful!"));
+  
+      if (isRegister) {
+        // Automatically switch to login after successful registration
+        setIsRegister(false);
+        setMessage("Registration successful! Please login.");
+      } else {
+        // Handle login
         const userData = {
           name: data.name,
           email: data.email,
@@ -51,13 +85,12 @@ const Auth = () => {
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("token", data.token);
         navigate("/profile");
-
-        
       }
     } catch (error) {
       setMessage(error.response?.data?.message || "An error occurred");
     }
   };
+  
 
   return (
     <>

@@ -21,6 +21,8 @@ const Navbar = () => {
               <Link to="/products">Products</Link>
             </li>
 
+            
+
             {/* Conditionally render SignIn link if user.role does not exist */}
             {!user.role && (
               <li>
@@ -30,10 +32,22 @@ const Navbar = () => {
 
             {/* Optionally render user-specific content */}
             {user.role && (
+              <>
+              <li>
+              <Link to="/profile">Profiles</Link>
+            </li>
+            
               <li className="text-white">
                 Welcome, {user.name || "User"} ({user.role})
               </li>
-            )}
+              
+              
+
+              </>
+
+            )
+            
+            }
           </ul>
         </nav>
       </div>
