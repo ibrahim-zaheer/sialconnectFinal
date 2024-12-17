@@ -26,7 +26,7 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className="w-[80vw] mx-auto mt-24 bg-red-50 p-6 rounded-lg">
+    <div className="w-[80vw] min-h-[80vh] mx-auto mt-24 bg-gray-50 p-6 rounded-lg">
       {product ? (
         <div className="">
           {/* Product Details Section */}
@@ -35,39 +35,49 @@ const ProductDetails = () => {
               <img
                 src={product.image}
                 alt="Product"
-                className="bg-blue-300 p-5 object-cover rounded-lg w-96"
+                className="object-cover rounded-lg w-96"
               />
             </div>
-            <div className="bg-yellow-500 flex flex-1 p-10 flex-col justify-start items-start mb-4">
-              <h1 className="text-2xl font-bold">{product.name}</h1>
+            <div className="flex flex-1 p-10 flex-col justify-around items-start mb-4">
+              <div>
+                <h1 className="text-4xl font-bold">{product.name}</h1>
+                <p className="text-gray-500 text-xl my-2">
+                  {product.description}
+                </p>
+                <p className="text-gray-700 mb-2">Price: {product.price} Rs</p>
+              </div>
+              <div>
+                <div className="flex justify-center items-center gap-5 mb-5">
+                  {/* Supplier Profile Picture Section */}
+                  <div className="">
+                    {product.supplier?.profilePicture ? (
+                      <img
+                        src={product.supplier.profilePicture}
+                        alt="Supplier Logo"
+                        className="w-16 h-16 object-cover rounded-full"
+                      />
+                    ) : (
+                      <img
+                        src="https://th.bing.com/th/id/OIP.mpXg7tyCFEecqgUsoW9eQwHaHk?w=206&h=210&c=7&r=0&o=5&pid=1.7"
+                        alt="Default Logo"
+                        className="w-16 h-16 object-cover rounded-full"
+                      />
+                    )}
+                  </div>
 
-              <p className="text-gray-700 my-2">{product.description}</p>
-              <p className="text-gray-500 mb-2">Price: ${product.price}</p>
-              <p className="text-gray-500 mb-2">
-                Supplier: {product.supplier?.name || "Unknown"}
-              </p>
-              <p className="text-gray-500 mb-2">
-                Email Address: {product.supplier?.email || "Unknown"}
-              </p>
-              <p className="text-gray-500">
-                Created At: {new Date(product.createdAt).toLocaleString()}
-              </p>
+                  <div>
+                    <p className="text-gray-500 mb-2 text-sm">
+                      {product.supplier?.name || "Unknown"}
+                    </p>
+                    <p className="text-gray-500 mb-2 text-sm">
+                      {product.supplier?.email || "Unknown"}
+                    </p>
+                  </div>
+                </div>
 
-              {/* Supplier Profile Picture Section */}
-              <div className="ml-6">
-                {product.supplier?.profilePicture ? (
-                  <img
-                    src={product.supplier.profilePicture}
-                    alt="Supplier Logo"
-                    className="w-16 h-16 object-cover rounded-full"
-                  />
-                ) : (
-                  <img
-                    src="https://th.bing.com/th/id/OIP.mpXg7tyCFEecqgUsoW9eQwHaHk?w=206&h=210&c=7&r=0&o=5&pid=1.7"
-                    alt="Default Logo"
-                    className="w-16 h-16 object-cover rounded-full"
-                  />
-                )}
+                <p className="text-gray-500">
+                  {new Date(product.createdAt).toDateString()}
+                </p>
               </div>
             </div>
           </div>

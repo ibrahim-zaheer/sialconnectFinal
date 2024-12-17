@@ -6,11 +6,7 @@ import LogoutButton from "./LogoutButton";
 
 import SendOTP from "./otp/send-otp";
 
-
-
 import VerifyEmailButton from "./VerifyEmailButton";
-
-
 
 const UserProfile = () => {
   const user = useSelector((state) => state.user); // Access the user data from the Redux store
@@ -30,35 +26,26 @@ const UserProfile = () => {
           />
           <ProfilePictureUpdate />
         </div>
-        <div className="w-[20vw] mx-auto flex justify-end">
-        <span>
-              <i className="ri-edit-2-line cursor-pointer bg-gray-300 p-1 rounded-full text-blue-600"></i>
-        </span>
+        <div className="w-[20vw] mx-auto flex justify-end mt-8">
+          <span>
+            <i className="ri-edit-2-line cursor-pointer bg-gray-300 p-1 rounded-full text-[#1b263b] text-xl"></i>
+          </span>
         </div>
         {/* <h1>User Profile</h1> */}
-        <div className="flex flex-col p-5 items-center justify-center gap-4 text-[#1b263b]">
+        <div className="flex flex-col mt-0 p-5 items-center justify-center gap-4 text-[#1b263b]">
           <p className="w-[20vw] flex justify-between items-center">
             <span className="font-semibold">
               Name:
               <span className="ms-10 font-normal">{user.name || "Guest"}</span>
             </span>
-            <span>
-              <i className="ri-edit-2-line cursor-pointer"></i>
-            </span>
           </p>
 
-          
-
-
-          <p className="w-[20vw] flex justify-between items-center">
+          <p className="min-w-[20vw] flex justify-between items-center">
             <span className="font-semibold">
               Email:
               <span className="ms-11 font-normal">
                 {user.email || "No Email Available"}
               </span>
-            </span>
-            <span>
-              <i className="ri-edit-2-line cursor-pointer"></i>
             </span>
           </p>
 
@@ -67,7 +54,6 @@ const UserProfile = () => {
               Age:
               <span className="ms-14 font-normal">22</span>
             </span>
-            <span></span>
           </p>
 
           <p className="w-[20vw] flex justify-between items-center">
@@ -75,7 +61,6 @@ const UserProfile = () => {
               Gender:
               <span className="ms-8 font-normal">Male</span>
             </span>
-            <span></span>
           </p>
 
           <p className="w-[20vw] flex justify-between items-center">
@@ -85,9 +70,6 @@ const UserProfile = () => {
                 {user.role || "No Role Available"}
               </span>
             </span>
-            <span>
-              <i className="ri-edit-2-line cursor-pointer"></i>
-            </span>
           </p>
 
           <p className="w-[20vw] flex justify-between items-center">
@@ -95,12 +77,7 @@ const UserProfile = () => {
               Address:
               <span className="ms-7 font-normal">Fateh Garh Sialkot</span>
             </span>
-            <span>
-              <i className="ri-edit-2-line cursor-pointer"></i>
-            </span>
           </p>
-
-
 
           <p className="w-[20vw] flex justify-between items-center">
             <span className="font-semibold">
@@ -109,21 +86,15 @@ const UserProfile = () => {
             </span>
             <span></span>
           </p>
-          
         </div>
         {/* <p>ProfilePicture: {user.profilePicture || "No Picture Available"}</p> */}
-        <LogoutButton />
-        <VerifyEmailButton/>
+        <div className="flex w-[25vw] mx-auto">
+          <VerifyEmailButton />
+          <LogoutButton />
+        </div>
 
-
-{/* <VerifyEmail/> */}
+        {/* <VerifyEmail/> */}
       </div>
-
-
-
-
-
-
     </>
   );
 };

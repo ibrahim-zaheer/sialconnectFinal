@@ -31,7 +31,6 @@ const DisplayProducts = () => {
 
   return (
     <div className="mt-24 text-[#1b263b]">
-
       {/* Search Input */}
       <div className="flex justify-center mt-4">
         <input
@@ -51,42 +50,39 @@ const DisplayProducts = () => {
           searchedProducts.map((product) => (
             <div
               key={product._id}
-              className="w-full sm:w-1/2 lg:w-[30%] bg-white shadow-md rounded-lg p-4"
+              className="w-full sm:w-1/2 lg:w-[30%] bg-white shadow-md rounded-lg py-8 px-5"
             >
               <div className="flex justify-between gap-4">
-              <div>
-                <div>
-                  <h1 className="text-lg font-bold flex-1">{product.name}</h1>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Price: ${product.price} per piece
+                <div className="flex-1">
+                  <div>
+                    <h1 className="text-lg font-bold flex-1">{product.name}</h1>
+                    <p className="text-sm text-gray-500 mt-2">
+                      Price: ${product.price} per piece
+                    </p>
+                  </div>
+
+                  <p className="text-sm text-gray-600 mt-2">
+                    {product.description}
                   </p>
                 </div>
-                
-              <p className="text-sm text-gray-600 mt-2">
-                {product.description}
-              </p>
-              </div>
-              
 
-              <div className="flex flex-col">
+                <div className="flex flex-col items-end flex-1">
+                  <img
+                    src={product.image}
+                    alt="Product"
+                    className="w-24 h-24 object-cover rounded-lg"
+                  />
 
-              <img
-                  src={product.image}
-                  alt="Product"
-                  className="w-24 h-24 object-cover rounded-lg"
-                />
-
-              <div className="mt-4">
-                <Link
-                  to={`/supplier/product/${product._id}`}
-                  className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
-                >
-                  View more
-                </Link>
+                  <div className="mt-4">
+                    <Link
+                      to={`/supplier/product/${product._id}`}
+                      className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                    >
+                      View more
+                    </Link>
+                  </div>
+                </div>
               </div>
-              </div>
-              </div>
-
             </div>
           ))
         ) : (

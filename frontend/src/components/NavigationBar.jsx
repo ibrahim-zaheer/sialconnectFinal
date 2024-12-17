@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux"; // Import useSelector
 import "../assets/css/navbar.css";
+import Sial from "../assets/images/sial3.png";
 
 const Navbar = () => {
   const user = useSelector((state) => state.user); // Access user state from Redux
@@ -11,7 +12,7 @@ const Navbar = () => {
       <div className="w-full fixed top-0 bg-[#1b263b] z-50">
         <nav className="w-[80%] flex justify-between py-3 items-center mx-auto">
           <a href="/home">
-            <div className="logo text-xl text-white font-bold">SialConnect</div>
+            <img src={Sial} style={{ width: "3rem" }} alt="Sial" />
           </a>
           <ul className="nav-links">
             <li>
@@ -20,8 +21,6 @@ const Navbar = () => {
             <li>
               <Link to="/products">Products</Link>
             </li>
-
-            
 
             {/* Conditionally render SignIn link if user.role does not exist */}
             {!user.role && (
@@ -33,21 +32,15 @@ const Navbar = () => {
             {/* Optionally render user-specific content */}
             {user.role && (
               <>
-              <li>
-              <Link to="/profile">Profiles</Link>
-            </li>
-            
-              <li className="text-white">
-                Welcome, {user.name || "User"} ({user.role})
-              </li>
-              
-              
+                <li>
+                  <Link to="/profile">Profiles</Link>
+                </li>
 
+                <li className="text-white">
+                  Welcome, {user.name || "User"} ({user.role})
+                </li>
               </>
-
-            )
-            
-            }
+            )}
           </ul>
         </nav>
       </div>

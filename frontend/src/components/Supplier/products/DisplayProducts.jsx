@@ -145,41 +145,44 @@ const DisplayProducts = ({
   };
 
   return (
-    <div>
+    <div className="my-24">
       <h2 className="text-3xl font-semibold text-center my-10">My Products</h2>
       {products.length > 0 ? (
         <ul className="flex justify-center items-center gap-8 flex-col">
           {products.map((product) => (
-            <li key={product._id} className="flex justify-between items-center w-[80%] bg-gray-100 py-6 px-10 border rounded-lg shadow-sm">
+            <li
+              key={product._id}
+              className="flex justify-between items-center w-[80%] bg-gray-100 py-6 px-10 border rounded-lg shadow-sm"
+            >
               <div>
-              <span className="block">
-                <strong>{product.name}</strong>  
-              </span>
-              <span className="block my-1 text-sm">
-              {product.description}
-              </span>
-              <span className="block">
-                <span className="font-semibold">Price: </span>
-              ${product.price}{/* Edit Button */}
-              </span>
+                <span className="block">
+                  <strong>{product.name}</strong>
+                </span>
+                <span className="block my-1 text-sm">
+                  {product.description}
+                </span>
+                <span className="block">
+                  <span className="font-semibold">Price: </span>
+                  {product.price} Rs
+                  {/* Edit Button */}
+                </span>
               </div>
-              
+
               <div className="flex justify-center items-center gap-5">
                 {/* Delete Button */}
-              <button
-                onClick={() => handleDelete(product._id)}
-                className="text-sm px-3 py-1 text-white bg-[red] rounded-md hover:bg-[#ff4f4f] transition-all duration-300"
-              >
-                Delete
-              </button>
+                <button
+                  onClick={() => handleDelete(product._id)}
+                  className="text-sm px-3 py-1 text-white bg-[red] rounded-md hover:bg-[#ff4f4f] transition-all duration-300"
+                >
+                  Delete
+                </button>
 
-              <button
-                onClick={() => setProductToEdit(product)}
-                className="text-sm px-3 py-1 text-white bg-[gray] rounded-md hover:bg-[#b1b1b1] transition-all duration-300"
-              >
-                Edit
-              </button>
-              
+                <button
+                  onClick={() => setProductToEdit(product)}
+                  className="text-sm px-3 py-1 text-white bg-[gray] rounded-md hover:bg-[#b1b1b1] transition-all duration-300"
+                >
+                  Edit
+                </button>
               </div>
             </li>
           ))}
