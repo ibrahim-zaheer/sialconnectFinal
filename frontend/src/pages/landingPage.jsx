@@ -2,36 +2,19 @@ import React from "react";
 import "../assets/css/landingPage.css";
 import ProductImage from "../assets/images/image-1.jpg";
 
-
-
-
-
 import { useTranslation, Trans } from "react-i18next";
 import LanguageSelector from "../components/language/language-selector";
-
 
 export default function LandingPage() {
   // import this for language
   const { t } = useTranslation();
 
-  
-
   return (
     <>
-  
-
-    
-
-
-
       <div className="text-[#1b263b] w-[80vw] mx-auto mt-16">
-
-
-      <div>
-
-<LanguageSelector/>
-</div>
-
+        <div>
+          <LanguageSelector />
+        </div>
 
         <div className="hero h-[90vh] w-full flex flex-col gap-8 justify-center items-center">
           <h1 className="text-6xl font-bold leading-tight w-[60%] text-center">
@@ -39,10 +22,6 @@ export default function LandingPage() {
 
             {t("landingPage.mainHeading")}
           </h1>
-
-   
-  
-
 
           <p className="w-[50%] text-xl text-center">
             {/* SialConnect bridges the gap between exporters and suppliers, making
@@ -63,7 +42,7 @@ export default function LandingPage() {
         </div>
 
         <div className="selling">
-          <h1>Best Selling</h1>
+          <h1 className="text-3xl">Best Selling</h1>
           <p>
             Get in on the trend with our curated selection of best-selling
             styles.
