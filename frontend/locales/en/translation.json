@@ -1,3 +1,10 @@
 {
-  "test_key hello my name is ibrahim": ""
+  "greeting": "Hello Ibrahim",
+  "description": {
+    "line1": "You're watching YouTube <1>{{channel}}</1>",
+    "line2": "This is an Internationalisation Tutorial"
+  },
+  "landingPage":{
+     "mainHeading": "SialConnect bridges the gap between exporters and suppliers, making sourcing effortless and efficient. Experience competitive deals and seamless transactions with our user-friendly platform."
+  }
 }

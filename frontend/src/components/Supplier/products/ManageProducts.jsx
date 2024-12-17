@@ -59,7 +59,7 @@ const ManageProducts = () => {
     <>
       <div className="w-full overflow-hidden flex justify-center items-center">
         <div className="w-[80%] py-4">
-          <h1 className="text-3xl font-semibold text-[#1b263b]">
+          <h1 className="text-3xl text-center font-semibold text-[#1b263b]">
             Manage Products
           </h1>
           <AddProduct onProductCreated={addProductToList} />

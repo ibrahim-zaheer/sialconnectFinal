@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+
+import { useNavigate } from "react-router-dom";
+
 const SendOTP = () => {
+
+const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
@@ -9,6 +15,7 @@ const SendOTP = () => {
     try {
       const res = await axios.post("/api/auth/send-otp", { email });
       setMessage(res.data.message);
+      navigate("/VerifyOTP");
     } catch (error) {
       setMessage(error.response?.data?.message || "Failed to send OTP");
     }
@@ -39,7 +46,7 @@ const SendOTP = () => {
           <button
             className="border-1 w-[50%] bg-[#1b263b] rounded-lg my-3 py-2 text-[#e0e1dd] hover:bg-[#415a77] hover:text-white transition-all duration-300"
             onClick={handleSendOTP}
-          >
+           >
             Send OTP
           </button>
           {message && <p>{message}</p>}

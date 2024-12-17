@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import OAuth from "./OAuth";
 
 import {
   useNavigate,
@@ -30,17 +31,51 @@ const Auth = () => {
     console.log("After Update:", formData); // Debugging the state after update
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const url = isRegister ? "/api/auth/register" : "/api/auth/login";
+  //     const { data } = await axios.post(url, formData);
+
+  //     console.log("Server Response:", data); // Check if data has name and email
+
+  //     setMessage(data.message || "Login successful!");
+
+  //     if (!isRegister) {
+  //       const userData = {
+  //         name: data.name,
+  //         email: data.email,
+  //         role: data.role,
+  //         profilePicture: data.profilePicture,
+  //       };
+  //       dispatch(setUser(userData));
+  //       localStorage.setItem("user", JSON.stringify(userData));
+  //       localStorage.setItem("token", data.token);
+  //       navigate("/profile");
+
+        
+  //     }
+  //   } catch (error) {
+  //     setMessage(error.response?.data?.message || "An error occurred");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const url = isRegister ? "/api/auth/register" : "/api/auth/login";
       const { data } = await axios.post(url, formData);
-
+  
       console.log("Server Response:", data); // Check if data has name and email
-
-      setMessage(data.message || "Login successful!");
-
-      if (!isRegister) {
+  
+      setMessage(data.message || (isRegister ? "Registration successful!" : "Login successful!"));
+  
+      if (isRegister) {
+        // Automatically switch to login after successful registration
+        setIsRegister(false);
+        setMessage("Registration successful! Please login.");
+      } else {
+        // Handle login
         const userData = {
           name: data.name,
           email: data.email,
@@ -51,13 +86,12 @@ const Auth = () => {
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("token", data.token);
         navigate("/profile");
-
-        
       }
     } catch (error) {
       setMessage(error.response?.data?.message || "An error occurred");
     }
   };
+  
 
   return (
     <>
@@ -141,6 +175,16 @@ const Auth = () => {
           >
             {isRegister ? "Switch to Login" : "Switch to Register"}
           </button>
+
+          {/* <button className="border-1 w-[60%] rounded-lg py-2 bg-[#415a77] text-[#e0e1dd] hover:bg-[#1b263b]  transition-all duration-300"z>
+            <i
+              className="ri-google-fill text-2xl bg-clip-text text-transparent bg-google-gradient"
+            ></i>
+            <span className="text-gray-800 font-medium text-sm">Sign in with Google</span>
+          </button> */}
+
+          <OAuth />
+
           {message && <p>{message}</p>}
         </div>
       </div>

@@ -50,13 +50,13 @@ const ProfilePictureUpdate = () => {
       <h1 className="text-2xl">Update Profile Picture</h1>
       <div>
         <input type="file" accept="image/*" onChange={handleFileChange} />
-        {preview && (
+        {/* {preview && (
           <img
             src={preview}
             alt="Preview"
             style={{ width: "150px", borderRadius: "50%" }}
           />
-        )}
+        )} */}
 
         <button
           className="mt-2 border-1 px-5 py-1 rounded-lg bg-[#1b263b] text-white hover:bg-[#415a77] transition-all duration-300"

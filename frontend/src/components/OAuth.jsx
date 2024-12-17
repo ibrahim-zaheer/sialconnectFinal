@@ -93,17 +93,25 @@ const OAuth = () => {
   };
 
   return (
-    <Button
-      className="w-[40vw] bg-red-200 h-full"
-      type="button"
-      gradientDuoTone="pinkToOrange"
-      outline
-      onClick={handleGoogleClick}
-      disabled={isAuthenticating} // Disable button while authenticating
-    >
-      <AiFillGoogleCircle className="" />
-      Sign in with Google
-    </Button>
+    // <Button
+    //   className="w-[40vw] bg-red-200 h-full"
+    //   type="button"
+    //   gradientDuoTone="pinkToOrange"
+    //   outline
+    //   onClick={handleGoogleClick}
+    //   disabled={isAuthenticating} // Disable button while authenticating
+    // >
+    //   <AiFillGoogleCircle className="" />
+    //   Sign in with Google
+    // </Button>
+    <button className="flex items-center gap-2 p-2 rounded-md" onClick={handleGoogleClick} disabled={isAuthenticating}>
+      <i
+        className="ri-google-fill text-2xl bg-clip-text text-transparent bg-google-gradient"
+      ></i>
+      <span className="text-gray-800 font-medium text-sm">Sign in with Google</span>
+    </button>
+
+
   );
 };
 

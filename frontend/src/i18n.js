@@ -10,6 +10,7 @@ i18n.use(LanguageDetector).use(initReactI18next).use(Backend).init({
     debug: true,
     returnObjects: true,
     fallbackLng:"en",
+  });
 
   //   resources:{
   //       en:{
@@ -31,4 +32,3 @@ i18n.use(LanguageDetector).use(initReactI18next).use(Backend).init({
   //             }
   //       }
   //   }
-});

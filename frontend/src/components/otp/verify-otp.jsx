@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+import { useNavigate } from "react-router-dom";
+
 const VerifyOTP = () => {
+
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [message, setMessage] = useState("");
@@ -16,6 +21,7 @@ const VerifyOTP = () => {
     try {
       const res = await axios.post("/api/auth/verify-otp", { email, otp });
       setMessage(res.data.message);
+      navigate("/profile")
     } catch (error) {
       console.error("Error verifying OTP:", error);
       setMessage(error.response?.data?.message || "Failed to verify OTP");

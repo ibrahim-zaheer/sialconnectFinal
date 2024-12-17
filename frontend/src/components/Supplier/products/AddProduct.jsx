@@ -175,8 +175,8 @@ const AddProduct = ({ onProductCreated }) => {
 
   return (
     <>
-      <div>
-        <div className="w-[30vw] mx-auto flex flex-col bg-[#1b263b] rounded-2xl p-10">
+      <div className="my-10">
+        <div className="w-[50%] mx-auto flex flex-col bg-[#1b263b] rounded-2xl p-10">
           <h2 className="text-2xl font-semibold my-3 text-[#e0e1dd] w-full text-center">
             Add a Product
           </h2>
@@ -187,7 +187,7 @@ const AddProduct = ({ onProductCreated }) => {
                   Product Name
                 </label>
                 <input
-                  className="px-2 py-2 bg-[#f1f1f1] rounded-lg"
+                  className="px-2 flex-1 py-2 bg-[#f1f1f1] rounded-lg"
                   type="text"
                   name="name"
                   value={formData.name}
@@ -199,7 +199,7 @@ const AddProduct = ({ onProductCreated }) => {
               <div className="my-4 flex flex-col justify-center gap-2">
                 <label className="font-semibold text-[#e0e1dd]">Price</label>
                 <input
-                  className="px-2 py-2 flex-1 w-[10rem] bg-[#f1f1f1] rounded-lg"
+                  className="px-2 py-2 flex-1 bg-[#f1f1f1] rounded-lg"
                   type="number"
                   name="price"
                   value={formData.price}

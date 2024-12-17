@@ -91,6 +91,11 @@ import ProfilePage from './pages/profilepage';
 import LandingPage2 from './pages/landingPage2';
 import ProductViewing from './pages/ProductViewing';
 
+
+import VerifyEmail from './components/verifyEmail';
+
+
+import VerifyOTP from './components/otp/verify-otp';
 const App = () => {
 
   
@@ -127,6 +132,15 @@ const Main = ()=>{
         <Route path="/signIn" element={<UserAuth />} />
         <Route path="/supplier/product/:id" element={<ProductDetails />} />
         <Route path='/View' element={<ProductViewing/>}/>
+
+
+
+        <Route path='/VerifyEmail' element={<VerifyEmail/>}/>
+
+        <Route path='/VerifyOTP' element={<VerifyOTP/>}/>
+
+        
+         
         
        
       </Routes>
