@@ -62,21 +62,41 @@ const OAuth = () => {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account" });
 
+    // try {
+    //   const resultsfromGoogle = await signInWithPopup(auth, provider);
+    //   const res = await axios.post("/api/auth/google", {
+    //     name: resultsfromGoogle.user.displayName,
+    //     email: resultsfromGoogle.user.email,
+    //     googlePhotoUrl: resultsfromGoogle.user.photoURL,
+    //   });
+
+    //   const { isNewUser, role, token, name, email } = res.data;
+
+    //   // Store user details in Redux and localStorage
+    //   const userData = { name, email, role };
+    //   dispatch(setUser(userData));
+    //   localStorage.setItem("user", JSON.stringify(userData));
+    //   localStorage.setItem("token", token);
+
+
+
     try {
       const resultsfromGoogle = await signInWithPopup(auth, provider);
-      const res = await axios.post("/api/auth/google", {
-        name: resultsfromGoogle.user.displayName,
-        email: resultsfromGoogle.user.email,
-        googlePhotoUrl: resultsfromGoogle.user.photoURL,
-      });
+const res = await axios.post("/api/auth/google", {
+  name: resultsfromGoogle.user.displayName,
+  email: resultsfromGoogle.user.email,
+  googlePhotoUrl: resultsfromGoogle.user.photoURL,
+});
 
-      const { isNewUser, role, token, name, email } = res.data;
+const { isNewUser, role, token, name, email, profilePicture } = res.data;
 
-      // Store user details in Redux and localStorage
-      const userData = { name, email, role };
-      dispatch(setUser(userData));
-      localStorage.setItem("user", JSON.stringify(userData));
-      localStorage.setItem("token", token);
+const userData = { name, email, role, profilePicture }; // Include profilePicture
+dispatch(setUser(userData));
+
+localStorage.setItem("user", JSON.stringify(userData));
+localStorage.setItem("token", token);
+
+
 
       if (isNewUser) {
         // Redirect to role selection if the user is new

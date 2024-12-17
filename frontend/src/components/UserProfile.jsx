@@ -46,6 +46,10 @@ const UserProfile = () => {
               <i className="ri-edit-2-line cursor-pointer"></i>
             </span>
           </p>
+
+          
+
+
           <p className="w-[20vw] flex justify-between items-center">
             <span className="font-semibold">
               Email:
@@ -96,6 +100,8 @@ const UserProfile = () => {
             </span>
           </p>
 
+
+
           <p className="w-[20vw] flex justify-between items-center">
             <span className="font-semibold">
               Join Date:
@@ -103,6 +109,7 @@ const UserProfile = () => {
             </span>
             <span></span>
           </p>
+          
         </div>
         {/* <p>ProfilePicture: {user.profilePicture || "No Picture Available"}</p> */}
         <LogoutButton />
