@@ -91,6 +91,9 @@ import ProductViewing from "./pages/ProductViewing";
 import VerifyEmail from "./components/verifyEmail";
 
 import VerifyOTP from "./components/otp/verify-otp";
+
+
+import SupplierProductsPage from "./pages/Supplier/SupplierProductsPage";
 const App = () => {
   return (
     <>
@@ -125,6 +128,11 @@ const Main = () => {
         <Route path="/VerifyEmail" element={<VerifyEmail />} />
 
         <Route path="/VerifyOTP" element={<VerifyOTP />} />
+
+        {/* Supplier Part */}
+
+        <Route path="/SupplierProducts" element={<SupplierProductsPage />} />
+
       </Routes>
     </>
   );

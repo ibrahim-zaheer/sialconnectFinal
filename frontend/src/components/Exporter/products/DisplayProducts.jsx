@@ -57,7 +57,7 @@ const DisplayProducts = () => {
                   <div>
                     <h1 className="text-lg font-bold flex-1">{product.name}</h1>
                     <p className="text-sm text-gray-500 mt-2">
-                      Price: ${product.price} per piece
+                      Price: Rs {product.price} per piece
                     </p>
                   </div>
 

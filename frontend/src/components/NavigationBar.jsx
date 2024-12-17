@@ -32,6 +32,14 @@ const Navbar = () => {
             {/* Optionally render user-specific content */}
             {user.role && (
               <>
+                               {/* Conditionally render "Your Products" only for suppliers */}
+                               {user.role === "supplier" && (
+                  <li>
+                    <Link to="/SupplierProducts">Your Products</Link>
+                  </li>
+                )}
+
+
                 <li>
                   <Link to="/profile">Profiles</Link>
                 </li>
@@ -39,6 +47,8 @@ const Navbar = () => {
                 <li className="text-white">
                   Welcome, {user.name || "User"} ({user.role})
                 </li>
+
+
               </>
             )}
           </ul>
