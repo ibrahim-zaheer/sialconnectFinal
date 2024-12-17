@@ -4,12 +4,20 @@ import { useSelector } from "react-redux";
 import ProfilePictureUpdate from "./Supplier/products/ProfilePictureUpdate";
 import LogoutButton from "./LogoutButton";
 
+import SendOTP from "./otp/send-otp";
+
+
+
+import VerifyEmailButton from "./VerifyEmailButton";
+
+
+
 const UserProfile = () => {
   const user = useSelector((state) => state.user); // Access the user data from the Redux store
 
   return (
     <>
-      <div className="">
+      <div className="mt-24">
         <div className="flex flex-col gap-3 items-center justify-center mb-3">
           {/* <h3>Profile Picture</h3> */}
           <img
@@ -21,6 +29,11 @@ const UserProfile = () => {
             style={{ width: "150px", height: "150px", borderRadius: "50%" }}
           />
           <ProfilePictureUpdate />
+        </div>
+        <div className="w-[20vw] mx-auto flex justify-end">
+        <span>
+              <i className="ri-edit-2-line cursor-pointer bg-gray-300 p-1 rounded-full text-blue-600"></i>
+        </span>
         </div>
         {/* <h1>User Profile</h1> */}
         <div className="flex flex-col p-5 items-center justify-center gap-4 text-[#1b263b]">
@@ -93,7 +106,17 @@ const UserProfile = () => {
         </div>
         {/* <p>ProfilePicture: {user.profilePicture || "No Picture Available"}</p> */}
         <LogoutButton />
+        <VerifyEmailButton/>
+
+
+{/* <VerifyEmail/> */}
       </div>
+
+
+
+
+
+
     </>
   );
 };

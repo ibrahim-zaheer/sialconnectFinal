@@ -1,8 +1,11 @@
 {
-    "greeting": "Hello Supplier",
-    "description": {
-      "line1": "You're watching YouTube <1>{{channel}}</1>",
-      "line2": "This is an Internationalisation Tutorial"
-    }
+  "greeting": "Hello",
+  "description": {
+    "line1": "You're watching YouTube <1>{{channel}}</1>",
+    "line2": "This is an Internationalisation Tutorial"
+  },
+  "landingPage":{
+    "mainHeading":"Streamline Your Sourcing with SialConnect Today",
+     "mainsecondHeading": "SialConnect bridges the gap between exporters and suppliers, making sourcing effortless and efficient. Experience competitive deals and seamless transactions with our user-friendly platform."
   }
-  
+}

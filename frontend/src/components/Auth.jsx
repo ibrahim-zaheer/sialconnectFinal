@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import OAuth from "./OAuth";
 
 import {
   useNavigate,
@@ -174,6 +175,16 @@ const Auth = () => {
           >
             {isRegister ? "Switch to Login" : "Switch to Register"}
           </button>
+
+          {/* <button className="border-1 w-[60%] rounded-lg py-2 bg-[#415a77] text-[#e0e1dd] hover:bg-[#1b263b]  transition-all duration-300"z>
+            <i
+              className="ri-google-fill text-2xl bg-clip-text text-transparent bg-google-gradient"
+            ></i>
+            <span className="text-gray-800 font-medium text-sm">Sign in with Google</span>
+          </button> */}
+
+          <OAuth />
+
           {message && <p>{message}</p>}
         </div>
       </div>

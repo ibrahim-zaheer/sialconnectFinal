@@ -9,9 +9,9 @@ function UserAuth() {
   return (
     <>
     <Auth/>
-    <OAuth/>
-    <SendOTP/>
-    <VerifyOTP/>
+    {/* <OAuth/> */}
+    {/* <SendOTP/>
+    <VerifyOTP/> */}
     </>
   );
 }

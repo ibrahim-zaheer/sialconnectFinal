@@ -30,8 +30,7 @@ const DisplayProducts = () => {
   );
 
   return (
-    <div className="mt-5 text-[#1b263b]">
-      <h1 className="text-center text-xl font-semibold">All Products</h1>
+    <div className="mt-24 text-[#1b263b]">
 
       {/* Search Input */}
       <div className="flex justify-center mt-4">
@@ -44,39 +43,50 @@ const DisplayProducts = () => {
         />
       </div>
 
+      <h1 className="text-center text-3xl font-semibold my-10">All Products</h1>
+
       {/* Display Products */}
-      <div className="flex flex-wrap justify-center gap-4 mt-4">
+      <div className="flex flex-wrap justify-center items-center gap-8 mt-4 bg-gray-100 rounded-lg w-[80vw] mx-auto p-8 my-5">
         {searchedProducts.length > 0 ? (
           searchedProducts.map((product) => (
             <div
               key={product._id}
-              className="w-full sm:w-1/2 lg:w-1/3 bg-white shadow-md rounded-lg p-4"
+              className="w-full sm:w-1/2 lg:w-[30%] bg-white shadow-md rounded-lg p-4"
             >
-              <div className="flex items-center justify-between gap-4">
+              <div className="flex justify-between gap-4">
+              <div>
                 <div>
                   <h1 className="text-lg font-bold flex-1">{product.name}</h1>
                   <p className="text-sm text-gray-500 mt-2">
                     Price: ${product.price} per piece
                   </p>
                 </div>
-                <img
+                
+              <p className="text-sm text-gray-600 mt-2">
+                {product.description}
+              </p>
+              </div>
+              
+
+              <div className="flex flex-col">
+
+              <img
                   src={product.image}
                   alt="Product"
                   className="w-24 h-24 object-cover rounded-lg"
                 />
-              </div>
-              <p className="text-sm text-gray-600 mt-2">
-                {product.description}
-              </p>
 
               <div className="mt-4">
                 <Link
                   to={`/supplier/product/${product._id}`}
-                  className="inline-block bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300"
+                  className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
                 >
-                  View Details
+                  View more
                 </Link>
               </div>
+              </div>
+              </div>
+
             </div>
           ))
         ) : (

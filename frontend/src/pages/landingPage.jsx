@@ -2,18 +2,53 @@ import React from "react";
 import "../assets/css/landingPage.css";
 import ProductImage from "../assets/images/image-1.jpg";
 
+
+
+
+
+import { useTranslation, Trans } from "react-i18next";
+import LanguageSelector from "../components/language/language-selector";
+
+
 export default function LandingPage() {
+  // import this for language
+  const { t } = useTranslation();
+
+  
+
   return (
     <>
+  
+
+    
+
+
+
       <div className="text-[#1b263b] w-[80vw] mx-auto mt-16">
+
+
+      <div>
+
+<LanguageSelector/>
+</div>
+
+
         <div className="hero h-[90vh] w-full flex flex-col gap-8 justify-center items-center">
           <h1 className="text-6xl font-bold leading-tight w-[60%] text-center">
-            Streamline Your Sourcing with SialConnect Today
+            {/* Streamline Your Sourcing with SialConnect Today */}
+
+            {t("landingPage.mainHeading")}
           </h1>
+
+   
+  
+
+
           <p className="w-[50%] text-xl text-center">
-            SialConnect bridges the gap between exporters and suppliers, making
+            {/* SialConnect bridges the gap between exporters and suppliers, making
             sourcing effortless and efficient. Experience competitive deals and
-            seamless transaction with our user-friendly platform.
+            seamless transaction with our user-friendly platform. */}
+            <h2>{t("landingPage.mainsecondHeading")}</h2>
           </p>
           <div className="flex gap-2">
             <input
