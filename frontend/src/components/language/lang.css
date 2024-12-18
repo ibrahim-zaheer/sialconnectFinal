@@ -1,0 +1,13 @@
+button {
+  transition: all 0.3s ease;
+}
+
+button:nth-child(even):hover {
+  background-color: #415a77; /* Hover color for even buttons */
+  color: #e0e1dd; /* Optional: text color */
+}
+
+button:nth-child(odd):hover {
+  background-color: #1b263b; /* Hover color for odd buttons */
+  color: #e0e1dd; /* Optional: text color */
+}
