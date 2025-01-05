@@ -7,5 +7,14 @@
   "landingPage":{
     "mainHeading":"Streamline Your Sourcing with SialConnect Today",
      "mainsecondHeading": "SialConnect bridges the gap between exporters and suppliers, making sourcing effortless and efficient. Experience competitive deals and seamless transactions with our user-friendly platform."
+  },
+  "mainBody":{
+    "mainText":" Join The SialConnect Revolution",
+    "bodyText":"Explore the seamless sourcing and connect with trusted suppliers effortlessly on our platform"
+  },
+  "commentBody":{
+    "bodyText1":"The customer experience was exceptional from start to finish. The website is user-friendly, and the checkout process was smooth. I'm beyond satisfied!",
+    "bodyText2":"I absolutely love the quality and style of the clothing I purchased. Customer service was outstanding, and I received my order quickly. Highly recommended!",
+    "bodyText3":"I had a great experience shopping on this website. The clothes are fashionable and comfortable. Highly satisfied!"
   }
 }

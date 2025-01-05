@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+// for allowing people to chat with each other
+import Chat from "../../Chat/Chat";
+import { useSelector } from "react-redux";
 
 const ProductDetails = () => {
   const { id } = useParams(); // Get the product ID from the URL
   const [product, setProduct] = useState(null);
   const [error, setError] = useState("");
+
+  // for accessing the user profile id
+  const user = useSelector((state) => state.user);
+  const userId = user?.id;
 
   // Fetch product details
   useEffect(() => {
@@ -78,15 +85,35 @@ const ProductDetails = () => {
                 <p className="text-gray-500">
                   {new Date(product.createdAt).toDateString()}
                 </p>
+                
+                <p>Supplier ID:{product.supplier.id}</p>
+                <p>User Id:{userId}</p>
               </div>
             </div>
           </div>
+
+   {/* Chat Component Section */}
+   <div className="mt-8">
+            <h2 className="text-2xl font-bold mb-4">Chat with Supplier</h2>
+            {userId && product.supplier?.id ? (
+              <>
+              {console.log("User ID:", userId)}
+              {console.log("Product Supplier ID:", product.supplier.id)}
+              <Chat userId={userId} receiverId={product.supplier.id} />
+            </>
+            ) : (
+              <p className="text-gray-500">Chat is unavailable at the moment.</p>
+            )}
+          </div>      
+
         </div>
       ) : (
         <div className="text-center text-gray-500">
           Loading product details...
         </div>
       )}
+
+      
     </div>
   );
 };

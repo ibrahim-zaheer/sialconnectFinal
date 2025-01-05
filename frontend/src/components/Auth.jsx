@@ -77,6 +77,7 @@ const Auth = () => {
       } else {
         // Handle login
         const userData = {
+          id:data.id,
           name: data.name,
           email: data.email,
           role: data.role,

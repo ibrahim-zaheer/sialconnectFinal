@@ -25,9 +25,10 @@ const RoleSelection = () => {
       });
 
       if (res.status === 200) {
-        const { token, ...updatedUser } = res.data;
+        const { id, token, name, email, role, profilePicture } = res.data;
 
-        // Update Redux store
+        const updatedUser = { id, name, email, role, profilePicture }; // Include `id`
+  
         dispatch(setUser(updatedUser));
 
         // Update localStorage with the new token and user data

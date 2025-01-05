@@ -148,11 +148,10 @@ export default function LandingPage() {
         <div className="w-[80vw] bg-white my-24 text-white">
           <div className="w-[78%] mx-auto bg-[#1b263b] p-16">
             <h1 className="text-4xl font-bold">
-              Join The SialConnect Revolution
+            {t("mainBody.mainText")}
             </h1>
             <p className="my-4">
-              Explore the seamless sourcing and connect with trusted suppliers
-              effortlessly on our platform
+            {t("mainBody.bodyText")}
             </p>
             <div className="mt-5 flex gap-5">
               <button className="bg-white text-[#1b263b] py-1 px-2">
@@ -247,9 +246,7 @@ export default function LandingPage() {
                 Emily Wilson
               </h3>
               <p className="text-gray-700 text-sm">
-                The customer experience was exceptional from start to finish.
-                The website is user-friendly, and the checkout process was
-                smooth. I'm beyond satisfied!
+              {t("commentBody.bodyText1")}
               </p>
             </div>
 
@@ -260,9 +257,7 @@ export default function LandingPage() {
                 Sarah Thompson
               </h3>
               <p className="text-gray-700 text-sm">
-                I absolutely love the quality and style of the clothing I
-                purchased. Customer service was outstanding, and I received my
-                order quickly. Highly recommended!
+              {t("commentBody.bodyText2")}
               </p>
             </div>
 
@@ -273,8 +268,7 @@ export default function LandingPage() {
                 Olivia Martinez
               </h3>
               <p className="text-gray-700 text-sm">
-                I had a great experience shopping on this website. The clothes
-                are fashionable and comfortable. Highly satisfied!
+              {t("commentBody.bodyText3")}
               </p>
             </div>
           </div>

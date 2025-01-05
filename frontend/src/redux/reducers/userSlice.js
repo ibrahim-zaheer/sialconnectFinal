@@ -1,19 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 // Load initial user data from localStorage, if available
-const initialState = JSON.parse(localStorage.getItem("user")) || { name: '', email: '', role: '', profilePicture: '' };
+const initialState = JSON.parse(localStorage.getItem("user")) || {id:null, name: '', email: '', role: '', profilePicture: '' };
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
     setUser: (state, action) => {
+      state.id = action.payload.id
       state.name = action.payload.name;
       state.email = action.payload.email;
       state.role = action.payload.role;
       state.profilePicture = action.payload.profilePicture;
     },
     clearUser: (state) => {
+      
       state.name = '';
       state.email = '';
       state.role = '';

@@ -88,9 +88,9 @@ const res = await axios.post("/api/auth/google", {
   googlePhotoUrl: resultsfromGoogle.user.photoURL,
 });
 
-const { isNewUser, role, token, name, email, profilePicture } = res.data;
+const { isNewUser, id, name, email, role, profilePicture, token } = res.data;
 
-const userData = { name, email, role, profilePicture }; // Include profilePicture
+const userData = { id, name, email, role, profilePicture }; // Include `id`
 dispatch(setUser(userData));
 
 localStorage.setItem("user", JSON.stringify(userData));
@@ -124,7 +124,7 @@ localStorage.setItem("token", token);
     //   <AiFillGoogleCircle className="" />
     //   Sign in with Google
     // </Button>
-    <button className="flex items-center gap-2 p-2 rounded-md" onClick={handleGoogleClick} disabled={isAuthenticating}>
+    <button className="flex bg-white w-[60%] mx-auto items-center justify-center gap-2 p-2 rounded-md" onClick={handleGoogleClick} disabled={isAuthenticating}>
       <i
         className="ri-google-fill text-2xl bg-clip-text text-transparent bg-google-gradient"
       ></i>
