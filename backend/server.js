@@ -9,6 +9,8 @@ const authRoutes = require('./routes/auth');
 
 const supplierRoutes = require('./routes/supplier/supplierRoutes')
 
+const messages = require('./routes/messages')
+
 const {Server} = require('socket.io');
 
 // Initialize dotenv to access environment variables
@@ -36,48 +38,56 @@ mongoose.connect(process.env.MONGO_URI, {
 
 const server = http.createServer(app);
 
-// Socket.IO setup
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:5173/", // Replace with your frontend URL
-    methods: ["GET", "POST"],
-  },
-});
 
-let onlineUsers = new Map();
 
-// Socket.IO connection
-io.on("connection", (socket) => {
-  console.log("New client connected:", socket.id);
+// Chat Gpt Garbage code can be avoided
+// // Socket.IO setup
+// const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:5173/", // Replace with your frontend URL
+//     methods: ["GET", "POST"],
+//   },
+// });
 
-  // Handle user joining
-  socket.on("join", (userId) => {
-    onlineUsers.set(userId, socket.id);
-    console.log(`${userId} is online.`);
-  });
+// let onlineUsers = new Map();
 
-  // Handle sending messages
-  socket.on("send_message", ({ senderId, receiverId, message }) => {
-    const receiverSocketId = onlineUsers.get(receiverId);
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("receive_message", {
-        senderId,
-        message,
-      });
-    }
-  });
+// // Socket.IO connection
+// io.on("connection", (socket) => {
+//   console.log("New client connected:", socket.id);
 
-  // Handle user disconnect
-  socket.on("disconnect", () => {
-    for (let [userId, socketId] of onlineUsers.entries()) {
-      if (socketId === socket.id) {
-        onlineUsers.delete(userId);
-        console.log(`${userId} disconnected.`);
-        break;
-      }
-    }
-  });
-});
+//   // Handle user joining
+//   socket.on("join", (userId) => {
+//     onlineUsers.set(userId, socket.id);
+//     console.log(`${userId} is online.`);
+//   });
+
+//   // Handle sending messages
+//   socket.on("send_message", ({ senderId, receiverId, message }) => {
+//     const receiverSocketId = onlineUsers.get(receiverId);
+//     if (receiverSocketId) {
+//       io.to(receiverSocketId).emit("receive_message", {
+//         senderId,
+//         message,
+//       });
+//     }
+//   });
+
+//   // Handle user disconnect
+//   socket.on("disconnect", () => {
+//     for (let [userId, socketId] of onlineUsers.entries()) {
+//       if (socketId === socket.id) {
+//         onlineUsers.delete(userId);
+//         console.log(`${userId} disconnected.`);
+//         break;
+//       }
+//     }
+//   });
+// });
+
+
+
+
+
 
 
 // Basic route for testing
@@ -93,3 +103,5 @@ app.listen(PORT, () => {
 app.use("/api/auth", authRoutes);
 
 app.use("/supplier",supplierRoutes);
+
+app.use("/messages",messages);

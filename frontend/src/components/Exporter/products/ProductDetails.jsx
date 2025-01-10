@@ -4,6 +4,7 @@ import axios from "axios";
 // for allowing people to chat with each other
 import Chat from "../../Chat/Chat";
 import { useSelector } from "react-redux";
+import ChatRoom from "../../Chat/ChatRoom";
 
 const ProductDetails = () => {
   const { id } = useParams(); // Get the product ID from the URL
@@ -94,7 +95,7 @@ const ProductDetails = () => {
 
    {/* Chat Component Section */}
    <div className="mt-8">
-            <h2 className="text-2xl font-bold mb-4">Chat with Supplier</h2>
+            {/* <h2 className="text-2xl font-bold mb-4">Chat with Supplier</h2>
             {userId && product.supplier?.id ? (
               <>
               {console.log("User ID:", userId)}
@@ -103,7 +104,11 @@ const ProductDetails = () => {
             </>
             ) : (
               <p className="text-gray-500">Chat is unavailable at the moment.</p>
-            )}
+            )} */}
+
+           <ChatRoom currentUser={user.name} chatPartner={product.supplier?.name }/>
+
+
           </div>      
 
         </div>

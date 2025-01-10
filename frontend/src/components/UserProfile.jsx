@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import ProfilePictureUpdate from "./Supplier/products/ProfilePictureUpdate";
 import LogoutButton from "./LogoutButton";
 
+
 import SendOTP from "./otp/send-otp";
 
 import VerifyEmailButton from "./VerifyEmailButton";
@@ -34,12 +35,7 @@ const UserProfile = () => {
         {/* <h1>User Profile</h1> */}
         <div className="flex flex-col mt-0 p-5 items-center justify-center gap-4 text-[#1b263b]">
 
-        <p className="w-[20vw] flex justify-between items-center">
-            <span className="font-semibold">
-              ID:
-              <span className="ms-10 font-normal">{user.id || "Guest"}</span>
-            </span>
-          </p>
+   
 
 
           <p className="w-[20vw] flex justify-between items-center">
@@ -101,7 +97,7 @@ const UserProfile = () => {
           <VerifyEmailButton />
           <LogoutButton />
         </div>
-
+        
         {/* <VerifyEmail/> */}
       </div>
     </>
