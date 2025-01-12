@@ -54,6 +54,7 @@ import ExporterPage from '../pages/Exporter/ExporterPage';
 import SupplierPage from '../pages/Supplier/SupplierPage';
 import ProductDetails from '../components/Exporter/products/ProductDetails';
 import LandingPage from '../pages/landingPage';
+import chatPage from '../pages/chatPage';
 
 const router = createBrowserRouter([
   {
@@ -83,6 +84,10 @@ const router = createBrowserRouter([
   {
     path: '/landingPage',
     element: <LandingPage />,
+  },
+  {
+    path:'/chat',
+    element: <chatPage/>
   },
 ]);
 

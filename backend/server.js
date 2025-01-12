@@ -9,6 +9,8 @@ const authRoutes = require("./routes/auth");
 const supplierRoutes = require("./routes/supplier/supplierRoutes");
 const messagesRoutes = require("./routes/messages");
 
+const messageRoutes = require("./routes/message.routes")
+
 const { Server } = require("socket.io");
 
 // Initialize dotenv to access environment variables
@@ -31,7 +33,7 @@ app.use(express.json());
 
 // MongoDB Connection
 mongoose
-  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(process.env.MONGO_URI, {  })
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
 
@@ -63,6 +65,9 @@ app.get("/", (req, res) => res.send("Server is running..."));
 app.use("/api/auth", authRoutes);
 app.use("/supplier", supplierRoutes);
 app.use("/messages", messagesRoutes);
+
+//this is one real and we are working to improve it
+app.use("/message",messageRoutes);
 
 // Start Server
 server.listen(PORT, () => {

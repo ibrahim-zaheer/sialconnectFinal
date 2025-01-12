@@ -18,7 +18,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
-      '/messages': {
+      '/supplier': {
+        target: 'http://localhost:5000', // Proxy for supplier-specific routes
+        changeOrigin: true,
+        secure: false,
+      },
+      '/message': {
         target: 'http://localhost:5000', // Proxy for supplier-specific routes
         changeOrigin: true,
         secure: false,

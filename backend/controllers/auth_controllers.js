@@ -145,6 +145,16 @@ exports.selectRole = async (req, res, next) => {
   }
 };
 
+exports.checkAuth = (req,res)=>{
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.log("Error in checkAuth controller", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+
 // exports.selectRole = async (req, res, next) => {
 //     const { email, role } = req.body;
 
