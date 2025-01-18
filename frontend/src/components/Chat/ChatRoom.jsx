@@ -14,7 +14,7 @@ const ChatRoom = ({ currentUser, chatPartner }) => {
     // Fetch chat history
     const fetchMessages = async () => {
       try {
-        const response = await fetch(`/messages/${currentUser}/${chatPartner}`);
+        const response = await fetch(`/message/${currentUser}/${chatPartner}`);
         const data = await response.json();
         setMessages(data);
       } catch (error) {
