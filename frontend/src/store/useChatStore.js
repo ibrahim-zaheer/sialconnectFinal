@@ -100,6 +100,10 @@ export const useChatStore = create((set, get) => ({
     const { selectedUser, messages } = get();
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("Token is missing in localStorage");
+        return;
+      }
       const res = await axios.post(
         `/message/send/${selectedUser._id}`,
         messageData,
