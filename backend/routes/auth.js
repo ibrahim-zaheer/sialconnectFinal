@@ -88,7 +88,7 @@ router.post("/send-otp", async (req, res) => {
   
 
 
-router.post("/check",authMiddleware,authController.checkAuth);
+router.get("/check",authMiddleware,authController.checkAuth);
 
 
 module.exports = router;

@@ -82,13 +82,22 @@ export const useChatStore = create((set, get) => ({
   getMessages: async (userId) => {
     set({ isMessagesLoading: true });
     try {
+      // const token = localStorage.getItem("token");
+
       const token = localStorage.getItem("token");
+if (!token) {
+  toast.error("No token found, please log in.");
+  return;
+}
+
       const res = await axios.get(`/message/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       set({ messages: res.data });
+      console.log('UserID passed:', userId);  // Check the userId before the API call
+
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to load messages");
     } finally {
