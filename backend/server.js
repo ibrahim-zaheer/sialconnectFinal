@@ -37,15 +37,33 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
 
+
+ // used to store online users
+const userSocketMap = {}; // {userId: socketId} 
+
+
+// Function to get the socket ID of a specific user
+function getReceiverSocketId(userId) {
+  return userSocketMap[userId];
+}
+
+
 // Socket.IO Logic
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
 
-  socket.on("joinRoom", ({ sender, receiver }) => {
-    const roomId = [sender, receiver].sort().join("-");
-    socket.join(roomId);
-    console.log(`${sender} joined room: ${roomId}`);
-  });
+  const userId = socket.handshake.query.userId;
+  if (userId) userSocketMap[userId] = socket.id;
+
+  
+  // io.emit() is used to send events to all the connected clients
+  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+
+  // socket.on("joinRoom", ({ sender, receiver }) => {
+  //   const roomId = [sender, receiver].sort().join("-");
+  //   socket.join(roomId);
+  //   console.log(`${sender} joined room: ${roomId}`);
+  // });
 
   socket.on("sendMessage", async ({ sender, receiver, message }) => {
     const roomId = [sender, receiver].sort().join("-");
@@ -57,6 +75,8 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);
+    delete userSocketMap[userId];
+    io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
 });
 

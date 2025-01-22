@@ -12,20 +12,26 @@ import { useSelector } from "react-redux";
 
 
 const ChatContainer = () => {
-  const { messages, getMessages, isMessagesLoading, selectedUser } =
+  const { messages, getMessages, isMessagesLoading, selectedUser, subscribeToMessages,unsubscribeFromMessages} =
     useChatStore();
-const {authUser} = useAuthStore();
+const {authUser,checkAuth} = useAuthStore();
 const user = useSelector((state) => state.user);
 const messageEndRef = useRef(null);
 
 
+useEffect(() => {
+  checkAuth();
+}, [checkAuth]);
 
 useEffect(() => {
   if (selectedUser && selectedUser._id) {
     getMessages(selectedUser._id);
+    subscribeToMessages();
+
+    return()=>unsubscribeFromMessages();
     
   }
-}, [selectedUser, getMessages]);
+}, [selectedUser, getMessages],subscribeToMessages,unsubscribeFromMessages);
 
 useEffect(() => {
   console.log("Messages:", messages); // Log messages whenever they change
