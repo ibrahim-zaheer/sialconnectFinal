@@ -113,7 +113,7 @@ export const useAuthStore = create((set, get) => ({
       // // Ensure socket is connected right after authentication
       // get().connectSocket(); // Move the socket connection outside of the condition
       // Ensure authUser exists before connecting the socket
-    if (res.data) get().connectSocket();
+    get().connectSocket();
   
     } catch (error) {
       console.log("Error in checkAuth:", error);
@@ -155,15 +155,32 @@ export const useAuthStore = create((set, get) => ({
         userId: authUser._id,
       },
     });
-    socket.connect();
+    
 
     set({ socket: socket });
+    socket.connect();
 
+    socket.on("connect", () => {
+      console.log("Socket connected:", socket.id); // Log the socket ID
+      toast.success("Socket connected successfully!");
+    });
+    
     socket.on("getOnlineUsers", (userIds) => {
       set({ onlineUsers: userIds });
     });
   },
     disconnectSocket: () => {
     if (get().socket?.connected) get().socket.disconnect();
+  },
+  sendMessage: (receiver, message) => {
+    const { authUser, socket } = get();
+    if (!authUser || !socket) return;
+
+    socket.emit("sendMessage", { sender: authUser._id, receiver, message });
+
+    // Optimistically update the UI
+    set((state) => ({
+      messages: [...state.messages, { sender: authUser._id, receiver, message }],
+    }));
   },
 }));

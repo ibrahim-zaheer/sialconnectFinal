@@ -286,7 +286,12 @@ export const useChatStore = create((set, get) => ({
       
       return;
     }
-  
+    if (socket || socket.connected) {
+      console.log("Socket is connected");
+      
+      return;
+    }
+    
     socket.on("newMessage", (newMessage) => {
       const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
       if (!isMessageSentFromSelectedUser) return;

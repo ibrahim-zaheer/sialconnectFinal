@@ -35,6 +35,8 @@ useEffect(() => {
   console.log("Messages:", messages); // Log messages whenever they change
 }, [messages]);
 
+
+
 if (!selectedUser) {
   return <div>Please select a user to chat with.</div>;
 }

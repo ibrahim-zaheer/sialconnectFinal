@@ -21,8 +21,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: ["http://localhost:5173", "http://localhost:5174"], // Vite default dev server URL
-    methods: ["GET", "POST"],
-    credentials: true,
+    //methods: ["GET", "POST"],
+    //credentials: true,
   },
 });
 
@@ -50,8 +50,8 @@ function getReceiverSocketId(userId) {
 
 
 // Socket.IO Logic
-io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.id}`);
+io.on("connect", (socket) => {
+  console.log(`User is connected: ${socket.id}`);
 
   const userId = socket.handshake.query.userId;
   if (userId) userSocketMap[userId] = socket.id;
@@ -66,12 +66,19 @@ io.on("connection", (socket) => {
   //   console.log(`${sender} joined room: ${roomId}`);
   // });
 
-  socket.on("sendMessage", async ({ sender, receiver, message }) => {
-    const roomId = [sender, receiver].sort().join("-");
-    const chatMessage = new ChatMessage({ sender, receiver, message });
+  io.on("sendMessage", async ({ sender, receiver, message }) => {
+    const receiverSocketId = getReceiverSocketId(receiver);
 
-    await chatMessage.save();
-    io.to(roomId).emit("receiveMessage", chatMessage);
+  const chatMessage = new ChatMessage({ sender, receiver, message });
+  await chatMessage.save(); // Save the message in the database
+
+  // Emit the message to the sender
+  io.emit("receiveMessage", chatMessage);
+
+  // Emit the message to the receiver if they are online
+  if (receiverSocketId) {
+    io.to(receiverSocketId).emit("receiveMessage", chatMessage);
+  }
   });
 
   socket.on("disconnect", () => {

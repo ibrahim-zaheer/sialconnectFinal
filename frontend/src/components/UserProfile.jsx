@@ -3,15 +3,19 @@ import React from "react";
 import { useSelector } from "react-redux";
 import ProfilePictureUpdate from "./Supplier/products/ProfilePictureUpdate";
 import LogoutButton from "./LogoutButton";
-
-
+import { useEffect } from "react";
+import { useAuthStore } from "../store/useAuthStore";
 import SendOTP from "./otp/send-otp";
 
 import VerifyEmailButton from "./VerifyEmailButton";
 
 const UserProfile = () => {
   const user = useSelector((state) => state.user); // Access the user data from the Redux store
-
+  const { connectSocket } = useAuthStore();
+  useEffect(() => {
+    // Call connectSocket when the component is mounted
+    connectSocket();
+  }, [connectSocket]); // Dependency array ensures it runs once on mount
   return (
     <>
       <div className="mt-24">

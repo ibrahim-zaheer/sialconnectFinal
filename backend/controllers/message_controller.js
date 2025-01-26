@@ -64,6 +64,7 @@ const {getReceiverSocketId,io} = require("../utils/socket");
       if (receiverSocketId) {
         io.to(receiverSocketId).emit("newMessage", newMessage);
       }
+      console.log("message is sent");
   
       res.status(201).json(newMessage);
     } catch (error) {
