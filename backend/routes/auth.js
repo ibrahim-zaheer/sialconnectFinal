@@ -6,8 +6,8 @@ const profileController = require("../controllers/profile_controller")
 const {uploadProfilePicture}= require('../config/multerConfig');
 const crypto = require("crypto");
 const sendEmail = require("../utils/sendEmail");
-
 const User = require("../models/user");
+
 
 const authMiddleware = require("../middleware/authMiddleware");
 

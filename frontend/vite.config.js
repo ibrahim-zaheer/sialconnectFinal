@@ -24,6 +24,14 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+     '/bidding': {
+    target: 'http://localhost:5000',
+    changeOrigin: true,
+    secure: false,
+    
+},
+
+
       "/socket.io": {
                 target: "http://localhost:5000", // Backend server URL
                 ws: true, // Enable WebSocket proxying

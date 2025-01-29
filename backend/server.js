@@ -11,6 +11,8 @@ const messagesRoutes = require("./routes/messages");
 
 const messageRoutes = require("./routes/message.routes")
 
+const auctionRoutes = require("./routes/bidding/auctionItemRoutes")
+
 const { Server } = require("socket.io");
 
 // Initialize dotenv to access environment variables
@@ -20,7 +22,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:5174"], // Vite default dev server URL
+    origin: "http://localhost:5173", // Vite default dev server URL
     //methods: ["GET", "POST"],
     //credentials: true,
   },
@@ -92,10 +94,12 @@ io.on("connect", (socket) => {
 app.get("/", (req, res) => res.send("Server is running..."));
 app.use("/api/auth", authRoutes);
 app.use("/supplier", supplierRoutes);
-app.use("/messages", messagesRoutes);
+//app.use("/messages", messagesRoutes);
 
 //this is one real and we are working to improve it
 app.use("/message",messageRoutes);
+
+app.use("/bidding",auctionRoutes);
 
 // Start Server
 server.listen(PORT, () => {

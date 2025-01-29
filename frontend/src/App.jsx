@@ -96,6 +96,13 @@ import VerifyOTP from "./components/otp/verify-otp";
 
 
 import SupplierProductsPage from "./pages/Supplier/SupplierProductsPage";
+
+import CreateAuction from "./pages/bidding/createAuction";
+
+import GetAllAuctionsPage from "./pages/bidding/GetAllAuctionsPage"
+
+import ExporterAuctionsPage from "./pages/bidding/ExporterAuctionsPage"
+
 const App = () => {
   return (
     <>
@@ -137,6 +144,14 @@ const Main = () => {
 
 {/* For Chat */}
         <Route path="/chat" element={<ChatPage />} />
+
+
+{/* Bidding */}
+        <Route path="/createAuction" element={<CreateAuction />} />
+
+        <Route path="/getAllAuctions" element={<GetAllAuctionsPage  />} />
+
+        <Route path="/getAuctionsOfExporter" element={<ExporterAuctionsPage  />} />
 
        
 
