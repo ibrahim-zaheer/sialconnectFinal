@@ -6,33 +6,36 @@ const ExporterAuctions = () => {
   const [loading, setLoading] = useState(false); // Loading state
   const [message, setMessage] = useState(""); // Error or notification message
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
+// Fetch exporter's auctions
+const fetchExporterAuctions = async () => {
+  setLoading(true);
+  setMessage(""); // Reset message
 
-  // Fetch exporter's auctions
-  const fetchExporterAuctions = async () => {
-    setLoading(true);
-    setMessage(""); // Reset message
-
-    try {
+  try {
       const token = localStorage.getItem("token"); // Fetch token from storage
-      const response = await axios.get("/bidding/read", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      if (!token) {
+        setMessage("No token found. Please login.");
+        return;
+      }
+      const response = await axios.get("/bidding/getAuctionsByExporter", {
+          headers: {
+              Authorization: `Bearer ${token}`, // Include token in header
+          },
       });
       setAuctions(response.data.auctions); // Set fetched auctions
-    } catch (error) {
+  } catch (error) {
       console.error(
-        "Error fetching exporter's auctions:",
-        error.response?.data || error.message
+          "Error fetching exporter's auctions:",
+          error.response?.data || error.message
       );
       setMessage(
-        error.response?.data?.message ||
+          error.response?.data?.message ||
           "Failed to load auctions. Please try again."
       );
-    } finally {
+  } finally {
       setLoading(false);
-    }
-  };
+  }
+};
 
   // Fetch auctions on component mount
   useEffect(() => {
