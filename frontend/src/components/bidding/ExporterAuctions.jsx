@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import axios from "../../lib/axios";
 
 const ExporterAuctions = () => {
   const [auctions, setAuctions] = useState([]); // Auctions state
@@ -105,6 +105,7 @@ const fetchExporterAuctions = async () => {
                     />
                   )}
                 </div>
+                
               </div>
             </div>
           ))}

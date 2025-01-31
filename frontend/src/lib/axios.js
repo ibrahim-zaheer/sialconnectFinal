@@ -1,6 +1,8 @@
-// import axios from "axios";
+import axios from "axios";
 
-// export const axiosInstance = axios.create({
-//   baseURL: import.meta.env.MODE === "development" ? "http://localhost:5000/" : "/",
-//   withCredentials: true,
-// });
+axios.defaults.baseURL =
+  process.env.NODE_ENV === "production"
+    ? "" // Use relative URLs in production
+    : "http://localhost:5000"; // Use full URL in development
+
+export default axios;

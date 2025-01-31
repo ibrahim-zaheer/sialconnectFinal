@@ -14,6 +14,10 @@ const messageRoutes = require("./routes/message.routes")
 const auctionRoutes = require("./routes/bidding/auctionItemRoutes")
 
 const { Server } = require("socket.io");
+const path = require("path");
+
+
+
 
 // Initialize dotenv to access environment variables
 dotenv.config();
@@ -33,6 +37,14 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+
+
+// Serve static files from React's build directory
+app.use(express.static(path.join(__dirname, "../frontend"))); // Adjust path to match folder structure
+
+
+
 
 // MongoDB Connection
 mongoose
@@ -101,6 +113,10 @@ app.use("/message",messageRoutes);
 
 app.use("/bidding",auctionRoutes);
 
+// Redirect all other requests to React's index.html (except API routes)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/", "index.html")); // Adjust path to match folder structure
+});
 // Start Server
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

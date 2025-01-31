@@ -103,6 +103,9 @@ import GetAllAuctionsPage from "./pages/bidding/GetAllAuctionsPage"
 
 import ExporterAuctionsPage from "./pages/bidding/ExporterAuctionsPage"
 
+
+import AuctionDetail from "./components/bidding/AuctionDetail";
+
 const App = () => {
   return (
     <>
@@ -132,6 +135,7 @@ const Main = () => {
         <Route path="/Supplier" element={<SupplierPage />} />
         <Route path="/signIn" element={<UserAuth />} />
         <Route path="/supplier/product/:id" element={<ProductDetails />} />
+        
         <Route path="/View" element={<ProductViewing />} />
 
         <Route path="/VerifyEmail" element={<VerifyEmail />} />
@@ -153,7 +157,7 @@ const Main = () => {
 
         <Route path="/getAuctionsOfExporter" element={<ExporterAuctionsPage  />} />
 
-       
+        <Route path="/bidding/:id" element={<AuctionDetail />} />
 
       </Routes>
     </>
