@@ -90,6 +90,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../../lib/axios";
 
+import BidForm from "./BidForm"; 
+
 const AuctionDetail = () => {
   const { id } = useParams(); // Get the auction ID from the URL
   const [auctionDetails, setAuctionDetails] = useState(null);
@@ -159,7 +161,36 @@ const AuctionDetail = () => {
           )}
         </div>
       )}
+      {/* Render Bid Form */}
+      {/* <BidForm auctionId={id} refreshAuction={setAuctionDetails} /> */}
+         {/* Render Bid Form if user hasn't placed a bid */}
+         <BidForm auctionId={id} refreshAuction={setAuctionDetails} userHasBid={auctionDetails.userHasBid} />
+
+      {/* Bids Section */}
+      {auctionDetails.bids.length > 0 ? (
+        <div>
+          <h4>Bids:</h4>
+          <ul>
+            {auctionDetails.bids.map((bid) => (
+              <li key={bid.userId}>
+                <p><strong>{bid.userName}:</strong> ${bid.amount}</p>
+                {bid.profileImage && (
+                  <img
+                    src={bid.profileImage}
+                    alt={bid.userName}
+                    style={{ width: "50px", height: "50px", borderRadius: "50%", marginLeft: "10px" }}
+                  />
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p>No bids placed yet.</p>
+      )}
     </div>
+
+    
   );
 };
 

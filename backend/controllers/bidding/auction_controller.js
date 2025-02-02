@@ -12,6 +12,14 @@ const createAuction = async (req, res) => {
         if (!title || !description || !startingBid || !category || !startTime || !endTime) {
             return res.status(400).json({ message: "All fields (title, description, startingBid, category, startTime, endTime) are required." });
         }
+        // Convert startTime and endTime to Date objects
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+
+        // ✅ Check: Start time cannot be after end time
+        if (start > end) {
+            return res.status(400).json({ message: "Start time cannot be after end time." });
+        }
 
         // If there is an image, upload it to Cloudinary
         let image = {};
@@ -101,18 +109,48 @@ const getAuctionDetails = async (req, res) => {
       // Fetch auction details by ID and populate related fields
       const auction = await Auction.findById(req.params.id)
         // .populate("createdBy", "name email profilePicture") // Populate creator's details
-        // .populate("highestBidder", "name email profilePicture") // Populate highest bidder details
-        // .populate("bids.userId", "name email profilePicture"); // Populate all bid user details
+        .populate("highestBidder", "name email profilePicture") // Populate highest bidder details
+        .populate("bids.userId", "name email profilePicture"); // Populate all bid user details
   
       if (!auction) {
         return res.status(404).json({ message: "Auction not found." });
       }
   
-      res.status(200).json(auction);
+
+      let userHasBid = false;
+        if (req.user) {
+            userHasBid = auction.bids.some(bid => bid.userId.toString() === req.user.id);
+        }
+
+        res.status(200).json({ ...auction.toObject(), userHasBid });
+    //   res.status(200).json(auction);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   };
+
+  const deleteAuction = async (req, res) => {
+      try {
+          const { id } = req.params;
+  
+          const auction = await Auction.findById(id);
+  
+          if (!auction) {
+              return res.status(404).json({ message: "Auction not found." });
+          }
+  
+          // Ensure the logged-in supplier owns the product
+          if (auction.createdBy._id.toString() !== req.user.id) {
+              return res.status(403).json({ message: "You are not authorized to delete this product." });
+          }
+  
+          await Auction.findByIdAndDelete(id);
+          res.status(200).json({ message: "auction deleted successfully" });
+      } catch (error) {
+          res.status(500).json({ message: error.message });
+      }
+  };
+  
 
 
 // exports.getAuctionDetails = async (req, res) => {
@@ -130,4 +168,4 @@ const getAuctionDetails = async (req, res) => {
 // };
 
 
-module.exports = { createAuction,getAllAuctions,getAuctionsByExporter,getAuctionDetails,getMyAuctions };
+module.exports = { createAuction,getAllAuctions,getAuctionsByExporter,getAuctionDetails,getMyAuctions,deleteAuction };
