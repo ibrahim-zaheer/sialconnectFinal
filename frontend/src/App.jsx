@@ -159,6 +159,8 @@ const Main = () => {
 
         <Route path="/bidding/:id" element={<AuctionDetail />} />
 
+        {/* <Route path="/bidding/:id" element={<AuctionDetail />} /> */}
+
       </Routes>
     </>
   );

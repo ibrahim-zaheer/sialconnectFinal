@@ -3,14 +3,18 @@ const { uploadAuctionImage } = require("../../config/multerConfig");
 const cloudinary = require("../../config/cloudinaryConfig");
 
 const createAuction = async (req, res) => {
+    
     try {
         console.log("Request body:", req.body);  // Log request data
         console.log("Request file:", req.file);  // Log uploaded file if any
         
-        const { title, description, startingBid, category, startTime, endTime } = req.body;
+        const { title, description, startingBid, category,quantity, startTime, endTime } = req.body;
 
         if (!title || !description || !startingBid || !category || !startTime || !endTime) {
             return res.status(400).json({ message: "All fields (title, description, startingBid, category, startTime, endTime) are required." });
+        }
+        if(!quantity){
+           quantity = 1
         }
         // Convert startTime and endTime to Date objects
         const start = new Date(startTime);
@@ -35,6 +39,7 @@ const createAuction = async (req, res) => {
             description,
             startingBid,
             category,
+            quantity,
             startTime,
             endTime,
             createdBy: req.user.id,

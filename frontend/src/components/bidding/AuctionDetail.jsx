@@ -1,28 +1,41 @@
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
 
-// const AuctionDetail = ({ auctionId }) => {
+
+
+
+
+
+
+
+// import React, { useEffect, useState } from "react";
+// import { useParams } from "react-router-dom";
+// import axios from "../../lib/axios";
+
+// import BidForm from "./BidForm"; 
+
+// const AuctionDetail = () => {
+//   const { id } = useParams(); // Get the auction ID from the URL
 //   const [auctionDetails, setAuctionDetails] = useState(null);
 //   const [loading, setLoading] = useState(true);
 //   const [error, setError] = useState("");
 
-//   // Fetch auction details when auctionId changes
 //   useEffect(() => {
 //     const fetchAuctionDetails = async () => {
 //       try {
-//         const response = await axios.get(`/bidding/${auctionId}`); // API to get auction details by ID
-//         setAuctionDetails(response.data); // Store auction details
+//         const response = await axios.get(`/bidding/${id}`); // Correct API endpoint
+//         console.log("API Response:", response.data); // Debugging Line
+//         setAuctionDetails(response.data);
 //         setLoading(false);
 //       } catch (error) {
+//         console.error("Error fetching auction details:", error);
 //         setError("Failed to load auction details.");
 //         setLoading(false);
 //       }
 //     };
 
-//     if (auctionId) {
-//       fetchAuctionDetails(); // Fetch details when auctionId is available
+//     if (id) {
+//       fetchAuctionDetails();
 //     }
-//   }, [auctionId]); // Runs every time auctionId changes
+//   }, [id]);
 
 //   if (loading) {
 //     return <div>Loading details...</div>;
@@ -38,43 +51,66 @@
 
 //   return (
 //     <div className="auction-detail">
-//       <h3>{auctionDetails.title}</h3>
-//       <p>{auctionDetails.description}</p>
-//       <p>Starting Bid: ${auctionDetails.startingBid}</p>
-//       <p>Current Bid: ${auctionDetails.currentBid}</p>
-//       <p>Category: {auctionDetails.category}</p>
-//       <p>Start Time: {new Date(auctionDetails.startTime).toLocaleString()}</p>
-//       <p>End Time: {new Date(auctionDetails.endTime).toLocaleString()}</p>
-//       {auctionDetails.image && (
+//       <h2>{auctionDetails.title}</h2>
+//       <p><strong>Description:</strong> {auctionDetails.description}</p>
+//       <p><strong>Starting Bid:</strong> ${auctionDetails.startingBid}</p>
+//       <p><strong>Current Bid:</strong> ${auctionDetails.currentBid}</p>
+//       <p><strong>Category:</strong> {auctionDetails.category}</p>
+//       <p><strong>Start Time:</strong> {new Date(auctionDetails.startTime).toLocaleString()}</p>
+//       <p><strong>End Time:</strong> {new Date(auctionDetails.endTime).toLocaleString()}</p>
+      
+//       {auctionDetails.image && auctionDetails.image.url && (
 //         <img
 //           src={auctionDetails.image.url}
 //           alt={auctionDetails.title}
-//           style={{ width: "200px", height: "auto" }}
+//           style={{ width: "250px", height: "auto", borderRadius: "10px", marginTop: "10px" }}
 //         />
 //       )}
 
-//       {/* Display Bids */}
-//       <h4>Bids:</h4>
-//       <ul>
-//         {auctionDetails.bids.map((bid) => (
-//           <li key={bid.userId}>
-//             <p>{bid.userName} - ${bid.amount}</p>
+//       {auctionDetails.createdBy && (
+//         <div style={{ marginTop: "20px" }}>
+//           <h4>Created By:</h4>
+//           <p><strong>Name:</strong> {auctionDetails.createdBy.name}</p>
+//           <p><strong>Email:</strong> {auctionDetails.createdBy.email}</p>
+//           {auctionDetails.createdBy.profilePicture && (
 //             <img
-//               src={bid.profileImage}
-//               alt={bid.userName}
-//               style={{ width: "50px", height: "50px", borderRadius: "50%" }}
+//               src={auctionDetails.createdBy.profilePicture}
+//               alt={auctionDetails.createdBy.name}
+//               style={{ width: "60px", height: "60px", borderRadius: "50%", marginTop: "10px" }}
 //             />
-//           </li>
-//         ))}
-//       </ul>
+//           )}
+//         </div>
+//       )}
+//       {/* Render Bid Form */}
+//       {/* <BidForm auctionId={id} refreshAuction={setAuctionDetails} /> */}
+//          {/* Render Bid Form if user hasn't placed a bid */}
+//          <BidForm auctionId={id} refreshAuction={setAuctionDetails} userHasBid={auctionDetails.userHasBid} />
 
-//       {/* Highest Bidder */}
-//       {auctionDetails.highestBidder && (
-//         <p>
-//           <strong>Highest Bidder:</strong> {auctionDetails.highestBidder.name}
-//         </p>
+//       {/* Bids Section */}
+//       {auctionDetails.bids.length > 0 ? (
+//         <div>
+//           <h4>Bids:</h4>
+//           <ul>
+//             {auctionDetails.bids.map((bid) => (
+//               <li key={bid.userId}>
+//                 <p><strong>{bid.userName}:</strong> ${bid.amount}</p>
+//                 {bid.profileImage && (
+//                   <img
+//                     src={bid.profileImage}
+//                     alt={bid.userName}
+//                     style={{ width: "50px", height: "50px", borderRadius: "50%", marginLeft: "10px" }}
+//                   />
+//                 )}
+//               </li>
+//             ))}
+//           </ul>
+//         </div>
+//       ) : (
+//         <p>No bids placed yet.</p>
 //       )}
 //     </div>
+
+    
 //   );
 // };
 
@@ -83,17 +119,13 @@
 
 
 
-
-
-
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../../lib/axios";
-
-import BidForm from "./BidForm"; 
+import BidForm from "./BidForm";
 
 const AuctionDetail = () => {
-  const { id } = useParams(); // Get the auction ID from the URL
+  const { id } = useParams();
   const [auctionDetails, setAuctionDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -101,9 +133,21 @@ const AuctionDetail = () => {
   useEffect(() => {
     const fetchAuctionDetails = async () => {
       try {
-        const response = await axios.get(`/bidding/${id}`); // Correct API endpoint
-        console.log("API Response:", response.data); // Debugging Line
+        setLoading(true);
+        setError(""); // Reset errors on new fetch
+
+        // Get data from localStorage first
+        const cachedData = localStorage.getItem(`auction-${id}`);
+        if (cachedData) {
+          setAuctionDetails(JSON.parse(cachedData));
+        }
+
+        // Fetch fresh data from API
+        const response = await axios.get(`/api/bidding/${id}`);
+        console.log("API Response:", response.data);
+
         setAuctionDetails(response.data);
+        localStorage.setItem(`auction-${id}`, JSON.stringify(response.data)); // Cache updated data
         setLoading(false);
       } catch (error) {
         console.error("Error fetching auction details:", error);
@@ -117,67 +161,62 @@ const AuctionDetail = () => {
     }
   }, [id]);
 
-  if (loading) {
-    return <div>Loading details...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  if (!auctionDetails) {
-    return <div>No details found.</div>;
-  }
+  if (loading) return <div>Loading details...</div>;
+  if (error) return <div>{error}</div>;
+  if (!auctionDetails) return <div>No details found.</div>;
 
   return (
     <div className="auction-detail">
-      <h2>{auctionDetails.title}</h2>
-      <p><strong>Description:</strong> {auctionDetails.description}</p>
-      <p><strong>Starting Bid:</strong> ${auctionDetails.startingBid}</p>
-      <p><strong>Current Bid:</strong> ${auctionDetails.currentBid}</p>
-      <p><strong>Category:</strong> {auctionDetails.category}</p>
-      <p><strong>Start Time:</strong> {new Date(auctionDetails.startTime).toLocaleString()}</p>
-      <p><strong>End Time:</strong> {new Date(auctionDetails.endTime).toLocaleString()}</p>
-      
-      {auctionDetails.image && auctionDetails.image.url && (
+      <h2>{auctionDetails?.title}</h2>
+      <p><strong>Description:</strong> {auctionDetails?.description}</p>
+      <p><strong>Starting Bid:</strong> ${auctionDetails?.startingBid}</p>
+      <p><strong>Current Bid:</strong> ${auctionDetails?.currentBid}</p>
+      <p><strong>Category:</strong> {auctionDetails?.category}</p>
+      <p><strong>Start Time:</strong> {new Date(auctionDetails?.startTime).toLocaleString()}</p>
+      <p><strong>End Time:</strong> {new Date(auctionDetails?.endTime).toLocaleString()}</p>
+
+      {auctionDetails?.image?.url && (
         <img
-          src={auctionDetails.image.url}
-          alt={auctionDetails.title}
+          src={auctionDetails?.image?.url}
+          alt={auctionDetails?.title}
           style={{ width: "250px", height: "auto", borderRadius: "10px", marginTop: "10px" }}
         />
       )}
 
-      {auctionDetails.createdBy && (
+      {auctionDetails?.createdBy && (
         <div style={{ marginTop: "20px" }}>
           <h4>Created By:</h4>
-          <p><strong>Name:</strong> {auctionDetails.createdBy.name}</p>
-          <p><strong>Email:</strong> {auctionDetails.createdBy.email}</p>
-          {auctionDetails.createdBy.profilePicture && (
+          <p><strong>Name:</strong> {auctionDetails?.createdBy?.name}</p>
+          <p><strong>Email:</strong> {auctionDetails?.createdBy?.email}</p>
+          {auctionDetails?.createdBy?.profilePicture && (
             <img
-              src={auctionDetails.createdBy.profilePicture}
-              alt={auctionDetails.createdBy.name}
+              src={auctionDetails?.createdBy?.profilePicture}
+              alt={auctionDetails?.createdBy?.name}
               style={{ width: "60px", height: "60px", borderRadius: "50%", marginTop: "10px" }}
             />
           )}
         </div>
       )}
-      {/* Render Bid Form */}
-      {/* <BidForm auctionId={id} refreshAuction={setAuctionDetails} /> */}
-         {/* Render Bid Form if user hasn't placed a bid */}
-         <BidForm auctionId={id} refreshAuction={setAuctionDetails} userHasBid={auctionDetails.userHasBid} />
+
+      {/* Render Bid Form only if the user hasn't placed a bid */}
+      <BidForm
+        auctionId={id}
+        refreshAuction={setAuctionDetails}
+        userHasBid={auctionDetails?.userHasBid}
+      />
 
       {/* Bids Section */}
-      {auctionDetails.bids.length > 0 ? (
+      {auctionDetails?.bids?.length > 0 ? (
         <div>
           <h4>Bids:</h4>
           <ul>
-            {auctionDetails.bids.map((bid) => (
-              <li key={bid.userId}>
-                <p><strong>{bid.userName}:</strong> ${bid.amount}</p>
-                {bid.profileImage && (
+            {auctionDetails?.bids?.map((bid) => (
+              <li key={bid?.userId}>
+                <p><strong>{bid?.userName}:</strong> ${bid?.amount}</p>
+                {bid?.profileImage && (
                   <img
-                    src={bid.profileImage}
-                    alt={bid.userName}
+                    src={bid?.profileImage}
+                    alt={bid?.userName}
                     style={{ width: "50px", height: "50px", borderRadius: "50%", marginLeft: "10px" }}
                   />
                 )}
@@ -189,8 +228,6 @@ const AuctionDetail = () => {
         <p>No bids placed yet.</p>
       )}
     </div>
-
-    
   );
 };
 

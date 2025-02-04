@@ -148,7 +148,7 @@ const AuctionList = () => {
               )}
               <div className="mt-4">
                 <Link
-                  to={`/bidding/${auction._id}`}
+                  to={`/api/bidding/${auction._id}`}
                   className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
                 >
                   View more

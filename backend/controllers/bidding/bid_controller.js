@@ -107,10 +107,10 @@ const placeBid = async (req, res) => {
       return res.status(400).json({ message: "You have already placed a bid on this auction." });
     }
 
-    // Ensure bid is higher than current highest bid
-    if (amount <= auction.currentBid) {
-      return res.status(400).json({ message: "Your bid must be higher than the current bid." });
-    }
+    // // Ensure bid is higher than current highest bid
+    // if (amount <= auction.currentBid) {
+    //   return res.status(400).json({ message: "Your bid must be higher than the current bid." });
+    // }
 
     // Get user info
     const user = await User.findById(userId);

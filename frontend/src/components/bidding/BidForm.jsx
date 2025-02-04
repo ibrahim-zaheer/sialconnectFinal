@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const BidForm = ({ auctionId, refreshAuction }) => {
+    const user = useSelector((state) => state.user); 
   const [bidAmount, setBidAmount] = useState(""); // State for bid input
   const [bidError, setBidError] = useState(""); // Error messages
   const [successMessage, setSuccessMessage] = useState(""); // Success messages
@@ -38,6 +40,9 @@ const BidForm = ({ auctionId, refreshAuction }) => {
     }
   };
 
+  if (user?.role === "exporter") {
+    return null; // Hide the form for exporters
+  }
   return (
     <div style={{ marginTop: "20px", padding: "10px", border: "1px solid #ccc", borderRadius: "5px" }}>
       <h4>Place a Bid:</h4>

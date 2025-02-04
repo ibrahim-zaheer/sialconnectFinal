@@ -113,10 +113,26 @@ app.use("/message",messageRoutes);
 
 app.use("/bidding",auctionRoutes);
 
-// Redirect all other requests to React's index.html (except API routes)
+app.use("/api/bidding",auctionRoutes);
+
+// // Redirect all other requests to React's index.html (except API routes)
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "../frontend/", "index.html")); // Adjust path to match folder structure
+//   //  res.sendFile(path.resolve(__dirname, "../frontend/dist", "index.html"));
+// });
+
+
+
+// ✅ Ensure React Handles All Frontend Routes
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/", "index.html")); // Adjust path to match folder structure
+  // Serve index.html for non-API requests
+  if (!req.originalUrl.startsWith("/api") && !req.originalUrl.startsWith("/socket.io")) {
+    res.sendFile(path.resolve(__dirname, "../frontend/dist", "index.html"));
+  } else {
+    res.status(404).json({ error: "API route not found" });
+  }
 });
+
 // Start Server
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

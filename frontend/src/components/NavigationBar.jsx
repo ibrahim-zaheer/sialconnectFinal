@@ -44,18 +44,21 @@ const Navbar = () => {
                 )}
 
                     {user.role === "exporter" && (
+                      <>
                   <li>
                     <Link to="/createAuction">Create Auction</Link>
                   </li>
+                   <li>
+                   <Link to="/getAuctionsOfExporter">Your Auction</Link>
+                 </li>
+                 </>
                    
                 )
                 }
 
 
 &&
-                <li>
-                <Link to="/getAuctionsOfExporter">Your Auction</Link>
-              </li>
+               
 
 
                 <li>

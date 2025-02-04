@@ -7,6 +7,7 @@ const AuctionForm = () => {
     description: "",
     startingBid: "",
     category: "",
+    quantity:"",
     startTime: "",
     endTime: "",
     image: null, // For file input
@@ -29,6 +30,16 @@ const AuctionForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+      // Convert to numbers and validate
+      const startingBid = parseFloat(formData.startingBid);
+      const quantity = parseInt(formData.quantity, 10);
+  
+      if (isNaN(startingBid) || isNaN(quantity) || startingBid * quantity <= 100000) {
+        alert("Error: Starting Bid * Quantity must be greater than 100,000");
+        return;
+      }
+
     const form = new FormData();
 
     // Append all the form data to FormData object
@@ -102,6 +113,17 @@ const AuctionForm = () => {
             id="category"
             name="category"
             value={formData.category}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="quantity">Quantity</label>
+          <input
+            type="number"
+            id="quantity"
+            name="quantity"
+            value={formData.quantity}
             onChange={handleChange}
             required
           />
