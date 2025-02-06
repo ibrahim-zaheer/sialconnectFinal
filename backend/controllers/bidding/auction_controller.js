@@ -113,7 +113,7 @@ const getAuctionDetails = async (req, res) => {
     try {
       // Fetch auction details by ID and populate related fields
       const auction = await Auction.findById(req.params.id)
-        // .populate("createdBy", "name email profilePicture") // Populate creator's details
+        .populate("createdBy", "name email profilePicture") // Populate creator's details
         .populate("highestBidder", "name email profilePicture") // Populate highest bidder details
         .populate("bids.userId", "name email profilePicture"); // Populate all bid user details
   

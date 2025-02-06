@@ -143,7 +143,13 @@ const AuctionDetail = () => {
         }
 
         // Fetch fresh data from API
-        const response = await axios.get(`/api/bidding/${id}`);
+        // const response = await axios.get(`/api/bidding/${id}`);
+
+        const response = await axios.get(`/api/bidding/${id}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
         console.log("API Response:", response.data);
 
         setAuctionDetails(response.data);
@@ -213,6 +219,8 @@ const AuctionDetail = () => {
             {auctionDetails?.bids?.map((bid) => (
               <li key={bid?.userId}>
                 <p><strong>{bid?.userName}:</strong> ${bid?.amount}</p>
+                <p>{bid?._id}</p>
+                <p>UserID: {bid?.userId?._id}</p>
                 {bid?.profileImage && (
                   <img
                     src={bid?.profileImage}
