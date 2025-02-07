@@ -33,7 +33,7 @@
 
 const express = require("express");
 const { createAuction, getAllAuctions, getAuctionsByExporter, getAuctionDetails, getMyAuctions, deleteAuction } = require("../../controllers/bidding/auction_controller");
-const { placeBid } = require("../../controllers/bidding/bid_controller");
+const { placeBid,getUserDetails } = require("../../controllers/bidding/bid_controller");
 const  authenticateMiddleware = require("../../middleware/authMiddleware");
 
 const  isAuthorized = require("../../middleware/isAuthorized");
@@ -51,5 +51,7 @@ router.delete("/delete/:id", authenticateMiddleware, deleteAuction);
 
 // Use Bidding Routes (Correct Placement)
 router.post("/place/:id", authenticateMiddleware, isAuthorized("supplier"), placeBid);
+//for getting user details
+router.get("/user-details/:userId", getUserDetails);
 
 module.exports = router;

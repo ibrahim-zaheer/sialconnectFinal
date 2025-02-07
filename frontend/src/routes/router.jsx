@@ -56,6 +56,9 @@ import ProductDetails from '../components/Exporter/products/ProductDetails';
 import LandingPage from '../pages/landingPage';
 import chatPage from '../pages/chatPage';
 
+
+import SupplierDetails from '../components/bidding/SupplierDetails';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -89,6 +92,11 @@ const router = createBrowserRouter([
     path:'/chat',
     element: <chatPage/>
   },
+  {
+    path:'/bidding/supplier/:id',
+    element:<SupplierDetails/>
+  }
+
 ]);
 
 export default router;

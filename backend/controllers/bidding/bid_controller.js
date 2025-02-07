@@ -150,4 +150,25 @@ const placeBid = async (req, res) => {
   }
 };
 
-module.exports = { placeBid };
+const getUserDetails = async(req,res)=>{
+  try {
+    const { userId } = req.params;
+
+    // Fetch the user details from the database
+    const user = await User.findById(userId);
+
+    // Check if the user exists
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Return the user details
+    res.status(200).json(user);
+  } catch (error) {
+    console.error('Error fetching user details:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+}
+
+
+module.exports = { placeBid, getUserDetails };

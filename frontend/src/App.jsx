@@ -106,6 +106,8 @@ import ExporterAuctionsPage from "./pages/bidding/ExporterAuctionsPage"
 
 import AuctionDetail from "./components/bidding/AuctionDetail";
 
+import SupplierDetails from "./components/bidding/SupplierDetails";
+
 const App = () => {
   return (
     <>
@@ -159,7 +161,9 @@ const Main = () => {
 
         <Route path="/bidding/:id" element={<AuctionDetail />} />
 
-        {/* <Route path="/bidding/:id" element={<AuctionDetail />} /> */}
+       
+        <Route path="/bidding/supplier/:id" element={<SupplierDetails />} />
+
 
       </Routes>
     </>

@@ -1,128 +1,9 @@
 
-
-
-
-
-
-
-
-// import React, { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import axios from "../../lib/axios";
-
-// import BidForm from "./BidForm"; 
-
-// const AuctionDetail = () => {
-//   const { id } = useParams(); // Get the auction ID from the URL
-//   const [auctionDetails, setAuctionDetails] = useState(null);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState("");
-
-//   useEffect(() => {
-//     const fetchAuctionDetails = async () => {
-//       try {
-//         const response = await axios.get(`/bidding/${id}`); // Correct API endpoint
-//         console.log("API Response:", response.data); // Debugging Line
-//         setAuctionDetails(response.data);
-//         setLoading(false);
-//       } catch (error) {
-//         console.error("Error fetching auction details:", error);
-//         setError("Failed to load auction details.");
-//         setLoading(false);
-//       }
-//     };
-
-//     if (id) {
-//       fetchAuctionDetails();
-//     }
-//   }, [id]);
-
-//   if (loading) {
-//     return <div>Loading details...</div>;
-//   }
-
-//   if (error) {
-//     return <div>{error}</div>;
-//   }
-
-//   if (!auctionDetails) {
-//     return <div>No details found.</div>;
-//   }
-
-//   return (
-//     <div className="auction-detail">
-//       <h2>{auctionDetails.title}</h2>
-//       <p><strong>Description:</strong> {auctionDetails.description}</p>
-//       <p><strong>Starting Bid:</strong> ${auctionDetails.startingBid}</p>
-//       <p><strong>Current Bid:</strong> ${auctionDetails.currentBid}</p>
-//       <p><strong>Category:</strong> {auctionDetails.category}</p>
-//       <p><strong>Start Time:</strong> {new Date(auctionDetails.startTime).toLocaleString()}</p>
-//       <p><strong>End Time:</strong> {new Date(auctionDetails.endTime).toLocaleString()}</p>
-      
-//       {auctionDetails.image && auctionDetails.image.url && (
-//         <img
-//           src={auctionDetails.image.url}
-//           alt={auctionDetails.title}
-//           style={{ width: "250px", height: "auto", borderRadius: "10px", marginTop: "10px" }}
-//         />
-//       )}
-
-//       {auctionDetails.createdBy && (
-//         <div style={{ marginTop: "20px" }}>
-//           <h4>Created By:</h4>
-//           <p><strong>Name:</strong> {auctionDetails.createdBy.name}</p>
-//           <p><strong>Email:</strong> {auctionDetails.createdBy.email}</p>
-//           {auctionDetails.createdBy.profilePicture && (
-//             <img
-//               src={auctionDetails.createdBy.profilePicture}
-//               alt={auctionDetails.createdBy.name}
-//               style={{ width: "60px", height: "60px", borderRadius: "50%", marginTop: "10px" }}
-//             />
-//           )}
-//         </div>
-//       )}
-//       {/* Render Bid Form */}
-//       {/* <BidForm auctionId={id} refreshAuction={setAuctionDetails} /> */}
-//          {/* Render Bid Form if user hasn't placed a bid */}
-//          <BidForm auctionId={id} refreshAuction={setAuctionDetails} userHasBid={auctionDetails.userHasBid} />
-
-//       {/* Bids Section */}
-//       {auctionDetails.bids.length > 0 ? (
-//         <div>
-//           <h4>Bids:</h4>
-//           <ul>
-//             {auctionDetails.bids.map((bid) => (
-//               <li key={bid.userId}>
-//                 <p><strong>{bid.userName}:</strong> ${bid.amount}</p>
-//                 {bid.profileImage && (
-//                   <img
-//                     src={bid.profileImage}
-//                     alt={bid.userName}
-//                     style={{ width: "50px", height: "50px", borderRadius: "50%", marginLeft: "10px" }}
-//                   />
-//                 )}
-//               </li>
-//             ))}
-//           </ul>
-//         </div>
-//       ) : (
-//         <p>No bids placed yet.</p>
-//       )}
-//     </div>
-
-    
-//   );
-// };
-
-// export default AuctionDetail;
-
-
-
-
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../../lib/axios";
 import BidForm from "./BidForm";
+import { Link } from "react-router-dom";
 
 const AuctionDetail = () => {
   const { id } = useParams();
@@ -228,6 +109,14 @@ const AuctionDetail = () => {
                     style={{ width: "50px", height: "50px", borderRadius: "50%", marginLeft: "10px" }}
                   />
                 )}
+                <div className="mt-4">
+                                <Link
+                                  to={`/bidding/supplier/${bid?.userId._id}`}
+                                  className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                                >
+                                  View more
+                                </Link>
+                              </div>
               </li>
             ))}
           </ul>
