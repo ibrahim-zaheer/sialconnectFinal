@@ -17,7 +17,7 @@ const ExporterAuctions = () => {
         setMessage("No token found. Please login.");
         return;
       }
-      const response = await axios.get("/bidding/getAuctionsByExporter", {
+      const response = await axios.get("/api/bidding/getAuctionsByExporter", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

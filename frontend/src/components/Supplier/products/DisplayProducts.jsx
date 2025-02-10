@@ -120,7 +120,7 @@ const DisplayProducts = ({
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token"); // Fetch token from local storage
-      const response = await axios.delete(`/supplier/product/delete/${id}`, {
+      const response = await axios.delete(`/api/supplier/product/delete/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`, // Pass token for authentication
         },

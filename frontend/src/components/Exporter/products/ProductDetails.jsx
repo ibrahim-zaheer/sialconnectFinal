@@ -19,7 +19,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`/supplier/product/${id}`); // API endpoint for fetching a product by ID
+        const response = await axios.get(`/api/supplier/product/${id}`); // API endpoint for fetching a product by ID
         setProduct(response.data);
       } catch (err) {
         setError("Error fetching product details.");

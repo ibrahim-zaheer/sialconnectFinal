@@ -18,7 +18,7 @@ const AuctionList = () => {
   useEffect(() => {
     const fetchAuctions = async () => {
       try {
-        const response = await axios.get("/bidding/getAllAuctions"); // Fetch auctions
+        const response = await axios.get("/api/bidding/getAllAuctions"); // Fetch auctions
         console.log("API Response:", response.data); // Debugging: Check API response
         setAuctions(response.data); // Set auctions state
         setLoading(false);

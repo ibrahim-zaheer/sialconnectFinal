@@ -15,7 +15,7 @@ const SupplierDetails = () => {
         setLoading(true);
         setError(""); // Reset errors on new fetch
 
-        const response = await axios.get(`/bidding/user-details/${id}`, {
+        const response = await axios.get(`/api/bidding/user-details/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
