@@ -143,7 +143,7 @@ const AddProduct = ({ onProductCreated }) => {
     try {
       const token = localStorage.getItem("token"); // Fetch token from local storage
       const response = await axios.post(
-        "/supplier/product/create",
+        "/api/supplier/product/create",
         form, // Send the FormData object
         {
           headers: {

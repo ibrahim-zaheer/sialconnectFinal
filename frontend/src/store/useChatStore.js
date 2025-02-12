@@ -215,7 +215,7 @@ export const useChatStore = create((set, get) => ({
     set({ isUsersLoading: true });
     try {
       const token = localStorage.getItem("token"); // Retrieve token from localStorage or your preferred storage
-      const res = await axios.get("/message/users", {
+      const res = await axios.get("/api/message/users", {
         headers: {
           Authorization: `Bearer ${token}`, // Include token in the Authorization header
         },
@@ -237,7 +237,7 @@ export const useChatStore = create((set, get) => ({
         return;
       }
 
-      const res = await axios.get(`/message/${userId}`, {
+      const res = await axios.get(`/api/message/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -261,7 +261,7 @@ export const useChatStore = create((set, get) => ({
         return;
       }
       const res = await axios.post(
-        `/message/send/${selectedUser._id}`,
+        `/api/message/send/${selectedUser._id}`,
         messageData,
         {
           headers: {

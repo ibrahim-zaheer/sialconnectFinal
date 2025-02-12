@@ -107,15 +107,108 @@
 
 // export default DisplayProducts;
 
+// import React from "react";
+// import axios from "axios";
+
+// const DisplayProducts = ({
+//   products,
+//   setProducts,
+//   setProductToEdit,
+//   message,
+// }) => {
+//   // Handle delete functionality
+//   const handleDelete = async (id) => {
+//     try {
+//       const token = localStorage.getItem("token"); // Fetch token from local storage
+//       const response = await axios.delete(`/api/supplier/product/delete/${id}`, {
+//         headers: {
+//           Authorization: `Bearer ${token}`, // Pass token for authentication
+//         },
+//       });
+
+//       alert(response.data.message); // Notify the user about successful deletion
+
+//       // Remove the deleted product from the local state
+//       setProducts((prevProducts) =>
+//         prevProducts.filter((product) => product._id !== id)
+//       );
+//     } catch (error) {
+//       console.error(
+//         "Error deleting product:",
+//         error.response?.data || error.message
+//       );
+//       alert(
+//         error.response?.data?.message ||
+//           "Failed to delete product. Please try again."
+//       );
+//     }
+//   };
+
+//   return (
+//     <div className="my-24">
+//       <h2 className="text-3xl font-semibold text-center my-10">My Products</h2>
+//       {products.length > 0 ? (
+//         <ul className="flex justify-center items-center gap-8 flex-col">
+//           {products.map((product) => (
+//             <li
+//               key={product._id}
+//               className="flex justify-between items-center w-[80%] bg-gray-100 py-6 px-10 border rounded-lg shadow-sm"
+//             >
+//               <div>
+//                 <span className="block">
+//                   <strong>{product.name}</strong>
+//                 </span>
+//                 <span className="block my-1 text-sm">
+//                   {product.description}
+//                 </span>
+//                 <span className="block">
+//                   <span className="font-semibold">Price: </span>
+//                   {product.price} Rs
+//                   {/* Edit Button */}
+//                 </span>
+//               </div>
+
+//               <div className="flex justify-center items-center gap-5">
+//                 {/* Delete Button */}
+//                 <button
+//                   onClick={() => handleDelete(product._id)}
+//                   className="text-sm px-3 py-1 text-white bg-[red] rounded-md hover:bg-[#ff4f4f] transition-all duration-300"
+//                 >
+//                   Delete
+//                 </button>
+
+//                 <button
+//                   onClick={() => setProductToEdit(product)}
+//                   className="text-sm px-3 py-1 text-white bg-[gray] rounded-md hover:bg-[#b1b1b1] transition-all duration-300"
+//                 >
+//                   Edit
+//                 </button>
+//               </div>
+//             </li>
+//           ))}
+//         </ul>
+//       ) : message ? (
+//         <p>{message}</p>
+//       ) : (
+//         <p>No products found.</p>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default DisplayProducts;
+
+
+
+
+
+
+
+
 import React from "react";
 import axios from "axios";
 
-const DisplayProducts = ({
-  products,
-  setProducts,
-  setProductToEdit,
-  message,
-}) => {
+const DisplayProducts = ({ products, setProducts, setProductToEdit, message }) => {
   // Handle delete functionality
   const handleDelete = async (id) => {
     try {
@@ -144,12 +237,15 @@ const DisplayProducts = ({
     }
   };
 
+  // Ensure products is always an array
+  const safeProducts = Array.isArray(products) ? products : [];
+
   return (
     <div className="my-24">
       <h2 className="text-3xl font-semibold text-center my-10">My Products</h2>
-      {products.length > 0 ? (
+      {safeProducts.length > 0 ? (
         <ul className="flex justify-center items-center gap-8 flex-col">
-          {products.map((product) => (
+          {safeProducts.map((product) => (
             <li
               key={product._id}
               className="flex justify-between items-center w-[80%] bg-gray-100 py-6 px-10 border rounded-lg shadow-sm"

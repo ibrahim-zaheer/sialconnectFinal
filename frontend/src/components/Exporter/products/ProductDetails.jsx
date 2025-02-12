@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 // for allowing people to chat with each other
 import Chat from "../../Chat/Chat";
 import { useSelector } from "react-redux";
+
 // import ChatRoom from "../../Chat/ChatRoom";
 
 const ProductDetails = () => {
@@ -86,22 +87,32 @@ const ProductDetails = () => {
                 <p className="text-gray-500">
                   {new Date(product.createdAt).toDateString()}
                 </p>
-                
-                <p>Supplier ID:{product.supplier.id}</p>
+
+                <p>Supplier ID:{product.supplier._id}</p>
                 <p>User Id:{userId}</p>
+              </div>
+              <div className="mt-4">
+                {/* <Link
+                  to={`/chat`}
+                  className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                >
+                  Chat
+                </Link> */}
+                <Link
+                  to={`/chat?supplierId=${product.supplier._id}`}
+                  className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                >
+                  Chat
+                </Link>
               </div>
             </div>
           </div>
-    
-
         </div>
       ) : (
         <div className="text-center text-gray-500">
           Loading product details...
         </div>
       )}
-
-      
     </div>
   );
 };

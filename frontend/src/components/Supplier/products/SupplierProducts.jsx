@@ -104,7 +104,7 @@ const SupplierProducts = () => {
 
     try {
       const token = localStorage.getItem("token"); // Fetch token from storage
-      const response = await axios.get("/supplier/product/read", {
+      const response = await axios.get("/api/supplier/product/read", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -134,10 +134,15 @@ const SupplierProducts = () => {
     setSearchQuery(e.target.value);
   };
 
-  // Filter products based on the search query
-  const searchedProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // // Filter products based on the search query
+  // const searchedProducts = products.filter((product) =>
+  //   product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
+  const searchedProducts = Array.isArray(products)
+    ? products.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : []; 
 
   return (
     <div className="mt-24 text-[#1b263b]">

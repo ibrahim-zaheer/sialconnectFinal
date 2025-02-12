@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../../lib/axios";
 import BidForm from "./BidForm";
+import { Link } from "react-router-dom";
 
 const SupplierDetails = () => {
   const { id } = useParams();
@@ -56,6 +57,15 @@ const SupplierDetails = () => {
       )}
       <p><strong>Name:</strong> {userDetails?.name}</p>
       <p><strong>Email:</strong> {userDetails?.email}</p>
+
+        <div className="mt-4">
+                      <Link
+                        to={`/chat`}
+                        className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                      >
+                        Chat
+                      </Link>
+                    </div>
     </div>
   );
 };

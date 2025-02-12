@@ -22,7 +22,7 @@ const BidForm = ({ auctionId, refreshAuction }) => {
 
     try {
       const response = await axios.post(
-        `/bidding/place/${auctionId}`,
+        `/api/bidding/place/${auctionId}`,
         { auctionId, amount: parseFloat(bidAmount),userId: user.id, },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

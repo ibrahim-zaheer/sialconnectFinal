@@ -22,9 +22,7 @@ const Navbar = () => {
               <Link to="/products">Products</Link>
             </li>
 
-            <li>
-              <Link to="/getAllAuctions">Auctions</Link>
-            </li>
+            
 
             {/* Conditionally render SignIn link if user.role does not exist */}
             {!user.role && (
@@ -38,9 +36,14 @@ const Navbar = () => {
               <>
                                {/* Conditionally render "Your Products" only for suppliers */}
                                {user.role === "supplier" && (
+                                <>
                   <li>
                     <Link to="/SupplierProducts">Your Products</Link>
                   </li>
+                  <li>
+                  <Link to="/getAllAuctions">Auctions</Link>
+                </li>
+                </>
                 )}
 
                     {user.role === "exporter" && (

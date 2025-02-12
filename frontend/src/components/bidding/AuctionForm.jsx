@@ -50,7 +50,7 @@ const AuctionForm = () => {
     try {
         const token = localStorage.getItem("token");
       const response = await axios.post(
-        "/bidding/create", // Your backend API endpoint
+        "/api/bidding/create", // Your backend API endpoint
         form,
         {
           headers: {

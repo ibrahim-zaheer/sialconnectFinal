@@ -16,7 +16,7 @@ const ManageProducts = () => {
 
     try {
       const token = localStorage.getItem("token"); // Fetch token from local storage
-      const response = await axios.get("/supplier/product/read", {
+      const response = await axios.get("/api/supplier/product/read", {
         headers: {
           Authorization: `Bearer ${token}`, // Pass token for authentication
         },
