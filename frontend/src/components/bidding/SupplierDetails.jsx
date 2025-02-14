@@ -59,12 +59,19 @@ const SupplierDetails = () => {
       <p><strong>Email:</strong> {userDetails?.email}</p>
 
         <div className="mt-4">
-                      <Link
+                      {/* <Link
                         to={`/chat`}
                         className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
                       >
                         Chat
-                      </Link>
+                      </Link> */}
+
+                        <Link
+                                        to={`/chat?supplierId=${id}`}
+                                        className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                                      >
+                                        Chat
+                                      </Link>
                     </div>
     </div>
   );

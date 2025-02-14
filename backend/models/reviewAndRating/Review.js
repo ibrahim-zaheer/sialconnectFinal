@@ -4,32 +4,35 @@ const reviewSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Assuming you're using a User model
+      ref: "User", // The user who writes the review
       required: true,
     },
-    entity: {
+    supplier: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Product", // Can be any other entity like services, etc.
-      required: false,
+      ref: "User", // The supplier being reviewed
+      required: true,
+    },
+    productName: {
+      type: String,
+      required: true,
+      maxlength: 500,
     },
     rating: {
       type: Number,
       min: 1,
       max: 5,
       required: true,
+      default: 1,
     },
     reviewText: {
       type: String,
       required: true,
       maxlength: 500,
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
   { timestamps: true }
 );
 
+const Review = mongoose.model("Review", reviewSchema);
 
-export const Review = mongoose.model("Review", reviewSchema);
+module.exports = Review;

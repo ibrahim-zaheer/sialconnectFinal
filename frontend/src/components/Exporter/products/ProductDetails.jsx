@@ -5,6 +5,8 @@ import axios from "axios";
 import Chat from "../../Chat/Chat";
 import { useSelector } from "react-redux";
 
+import WriteReview from "../../reviews/WriteReviews";
+
 // import ChatRoom from "../../Chat/ChatRoom";
 
 const ProductDetails = () => {
@@ -106,6 +108,11 @@ const ProductDetails = () => {
                 </Link>
               </div>
             </div>
+          </div>
+          {/* Write Review Section */}
+          <div className="mt-10">
+            <h2 className="text-2xl font-semibold mb-4">Write a Review</h2>
+            <WriteReview supplierId={product.supplier._id}  />
           </div>
         </div>
       ) : (
