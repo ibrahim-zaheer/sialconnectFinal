@@ -108,6 +108,9 @@ import AuctionDetail from "./components/bidding/AuctionDetail";
 
 import SupplierDetails from "./components/bidding/SupplierDetails";
 
+
+import SupplierReviewsPage from "./pages/reviews/SupplierReviewsPage";
+
 const App = () => {
   return (
     <>
@@ -163,6 +166,8 @@ const Main = () => {
 
        
         <Route path="/bidding/supplier/:id" element={<SupplierDetails />} />
+{/* Reivews */}
+          <Route path="/reviews/supplier/:id" element={< SupplierReviewsPage />} />
 
 
       </Routes>

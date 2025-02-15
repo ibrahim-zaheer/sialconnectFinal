@@ -11,6 +11,9 @@ import VerifyEmailButton from "./VerifyEmailButton";
 
 const UserProfile = () => {
   const user = useSelector((state) => state.user); // Access the user data from the Redux store
+
+  const averageRating = useSelector((state) => state.averageRating.value);
+
   const { connectSocket } = useAuthStore();
   useEffect(() => {
     // Call connectSocket when the component is mounted
@@ -19,6 +22,19 @@ const UserProfile = () => {
   return (
     <>
       <div className="mt-24">
+        {user.role === "supplier" ? (
+          <>
+          
+            <div className="mt-4">
+              <h3 className="text-lg font-semibold">
+                Average Rating: {averageRating} ⭐
+              </h3>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+
         <div className="flex flex-col gap-3 items-center justify-center mb-3">
           {/* <h3>Profile Picture</h3> */}
           <img
@@ -38,10 +54,6 @@ const UserProfile = () => {
         </div>
         {/* <h1>User Profile</h1> */}
         <div className="flex flex-col mt-0 p-5 items-center justify-center gap-4 text-[#1b263b]">
-
-   
-
-
           <p className="w-[20vw] flex justify-between items-center">
             <span className="font-semibold">
               Name:
@@ -101,7 +113,7 @@ const UserProfile = () => {
           <VerifyEmailButton />
           <LogoutButton />
         </div>
-        
+
         {/* <VerifyEmail/> */}
       </div>
     </>

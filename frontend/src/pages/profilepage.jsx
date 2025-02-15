@@ -24,6 +24,8 @@ import SupplierPage from "./Supplier/SupplierPage";
 const ProfilePage = () => {
   const user = useSelector((state) => state.user);
 
+  
+
   return (
     <>
    

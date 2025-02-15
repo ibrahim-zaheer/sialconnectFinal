@@ -24,7 +24,7 @@ const EditProductForm = ({ product, onClose, onProductUpdated }) => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `/supplier/product/update/${product._id}`,
+        `/api/supplier/product/update/${product._id}`,
         formData,
         {
           headers: {

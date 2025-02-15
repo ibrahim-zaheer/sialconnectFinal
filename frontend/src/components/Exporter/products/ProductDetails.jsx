@@ -7,6 +7,8 @@ import { useSelector } from "react-redux";
 
 import WriteReview from "../../reviews/WriteReviews";
 
+import AverageReviewBySupplier from "../../reviews/averageReviewBySuppliers";
+
 // import ChatRoom from "../../Chat/ChatRoom";
 
 const ProductDetails = () => {
@@ -78,6 +80,19 @@ const ProductDetails = () => {
 
                   <div>
                     <p className="text-gray-500 mb-2 text-sm">
+                      {/* <AverageReviewBySupplier supplierId={product.supplier?._id} /> */}
+                      {product.supplier?._id && (
+                        <Link
+                          to={`/reviews/supplier/${product.supplier._id}`}
+                          className="cursor-pointer"
+                        >
+                          <AverageReviewBySupplier
+                            supplierId={product.supplier._id}
+                          />
+                        </Link>
+                      )}
+                    </p>
+                    <p className="text-gray-500 mb-2 text-sm">
                       {product.supplier?.name || "Unknown"}
                     </p>
                     <p className="text-gray-500 mb-2 text-sm">
@@ -90,7 +105,7 @@ const ProductDetails = () => {
                   {new Date(product.createdAt).toDateString()}
                 </p>
 
-                <p>Supplier ID:{product.supplier._id}</p>
+                <p>Supplier ID:{product.supplier?._id}</p>
                 <p>User Id:{userId}</p>
               </div>
               <div className="mt-4">
@@ -101,7 +116,7 @@ const ProductDetails = () => {
                   Chat
                 </Link> */}
                 <Link
-                  to={`/chat?supplierId=${product.supplier._id}`}
+                  to={`/chat?supplierId=${product.supplier?._id}`}
                   className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
                 >
                   Chat
@@ -112,7 +127,7 @@ const ProductDetails = () => {
           {/* Write Review Section */}
           <div className="mt-10">
             <h2 className="text-2xl font-semibold mb-4">Write a Review</h2>
-            <WriteReview supplierId={product.supplier._id}  />
+            <WriteReview supplierId={product.supplier?._id} />
           </div>
         </div>
       ) : (
