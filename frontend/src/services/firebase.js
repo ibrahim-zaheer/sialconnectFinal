@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import {getMessaging} from "firebase/messaging";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -13,6 +14,13 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
+const vapidkey = "BFK5NHAYmuIPel76_vOxcyYFYwBtosjkbuM6fhgf0XyrODdtg0PQI_pRpGoph2elctRxhOXIA5s3n1gZzxPt6Mk";
+
+
+
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
+
+
+
 const analytics = getAnalytics(app);
