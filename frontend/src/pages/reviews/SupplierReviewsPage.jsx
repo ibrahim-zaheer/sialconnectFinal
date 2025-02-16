@@ -3,11 +3,12 @@ import { useParams } from "react-router-dom"; // Import useParams
 import SupplierReviews from "../../components/reviews/ReviewsBySupplier";
 
 const SupplierReviewsPage = () => {
-  const { Id } = useParams(); // Get user ID from URL
+  const { id } = useParams(); // Ensure case matches route definition
+
 
   return (
     <div>
-      <SupplierReviews supplierId={Id} />
+      <SupplierReviews supplierId={id} />
     </div>
   );
 };
