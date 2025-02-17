@@ -41,6 +41,7 @@ const UserSchema = new mongoose.Schema({
   role: { type: String, enum: ["exporter", "supplier"], required: true },
   otp: String,
   otpExpires: Date,
+  fcmToken: { type: String, default: null },
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);

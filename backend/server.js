@@ -200,6 +200,8 @@ const auctionRoutes = require("./routes/bidding/auctionItemRoutes");
 
 const reviewRoutes = require("./routes/review/reviewRoutes")
 
+const notificationRoutes = require("./routes/notification/notification");
+
 const { Server } = require("socket.io");
 
 // Initialize dotenv to access environment variables
@@ -226,6 +228,8 @@ app.use("/api/message", messageRoutes);
 app.use("/api/bidding", auctionRoutes);
 
 app.use("/api/reviews", reviewRoutes);
+
+app.use("/api/notification",notificationRoutes);
 
 
 // ✅ Serve static frontend files (for production)
