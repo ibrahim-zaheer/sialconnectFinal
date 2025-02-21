@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .env
+
+# Ignore the firebase-messaging-sw.js specifically in public
+public/firebase-messaging-sw.js
