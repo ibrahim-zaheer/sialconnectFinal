@@ -3,6 +3,10 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {getMessaging,getToken,onMessage} from "firebase/messaging";
 
+
+import { useDispatch } from 'react-redux';
+import { updateFcmToken } from '../redux/reducers/userSlice';
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -25,34 +29,88 @@ export const messaging = getMessaging(app);
 
 
 const analytics = getAnalytics(app);
+export {  getToken, onMessage };
 
-
-// Function to request permission and get FCM Token
-export const requestPermissionAndGetToken = async (userId) => {
-  try {
-    // Request permission for push notifications
-    const permission = await Notification.requestPermission();
-    if (permission === "granted") {
-      // Get the FCM token
-      const token = await getToken(messaging, { vapidKey: vapidkey });
-
-      if (token) {
-        console.log("FCM Token:", token);
-        // Send the token to your backend (e.g., MongoDB) using an API call
-        saveTokenToBackend(userId, token);
-      }
-    } else {
-      console.error("Notification permission denied.");
+export const requestFCMToken = async()=>{
+  return Notification.requestPermission()
+  .then((permission)=>{
+    if(permission==="granted"){
+      return getToken(messaging,{vapidKey: vapidkey})
     }
-  } catch (error) {
-    console.error("Error getting FCM token:", error);
-  }
+    else{
+      throw new Error("Notfication not granted");
+    }
+  })
+  .catch((err)=>{
+    console.error("Error get FCM token",err)
+    throw err;
+  })
+}
+
+export const onMessageListener = () => {
+  onMessage(messaging, (payload) => {
+    console.log("Notification received in foreground:", payload);
+    // Show the notification (you can customize this)
+    const { notification } = payload;
+    if (notification) {
+      alert(`${notification.title}: ${notification.body}`);
+    }
+  });
 };
 
+export const onMessageListening = () => {
+  return new Promise((resolve, reject) => {
+    try {
+      onMessage(messaging, (payload) => {
+        console.log("🚀 Foreground Notification Received:", payload); // ✅ Confirm log appears
+        resolve(payload); // ✅ Ensure it resolves with the payload
+      });
+    } catch (error) {
+      console.error("❌ Error in onMessageListening:", error);
+      reject(error);
+    }
+  });
+};
+
+
+
+// export const onMessageListening = ()=>{
+//  return new Promise((resolve)=>{
+//     onMessage(messaging,(payload)=>{
+//       resolve(payload)
+//     })
+//   })
+// }
+
+
+// Request permission and get the FCM token
+export const requestPermissionAndGetToken = async (userId, dispatch) => {
+  try {
+    // Request permission to receive push notifications
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      // Get FCM token
+      const token = await getToken(messaging);
+      if (token) {
+        // Save token to backend (you may use an API to save it)
+        await fetch("/api/notification/save-token", {
+          method: "POST",
+          body: JSON.stringify({ userId, fcmToken: token }),
+          headers: { "Content-Type": "application/json" },
+        });
+
+        // Update the Redux store with the FCM token
+        dispatch(updateFcmToken(token));
+      }
+    }
+  } catch (error) {
+    console.error("Error getting notification permission or token", error);
+  }
+};
 // Function to save token to the backend
 const saveTokenToBackend = async (userId, token) => {
   try {
-    await fetch("/api/save-token", {
+    await fetch("/api/notification/save-token", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -75,6 +75,15 @@
 
 import React from "react";
 import { Routes, Router, Route, useLocation } from "react-router-dom";
+import { useEffect,useState } from "react";
+
+import { useDispatch, useSelector } from "react-redux";
+import { setUser,selectUser } from "./redux/reducers/userSlice"; // Import Redux actions and selector
+import { requestPermissionAndGetToken,listenForMessages, requestFCMToken,onMessageListener,onMessage,onMessageListening } from "./services/firebase"; // Import firebase functions
+import { messaging } from "./services/firebase";
+
+import { ToastContainer, toast } from 'react-toastify';
+
 import Navbar from "./components/NavigationBar";
 import UserAuth from "./pages/userauthentication";
 import HomePage from "./pages/homepage";
@@ -111,7 +120,12 @@ import SupplierDetails from "./components/bidding/SupplierDetails";
 
 import SupplierReviewsPage from "./pages/reviews/SupplierReviewsPage";
 
+
+
+
+
 const App = () => {
+
   return (
     <>
       <Main />
@@ -120,12 +134,70 @@ const App = () => {
 };
 
 const Main = () => {
+
+  
+
   const location = useLocation();
+  const dispatch = useDispatch();
 
   const hideNavbarRoutes = ["/signIn"];
+  const user = useSelector(selectUser);
+
+
+  const [fcmToken, setFcmToken] = useState(null);
+
+  useEffect(()=>{
+    const fetchFCMToken = async ()=>{
+      try{
+       const token = await requestFCMToken();
+       setFcmToken(token);
+       console.log(fcmToken)
+      } catch(err){
+        console.error("Error getting token",err);
+      }
+    } 
+    fetchFCMToken();
+  })
+
+  
+  useEffect(() => {
+    onMessageListening()
+      .then((payload) => {
+        console.log("🚀 Foreground Message Received:", payload);
+  
+        if (payload?.notification) {
+          toast(
+            <div>
+              <strong>{payload.notification.title}</strong>
+              <p>{payload.notification.body}</p>
+            </div>,
+            { position: "top-right" }
+          );
+        } else {
+          console.log("❌ No notification payload received");
+        }
+      })
+      .catch((err) => console.error("❌ Error in message listening", err));
+  }, []); // ✅ Runs only once when component mounts
+  
+  
+  
+ 
+
+  // useEffect(() => {
+  //   if (user.id) {
+  //     // If the user is logged in, request permission and get FCM token
+  //     requestPermissionAndGetToken(user.id, dispatch); // Pass the userId and dispatch to update the token
+  //     listenForMessages(); // Listen for incoming notifications
+
+  //     console.log("user id has been requested");
+  //   }
+  // }, [user.id, dispatch]); // Only run when the user state changes
+
 
   return (
     <>
+    <ToastContainer/>
       {/* Render the Navbar unless the current path is in hideNavbarRoutes */}
       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
 
