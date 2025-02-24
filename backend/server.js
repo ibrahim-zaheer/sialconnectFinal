@@ -268,7 +268,7 @@ io.on("connect", (socket) => {
 
     io.emit("receiveMessage", chatMessage);
     if (receiverSocketId) {
-      io.to(receiverSocketId).emit("receiveMessage", chatMessage);
+      io.to(receiverSocketId).emit("receiveMessages", chatMessage);
     }
   });
 
