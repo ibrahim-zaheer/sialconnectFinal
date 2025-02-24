@@ -166,7 +166,7 @@ const Main = () => {
   useEffect(() => {
     onMessageListening()
       .then((payload) => {
-        console.log("🚀 Foreground Message Received:", payload);
+        console.log("🚀 Foreground Message Receiveds:", payload);
   
         if (payload?.notification) {
           toast(
