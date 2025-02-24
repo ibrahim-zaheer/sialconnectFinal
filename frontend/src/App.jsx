@@ -159,6 +159,9 @@ const Main = () => {
     fetchFCMToken();
   })
 
+  useEffect(()=>{
+    return toast(<div>Thank you</div>)
+  },[])
   
   useEffect(() => {
     onMessageListening()
