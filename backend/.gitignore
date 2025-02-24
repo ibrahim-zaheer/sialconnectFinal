@@ -1,4 +1,3 @@
 /node_modules
 .env
-sialconnect-firebase-adminsdk.json
-firebase-adminsdk.json
+/sialconnect-firebase-adminsdk.json
