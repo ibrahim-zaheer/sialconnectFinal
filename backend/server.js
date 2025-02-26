@@ -289,7 +289,7 @@ app.get("*", (req, res) => {
   if (!req.originalUrl.startsWith("/api") && !req.originalUrl.startsWith("/socket.io")) {
     res.sendFile(path.resolve(__dirname, "../frontend/dist", "index.html"));
   } else {
-    res.status(404).json({ error: "API route not found" });
+    res.status(404).json({ error: "API route not founds" });
   }
 });
 
