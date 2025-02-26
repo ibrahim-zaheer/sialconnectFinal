@@ -26,5 +26,5 @@ dist-ssr
 .env
 
 # Ignore the firebase-messaging-sw.js specifically in public
-public/firebase-messaging-sw.
+public/firebase-messaging-sw.js
 backend/sialconnect-firebase-adminsdk.json
