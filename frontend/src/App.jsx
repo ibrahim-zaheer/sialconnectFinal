@@ -141,47 +141,83 @@ const Main = () => {
   const dispatch = useDispatch();
 
   const hideNavbarRoutes = ["/signIn"];
-  const user = useSelector(selectUser);
+  // const user = useSelector(selectUser);
+  const user = useSelector((state) => state.user); 
 
 
   const [fcmToken, setFcmToken] = useState(null);
 
-  useEffect(()=>{
-    const fetchFCMToken = async ()=>{
-      try{
-       const token = await requestFCMToken();
-       setFcmToken(token);
-       console.log(fcmToken)
-      } catch(err){
-        console.error("Error getting token",err);
-      }
-    } 
-    fetchFCMToken();
-  })
+  // useEffect(()=>{
+  //   const fetchFCMToken = async ()=>{
+  //     try{
+  //      const token = await requestFCMToken();
+  //      setFcmToken(token);
+  //      console.log(fcmToken)
+  //     } catch(err){
+  //       console.error("Error getting token",err);
+  //     }
+  //   } 
+  //   fetchFCMToken();
+  // })
 
   useEffect(()=>{
     return toast(<div>Thank you</div>)
   },[])
-  
+
   useEffect(() => {
-    onMessageListening()
-      .then((payload) => {
-        console.log("🚀 Foreground Message Received:", payload);
+    const fetchFCMToken = async () => {
+      try {
+        const token = await requestFCMToken(user.id);
+        setFcmToken(token);
+        console.log("FCM Token:", token); // ✅ Logs the correct token
+      } catch (err) {
+        console.error("Error getting token", err);
+      }
+    };
+    fetchFCMToken();
+  }, []);
   
-        if (payload?.notification) {
-          toast(
-            <div>
-              <strong>{payload.notification.title}</strong>
-              <p>{payload.notification.body}</p>
-            </div>,
-            { position: "top-right" }
-          );
-        } else {
-          console.log("❌ No notification payload received");
-        }
-      })
-      .catch((err) => console.error("❌ Error in message listening", err));
-  }, []); // ✅ Runs only once when component mounts
+  
+  // useEffect(() => {
+  //   onMessageListening()
+  //     .then((payload) => {
+  //       console.log("🚀 Foreground Message Received:", payload);
+  
+  //       if (payload?.notification) {
+  //         toast(
+  //           <div>
+  //             <strong>{payload.notification.title}</strong>
+  //             <p>{payload.notification.body}</p>
+  //           </div>,
+  //           { position: "top-right" }
+  //         );
+  //       } else {
+  //         console.log("❌ No notification payload received");
+  //       }
+  //     })
+  //     .catch((err) => console.error("❌ Error in message listening", err));
+  // }, []); // ✅ Runs only once when component mounts
+
+  useEffect(() => {
+    const unsubscribe = onMessage(messaging, (payload) => {
+      console.log("🚀 Foreground Notification Received:", payload);
+      
+      if (payload?.notification) {
+        toast(
+          <div>
+            <strong>{payload.notification.title}</strong>
+            <p>{payload.notification.body}</p>
+          </div>,
+          { position: "top-right" }
+        );
+      } else {
+        console.log("❌ No notification payload received");
+      }
+    });
+  
+    return () => unsubscribe(); // Cleanup listener on unmount
+  }, []);
+  
   
   
   

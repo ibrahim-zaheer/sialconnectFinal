@@ -31,21 +31,45 @@ export const messaging = getMessaging(app);
 const analytics = getAnalytics(app);
 export {  getToken, onMessage };
 
-export const requestFCMToken = async()=>{
-  return Notification.requestPermission()
-  .then((permission)=>{
-    if(permission==="granted"){
-      return getToken(messaging,{vapidKey: vapidkey})
+// export const requestFCMToken = async()=>{
+//   return Notification.requestPermission()
+//   .then((permission)=>{
+//     if(permission==="granted"){
+//       return getToken(messaging,{vapidKey: vapidkey})
+      
+//     }
+//     else{
+//       throw new Error("Notfication not granted");
+//     }
+//   })
+//   .catch((err)=>{
+//     console.error("Error get FCM token",err)
+//     throw err;
+//   })
+// }
+
+export const requestFCMToken = async (userId) => {
+  try {
+    const permission = await Notification.requestPermission();
+
+    if (permission === "granted") {
+      const token = await getToken(messaging, { vapidKey: vapidkey });
+      
+      if (token) {
+        // Send the token to the backend
+        await saveTokenToBackend(userId, token);
+        return token;
+      } else {
+        throw new Error("Failed to get FCM token.");
+      }
+    } else {
+      throw new Error("Notification permission not granted.");
     }
-    else{
-      throw new Error("Notfication not granted");
-    }
-  })
-  .catch((err)=>{
-    console.error("Error get FCM token",err)
-    throw err;
-  })
-}
+  } catch (err) {
+    console.error("Error getting FCM token:", err);
+    throw err;  // Rethrow the error so the caller can handle it
+  }
+};
 
 export const onMessageListener = () => {
   onMessage(messaging, (payload) => {
@@ -101,6 +125,7 @@ export const requestPermissionAndGetToken = async (userId, dispatch) => {
 
         // Update the Redux store with the FCM token
         dispatch(updateFcmToken(token));
+        console.log("token is saved");
       }
     }
   } catch (error) {
