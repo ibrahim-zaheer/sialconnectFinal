@@ -85,18 +85,18 @@
 importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js');
 
-// Firebase configuration
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBAaDv0HknzALGxKg1X6q5VO1elxP_4BjM",
-  authDomain: "sialconnect.firebaseapp.com",
-  projectId: "sialconnect",
-  storageBucket: "sialconnect.firebasestorage.app",
-  messagingSenderId: "333042925030",
-  appId: "1:333042925030:web:19d5d1f8c7540e8f1d6a27",
-  measurementId: "G-ND793NJLYH"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
-const vapidkey = "BFK5NHAYmuIPel76_vOxcyYFYwBtosjkbuM6fhgf0XyrODdtg0PQI_pRpGoph2elctRxhOXIA5s3n1gZzxPt6Mk";
+const vapidkey = import.meta.env.VITE_FIREBASE_VAPID_KEY;
 
 
 // Initialize Firebase
