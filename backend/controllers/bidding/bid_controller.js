@@ -84,6 +84,9 @@ const Bid = require("../../models/bidding/bidSchema");
 const { Auction } = require("../../models/bidding/auctionSchema");
 const User = require("../../models/User");
 
+const Notification = require("../../models/notification/notificationSchema")
+const admin = require("../../utils/firebaseAdmin")
+
 const placeBid = async (req, res) => {
   try {
     const { auctionId, amount } = req.body;
@@ -142,6 +145,30 @@ const placeBid = async (req, res) => {
     });
 
     await auction.save();
+
+    // Step 1: Find the FCM token of the auction creator (createdBy)
+    const auctionCreator = await User.findById(auction.createdBy);
+
+    
+    // Step 2: If the auction creator exists and has an FCM token, send a notification
+    if (auctionCreator && auctionCreator.fcmToken) {
+      const notification = new Notification({
+        userId: auctionCreator._id,
+        message: `${user.name} has placed a bid of ${amount} on your auction: ${auction.title}`,
+      });
+
+      await notification.save();
+
+      const message = {
+        notification: {
+          title: "New Bid Placed",
+          body: `${user.name} has placed a bid of ${amount} on your auction: ${auction.title}`,
+        },
+        token: auctionCreator.fcmToken, // Send the notification to the auction creator's FCM token
+      };
+
+      await admin.messaging().send(message); // Send the notification to FCM
+    }
 
     res.status(201).json({ message: "Bid placed successfully!", bid: newBid });
   } catch (error) {

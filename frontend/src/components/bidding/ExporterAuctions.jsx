@@ -50,6 +50,13 @@ const ExporterAuctions = () => {
     }
   };
 
+   // Function to check if the auction is expired
+   const isAuctionExpired = (endTime) => {
+    const currentDate = new Date();
+    const auctionEndDate = new Date(endTime);
+    return auctionEndDate < currentDate;
+  };
+
   return (
     <div className="mt-24 text-[#1b263b]">
       <div className="flex justify-center mt-4">
@@ -76,9 +83,15 @@ const ExporterAuctions = () => {
                   <p className="text-sm text-gray-500 mt-2">Starting Bid: Rs {auction.startingBid}</p>
                   <p className="text-sm text-gray-600 mt-2">{auction.description || "No description provided"}</p>
                   <p className="text-sm text-gray-600 mt-2">Category: {auction.category}</p>
-                  <p className="text-sm text-gray-600 mt-2">
+                  {/* <p className="text-sm text-gray-600 mt-2">
+                    {new Date(auction.startTime).toLocaleString()} - {new Date(auction.endTime).toLocaleString()}
+                  </p> */}
+                   <p className="text-sm text-gray-600 mt-2">
                     {new Date(auction.startTime).toLocaleString()} - {new Date(auction.endTime).toLocaleString()}
                   </p>
+                  {isAuctionExpired(auction.endTime) && (
+                    <span className="text-red-500 font-bold mt-2">Expired</span>
+                  )}
                 </div>
                 <div className="flex flex-col items-end">
                   {auction.image && (

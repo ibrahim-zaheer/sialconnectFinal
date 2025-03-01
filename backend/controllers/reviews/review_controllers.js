@@ -80,13 +80,14 @@ const submitReviewAndNotify = async (req, res) => {
   
       // Step 2: Find the FCM token of the supplier (User B)
       const supplier = await User.findById(supplierId);
+      const userID = await User.findById(req.user._id)
   
       // Step 3: If the supplier exists but doesn't have an FCM token, skip the notification
       if (supplier && supplier.fcmToken) {
         // If supplier has FCM token, create a notification and send it
         const notification = new Notification({
           userId: supplierId,
-          message: `User A has reviewed your product: ${reviewText}`,
+          message: `${userID.name} has reviewed your product: ${reviewText}`,
         });
   
         await notification.save();
@@ -94,7 +95,7 @@ const submitReviewAndNotify = async (req, res) => {
         const message = {
           notification: {
             title: "New Product Review",
-            body: `User A has reviewed your product: ${reviewText}`,
+            body: `${userID.name}  has reviewed your product: ${reviewText}`,
           },
           token: supplier.fcmToken, // Send the notification to the supplier's FCM token
         };
