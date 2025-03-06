@@ -201,6 +201,7 @@ const auctionRoutes = require("./routes/bidding/auctionItemRoutes");
 const reviewRoutes = require("./routes/review/reviewRoutes")
 
 const notificationRoutes = require("./routes/notification/notification");
+const favouriteRoutes = require("./routes/favourites/favouriteRoutes")
 
 const { Server } = require("socket.io");
 
@@ -233,6 +234,8 @@ app.use("/api/bidding", auctionRoutes);
 app.use("/api/reviews", reviewRoutes);
 
 app.use("/api/notification",notificationRoutes);
+
+app.use("/api/favourites",favouriteRoutes);
 
 
 // ✅ Serve static frontend files (for production)

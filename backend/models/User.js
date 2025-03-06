@@ -42,6 +42,7 @@ const UserSchema = new mongoose.Schema({
   otp: String,
   otpExpires: Date,
   fcmToken: { type: String, default: null },
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);
