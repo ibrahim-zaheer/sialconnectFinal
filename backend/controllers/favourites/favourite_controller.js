@@ -15,6 +15,7 @@ const addToFavorites = async (req, res) => {
       //Check if the product is already in favorites
       if (user.favorites.includes(productId)) {
         return res.status(400).json({ message: 'Product already in favorites' });
+       
       }
   
       user.favorites.push(productId);

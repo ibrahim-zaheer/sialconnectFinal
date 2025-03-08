@@ -54,6 +54,9 @@ const Navbar = () => {
                    <li>
                    <Link to="/getAuctionsOfExporter">Your Auction</Link>
                  </li>
+                 <li>
+                   <Link to="/favourites">Your Favourites</Link>
+                 </li>
                  </>
                    
                 )

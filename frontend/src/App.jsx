@@ -121,6 +121,9 @@ import SupplierDetails from "./components/bidding/SupplierDetails";
 import SupplierReviewsPage from "./pages/reviews/SupplierReviewsPage";
 
 
+import FavouritePage from "./pages/favourites/FavouritePage";
+
+
 
 
 
@@ -279,6 +282,9 @@ const Main = () => {
         <Route path="/bidding/supplier/:id" element={<SupplierDetails />} />
 {/* Reivews */}
           <Route path="/reviews/supplier/:id" element={< SupplierReviewsPage />} />
+
+{/* Favourites*/}
+<Route path="/favourites" element={< FavouritePage />} />          
 
 
       </Routes>
