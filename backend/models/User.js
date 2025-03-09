@@ -43,6 +43,14 @@ const UserSchema = new mongoose.Schema({
   otpExpires: Date,
   fcmToken: { type: String, default: null },
   favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
+
+  city: { type: String }, // New field
+  cnic: { type: String, unique: true, sparse: true }, // New field (unique but optional)
+  phoneNumber: { type: String }, // New field
+  businessName: { type: String }, // New field
+  businessAddress: { type: String }, // New field
+  postalCode: { type: String }, // New field
+  bio: { type: String }, // New field
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);

@@ -1,5 +1,5 @@
 // src/components/UserProfile.js
-import React from "react";
+import React,{useState} from "react";
 import { useSelector } from "react-redux";
 import ProfilePictureUpdate from "./Supplier/products/ProfilePictureUpdate";
 import LogoutButton from "./LogoutButton";
@@ -8,6 +8,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import SendOTP from "./otp/send-otp";
 
 import VerifyEmailButton from "./VerifyEmailButton";
+import ProfileUpdateForm from "./profile/ProfileUpdateForm";
 
 const UserProfile = () => {
   const user = useSelector((state) => state.user); // Access the user data from the Redux store
@@ -15,6 +16,9 @@ const UserProfile = () => {
   const averageRating = useSelector((state) => state.averageRating.value);
 
   const { connectSocket } = useAuthStore();
+
+  // State to control the visibility of the ProfileUpdateForm
+  const [showProfileUpdateForm, setShowProfileUpdateForm] = useState(false);
   useEffect(() => {
     // Call connectSocket when the component is mounted
     connectSocket();
@@ -49,9 +53,17 @@ const UserProfile = () => {
         </div>
         <div className="w-[20vw] mx-auto flex justify-end mt-8">
           <span>
-            <i className="ri-edit-2-line cursor-pointer bg-gray-300 p-1 rounded-full text-[#1b263b] text-xl"></i>
+            <i
+              className="ri-edit-2-line cursor-pointer bg-gray-300 p-1 rounded-full text-[#1b263b] text-xl"
+              onClick={() => setShowProfileUpdateForm(true)} // Show the form when clicked
+            ></i>
           </span>
         </div>
+
+        {/* Conditionally Render ProfileUpdateForm */}
+        {showProfileUpdateForm && (
+          <ProfileUpdateForm onClose={() => setShowProfileUpdateForm(false)} />
+        )}
         {/* <h1>User Profile</h1> */}
         <div className="flex flex-col mt-0 p-5 items-center justify-center gap-4 text-[#1b263b]">
           <p className="w-[20vw] flex justify-between items-center">

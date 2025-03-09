@@ -26,6 +26,9 @@ router.post("/select-role",authController.selectRole);
 // for profile picture upload
 router.put("/profile-picture", authMiddleware,uploadProfilePicture.single('image'),profileController.profilePicture);
 
+//for editing and adding full details
+router.put("/update-profile",authMiddleware,profileController.updateProfile);
+
 
 router.post("/send-otp", async (req, res) => {
     const { email } = req.body;
