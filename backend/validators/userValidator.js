@@ -1,6 +1,13 @@
 // backend/validators/userValidator.js
 const Joi = require("joi");
 
+// Calculate the date 18 years ago from today
+const getMinDate = () => {
+  const date = new Date();
+  date.setFullYear(date.getFullYear() - 18);
+  return date;
+};
+
 const registerSchema = Joi.object({
   name: Joi.string().required().messages({
     "string.empty": "Name is required",
@@ -57,6 +64,11 @@ const updateProfileSchema = Joi.object({
       }),
     bio: Joi.string().optional().messages({
       "string.empty": "Bio must be a valid string",
+    }),
+    dateOfBirth: Joi.date().iso().max(getMinDate()).optional().messages({
+      "date.base": "Date of birth must be a valid date",
+      "date.format": "Date of birth must be in ISO format (YYYY-MM-DD)",
+      "date.max": "You must be at least 18 years old",
     }),
   });
   

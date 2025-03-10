@@ -17,6 +17,8 @@ const UserProfile = () => {
 
   const { connectSocket } = useAuthStore();
 
+  
+
   // State to control the visibility of the ProfileUpdateForm
   const [showProfileUpdateForm, setShowProfileUpdateForm] = useState(false);
   useEffect(() => {
@@ -55,10 +57,17 @@ const UserProfile = () => {
           <span>
             <i
               className="ri-edit-2-line cursor-pointer bg-gray-300 p-1 rounded-full text-[#1b263b] text-xl"
-              onClick={() => setShowProfileUpdateForm(true)} // Show the form when clicked
+              // onClick={() => setShowProfileUpdateForm(true)} // Show the form when clicked
+              onClick={() => setShowProfileUpdateForm(prev => !prev)}
             ></i>
           </span>
         </div>
+          {/* Conditionally show the form */}
+      {/* {showProfileUpdateForm && (
+        <ProfileUpdateForm 
+          onClose={() => setShowProfileUpdateForm(false)}
+        />
+      )} */}
 
         {/* Conditionally Render ProfileUpdateForm */}
         {showProfileUpdateForm && (
@@ -85,16 +94,10 @@ const UserProfile = () => {
           <p className="w-[20vw] flex justify-between items-center">
             <span className="font-semibold">
               Age:
-              <span className="ms-14 font-normal">22</span>
+              <span className="ms-14 font-normal">{user.dateOfBirth || "No date of Birth"}</span>
             </span>
           </p>
 
-          <p className="w-[20vw] flex justify-between items-center">
-            <span className="font-semibold">
-              Gender:
-              <span className="ms-8 font-normal">Male</span>
-            </span>
-          </p>
 
           <p className="w-[20vw] flex justify-between items-center">
             <span className="font-semibold">
@@ -108,14 +111,18 @@ const UserProfile = () => {
           <p className="w-[20vw] flex justify-between items-center">
             <span className="font-semibold">
               Address:
-              <span className="ms-7 font-normal">Fateh Garh Sialkot</span>
+              <span className="ms-7 font-normal">
+              {user.businessAddress || "No Address"}
+              </span>
             </span>
           </p>
 
           <p className="w-[20vw] flex justify-between items-center">
             <span className="font-semibold">
-              Join Date:
-              <span className="ms-5 font-normal">Dec 12, 2024</span>
+              City:
+              <span className="ms-5 font-normal">
+              {user.city || "No City"}
+              </span>
             </span>
             <span></span>
           </p>

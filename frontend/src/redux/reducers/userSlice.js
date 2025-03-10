@@ -67,6 +67,7 @@ const initialState = JSON.parse(localStorage.getItem("user")) || {
   businessAddress: '',
   postalCode: '',
   bio: '',
+  dateOfBirth:'',
 };
 
 const userSlice = createSlice({
@@ -90,6 +91,7 @@ const userSlice = createSlice({
       state.businessAddress = action.payload.businessAddress || '';
       state.postalCode = action.payload.postalCode || '';
       state.bio = action.payload.bio || '';
+      state.dateOfBirth = action.payload.dateOfBirth || '';
 
       // Save updated user data to localStorage
       localStorage.setItem("user", JSON.stringify(state));
@@ -109,6 +111,7 @@ const userSlice = createSlice({
       state.businessAddress = '';
       state.postalCode = '';
       state.bio = '';
+      state.dateOfBirth = '';
 
       // Clear from localStorage on logout
       localStorage.removeItem("user");
@@ -134,6 +137,7 @@ const userSlice = createSlice({
       state.businessAddress = action.payload.businessAddress || state.businessAddress;
       state.postalCode = action.payload.postalCode || state.postalCode;
       state.bio = action.payload.bio || state.bio;
+    state. dateOfBirth = action.payload.dateOfBirth || state.dateOfBirth;
 
       // Save updated user data to localStorage
       localStorage.setItem("user", JSON.stringify(state));

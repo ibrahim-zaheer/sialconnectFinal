@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "../../redux/reducers/userSlice";
 import axios from "axios";
+
+
+const getMaxDate = () => {
+  const date = new Date();
+  date.setFullYear(date.getFullYear() - 18);
+  return date.toISOString().split("T")[0];
+};
 export default function ProfileUpdateForm() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -19,6 +26,7 @@ export default function ProfileUpdateForm() {
     businessAddress: user.businessAddress || "",
     postalCode: user.postalCode || "",
     bio: user.bio || "",
+    dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split("T")[0] : "",
   });
 
   // Handle input changes
@@ -35,6 +43,10 @@ export default function ProfileUpdateForm() {
   
     // Validate form data
     const validationErrors = {};
+
+    const today = new Date();
+    const minDate = new Date();
+    minDate.setFullYear(today.getFullYear() - 18);
   
     if (!formData.city) {
       validationErrors.city = 'City is required';
@@ -52,6 +64,12 @@ export default function ProfileUpdateForm() {
       validationErrors.postalCode = 'Postal code must be 5 digits';
     }
   
+    if (formData.dateOfBirth) {
+      const birthDate = new Date(formData.dateOfBirth);
+      if (birthDate > minDate) {
+        validationErrors.dateOfBirth = "You must be at least 18 years old";
+      }
+    }
     // If there are validation errors, stop submission
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -197,6 +215,24 @@ export default function ProfileUpdateForm() {
             placeholder="Tell us about yourself"
             rows="4"
           />
+        </div>
+
+          {/* Date Of Birth */}
+          <div className="form-group">
+          <label htmlFor="dateOfBirth">Date of Birth</label>
+          <input
+            // type="date"
+            type="date"
+            id="dateOfBirth"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
+            onChange={handleChange}
+            max={getMaxDate()}
+            min="1900-01-01" 
+          />
+          {errors.dateOfBirth && (
+            <span className="error">{errors.dateOfBirth}</span>
+          )}
         </div>
 
         {/* Submit Button */}

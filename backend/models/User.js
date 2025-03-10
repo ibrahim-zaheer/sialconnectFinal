@@ -46,11 +46,13 @@ const UserSchema = new mongoose.Schema({
 
   city: { type: String }, // New field
   cnic: { type: String, unique: true, sparse: true }, // New field (unique but optional)
+  
   phoneNumber: { type: String }, // New field
   businessName: { type: String }, // New field
   businessAddress: { type: String }, // New field
   postalCode: { type: String }, // New field
   bio: { type: String }, // New field
+  dateOfBirth: { type: Date }, 
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);

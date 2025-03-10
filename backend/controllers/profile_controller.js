@@ -50,6 +50,7 @@ exports.updateProfile = async (req, res) => {
       businessAddress,
       postalCode,
       bio,
+      dateOfBirth,
     } = value; // Use the validated data
 
     // Check for duplicate CNIC
@@ -71,7 +72,7 @@ exports.updateProfile = async (req, res) => {
     // Update only the specified fields
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { city, cnic, phoneNumber, businessName, businessAddress, postalCode, bio },
+      { city, cnic, phoneNumber, businessName, businessAddress, postalCode, bio, dateOfBirth },
       { new: true } // Return the updated document
     );
 
