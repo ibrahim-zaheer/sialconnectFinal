@@ -53,7 +53,7 @@ const AuctionDetail = () => {
   if (!auctionDetails) return <div>No details found.</div>;
 
   return (
-    <div className="auction-detail">
+    <div className="auction-detail my-20 w-[80vw] mx-auto">
       <h2>{auctionDetails?.title}</h2>
       <p><strong>Description:</strong> {auctionDetails?.description}</p>
       <p><strong>Starting Bid:</strong> ${auctionDetails?.startingBid}</p>

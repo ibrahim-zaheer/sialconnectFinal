@@ -477,9 +477,6 @@ const DisplayProducts = () => {
           />
           <div className="flex w-full justify-between px-2 text-xs">
             <span>Rs 0</span>
-            <span>Rs 250</span>
-            <span>Rs 500</span>
-            <span>Rs 750</span>
             <span>Rs 10000</span>
           </div>
           <p className="text-center mt-2 text-lg font-semibold">Max Price: Rs {priceRange}</p>

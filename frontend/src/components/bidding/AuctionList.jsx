@@ -131,29 +131,32 @@ const AuctionList = () => {
 
   // Render auctions
   return (
-    <div className="auction-list">
-      <h2>All Auctions</h2>
+    <div className="auction-list w-[80vw] p-5">
+      <h2 className="text-2xl font-bold text-center">All Auctions</h2>
       {filteredAuctions.length === 0 ? (
         <p>No ongoing auctions available at the moment.</p>
       ) : (
-        <ul>
+        <ul className="flex gap-5 my-10">
           {filteredAuctions.map((auction) => (
-            <li key={auction._id} className="auction-item">
-              <h3>{auction.title}</h3>
-              <p>{auction.description}</p>
-              <p>Starting Bid: ${auction.startingBid}</p>
-              <p>Category: {auction.category}</p>
-              <p>
-                Start Time: {new Date(auction.startTime).toLocaleString()} - End
-                Time: {new Date(auction.endTime).toLocaleString()}
-              </p>
+            <li key={auction._id} className="auction-item p-5 border rounded-lg">
               {auction.image && auction.image.url && (
                 <img
+                className="mb-3 flex justify-center items-center"
                   src={auction.image.url}
                   alt={auction.title}
                   style={{ width: "200px", height: "auto" }}
                 />
               )}
+
+              <h3>{auction.title}</h3>
+              <p>{auction.description}</p>
+              <p>Starting Bid: ${auction.startingBid}</p>
+              <p>Category: {auction.category}</p>
+              <p>
+                Start Time: {new Date(auction.startTime).toLocaleString()} <br /> End
+                Time: {new Date(auction.endTime).toLocaleString()}
+              </p>
+              
               <div className="mt-4">
                 <Link
                   to={`/bidding/${auction._id}`}

@@ -44,7 +44,7 @@ const SupplierDetails = () => {
   if (!userDetails) return <div>No details found.</div>;
 
   return (
-    <div className="user-detail">
+    <div className="user-detail w-[80vw] mx-auto mt-20">
       
 
       {/* Correctly display profile picture directly from profilePicture URL */}

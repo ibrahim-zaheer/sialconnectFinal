@@ -46,7 +46,7 @@ const SupplierReviews = ({ supplierId }) => {
     }, [averageRating]);
 
   return (
-    <div className="max-w-2xl mx-auto mt-6">
+    <div className="max-w-2xl mx-auto mt-24">
       <h2 className="text-xl font-bold mb-4">Customer Reviews</h2>
 
       {loading && <p className="text-gray-500">Loading reviews...</p>}

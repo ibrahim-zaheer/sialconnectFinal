@@ -34,7 +34,7 @@
 //       // Convert to numbers and validate
 //       const startingBid = parseFloat(formData.startingBid);
 //       const quantity = parseInt(formData.quantity, 10);
-  
+
 //       if (isNaN(startingBid) || isNaN(quantity) || startingBid * quantity <= 100000) {
 //         alert("Error: Starting Bid * Quantity must be greater than 100,000");
 //         return;
@@ -81,7 +81,7 @@
 //             onChange={handleChange}
 //             required
 //           />
-          
+
 //         </div>
 
 //         <div>
@@ -173,24 +173,6 @@
 
 // export default AuctionForm;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useState } from "react";
 import axios from "axios";
 
@@ -200,7 +182,7 @@ const AuctionForm = () => {
     description: "",
     startingBid: "",
     category: "",
-    quantity:"",
+    quantity: "",
     startTime: "",
     endTime: "",
     image: null, // For file input
@@ -224,14 +206,18 @@ const AuctionForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-      // Convert to numbers and validate
-      const startingBid = parseFloat(formData.startingBid);
-      const quantity = parseInt(formData.quantity, 10);
-  
-      if (isNaN(startingBid) || isNaN(quantity) || startingBid * quantity <= 100000) {
-        alert("Error: Starting Bid * Quantity must be greater than 100,000");
-        return;
-      }
+    // Convert to numbers and validate
+    const startingBid = parseFloat(formData.startingBid);
+    const quantity = parseInt(formData.quantity, 10);
+
+    if (
+      isNaN(startingBid) ||
+      isNaN(quantity) ||
+      startingBid * quantity <= 100000
+    ) {
+      alert("Error: Starting Bid * Quantity must be greater than 100,000");
+      return;
+    }
 
     const form = new FormData();
 
@@ -241,14 +227,14 @@ const AuctionForm = () => {
     }
 
     try {
-        const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         "/api/bidding/create", // Your backend API endpoint
         form,
         {
           headers: {
             "Content-Type": "multipart/form-data",
-            "Authorization": `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -261,11 +247,13 @@ const AuctionForm = () => {
   };
 
   return (
-    <div className="auction-form-container">
-      <h2>Create Auction</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          {/* <label htmlFor="title">Title</label> */}
+    <div className="auction-form-container w-[60vw] bg-red-50 rounded-lg mx-auto p-10">
+      <h2 className="text-center text-2xl font-bold">Create Auction</h2>
+      <form className="my-10" onSubmit={handleSubmit}>
+        <div className="w-[100%] flex justify-evenly items-center mt-3">
+          <label htmlFor="title" className="font-semibold">
+            Title:{" "}
+          </label>
           {/* <input
             type="text"
             id="title"
@@ -275,14 +263,20 @@ const AuctionForm = () => {
             required
           /> */}
 
-<input type="text" id="title" name="title" placeholder="Title" class="input input-bordered w-full max-w-xs" value={formData.title}
+          <input
+            type="text"
+            id="title"
+            name="title"
+            placeholder="Title"
+            class="input input-bordered w-full max-w-xs"
+            value={formData.title}
             onChange={handleChange}
-            required />
-          
+            required
+          />
         </div>
 
-        <div>
-          {/* <label htmlFor="description">Description</label> */}
+        <div className="w[100%] flex justify-evenly items-center mt-3">
+          <label htmlFor="description">Description</label>
           {/* <textarea
             id="description"
             name="description"
@@ -291,14 +285,18 @@ const AuctionForm = () => {
             required
           ></textarea> */}
 
-<textarea class="textarea textarea-bordered" placeholder="Bio"   id="description"
+          <textarea
+            class="textarea textarea-bordered"
+            placeholder="Bio"
+            id="description"
             name="description"
             value={formData.description}
             onChange={handleChange}
-            required></textarea>
+            required
+          ></textarea>
         </div>
 
-        <div>
+        <div className="w-[100%] flex justify-evenly items-center mt-3">
           <label htmlFor="startingBid">Starting Bid</label>
           <input
             type="number"
@@ -307,10 +305,11 @@ const AuctionForm = () => {
             value={formData.startingBid}
             onChange={handleChange}
             required
+            className="border rounded-lg"
           />
         </div>
 
-        <div>
+        <div className="w-[100%] flex justify-evenly items-center mt-3">
           <label htmlFor="category">Category</label>
           <input
             type="text"
@@ -319,11 +318,14 @@ const AuctionForm = () => {
             value={formData.category}
             onChange={handleChange}
             required
+            className="border rounded-lg"
           />
         </div>
-        <div>
+
+        <div className="w-[100%] flex justify-evenly items-center mt-3">
           <label htmlFor="quantity">Quantity</label>
           <input
+            className="border rounded-lg"
             type="number"
             id="quantity"
             name="quantity"
@@ -333,9 +335,10 @@ const AuctionForm = () => {
           />
         </div>
 
-        <div>
+        <div className="w-[100%] flex justify-evenly items-center mt-3">
           <label htmlFor="startTime">Start Time</label>
           <input
+            className="border rounded-lg"
             type="datetime-local"
             id="startTime"
             name="startTime"
@@ -345,9 +348,10 @@ const AuctionForm = () => {
           />
         </div>
 
-        <div>
+        <div className="w-[100%] flex justify-evenly items-center mt-3">
           <label htmlFor="endTime">End Time</label>
           <input
+            className="border rounded-lg"
             type="datetime-local"
             id="endTime"
             name="endTime"
@@ -357,9 +361,10 @@ const AuctionForm = () => {
           />
         </div>
 
-        <div>
+        <div className="w-[100%] flex justify-evenly items-center mt-5">
           <label htmlFor="image">Image</label>
           <input
+            className="border rounded-lg overflow-hidden p-2"
             type="file"
             id="image"
             name="image"
@@ -368,7 +373,11 @@ const AuctionForm = () => {
           />
         </div>
 
-        <button type="submit">Create Auction</button>
+        <div className="w-full flex justify-center mt-6">
+          <button className="p-3 border rounded-lg" type="submit">
+            Create Auction
+          </button>
+        </div>
       </form>
     </div>
   );

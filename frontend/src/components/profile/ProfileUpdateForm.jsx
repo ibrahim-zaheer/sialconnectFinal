@@ -119,13 +119,14 @@ export default function ProfileUpdateForm() {
   };
 
   return (
-    <div className="profile-update-form">
-      <h2>Update Your Profile</h2>
-      <form onSubmit={handleSubmit}>
+    <div className="profile-update-form w-[60vw] bg-red-50 rounded-lg p-10 mx-auto flex flex-col items-center justify-center my-16">
+      <h2 className="text-2xl font-bold my-4">Update Your Profile</h2>
+      <form className="w-[60%]" onSubmit={handleSubmit}>
         {/* City */}
-        <div className="form-group">
-          <label htmlFor="city">City</label>
+        <div className="form-group flex justify-evenly mt-3">
+          <label htmlFor="city">City: </label>
           <input
+          className="border px-2 py-1 rounded-lg"
             type="text"
             id="city"
             name="city"
@@ -137,9 +138,10 @@ export default function ProfileUpdateForm() {
         </div>
 
         {/* CNIC */}
-        <div className="form-group">
+        <div className="form-group flex justify-evenly mt-3">
           <label htmlFor="cnic">CNIC</label>
           <input
+          className="border px-2 py-1 rounded-lg"
             type="text"
             id="cnic"
             name="cnic"
@@ -151,9 +153,10 @@ export default function ProfileUpdateForm() {
         </div>
 
         {/* Phone Number */}
-        <div className="form-group">
+        <div className="form-group flex justify-evenly mt-3">
           <label htmlFor="phoneNumber">Phone Number</label>
           <input
+          className="border px-2 py-1 rounded-lg"
             type="text"
             id="phoneNumber"
             name="phoneNumber"
@@ -165,9 +168,10 @@ export default function ProfileUpdateForm() {
         </div>
 
         {/* Business Name */}
-        <div className="form-group">
+        <div className="form-group flex justify-evenly mt-3">
           <label htmlFor="businessName">Business Name</label>
           <input
+          className="border px-2 py-1 rounded-lg"
             type="text"
             id="businessName"
             name="businessName"
@@ -178,9 +182,10 @@ export default function ProfileUpdateForm() {
         </div>
 
         {/* Business Address */}
-        <div className="form-group">
+        <div className="form-group flex justify-evenly mt-3">
           <label htmlFor="businessAddress">Business Address</label>
           <input
+          className="border px-2 py-1 rounded-lg"
             type="text"
             id="businessAddress"
             name="businessAddress"
@@ -191,9 +196,10 @@ export default function ProfileUpdateForm() {
         </div>
 
         {/* Postal Code */}
-        <div className="form-group">
+        <div className="form-group flex justify-evenly mt-3">
           <label htmlFor="postalCode">Postal Code</label>
           <input
+          className="border px-2 py-1 rounded-lg"
             type="text"
             id="postalCode"
             name="postalCode"
@@ -205,9 +211,10 @@ export default function ProfileUpdateForm() {
         </div>
 
         {/* Bio */}
-        <div className="form-group">
+        <div className="form-group flex justify-evenly mt-3">
           <label htmlFor="bio">Bio</label>
           <textarea
+          className="border px-2 py-1 rounded-lg"
             id="bio"
             name="bio"
             value={formData.bio}
@@ -218,9 +225,10 @@ export default function ProfileUpdateForm() {
         </div>
 
           {/* Date Of Birth */}
-          <div className="form-group">
+          <div className="form-group flex justify-evenly mt-3">
           <label htmlFor="dateOfBirth">Date of Birth</label>
           <input
+          className="border px-2 py-1 rounded-lg"
             // type="date"
             type="date"
             id="dateOfBirth"
@@ -235,10 +243,12 @@ export default function ProfileUpdateForm() {
           )}
         </div>
 
-        {/* Submit Button */}
-        <button type="submit" className="submit-button" disabled={isLoading}>
+        <div className="w-full flex justify-center items-center mt-6">
+          {/* Submit Button */}
+        <button type="submit" className="submit-button p-3 border rounded-lg" disabled={isLoading}>
           {isLoading ? 'Updating...' : 'Update Profile'}
         </button>
+        </div>
       </form>
 
       {/* Success Message */}
