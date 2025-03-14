@@ -85,6 +85,8 @@ import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 import axios from "axios";
 
+import { useChatStore } from "./useChatStore"; 
+
 
 const BASE_URL =
   import.meta.env.MODE === "development" ? "http://localhost:5000" : "/";
@@ -163,6 +165,7 @@ export const useAuthStore = create((set, get) => ({
     socket.on("connect", () => {
       console.log("Socket connected:", socket.id); // Log the socket ID
       toast.success("Socket connected successfully!");
+      useChatStore.getState().subscribeToMessages(); 
     });
     
     socket.on("getOnlineUsers", (userIds) => {
@@ -172,15 +175,27 @@ export const useAuthStore = create((set, get) => ({
     disconnectSocket: () => {
     if (get().socket?.connected) get().socket.disconnect();
   },
+  // sendMessage: (receiver, message) => {
+  //   const { authUser, socket } = get();
+  //   if (!authUser || !socket) return;
+
+  //   socket.emit("sendMessage", { sender: authUser._id, receiver, message });
+
+  //   // Optimistically update the UI
+  //   set((state) => ({
+  //     messages: [...state.messages, { sender: authUser._id, receiver, message }],
+  //   }));
+  // },
   sendMessage: (receiver, message) => {
     const { authUser, socket } = get();
     if (!authUser || !socket) return;
 
-    socket.emit("sendMessage", { sender: authUser._id, receiver, message });
-
-    // Optimistically update the UI
+    // Optimistic update for real-time experience
     set((state) => ({
       messages: [...state.messages, { sender: authUser._id, receiver, message }],
     }));
-  },
+
+    socket.emit("sendMessage", { sender: authUser._id, receiver, message });
+},
+
 }));

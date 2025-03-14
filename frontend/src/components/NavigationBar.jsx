@@ -22,8 +22,6 @@ const Navbar = () => {
               <Link to="/products">Products</Link>
             </li>
 
-            
-
             {/* Conditionally render SignIn link if user.role does not exist */}
             {!user.role && (
               <li>
@@ -34,38 +32,35 @@ const Navbar = () => {
             {/* Optionally render user-specific content */}
             {user.role && (
               <>
-                               {/* Conditionally render "Your Products" only for suppliers */}
-                               {user.role === "supplier" && (
-                                <>
-                  <li>
-                    <Link to="/SupplierProducts">Your Products</Link>
-                  </li>
-                  <li>
-                  <Link to="/getAllAuctions">Auctions</Link>
-                </li>
-                </>
+                {/* Conditionally render "Your Products" only for suppliers */}
+                {user.role === "supplier" && (
+                  <>
+                    <li>
+                      <Link to="/SupplierProducts">Your Products</Link>
+                    </li>
+                    <li>
+                      <Link to="/getAllAuctions">Auctions</Link>
+                    </li>
+                  </>
                 )}
 
-                    {user.role === "exporter" && (
-                      <>
-                  <li>
-                    <Link to="/createAuction">Create Auction</Link>
-                  </li>
-                   <li>
-                   <Link to="/getAuctionsOfExporter">Your Auction</Link>
-                 </li>
-                 <li>
-                   <Link to="/favourites">Your Favourites</Link>
-                 </li>
-                 </>
-                   
-                )
-                }
+                {user.role === "exporter" && (
+                  <>
+                    <li>
+                      <Link to="/createAuction">Create Auction</Link>
+                    </li>
+                    <li>
+                      <Link to="/getAuctionsOfExporter">Your Auction</Link>
+                    </li>
+                    <li>
+                      <Link to="/favourites">Your Favourites</Link>
+                    </li>
+                  </>
+                )}
 
-
-
-               
-
+                <li>
+                  <Link to="/chat">Chat</Link>
+                </li>
 
                 <li>
                   <Link to="/profile">Profiles</Link>
@@ -74,8 +69,6 @@ const Navbar = () => {
                 <li className="text-white">
                   Welcome, {user.name || "User"} ({user.role})
                 </li>
-
-
               </>
             )}
           </ul>

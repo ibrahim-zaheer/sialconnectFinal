@@ -173,7 +173,7 @@
 
 // export default AuctionForm;
 
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import axios from "axios";
 
 const AuctionForm = () => {
@@ -188,14 +188,59 @@ const AuctionForm = () => {
     image: null, // For file input
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+
+  const [minStartTime, setMinStartTime] = useState("");
+
+  // Function to get current date-time in YYYY-MM-DDTHH:MM format for min attribute
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    return now.toISOString().slice(0, 16);
   };
 
+  useEffect(() => {
+    setMinStartTime(getCurrentDateTime());
+  }, []);
+
+
+
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prevData) => ({
+  //     ...prevData,
+  //     [name]: value,
+  //   }));
+  // };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+  
+    // Ensure startTime is not in the past
+    if (name === "startTime") {
+      const selectedStartTime = new Date(value);
+      const currentTime = new Date();
+  
+      if (selectedStartTime < currentTime) {
+        alert("Start time must be in the future.");
+        return;
+      }
+  
+      // Add 24 hours to startTime
+      const endTime = new Date(selectedStartTime);
+      endTime.setHours(endTime.getHours() + 24);
+  
+      setFormData((prevData) => ({
+        ...prevData,
+        startTime: value,
+        endTime: endTime.toISOString().slice(0, 16), // Convert to datetime-local format
+      }));
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  };
+  
   const handleFileChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -218,6 +263,21 @@ const AuctionForm = () => {
       alert("Error: Starting Bid * Quantity must be greater than 100,000");
       return;
     }
+
+    const now = new Date();
+    const selectedStartTime = new Date(formData.startTime);
+    const selectedEndTime = new Date(formData.endTime);
+
+    if (selectedStartTime < now) {
+      alert("Error: Start time cannot be in the past!");
+      return;
+    }
+
+    if (selectedEndTime <= selectedStartTime) {
+      alert("Error: End time must be after start time!");
+      return;
+    }
+
 
     const form = new FormData();
 
@@ -342,13 +402,14 @@ const AuctionForm = () => {
             type="datetime-local"
             id="startTime"
             name="startTime"
+            min={minStartTime} // Prevent past time selection
             value={formData.startTime}
             onChange={handleChange}
             required
           />
         </div>
 
-        <div className="w-[100%] flex justify-evenly items-center mt-3">
+        {/* <div className="w-[100%] flex justify-evenly items-center mt-3">
           <label htmlFor="endTime">End Time</label>
           <input
             className="border rounded-lg"
@@ -359,7 +420,18 @@ const AuctionForm = () => {
             onChange={handleChange}
             required
           />
-        </div>
+        </div> */}
+        <div className="w-[100%] flex justify-evenly items-center mt-3">
+  <label>End Time (Auto-filled)</label>
+  <input
+    className="border rounded-lg bg-gray-200"
+    type="datetime-local"
+    id="endTime"
+    name="endTime"
+    value={formData.endTime}
+    readOnly
+  />
+</div>
 
         <div className="w-[100%] flex justify-evenly items-center mt-5">
           <label htmlFor="image">Image</label>

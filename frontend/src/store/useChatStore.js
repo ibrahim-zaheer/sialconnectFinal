@@ -275,32 +275,53 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
-  subscribeToMessages: () => {
-    const { selectedUser } = get();
-    if (!selectedUser) return;
+  // subscribeToMessages: () => {
+  //   const { selectedUser } = get();
+  //   if (!selectedUser) return;
   
-    const socket = useAuthStore.getState().socket;
+  //   const socket = useAuthStore.getState().socket;
     
-    if (!socket || !socket.connected) {
-      console.error("Socket is not initialized or not connected yet");
+  //   if (!socket || !socket.connected) {
+  //     console.error("Socket is not initialized or not connected yet");
       
-      return;
-    }
-    if (socket || socket.connected) {
-      console.log("Socket is connected");
+  //     return;
+  //   }
+  //   if (socket || socket.connected) {
+  //     console.log("Socket is connected");
       
-      return;
-    }
+  //     return;
+  //   }
     
-    socket.on("newMessage", (newMessage) => {
-      const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
-      if (!isMessageSentFromSelectedUser) return;
+  //   socket.on("newMessage", (newMessage) => {
+  //     const isMessageSentFromSelectedUser = newMessage.senderId === selectedUser._id;
+  //     if (!isMessageSentFromSelectedUser) return;
   
-      set({
-        messages: [...get().messages, newMessage],
-      });
+  //     set({
+  //       messages: [...get().messages, newMessage],
+  //     });
+  //   });
+  // },
+
+  // In useChatStore.js
+subscribeToMessages: () => {
+  const { selectedUser, socket } = get();
+  if (!selectedUser || !socket || !socket.connected) {
+    console.error("Socket is not connected yet or selectedUser is missing.");
+    return;
+  }
+
+  console.log("Subscribing to messages for user:", selectedUser._id);
+
+  socket.on("newMessage", (newMessage) => {
+    // Make sure the message is from the selected user
+    if (newMessage.senderId !== selectedUser._id) return;
+
+    set({
+      messages: [...get().messages, newMessage],
     });
-  },
+  });
+},
+
   
   unsubscribeFromMessages: () => {
     const socket = useAuthStore.getState().socket;

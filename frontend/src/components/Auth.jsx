@@ -76,12 +76,28 @@ const Auth = () => {
         setMessage("Registration successful! Please login.");
       } else {
         // Handle login
+        // const userData = {
+        //   id:data.id,
+        //   name: data.name,
+        //   email: data.email,
+        //   role: data.role,
+        //   profilePicture: data.profilePicture,
+        // };
         const userData = {
-          id:data.id,
+          id: data.id,
           name: data.name,
           email: data.email,
           role: data.role,
           profilePicture: data.profilePicture,
+          // Add these critical fields
+          dateOfBirth: data.dateOfBirth,
+          phoneNumber: data.phoneNumber,
+          businessName: data.businessName,
+          businessAddress: data.businessAddress,
+          city: data.city,
+          cnic: data.cnic,
+          postalCode: data.postalCode,
+          bio: data.bio
         };
         dispatch(setUser(userData));
         localStorage.setItem("user", JSON.stringify(userData));

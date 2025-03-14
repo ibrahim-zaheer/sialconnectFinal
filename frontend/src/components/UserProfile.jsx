@@ -91,13 +91,22 @@ const UserProfile = () => {
             </span>
           </p>
 
-          <p className="w-[20vw] flex justify-between items-center">
+          {/* <p className="w-[20vw] flex justify-between items-center">
             <span className="font-semibold">
               Age:
               <span className="ms-14 font-normal">{user.dateOfBirth || "No date of Birth"}</span>
             </span>
-          </p>
-
+          </p> */}
+<p className="w-[20vw] flex justify-between items-center">
+  <span className="font-semibold">
+    Age:
+    <span className="ms-14 font-normal">
+      {user.dateOfBirth 
+        ? new Date().getFullYear() - new Date(user.dateOfBirth).getFullYear() 
+        : "No date of Birth"}
+    </span>
+  </span>
+</p>
 
           <p className="w-[20vw] flex justify-between items-center">
             <span className="font-semibold">
