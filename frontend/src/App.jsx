@@ -123,6 +123,8 @@ import SupplierReviewsPage from "./pages/reviews/SupplierReviewsPage";
 
 import FavouritePage from "./pages/favourites/FavouritePage";
 
+import OfferPage from "./pages/offers/OfferPage";
+
 
 
 
@@ -284,7 +286,10 @@ const Main = () => {
           <Route path="/reviews/supplier/:id" element={< SupplierReviewsPage />} />
 
 {/* Favourites*/}
-<Route path="/favourites" element={< FavouritePage />} />          
+<Route path="/favourites" element={< FavouritePage />} />  
+
+{/* Offers*/}
+<Route path="/offers" element={< OfferPage />} />  
 
 
       </Routes>
