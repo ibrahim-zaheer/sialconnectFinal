@@ -41,6 +41,10 @@ const Navbar = () => {
                     <li>
                       <Link to="/getAllAuctions">Auctions</Link>
                     </li>
+
+                    <li>
+                      <Link to="/mySupplierOffers">My Offers</Link>
+                    </li>
                   </>
                 )}
 
@@ -55,6 +59,9 @@ const Navbar = () => {
                     <li>
                       <Link to="/favourites">Your Favourites</Link>
                     </li>
+                    <li>
+                      <Link to="/myOffers">My Offers</Link>
+                    </li>
                   </>
                 )}
 
@@ -65,6 +72,8 @@ const Navbar = () => {
                 <li>
                   <Link to="/profile">Profiles</Link>
                 </li>
+
+               
 
                 <li className="text-white">
                   Welcome, {user.name || "User"} ({user.role})

@@ -124,6 +124,12 @@ import SupplierReviewsPage from "./pages/reviews/SupplierReviewsPage";
 import FavouritePage from "./pages/favourites/FavouritePage";
 
 import OfferPage from "./pages/offers/OfferPage";
+import CreateOfferPage from "./pages/offers/CreateOfferPage";
+
+
+import ExporterOfferPage from "./pages/offers/ExporterOfferPage";
+
+import SupplierOfferPage from "./pages/offers/SupplierOfferPage";
 
 
 
@@ -290,6 +296,14 @@ const Main = () => {
 
 {/* Offers*/}
 <Route path="/offers" element={< OfferPage />} />  
+
+<Route path="/createOffers" element={< CreateOfferPage />} />  
+
+<Route path="/myOffers" element={< ExporterOfferPage />} /> 
+
+
+<Route path="/mySupplierOffers" element={< SupplierOfferPage />} /> 
+
 
 
       </Routes>

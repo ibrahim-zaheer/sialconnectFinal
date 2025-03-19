@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link,useNavigate } from "react-router-dom";
 import axios from "axios";
 // for allowing people to chat with each other
 import Chat from "../../Chat/Chat";
@@ -9,12 +9,18 @@ import WriteReview from "../../reviews/WriteReviews";
 
 import AverageReviewBySupplier from "../../reviews/averageReviewBySuppliers";
 
+import CreateOffer from "../../offer/createOffer";
+
 // import ChatRoom from "../../Chat/ChatRoom";
 
 const ProductDetails = () => {
   const { id } = useParams(); // Get the product ID from the URL
   const [product, setProduct] = useState(null);
   const [error, setError] = useState("");
+
+  const [showOfferPopup, setShowOfferPopup] = useState(false);
+
+  const navigate = useNavigate();
 
   // for accessing the user profile id
   const user = useSelector((state) => state.user);
@@ -37,6 +43,19 @@ const ProductDetails = () => {
   if (error) {
     return <div className="container mt-4 text-center">{error}</div>;
   }
+
+
+  const handleSendOffer = () => {
+    if (product) {
+      navigate(`/createOffers`, {
+        state: {
+          supplierId: product.supplier?._id,
+          productId: product._id,
+          price: product.price,
+        },
+      });
+    }
+  };
 
   return (
     <div className="w-[80vw] min-h-[80vh] mx-auto mt-24 bg-gray-50 p-6 rounded-lg">
@@ -121,6 +140,18 @@ const ProductDetails = () => {
                 >
                   Chat
                 </Link>
+                {/* <button
+                  onClick={handleSendOffer}
+                  className="bg-green-500 text-white py-1.5 px-3 rounded-lg hover:bg-green-600 transition duration-300"
+                >
+                  Send Offer
+                </button> */}
+                 <button
+                  onClick={() => setShowOfferPopup(true)}
+                  className="bg-green-500 text-white py-1.5 px-3 rounded-lg hover:bg-green-600 transition duration-300"
+                >
+                  Send Offer
+                </button>
               </div>
             </div>
           </div>
@@ -133,6 +164,14 @@ const ProductDetails = () => {
       ) : (
         <div className="text-center text-gray-500">
           Loading product details...
+        </div>
+      )}
+
+{showOfferPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <CreateOffer supplierId={product.supplier?._id} productId={product._id} price={product.price} onClose={() => setShowOfferPopup(false)} />
+          </div>
         </div>
       )}
     </div>

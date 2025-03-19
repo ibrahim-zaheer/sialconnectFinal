@@ -117,10 +117,61 @@ const acceptOffer = async (req, res) => {
       res.status(500).json({ message: "Error accepting counter offer", error });
     }
   };
+
+//   const getOffersByExporter = async (req, res) => {
+//     try {
+//         const offers = await Offer.find({ exporterId: req.user.id });
+
+//         if (!offers.length) {
+//             return res.status(404).json({ message: "No offers found for this user." });
+//         }
+
+//         res.status(200).json({ message: "Offers retrieved successfully", offers });
+//     } catch (error) {
+//         res.status(500).json({ message: "Error retrieving offers", error });
+//     }
+// };
+
+const getOffersByExporter = async (req, res) => {
+  try {
+      const offers = await Offer.find({ exporterId: req.user.id })
+          .populate("productId", "name") // Fetch product name
+          .populate("supplierId", "name"); // Fetch supplier name
+
+      if (!offers.length) {
+          return res.status(404).json({ message: "No offers found for this user." });
+      }
+
+      res.status(200).json({ message: "Offers retrieved successfully", offers });
+  } catch (error) {
+      res.status(500).json({ message: "Error retrieving offers", error });
+  }
+};
+
+const getOffersBySupplier = async (req, res) => {
+  try {
+      const offers = await Offer.find({ supplierId: req.user.id })
+          .populate("productId", "name") // Fetch product name
+          .populate("exporterId", "name"); // Fetch supplier name
+
+      if (!offers.length) {
+          return res.status(404).json({ message: "No offers found for this user." });
+      }
+
+      res.status(200).json({ message: "Offers retrieved successfully", offers });
+  } catch (error) {
+      res.status(500).json({ message: "Error retrieving offers", error });
+  }
+};
+
+
   
 
   module.exports =  { createOffer,
     acceptOffer,
     rejectOffer,
     counterOffer,
-    acceptCounterOffer};
+    acceptCounterOffer,
+    getOffersByExporter,
+    getOffersBySupplier,
+  };
