@@ -24,6 +24,37 @@ const createOffer = async (req, res) => {
       res.status(500).json({ message: "Error sending offer", error });
     }
   };
+
+  const updateOffer = async (req, res) => {
+    try {
+      const { offerId } = req.params; // Extract Offer ID from URL
+      const { price, quantity, message } = req.body;
+  
+      // ✅ Find offer by ID
+      const offer = await Offer.findById(offerId);
+  
+      if (!offer) {
+        return res.status(404).json({ message: "Offer not found" });
+      }
+  
+      // ✅ Ensure only the exporter who created the offer can update it
+      if (offer.exporterId.toString() !== req.user.id) {
+        return res.status(403).json({ message: "You are not authorized to update this offer" });
+      }
+  
+      // ✅ Update offer details (only if provided)
+      if (price !== undefined) offer.price = price;
+      if (quantity !== undefined) offer.quantity = quantity;
+      if (message !== undefined) offer.message = message;
+      offer.isUpdated = true;
+  
+      await offer.save();
+  
+      res.status(200).json({ message: "Offer updated successfully", offer });
+    } catch (error) {
+      res.status(500).json({ message: "Error updating offer", error });
+    }
+  };
   
 const acceptOffer = async (req, res) => {
     try {
@@ -31,6 +62,7 @@ const acceptOffer = async (req, res) => {
       if (!offer) {
         return res.status(404).json({ message: "Offer not found." });
       }
+      
   
       // Only supplier can accept
       if (req.user.id !== offer.supplierId.toString()) {
@@ -71,12 +103,17 @@ const acceptOffer = async (req, res) => {
 
   const counterOffer = async (req, res) => {
     try {
-      const { price, quantity } = req.body;
+      const { price, quantity, message } = req.body;
       const offer = await Offer.findById(req.params.offerId);
       
       if (!offer) {
         return res.status(404).json({ message: "Offer not found." });
       }
+
+      // ✅ Check if counter offer limit is reached
+    if (offer.counterOfferCount >= 2) {
+      return res.status(400).json({ success: false, message: "Counteroffer limit reached. You can't send more than 2 counteroffers." });
+    }
   
       // Only supplier can send counteroffer
       if (req.user.id !== offer.supplierId.toString()) {
@@ -84,7 +121,8 @@ const acceptOffer = async (req, res) => {
       }
   
       offer.status = "counter";
-      offer.counterOffer = { price, quantity };
+      offer.counterOffer = { price, quantity, message };
+      offer.counterOfferCount += 1; 
       await offer.save();
   
       res.json({ message: "Counter offer sent.", offer });
@@ -174,4 +212,5 @@ const getOffersBySupplier = async (req, res) => {
     acceptCounterOffer,
     getOffersByExporter,
     getOffersBySupplier,
+    updateOffer,
   };

@@ -6,7 +6,7 @@ const {
   rejectOffer,
   counterOffer,
   getOffersBySupplier,
-  acceptCounterOffer,getOffersByExporter,
+  acceptCounterOffer,getOffersByExporter,updateOffer
 } = require("../../controllers/offers/offer_controller.js");
 
 const authenticateMiddleware = require("../../middleware/authMiddleware.js");
@@ -24,6 +24,8 @@ router.put("/accept/:offerId", authenticateMiddleware, acceptOffer);
 
 // Route to reject an offer (Supplier rejects the offer)
 router.put("/reject/:offerId", authenticateMiddleware, rejectOffer);
+
+router.put("/update/:offerId", authenticateMiddleware, updateOffer); // ✅ Route for updating an offer
 
 // Route to send a counteroffer (Supplier modifies offer)
 router.put("/counter/:offerId", authenticateMiddleware, counterOffer);

@@ -432,6 +432,7 @@ export default function CreateOffer({ supplierId, productId, price, onClose }) {
     try {
       const response = await createOffer(offerData, token);
       setResponseMessage(response.message || "Offer sent successfully!");
+      onClose();
     } catch (error) {
       setResponseMessage("Failed to send offer. Try again.");
     }
