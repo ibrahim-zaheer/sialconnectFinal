@@ -204,6 +204,8 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useAuthStore } from "./useAuthStore";
 
+// const { authUser } = useAuthStore.getState();
+
 export const useChatStore = create((set, get) => ({
   messages: [],
   users: [],
@@ -303,24 +305,80 @@ export const useChatStore = create((set, get) => ({
   // },
 
   // In useChatStore.js
+// subscribeToMessages: () => {
+//   const { selectedUser } = get();
+//   const socket = useAuthStore.getState().socket; 
+//   const authUser = useAuthStore.getState().authUser;
+//   if (!selectedUser) {
+//     console.error("selectedUser is missing.");
+//     return;
+//   }
+//   if (!socket || !socket.connected) {
+//     console.error("Socket is not connected yet.");
+//     return;
+//   }
+
+//   console.log("Subscribing to messages for user:", selectedUser._id);
+
+//   // socket.on("newMessage", (newMessage) => {
+//   //   // Make sure the message is from the selected user
+//   //   if (newMessage.senderId !== selectedUser._id) return;
+
+//   //   set({
+//   //     messages: [...get().messages, newMessage],
+//   //   });
+//   // });
+//   socket.on("newMessage", (newMessage) => {
+//     const isSenderMe = newMessage.sender === authUser._id || newMessage.senderId === authUser._id;
+//     const isReceiverMe = newMessage.receiver === authUser._id || newMessage.receiverId === authUser._id;
+
+//     if (!isSenderMe && !isReceiverMe) return;
+
+//     console.log("📩 Real-time message received:", newMessage);
+
+//     set((state) => ({
+//       messages: [...state.messages, newMessage],
+//     }));
+//   });
+// },
+
 subscribeToMessages: () => {
-  const { selectedUser, socket } = get();
-  if (!selectedUser || !socket || !socket.connected) {
-    console.error("Socket is not connected yet or selectedUser is missing.");
+  const { selectedUser } = get();
+  const socket = useAuthStore.getState().socket;
+  const authUser = useAuthStore.getState().authUser;
+
+  if (!selectedUser || !authUser) {
+    console.error("selectedUser or authUser is missing.");
     return;
   }
 
-  console.log("Subscribing to messages for user:", selectedUser._id);
+  if (!socket || !socket.connected) {
+    console.error("Socket is not connected yet.");
+    return;
+  }
+
+  // Avoid attaching multiple listeners
+  socket.off("newMessage");
+
+  console.log("✅ Subscribing to real-time messages for user:", selectedUser._id);
 
   socket.on("newMessage", (newMessage) => {
-    // Make sure the message is from the selected user
-    if (newMessage.senderId !== selectedUser._id) return;
+    const isSenderOrReceiver =
+      newMessage.sender === selectedUser._id ||
+      newMessage.senderId === selectedUser._id ||
+      newMessage.receiver === selectedUser._id ||
+      newMessage.receiverId === selectedUser._id;
 
-    set({
-      messages: [...get().messages, newMessage],
-    });
+    if (!isSenderOrReceiver) return;
+
+    console.log("📩 Real-time message received:", newMessage);
+
+    set((state) => ({
+      messages: [...state.messages, newMessage],
+    }));
   });
 },
+
 
   
   unsubscribeFromMessages: () => {

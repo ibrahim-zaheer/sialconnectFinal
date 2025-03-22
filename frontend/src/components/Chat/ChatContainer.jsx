@@ -18,15 +18,30 @@ const {authUser,checkAuth} = useAuthStore();
 
 const messageEndRef = useRef(null);
 
-
+// useEffect(() => {
+//   if (selectedUser && useAuthStore.getState().socket?.connected) {
+//     subscribeToMessages();
+//     return () => unsubscribeFromMessages();
+//   }
+// }, [selectedUser]);
 
 useEffect(() => {
-  if (selectedUser?._id) {
+  if (selectedUser?._id && useAuthStore.getState().socket?.connected) {
     getMessages(selectedUser._id);
     subscribeToMessages();
     return () => unsubscribeFromMessages();
   }
 }, [selectedUser, getMessages, subscribeToMessages, unsubscribeFromMessages]);
+
+// useEffect(() => {
+//   if (selectedUser?._id) {
+//     getMessages(selectedUser._id);
+//     subscribeToMessages();
+//     return () => unsubscribeFromMessages();
+//   }
+// }, [selectedUser, getMessages, subscribeToMessages, unsubscribeFromMessages]);
+
+
 
 useEffect(() => {
   checkAuth();

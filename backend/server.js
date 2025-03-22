@@ -192,10 +192,11 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const path = require("path");
 
-const ChatMessage = require("./models/ChatMessage");
+// const ChatMessage = require("./models/ChatMessage");
+const Message = require("./models/message.model");
 const authRoutes = require("./routes/auth");
 const supplierRoutes = require("./routes/supplier/supplierRoutes");
-const messageRoutes = require("./routes/message.routes");
+const messageRoutes = require("./routes/messageRoutes");
 const auctionRoutes = require("./routes/bidding/auctionItemRoutes");
 
 const reviewRoutes = require("./routes/review/reviewRoutes")
@@ -207,6 +208,7 @@ const offerRoutes = require("./routes/offer/offerRoutes");
 
 const orderRoutes = require("./routes/order/orderRoutes");
 
+const messageController =  require("./controllers/message_controller");
 
 const { Server } = require("socket.io");
 
@@ -218,8 +220,10 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // Vite default dev server URL
+    //origin: "http://localhost:5173", // Vite default dev server URL
+    origin: ["http://localhost:5173", "http://localhost:5174"],
   },
+  methods: ["GET", "POST"]
 });
 
 const PORT = process.env.PORT || 5000;
@@ -265,6 +269,8 @@ const userSocketMap = {}; // { userId: socketId }
 function getReceiverSocketId(userId) {
   return userSocketMap[userId];
 }
+// Modify the socket controller initialization
+messageController.initSocket(io, userSocketMap, getReceiverSocketId);
 
 io.on("connect", (socket) => {
   console.log(`User connected: ${socket.id}`);
@@ -273,17 +279,53 @@ io.on("connect", (socket) => {
 
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-  socket.on("sendMessage", async ({ sender, receiver, message }) => {
-    const receiverSocketId = getReceiverSocketId(receiver);
 
-    const chatMessage = new ChatMessage({ sender, receiver, message });
-    await chatMessage.save(); // Save the message in the database
 
-    io.emit("receiveMessage", chatMessage);
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("receiveMessages", chatMessage);
+  // socket.on("sendMessage", async ({ sender, receiver, message }) => {
+  //   const receiverSocketId = getReceiverSocketId(receiver);
+  
+  //   const chatMessage = new ChatMessage({ sender, receiver, message });
+  //   await chatMessage.save();
+  
+  //   if (receiverSocketId) {
+  //     io.to(receiverSocketId).emit("newMessage", chatMessage);
+  //   }
+  
+  //   // Optionally send to sender too
+  //   const senderSocketId = getReceiverSocketId(sender);
+  //   if (senderSocketId) {
+  //     io.to(senderSocketId).emit("newMessage", chatMessage);
+  //   }
+  // });
+
+  // messageController.initSocket(io, userSocketMap);
+  socket.on("sendMessage", async ({ sender, receiver, text }) => {
+    try {
+      const newMessage = new Message({
+        senderId: sender,
+        receiverId: receiver,
+        text,
+      });
+  
+      await newMessage.save();
+  
+      const receiverSocketId = getReceiverSocketId(receiver);
+  
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("newMessage", newMessage);
+      }
+  
+      // Optionally: also emit to sender for confirmation
+      const senderSocketId = getReceiverSocketId(sender);
+      if (senderSocketId) {
+        io.to(senderSocketId).emit("newMessage", newMessage);
+      }
+    } catch (error) {
+      console.error("Socket message error:", error);
     }
   });
+  
+  
 
   socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);

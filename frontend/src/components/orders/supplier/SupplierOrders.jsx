@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../redux/reducers/userSlice";
+import { selectUser } from "../../../redux/reducers/userSlice";
 
 const SupplierOrders = () => {
     const user = useSelector(selectUser);
@@ -65,7 +65,9 @@ const SupplierOrders = () => {
                 <p>Exporter: {order.exporterId?.name || "Unknown"}</p>
                 <p>Price: {order.price} Rs</p>
                 <p>Quantity: {order.quantity}</p>
+                <p >Total Value: {order.price * order.quantity}</p>
                 <p>Message: {order.message || "No message"}</p>
+              
                 <p className="text-sm text-gray-600 mt-2">
                   Created on: {formatDate(order.createdAt)}
                 </p>

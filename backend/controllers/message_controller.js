@@ -9,8 +9,15 @@ const Message = require("../models/message.model");
 // import { getReceiverSocketId, io } from "../utils/socket";
 
 
+let io;
+let userSocketMap;
+let getReceiverSocketId; // Add this
 
-const {getReceiverSocketId,io} = require("../utils/socket");
+function initSocket(ioInstance, socketMap, socketIdGetter) {
+  io = ioInstance;
+  userSocketMap = socketMap;
+  getReceiverSocketId = socketIdGetter; // Store the function
+}
 
  const getUsersForSidebar = async (req, res) => {
   try {
@@ -59,10 +66,17 @@ const {getReceiverSocketId,io} = require("../utils/socket");
       });
   
       await newMessage.save();
-  
-      const receiverSocketId = getReceiverSocketId(receiverId);
+      const receiverSocketId = getReceiverSocketId(receiverId); // Now works!
+    
       if (receiverSocketId) {
-        io.to(receiverSocketId).emit("newMessage", newMessage);
+        io.to(receiverSocketId).emit("newMessage", {
+          // Match frontend field names
+          _id: newMessage._id,
+          sender: newMessage.senderId, // Convert to sender
+          receiver: newMessage.receiverId, // Convert to receiver
+          text: newMessage.text,
+          createdAt: newMessage.createdAt
+        });
       }
       console.log("message is sent");
   
@@ -73,4 +87,4 @@ const {getReceiverSocketId,io} = require("../utils/socket");
     }
   };
 
-  module.exports = { getUsersForSidebar, getMessages, sendMessage };
+  module.exports = { initSocket,getUsersForSidebar, getMessages, sendMessage };

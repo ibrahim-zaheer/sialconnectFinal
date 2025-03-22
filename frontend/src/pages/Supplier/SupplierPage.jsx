@@ -7,7 +7,7 @@ import SupplierReviews from "../../components/reviews/ReviewsBySupplier";
 
 import { useSelector } from "react-redux";
 
-import SupplierOrders from "../../components/orders/SupplierOrders";
+import SupplierOrders from "../../components/orders/supplier/SupplierOrders";
 
 
 const SupplierPage = () => {

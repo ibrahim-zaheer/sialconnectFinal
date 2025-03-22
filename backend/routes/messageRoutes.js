@@ -1,4 +1,4 @@
-const { getUsersForSidebar, getMessages, sendMessage } = require("../controllers/message_controller");
+const { getUsersForSidebar, getMessages, sendMessage } = require("../controllers/message_controller.js");
 const authenticateMiddleware = require("../middleware/authMiddleware.js");
 const express = require("express");
 const router = express.Router();
