@@ -130,6 +130,7 @@ import CreateOfferPage from "./pages/offers/CreateOfferPage";
 import ExporterOfferPage from "./pages/offers/ExporterOfferPage";
 
 import SupplierOfferPage from "./pages/offers/SupplierOfferPage";
+import SupplierOrderPage from "./pages/orders/SupplierOrderPage";
 
 
 
@@ -303,6 +304,9 @@ const Main = () => {
 
 
 <Route path="/mySupplierOffers" element={< SupplierOfferPage />} /> 
+
+<Route path="/mySupplierOrders" element={< SupplierOrderPage/>} /> 
+
 
 
 

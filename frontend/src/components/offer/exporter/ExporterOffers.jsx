@@ -240,6 +240,7 @@ export default function ExporterOffers() {
               <p>Supplier: {offer.supplierId?.name || "Unknown"}</p>
               <p>Price: {offer.price} Rs</p>
               <p>Quantity: {offer.quantity}</p>
+              <p>Total Value: {offer.quantity * offer.price}</p>
               {/* ✅ Show Update Offer Button only if status is "counter" */}
               {offer.status === "counter" && (
                 <button

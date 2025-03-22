@@ -205,6 +205,8 @@ const favouriteRoutes = require("./routes/favourites/favouriteRoutes");
 
 const offerRoutes = require("./routes/offer/offerRoutes");
 
+const orderRoutes = require("./routes/order/orderRoutes");
+
 
 const { Server } = require("socket.io");
 
@@ -241,6 +243,8 @@ app.use("/api/notification",notificationRoutes);
 app.use("/api/favourites",favouriteRoutes);
 
 app.use("/api/offers",offerRoutes);
+
+app.use("/api/order",orderRoutes);
 
 
 

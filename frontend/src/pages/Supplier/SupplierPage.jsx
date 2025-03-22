@@ -7,17 +7,18 @@ import SupplierReviews from "../../components/reviews/ReviewsBySupplier";
 
 import { useSelector } from "react-redux";
 
+import SupplierOrders from "../../components/orders/SupplierOrders";
+
 
 const SupplierPage = () => {
   const user = useSelector((state) => state.user);
   return (
     <div className="w-full overflow-hidden mt-24">
-      {/* <h1 className="mt-5 w-[80vw] mx-auto text-3xl font-bold">
-        Hello, Supplier!
-      </h1> */}
+      <SupplierOrders/>
 
       <ManageProducts />
       <SupplierReviews supplierId={user.id} />
+      
     </div>
   );
 };

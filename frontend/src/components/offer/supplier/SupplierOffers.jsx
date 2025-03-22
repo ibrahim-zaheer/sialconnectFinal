@@ -119,6 +119,7 @@ export default function SupplierOffers() {
               <p>Supplier: {offer.exporterId?.name || "Unknown"}</p>
               <p>Price: {offer.price} Rs</p>
               <p>Quantity: {offer.quantity}</p>
+              <p>Total Value: {offer.quantity * offer.price}</p>
               <p>Message: {offer.message}</p>
               <p>
                 Status:{" "}

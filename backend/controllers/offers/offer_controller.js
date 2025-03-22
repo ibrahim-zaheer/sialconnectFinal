@@ -1,4 +1,5 @@
 const Offer = require("../../models/offer/offerSchema");
+const Order = require("../../models/offer/orderSchema");
 
 const createOffer = async (req, res) => {
     try {
@@ -72,8 +73,22 @@ const acceptOffer = async (req, res) => {
       offer.status = "accepted";
       offer.acceptedBy = req.user.id;
       await offer.save();
-  
-      res.json({ message: "Offer accepted. Order created!", offer });
+
+         // ✅ Create an order from the accepted offer
+    const newOrder = new Order({
+      offerId: offer._id,
+      exporterId: offer.exporterId,
+      supplierId: offer.supplierId,
+      productId: offer.productId,
+      price: offer.price,
+      quantity: offer.quantity,
+      message: offer.message,
+    });
+
+    await newOrder.save();
+
+    // ✅ ✅ Only this response should remain
+    return res.status(200).json({ message: "Offer accepted and order created!", order: newOrder });
     } catch (error) {
       res.status(500).json({ message: "Error accepting offer", error });
     }
