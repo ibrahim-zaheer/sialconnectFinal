@@ -32,6 +32,25 @@ useEffect(() => {
     return () => unsubscribeFromMessages();
   }
 }, [selectedUser, getMessages, subscribeToMessages, unsubscribeFromMessages]);
+useEffect(() => {
+  if (!selectedUser?._id) return;
+
+  const socket = useAuthStore.getState().socket;
+
+  const loadChat = async () => {
+    await getMessages(selectedUser._id);
+    if (socket?.connected) {
+      subscribeToMessages();
+    }
+  };
+
+  loadChat();
+
+  return () => {
+    unsubscribeFromMessages();
+  };
+}, [selectedUser?._id]);
+
 
 // useEffect(() => {
 //   if (selectedUser?._id) {
