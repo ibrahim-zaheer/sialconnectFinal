@@ -52,7 +52,7 @@
 //               <p>Supplier ID: {offer.supplierId}</p>
 //               <p>Price: {offer.price} Rs</p>
 //               <p>Quantity: {offer.quantity}</p>
-//               <p>Status: 
+//               <p>Status:
 //                 <span className={`font-bold ${offer.status === "pending" ? "text-yellow-500" : offer.status === "accepted" ? "text-green-500" : "text-red-500"}`}>
 //                   {offer.status}
 //                 </span>
@@ -64,10 +64,6 @@
 //     </div>
 //   );
 // }
-
-
-
-
 
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
@@ -124,7 +120,7 @@
 //               <p>Price: {offer.price} Rs</p>
 //               <p>Quantity: {offer.quantity}</p>
 //               <p>
-//                 Status: 
+//                 Status:
 //                 <span className={`font-bold ${offer.status === "pending" ? "text-yellow-500" : offer.status === "accepted" ? "text-green-500" : "text-red-500"}`}>
 //                   {offer.status}
 //                 </span>
@@ -136,7 +132,6 @@
 //     </div>
 //   );
 // }
-
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -157,6 +152,12 @@ export default function ExporterOffers() {
   const [selectedOffer, setSelectedOffer] = useState(null);
 
   const dispatch = useDispatch();
+  const acceptedCount = offers.filter(
+    (offer) => offer.status === "accepted"
+  ).length;
+  const rejectedCount = offers.filter(
+    (offer) => offer.status === "rejected"
+  ).length;
 
   useEffect(() => {
     const fetchOffers = async () => {
@@ -173,6 +174,8 @@ export default function ExporterOffers() {
           },
         });
         setOffers(response.data.offers);
+        
+
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch offers.");
@@ -187,20 +190,24 @@ export default function ExporterOffers() {
     dispatch(setUpdated("Yes")); // ✅ Updating the "updated" state globally
   };
 
-
-    // ✅ Function to format date nicely
-    const formatDate = (dateString) => {
-      if (!dateString) return "Unknown";
-      return new Date(dateString).toLocaleDateString("en-GB", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    };
+  // ✅ Function to format date nicely
+  const formatDate = (dateString) => {
+    if (!dateString) return "Unknown";
+    return new Date(dateString).toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
   // ✅ Function to update counteroffer status
-  const updateCounterOfferStatus = (offerId, newStatus, newPrice = null, newQuantity = null) => {
+  const updateCounterOfferStatus = (
+    offerId,
+    newStatus,
+    newPrice = null,
+    newQuantity = null
+  ) => {
     setOffers((prevOffers) =>
       prevOffers.map((offer) =>
         offer._id === offerId
@@ -214,18 +221,28 @@ export default function ExporterOffers() {
     );
   };
 
-    // ✅ Update offer in state after editing
-    const handleUpdateOffer = (offerId, updatedData) => {
-      setOffers((prevOffers) =>
-        prevOffers.map((offer) =>
-          offer._id === offerId ? { ...offer, ...updatedData, isUpdated: true  } : offer
-        )
-      );
-      
-    };
+  // ✅ Update offer in state after editing
+  const handleUpdateOffer = (offerId, updatedData) => {
+    setOffers((prevOffers) =>
+      prevOffers.map((offer) =>
+        offer._id === offerId
+          ? { ...offer, ...updatedData, isUpdated: true }
+          : offer
+      )
+    );
+  };
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-2xl font-semibold text-center mb-6">My Offers</h2>
+      <div className="flex justify-center gap-10 mb-6">
+        <div className="bg-green-100 text-green-700 px-4 py-2 rounded-lg shadow">
+          Accepted Offers: <span className="font-bold">{acceptedCount}</span>
+        </div>
+        <div className="bg-red-100 text-red-700 px-4 py-2 rounded-lg shadow">
+          Rejected Offers: <span className="font-bold">{rejectedCount}</span>
+        </div>
+      </div>
+
       {loading ? (
         <p className="text-center text-gray-500">Loading offers...</p>
       ) : error ? (
@@ -236,7 +253,9 @@ export default function ExporterOffers() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {offers.map((offer) => (
             <div key={offer._id} className="bg-white p-4 shadow-lg rounded-lg">
-              <p className="text-lg font-semibold">Product: {offer.productId?.name || "Unknown"}</p>
+              <p className="text-lg font-semibold">
+                Product: {offer.productId?.name || "Unknown"}
+              </p>
               <p>Supplier: {offer.supplierId?.name || "Unknown"}</p>
               <p>Price: {offer.price} Rs</p>
               <p>Quantity: {offer.quantity}</p>
@@ -251,7 +270,7 @@ export default function ExporterOffers() {
                 </button>
               )}
               <p>
-                Status: 
+                Status:
                 <span
                   className={`font-bold ${
                     offer.status === "pending"
@@ -265,21 +284,25 @@ export default function ExporterOffers() {
                 </span>
               </p>
 
-              
               {/* ✅ Display Offer Creation Date */}
-              <p className="text-sm text-gray-600">Created On: {formatDate(offer.createdAt)}</p>
-              
+              <p className="text-sm text-gray-600">
+                Created On: {formatDate(offer.createdAt)}
+              </p>
 
               {/* ✅ Show Counteroffer if it exists */}
               {offer.counterOffer && (
                 <div className="mt-4 p-3 bg-gray-100 rounded">
-                  <h3 className="font-semibold text-md">Counteroffer Details:</h3>
+                  <h3 className="font-semibold text-md">
+                    Counteroffer Details:
+                  </h3>
                   <p>New Price: {offer.counterOffer.price} Rs</p>
                   <p>New Quantity: {offer.counterOffer.quantity}</p>
-                  {offer.counterOffer.message && <p>Message: {offer.counterOffer.message}</p>}
+                  {offer.counterOffer.message && (
+                    <p>Message: {offer.counterOffer.message}</p>
+                  )}
 
-                   {/* ✅ Show CounterOffer button only if status is "counter" */}
-                   {/* {offer.status === "counter" && (
+                  {/* ✅ Show CounterOffer button only if status is "counter" */}
+                  {/* {offer.status === "counter" && (
                     <CounterOffer
                       offerId={offer._id}
                       updateStatus={updateCounterOfferStatus}
@@ -287,21 +310,20 @@ export default function ExporterOffers() {
                     />
                   )} */}
                   {/* ✅ Show UpdateOffer component only if status is "counter" */}
-{offer.status === "counter" && selectedOffer && selectedOffer._id === offer._id && (
-  <UpdateOffer
-    offerId={selectedOffer._id}
-    currentOffer={selectedOffer}
-    onClose={() => setSelectedOffer(null)} // Close popup on cancel
-    onUpdate={handleUpdateOffer} // Update state on success
-  />
-)}
-
+                  {offer.status === "counter" &&
+                    selectedOffer &&
+                    selectedOffer._id === offer._id && (
+                      <UpdateOffer
+                        offerId={selectedOffer._id}
+                        currentOffer={selectedOffer}
+                        onClose={() => setSelectedOffer(null)} // Close popup on cancel
+                        onUpdate={handleUpdateOffer} // Update state on success
+                      />
+                    )}
                 </div>
-                
-                
               )}
-                {/* ✅ Show UpdateOffer Component if an offer is selected */}
-      {/* {selectedOffer && (
+              {/* ✅ Show UpdateOffer Component if an offer is selected */}
+              {/* {selectedOffer && (
         <UpdateOffer
           offerId={selectedOffer._id}
           currentOffer={selectedOffer}
