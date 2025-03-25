@@ -503,11 +503,17 @@ const DisplayProducts = () => {
                 </div>
 
                 <div className="flex flex-col items-end flex-1">
-                  <img
+                  {/* <img
                     src={product.image}
                     alt="Product"
                     className="w-24 h-24 object-cover rounded-lg"
-                  />
+                  /> */}
+                  <img
+  src={product.image?.[0] || "https://via.placeholder.com/100"} // default if image missing
+  alt="Product"
+  className="w-24 h-24 object-cover rounded-lg"
+/>
+
                   <div className="mt-4">
                     {/* Heart Icon for Favorites */}
                     <button

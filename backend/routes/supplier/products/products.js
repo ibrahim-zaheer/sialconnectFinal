@@ -15,7 +15,13 @@ const {uploadProductImage} = require("../../../config/multerConfig")
 
 
 router.get("/read", authenticateMiddleware, productController.getProductsBySupplier);
-router.post("/create", authenticateMiddleware,uploadProductImage.single("image") ,productController.createProduct);
+// router.post("/create", authenticateMiddleware,uploadProductImage.single("image") ,productController.createProduct);
+router.post(
+    "/create",
+    authenticateMiddleware,
+    uploadProductImage.array("images", 5), // Accept up to 5 images
+    productController.createProduct
+  );
 router.put("/update/:id", authenticateMiddleware, productController.updateProduct);
 router.delete("/delete/:id", authenticateMiddleware, productController.deleteProduct);
 

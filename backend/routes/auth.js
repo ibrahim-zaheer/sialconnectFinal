@@ -11,11 +11,13 @@ const User = require("../models/user");
 
 const authMiddleware = require("../middleware/authMiddleware");
 
+const checkStatus = require("../middleware/checkStatus");
+
 // Register Route
 router.post("/register", authController.registerUser);
 
 // Login Route
-router.post("/login", authController.loginUser);
+router.post("/login",authController.loginUser);
 
 // Google Sign-In Route
 router.post("/google", authController.googleSignIn);
@@ -24,7 +26,7 @@ router.post("/select-role",authController.selectRole);
 
 
 // for profile picture upload
-router.put("/profile-picture", authMiddleware,uploadProfilePicture.single('image'),profileController.profilePicture);
+router.put("/profile-picture", authMiddleware,checkStatus,uploadProfilePicture.single('image'),profileController.profilePicture);
 
 //for editing and adding full details
 router.put("/update-profile",authMiddleware,profileController.updateProfile);

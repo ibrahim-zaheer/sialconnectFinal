@@ -27,30 +27,36 @@ export default function ShowFavourites() {
       });
   };
   // Fetch user's favorites
- useEffect(() => {
-     if (userId) {
-       const fetchFavorites = async () => {
-         try {
-           const response = await axios.get(`/api/favourites/favorites/${userId}`);
- 
-            // Extract only the product IDs from the response
-         const favoriteIds = response.data.favorites.map((product) => product._id);
-           // setFavorites(response.data.favorites);
-           setFavorites(favoriteIds);
-           console.log("favourites found are: "+response.data.favorites);
-         } catch (error) {
-           console.error("Error fetching favorites:", error);
-         }
-       };
-       fetchFavorites();
-     }
-   }, [userId]);
+  useEffect(() => {
+    if (userId) {
+      const fetchFavorites = async () => {
+        try {
+          const response = await axios.get(
+            `/api/favourites/favorites/${userId}`
+          );
+
+          // Extract only the product IDs from the response
+          const favoriteIds = response.data.favorites.map(
+            (product) => product._id
+          );
+          // setFavorites(response.data.favorites);
+          setFavorites(favoriteIds);
+          console.log("favourites found are: " + response.data.favorites);
+        } catch (error) {
+          console.error("Error fetching favorites:", error);
+        }
+      };
+      fetchFavorites();
+    }
+  }, [userId]);
 
   // Fetch all products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("/api/supplier/product/readAllProducts"); // API endpoint for all products
+        const response = await axios.get(
+          "/api/supplier/product/readAllProducts"
+        ); // API endpoint for all products
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -69,12 +75,11 @@ export default function ShowFavourites() {
       {/* Search & Filter UI */}
       <div className="flex flex-col items-center mt-4">
         {/* Search Input */}
-      
-
-        
       </div>
 
-      <h1 className="text-center text-3xl font-semibold my-10">Favorite Products</h1>
+      <h1 className="text-center text-3xl font-semibold my-10">
+        Favorite Products
+      </h1>
 
       {/* Display Favorite Products */}
       <div className="flex flex-wrap justify-center items-center gap-8 mt-4 bg-gray-100 rounded-lg w-[80vw] mx-auto p-8 my-5">
@@ -90,15 +95,25 @@ export default function ShowFavourites() {
                   <p className="text-sm text-gray-500 mt-2">
                     Price: Rs {product.price} per piece
                   </p>
-                  <p className="text-sm text-gray-600 mt-2">{product.description}</p>
+                  <p className="text-sm text-gray-600 mt-2">
+                    {product.description}
+                  </p>
                 </div>
 
                 <div className="flex flex-col items-end flex-1">
-                  <img
+                  {/* <img
                     src={product.image}
                     alt="Product"
                     className="w-24 h-24 object-cover rounded-lg"
+                  /> */}
+                  <img
+                    src={
+                      product.image?.[0] || "https://via.placeholder.com/100"
+                    } // default if image missing
+                    alt="Product"
+                    className="w-24 h-24 object-cover rounded-lg"
                   />
+
                   <div className="mt-4">
                     <Link
                       to={`/supplier/product/${product._id}`}
@@ -106,8 +121,8 @@ export default function ShowFavourites() {
                     >
                       View more
                     </Link>
-                     {/* Remove from Favorites Button */}
-                     <button
+                    {/* Remove from Favorites Button */}
+                    <button
                       onClick={() => handleRemoveFromFavorites(product._id)}
                       className="inline-block bg-red-500 text-white py-1.5 px-3 rounded-lg hover:bg-red-600 transition duration-300"
                     >
@@ -120,8 +135,9 @@ export default function ShowFavourites() {
           ))
         ) : (
           <>
-          <p className="text-center text-gray-500">No favorite products found.</p>
-          
+            <p className="text-center text-gray-500">
+              No favorite products found.
+            </p>
           </>
         )}
       </div>

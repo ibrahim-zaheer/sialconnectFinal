@@ -29,42 +29,93 @@ const cloudinary = require("../config/cloudinaryConfig");
 
 
 
+// exports.createProduct = async (req, res) => {
+//     try {
+//         const { name, description, price } = req.body;
+
+//         // Check if the logged-in user is a supplier
+//         if (req.user.role !== "supplier") {
+//             return res.status(403).json({ message: "Only suppliers can create products." });
+//         }
+
+//         // Validate required fields
+//         if (!name || !description || !price) {
+//             return res.status(400).json({ message: "All fields (name, description, price) are required." });
+//         }
+
+//         // If there is an image, upload it to Cloudinary
+//         let imageUrl = '';
+//         if (req.file) {
+//             imageUrl = req.file.path; // Assuming Cloudinary URL is in 'path'
+//         }
+
+//         // Create the product with the image URL if it exists
+//         const product = new Product({
+//             name,
+//             description,
+//             price,
+//             supplier: req.user.id, // Assign the product to the logged-in supplier
+//             image: imageUrl, // Set image URL from Cloudinary
+//         });
+
+//         await product.save();
+//         res.status(201).json({ message: "Product created successfully", product });
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
 exports.createProduct = async (req, res) => {
     try {
-        const { name, description, price } = req.body;
-
-        // Check if the logged-in user is a supplier
-        if (req.user.role !== "supplier") {
-            return res.status(403).json({ message: "Only suppliers can create products." });
-        }
-
-        // Validate required fields
-        if (!name || !description || !price) {
-            return res.status(400).json({ message: "All fields (name, description, price) are required." });
-        }
-
-        // If there is an image, upload it to Cloudinary
-        let imageUrl = '';
-        if (req.file) {
-            imageUrl = req.file.path; // Assuming Cloudinary URL is in 'path'
-        }
-
-        // Create the product with the image URL if it exists
-        const product = new Product({
-            name,
-            description,
-            price,
-            supplier: req.user.id, // Assign the product to the logged-in supplier
-            image: imageUrl, // Set image URL from Cloudinary
+      const { name, description, price } = req.body;
+  
+      if (req.user.role !== "supplier") {
+        return res.status(403).json({ message: "Only suppliers can create products." });
+      }
+  
+      if (!name || !description || !price) {
+        return res.status(400).json({ message: "All fields are required." });
+      }
+  
+      const imageUrls = [];
+  
+      if (req.files && req.files.length > 0) {
+        const uploadPromises = req.files.map((file) => {
+          return new Promise((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+              {
+                folder: "products",
+                resource_type: "image",
+              },
+              (error, result) => {
+                if (error) return reject(error);
+                resolve(result.secure_url);
+              }
+            );
+            stream.end(file.buffer); // Use file buffer directly
+          });
         });
-
-        await product.save();
-        res.status(201).json({ message: "Product created successfully", product });
+  
+        const uploadedImages = await Promise.all(uploadPromises);
+        imageUrls.push(...uploadedImages);
+      }
+  
+      const product = new Product({
+        name,
+        description,
+        price,
+        supplier: req.user.id,
+        image: imageUrls, // multiple image URLs
+      });
+  
+      await product.save();
+      res.status(201).json({ message: "Product created successfully", product });
+  
     } catch (error) {
-        res.status(500).json({ message: error.message });
+      console.error("Product creation error:", error);
+      res.status(500).json({ message: error.message });
     }
-};
-
+  };
 
 
 

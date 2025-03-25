@@ -72,22 +72,6 @@
 
 // export default SupplierProducts;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 
@@ -142,7 +126,7 @@ const SupplierProducts = () => {
     ? products.filter((product) =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : []; 
+    : [];
 
   return (
     <div className="mt-24 text-[#1b263b]">
@@ -182,8 +166,15 @@ const SupplierProducts = () => {
                   </p>
                 </div>
                 <div className="flex flex-col items-end">
-                  <img
+                  {/* <img
                     src={product.image || "https://via.placeholder.com/150"}
+                    alt="Product"
+                    className="w-24 h-24 object-cover rounded-lg"
+                  /> */}
+                  <img
+                    src={
+                      product.image?.[0] || "https://via.placeholder.com/100"
+                    } // default if image missing
                     alt="Product"
                     className="w-24 h-24 object-cover rounded-lg"
                   />

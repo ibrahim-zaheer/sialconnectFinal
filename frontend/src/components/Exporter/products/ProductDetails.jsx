@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link,useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 // for allowing people to chat with each other
 import Chat from "../../Chat/Chat";
@@ -10,6 +10,8 @@ import WriteReview from "../../reviews/WriteReviews";
 import AverageReviewBySupplier from "../../reviews/averageReviewBySuppliers";
 
 import CreateOffer from "../../offer/createOffer";
+
+import ImageCarousel from "../../ImageCarousel";
 
 // import ChatRoom from "../../Chat/ChatRoom";
 
@@ -44,7 +46,6 @@ const ProductDetails = () => {
     return <div className="container mt-4 text-center">{error}</div>;
   }
 
-
   const handleSendOffer = () => {
     if (product) {
       navigate(`/createOffers`, {
@@ -64,11 +65,17 @@ const ProductDetails = () => {
           {/* Product Details Section */}
           <div className="flex justify-between">
             <div className="flex-1">
-              <img
+              {/* <img
                 src={product.image}
                 alt="Product"
                 className="object-cover rounded-lg w-96"
-              />
+              /> */}
+              {/* <img
+  src={product.image?.[0] || "https://via.placeholder.com/100"} // default if image missing
+  alt="Product"
+  className="object-cover rounded-lg w-96"
+/> */}
+              <ImageCarousel images={product.image} className="w-96" />
             </div>
             <div className="flex flex-1 p-10 flex-col justify-around items-start mb-4">
               <div>
@@ -146,7 +153,7 @@ const ProductDetails = () => {
                 >
                   Send Offer
                 </button> */}
-                 <button
+                <button
                   onClick={() => setShowOfferPopup(true)}
                   className="bg-green-500 text-white py-1.5 px-3 rounded-lg hover:bg-green-600 transition duration-300"
                 >
@@ -167,10 +174,15 @@ const ProductDetails = () => {
         </div>
       )}
 
-{showOfferPopup && (
+      {showOfferPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <CreateOffer supplierId={product.supplier?._id} productId={product._id} price={product.price} onClose={() => setShowOfferPopup(false)} />
+            <CreateOffer
+              supplierId={product.supplier?._id}
+              productId={product._id}
+              price={product.price}
+              onClose={() => setShowOfferPopup(false)}
+            />
           </div>
         </div>
       )}

@@ -210,6 +210,8 @@ const orderRoutes = require("./routes/order/orderRoutes");
 
 const messageController =  require("./controllers/message_controller");
 
+const adminRoutes = require("./routes/admin/adminRoutes");
+
 const { Server } = require("socket.io");
 
 const fs = require("fs");
@@ -249,6 +251,8 @@ app.use("/api/favourites",favouriteRoutes);
 app.use("/api/offers",offerRoutes);
 
 app.use("/api/order",orderRoutes);
+
+app.use("/api/admin",adminRoutes);
 
 
 

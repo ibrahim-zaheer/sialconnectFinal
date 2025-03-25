@@ -95,12 +95,19 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const AddProduct = ({ onProductCreated }) => {
+  // const [formData, setFormData] = useState({
+  //   name: "",
+  //   description: "",
+  //   price: "",
+  //   image: null, // For image file
+  // });
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: "",
-    image: null, // For image file
+    images: [], // changed from image: null
   });
+  
 
   const [message, setMessage] = useState(""); // Success/Error message
   const [loading, setLoading] = useState(false); // For loading state
@@ -112,13 +119,18 @@ const AddProduct = ({ onProductCreated }) => {
   };
 
   // Handle image upload
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, image: file });
-    }
-  };
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     setFormData({ ...formData, image: file });
+  //   }
+  // };
 
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+    setFormData({ ...formData, images: files });
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -128,17 +140,22 @@ const AddProduct = ({ onProductCreated }) => {
     form.append("name", formData.name);
     form.append("description", formData.description);
     form.append("price", formData.price);
-    form.append("image", formData.image); // Make sure the image file is being appended
+    // form.append("image", formData.image); // Make sure the image file is being appended
+    formData.images.forEach((image) => {
+      form.append("images", image); // 'images' must match multer field name
+    });
+    
 
     // Log the data before sending to check what is being sent
     console.log("Form data being sent:");
     console.log("Name:", formData.name);
     console.log("Description:", formData.description);
     console.log("Price:", formData.price);
-    console.log(
-      "Image:",
-      formData.image ? formData.image.name : "No image selected"
-    );
+    // console.log(
+    //   "Image:",
+    //   formData.image ? formData.image.name : "No image selected"
+    // );
+    console.log("Images:", formData.images.map((img) => img.name));
 
     try {
       const token = localStorage.getItem("token"); // Fetch token from local storage
@@ -154,7 +171,8 @@ const AddProduct = ({ onProductCreated }) => {
       );
 
       setMessage("Product created successfully!");
-      setFormData({ name: "", description: "", price: "", image: null }); // Reset form
+      // setFormData({ name: "", description: "", price: "", image: null }); // Reset form
+      setFormData({ name: "", description: "", price: "", images: [] }); 
 
       if (onProductCreated) {
         onProductCreated(response.data.product); // Handle response
@@ -226,10 +244,18 @@ const AddProduct = ({ onProductCreated }) => {
               <label className="font-semibold text-[#e0e1dd]">
                 Product Image
               </label>
-              <input
+              {/* <input
                 className="text-[#e0e1dd]"
                 type="file"
                 name="image"
+                accept="image/*"
+                onChange={handleImageChange}
+              /> */}
+              <input
+               className="text-[#e0e1dd]"
+                type="file"
+                name="images"
+                multiple
                 accept="image/*"
                 onChange={handleImageChange}
               />
