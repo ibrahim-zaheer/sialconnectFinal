@@ -8,7 +8,6 @@ const SupplierReviews = ({ supplierId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-
   const dispatch = useDispatch();
   const averageRating = useSelector((state) => state.averageRating.value);
 
@@ -40,10 +39,10 @@ const SupplierReviews = ({ supplierId }) => {
     fetchReviews();
   }, [supplierId]);
 
-    // Log the current average rating
-    useEffect(() => {
-      console.log("Current Average Rating from Redux:", averageRating);
-    }, [averageRating]);
+  // Log the current average rating
+  useEffect(() => {
+    console.log("Current Average Rating from Redux:", averageRating);
+  }, [averageRating]);
 
   return (
     <div className="max-w-2xl mx-auto mt-24">
@@ -90,6 +89,14 @@ const SupplierReviews = ({ supplierId }) => {
             </div>
 
             <p className="text-gray-700 mt-2">{review.reviewText}</p>
+            <p className="text-sm text-gray-500 mt-1">
+              Posted on:{" "}
+              {new Date(review.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            </p>
           </div>
         ))}
       </div>

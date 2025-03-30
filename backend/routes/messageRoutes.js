@@ -1,8 +1,15 @@
-const { getUsersForSidebar, getMessages, sendMessage } = require("../controllers/message_controller.js");
+const { getUsersForSidebar, getMessages, sendMessage,sendingVoiceMessage } = require("../controllers/message_controller.js");
 const authenticateMiddleware = require("../middleware/authMiddleware.js");
 const User = require("../models/user");
 const express = require("express");
+const multer = require('multer');
+
 const router = express.Router();
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+
+router.post('/upload/voice', upload.single('voice'),sendingVoiceMessage);
 
 
 router.get("/users", authenticateMiddleware, getUsersForSidebar);

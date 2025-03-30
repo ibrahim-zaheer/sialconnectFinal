@@ -1,97 +1,98 @@
 import { useChatStore } from "../../store/useChatStore";
 import { useAuthStore } from "../../store/useAuthStore";
 
-import { useEffect,useRef } from "react";
+import { useEffect, useRef } from "react";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageSkeleton from "../skeletons/MessageSkeleton";
 import { formatMessageTime } from "../../lib/utils";
-
-
-
-
+import VoiceMessagePlayer from './VoiceMessagePlayer';
 
 const ChatContainer = () => {
-  const { messages, getMessages, isMessagesLoading, selectedUser, subscribeToMessages,unsubscribeFromMessages} =
-    useChatStore();
-const {authUser,checkAuth} = useAuthStore();
+  const {
+    messages,
+    getMessages,
+    isMessagesLoading,
+    selectedUser,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+  } = useChatStore();
+  const { authUser, checkAuth } = useAuthStore();
 
-const messageEndRef = useRef(null);
+  const messageEndRef = useRef(null);
 
-// useEffect(() => {
-//   if (selectedUser && useAuthStore.getState().socket?.connected) {
-//     subscribeToMessages();
-//     return () => unsubscribeFromMessages();
-//   }
-// }, [selectedUser]);
+  // useEffect(() => {
+  //   if (selectedUser && useAuthStore.getState().socket?.connected) {
+  //     subscribeToMessages();
+  //     return () => unsubscribeFromMessages();
+  //   }
+  // }, [selectedUser]);
 
-useEffect(() => {
-  if (selectedUser?._id && useAuthStore.getState().socket?.connected) {
-    getMessages(selectedUser._id);
-    subscribeToMessages();
-    return () => unsubscribeFromMessages();
-  }
-}, [selectedUser, getMessages, subscribeToMessages, unsubscribeFromMessages]);
-useEffect(() => {
-  if (!selectedUser?._id) return;
-
-  const socket = useAuthStore.getState().socket;
-
-  const loadChat = async () => {
-    await getMessages(selectedUser._id);
-    if (socket?.connected) {
+  useEffect(() => {
+    if (selectedUser?._id && useAuthStore.getState().socket?.connected) {
+      getMessages(selectedUser._id);
       subscribeToMessages();
+      return () => unsubscribeFromMessages();
     }
-  };
+  }, [selectedUser, getMessages, subscribeToMessages, unsubscribeFromMessages]);
+  useEffect(() => {
+    if (!selectedUser?._id) return;
 
-  loadChat();
+    const socket = useAuthStore.getState().socket;
 
-  return () => {
-    unsubscribeFromMessages();
-  };
-}, [selectedUser?._id]);
+    const loadChat = async () => {
+      await getMessages(selectedUser._id);
+      if (socket?.connected) {
+        subscribeToMessages();
+      }
+    };
 
+    loadChat();
 
-// useEffect(() => {
-//   if (selectedUser?._id) {
-//     getMessages(selectedUser._id);
-//     subscribeToMessages();
-//     return () => unsubscribeFromMessages();
-//   }
-// }, [selectedUser, getMessages, subscribeToMessages, unsubscribeFromMessages]);
+    return () => {
+      unsubscribeFromMessages();
+    };
+  }, [selectedUser?._id]);
 
+  // useEffect(() => {
+  //   if (selectedUser?._id) {
+  //     getMessages(selectedUser._id);
+  //     subscribeToMessages();
+  //     return () => unsubscribeFromMessages();
+  //   }
+  // }, [selectedUser, getMessages, subscribeToMessages, unsubscribeFromMessages]);
 
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+  useEffect(() => {
+    console.log("Messages:", messages); // Log messages whenever they change
+  }, [messages]);
 
-useEffect(() => {
-  checkAuth();
-}, [checkAuth]);
-useEffect(() => {
-  console.log("Messages:", messages); // Log messages whenever they change
-}, [messages]);
+  if (!selectedUser) {
+    return <div>Please select a user to chat with.</div>;
+  }
 
-
-
-if (!selectedUser) {
-  return <div>Please select a user to chat with.</div>;
-}
-
-  if (isMessagesLoading) return(
-    <div className="flex-1 flex flex-col overflow-auto">
+  if (isMessagesLoading)
+    return (
+      <div className="flex-1 flex flex-col overflow-auto">
         <ChatHeader />
         <MessageSkeleton />
         <MessageInput />
       </div>
-  );
+    );
 
   return (
     <div className="flex-1 flex flex-col overflow-auto">
       <ChatHeader />
-      
+
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.map((message) => (
           <div
             key={message._id}
-            className={`chat ${message.senderId === authUser?._id  ? "chat-end" : "chat-start"}`}
+            className={`chat ${
+              message.senderId === authUser?._id ? "chat-end" : "chat-start"
+            }`}
             ref={messageEndRef}
           >
             <div className=" chat-image avatar">
@@ -99,8 +100,10 @@ if (!selectedUser) {
                 <img
                   src={
                     message.senderId === authUser?._id
-                      ? authUser.profilePicture || "https://media.istockphoto.com/id/619400810/photo/mr-who.jpg?s=1024x1024&w=is&k=20&c=qDFp7p4f3PzMLr3x4j9VA4lTI6fdUDWDVhP6wU9S0Kg="
-                      : selectedUser.profilePicture || "https://media.istockphoto.com/id/619400810/photo/mr-who.jpg?s=1024x1024&w=is&k=20&c=qDFp7p4f3PzMLr3x4j9VA4lTI6fdUDWDVhP6wU9S0Kg="
+                      ? authUser.profilePicture ||
+                        "https://media.istockphoto.com/id/619400810/photo/mr-who.jpg?s=1024x1024&w=is&k=20&c=qDFp7p4f3PzMLr3x4j9VA4lTI6fdUDWDVhP6wU9S0Kg="
+                      : selectedUser.profilePicture ||
+                        "https://media.istockphoto.com/id/619400810/photo/mr-who.jpg?s=1024x1024&w=is&k=20&c=qDFp7p4f3PzMLr3x4j9VA4lTI6fdUDWDVhP6wU9S0Kg="
                   }
                   alt="profile pic"
                 />
@@ -111,7 +114,7 @@ if (!selectedUser) {
                 {formatMessageTime(message.createdAt)}
               </time>
             </div>
-            <div className="chat-bubble flex flex-col">
+            <div className="chat-bubble flex flex-col gap-2">
               {message.image && (
                 <img
                   src={message.image}
@@ -119,7 +122,29 @@ if (!selectedUser) {
                   className="sm:max-w-[200px] rounded-md mb-2"
                 />
               )}
+
               {message.text && <p>{message.text}</p>}
+
+              {/* {message.voiceMessage && (
+                <div className="flex items-center gap-2">
+                  <audio controls className="w-full">
+                    <source src={message.voiceMessage} type="audio/webm" />
+                    Your browser does not support the audio element.
+                  </audio>
+                  {message.duration && (
+                    <span className="text-xs text-gray-500">
+                      {message.duration}s
+                    </span>
+                  )}
+                </div>
+              )} */}
+              {message.voiceMessage && (
+  <VoiceMessagePlayer
+    url={message.voiceMessage}
+    duration={message.duration}
+  />
+)}
+
             </div>
           </div>
         ))}
@@ -131,11 +156,6 @@ if (!selectedUser) {
 };
 
 export default ChatContainer;
-
-
-
-
-
 
 // import { useChatStore } from "../../store/useChatStore";
 // import { useAuthStore } from "../../store/useAuthStore";

@@ -197,8 +197,14 @@ const AuctionForm = () => {
     return now.toISOString().slice(0, 16);
   };
 
+  // useEffect(() => {
+  //   setMinStartTime(getCurrentDateTime());
+  // }, []);
   useEffect(() => {
-    setMinStartTime(getCurrentDateTime());
+    const updateMinTime = () => setMinStartTime(getCurrentDateTime());
+    updateMinTime();
+    const interval = setInterval(updateMinTime, 60000); // update every 60 seconds
+    return () => clearInterval(interval);
   }, []);
 
 
