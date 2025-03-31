@@ -133,6 +133,11 @@ import SupplierOfferPage from "./pages/offers/SupplierOfferPage";
 import SupplierOrderPage from "./pages/orders/SupplierOrderPage";
 
 
+import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
+import AdminRoute from "./components/admin/AdminRoute";
+
+import UsersPage from "./pages/admin/functions/UsersPage";
+
 
 
 
@@ -308,7 +313,9 @@ const Main = () => {
 <Route path="/mySupplierOrders" element={< SupplierOrderPage/>} /> 
 
 
-
+{/* Admin */}
+<Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
+<Route path="/admin/user" element={<AdminRoute><UsersPage /></AdminRoute>} />
 
       </Routes>
     </>

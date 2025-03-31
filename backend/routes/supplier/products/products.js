@@ -2,8 +2,10 @@
 const express = require("express");
 const router = express.Router();
 const productController = require("../../../controllers/productController");
-const authenticateMiddleware = require("../../../middleware/authMiddleware")
-const {uploadProductImage} = require("../../../config/multerConfig")
+const authenticateMiddleware = require("../../../middleware/authMiddleware");
+const {uploadProductImage} = require("../../../config/multerConfig");
+
+const checkStatus = require("../../../middleware/checkStatus");
 
 // router.get("/read", authenticateMiddleware, productController.getProductsBySupplier);
 
@@ -18,7 +20,7 @@ router.get("/read", authenticateMiddleware, productController.getProductsBySuppl
 // router.post("/create", authenticateMiddleware,uploadProductImage.single("image") ,productController.createProduct);
 router.post(
     "/create",
-    authenticateMiddleware,
+    authenticateMiddleware,checkStatus,
     uploadProductImage.array("images", 5), // Accept up to 5 images
     productController.createProduct
   );

@@ -68,13 +68,32 @@ const Navbar = () => {
                   </>
                 )}
 
-                <li>
+{user.role === "admin" && (
+                  <>
+                    <li>
+                      <Link to="/admin/user">Users</Link>
+                    </li>
+                    <li>
+                      <Link to="/admin">Profile</Link>
+                    </li>
+                    
+                  </>
+                )}
+
+
+{user.role !== "admin" && (
+                  <>
+                      <li>
                   <Link to="/chat">Chat</Link>
                 </li>
 
                 <li>
                   <Link to="/profile">Profiles</Link>
                 </li>
+                    
+                  </>
+                )}
+              
 
                
 
