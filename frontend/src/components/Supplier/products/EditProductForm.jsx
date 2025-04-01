@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
+import CategoryDropdown from "./component/CategoryDropdown";
 
 const EditProductForm = ({ product, onClose, onProductUpdated }) => {
   const [formData, setFormData] = useState({
     name: product.name,
     description: product.description,
     price: product.price,
+    category: product.category || "Other", // default fallback
   });
 
   const [message, setMessage] = useState("");
@@ -83,6 +85,8 @@ const EditProductForm = ({ product, onClose, onProductUpdated }) => {
               required
             ></textarea>
           </div>
+          <CategoryDropdown value={formData.category} onChange={handleChange} />
+
           <div className="flex items-center justify-between my-2">
             <label className="font-semibold flex-1">
               Price <span className="text-[red]">*</span> :{" "}

@@ -1,13 +1,18 @@
 const express = require("express");
 
 const User = require("../../models/User"); // Import User model
-
+const Product = require("../../models/Product")
 
 // Only return users who are NOT admin
 const getAllUsers = async (req, res) => {
   const users = await User.find({ role: { $ne: "admin" } });
   res.json(users);
 };
+
+// const getAllProducts = async (req, res) => {
+//   const product = await Product.find();
+//   res.json(product);
+// };
 
 
 const suspendUser = async (req, res) => {

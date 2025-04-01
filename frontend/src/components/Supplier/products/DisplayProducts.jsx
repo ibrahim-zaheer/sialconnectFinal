@@ -198,26 +198,27 @@
 
 // export default DisplayProducts;
 
-
-
-
-
-
-
-
 import React from "react";
 import axios from "axios";
 
-const DisplayProducts = ({ products, setProducts, setProductToEdit, message }) => {
+const DisplayProducts = ({
+  products,
+  setProducts,
+  setProductToEdit,
+  message,
+}) => {
   // Handle delete functionality
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem("token"); // Fetch token from local storage
-      const response = await axios.delete(`/api/supplier/product/delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Pass token for authentication
-        },
-      });
+      const response = await axios.delete(
+        `/api/supplier/product/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Pass token for authentication
+          },
+        }
+      );
 
       alert(response.data.message); // Notify the user about successful deletion
 
@@ -254,6 +255,10 @@ const DisplayProducts = ({ products, setProducts, setProductToEdit, message }) =
                 <span className="block">
                   <strong>{product.name}</strong>
                 </span>
+                <span className="block my-1 text-sm">
+                  {product.category || "Other"}
+                </span>
+
                 <span className="block my-1 text-sm">
                   {product.description}
                 </span>

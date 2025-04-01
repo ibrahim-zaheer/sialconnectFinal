@@ -383,9 +383,13 @@ const DisplayProducts = () => {
   const [priceRange, setPriceRange] = useState(100); // Default max value
   const [favorites, setFavorites] = useState([]); // Store user's favorite product IDs
 
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
   // Access the user's ID from Redux state
   const user = useSelector((state) => state.user);
   const userId = user?.id;
+
+  const categories = ["All", ...new Set(products.map((p) => p.category || "Other"))];
 
   // Fetch all products
   useEffect(() => {
@@ -448,7 +452,12 @@ const DisplayProducts = () => {
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
     const isWithinPrice = product.price <= priceRange;
-    return matchesSearch && isWithinPrice;
+    // return matchesSearch && isWithinPrice;
+    const matchesCategory =
+  selectedCategory === "All" || product.category === selectedCategory;
+
+return matchesSearch && isWithinPrice && matchesCategory;
+
   });
 
   return (
@@ -481,6 +490,21 @@ const DisplayProducts = () => {
           </div>
           <p className="text-center mt-2 text-lg font-semibold">Max Price: Rs {priceRange}</p>
         </div>
+        {/* Category Filter Dropdown */}
+<div className="mt-4 w-1/2">
+  <select
+    value={selectedCategory}
+    onChange={(e) => setSelectedCategory(e.target.value)}
+    className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+  >
+    {categories.map((category, index) => (
+      <option key={index} value={category}>
+        {category}
+      </option>
+    ))}
+  </select>
+</div>
+
       </div>
 
       <h1 className="text-center text-3xl font-semibold my-10">All Products</h1>
@@ -499,6 +523,10 @@ const DisplayProducts = () => {
                   <p className="text-sm text-gray-500 mt-2">
                     Price: Rs {product.price} per piece
                   </p>
+                  <span className="block my-1 text-sm font-bold">
+  Category: {product.category || "Other"}
+</span>
+
                   <p className="text-sm text-gray-600 mt-2">{product.description}</p>
                 </div>
 

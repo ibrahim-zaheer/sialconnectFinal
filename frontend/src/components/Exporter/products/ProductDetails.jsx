@@ -80,6 +80,9 @@ const ProductDetails = () => {
             <div className="flex flex-1 p-10 flex-col justify-around items-start mb-4">
               <div>
                 <h1 className="text-4xl font-bold">{product.name}</h1>
+                <span className="block my-1 text-sm font-bold">
+                  Category: {product.category || "Other"}
+                </span>
                 <p className="text-gray-500 text-xl my-2">
                   {product.description}
                 </p>

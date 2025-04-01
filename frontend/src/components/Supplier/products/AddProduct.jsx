@@ -93,6 +93,7 @@
 // when using managecomponet
 import React, { useState } from "react";
 import axios from "axios";
+import CategoryDropdown from "./component/CategoryDropdown";
 
 const AddProduct = ({ onProductCreated }) => {
   // const [formData, setFormData] = useState({
@@ -105,6 +106,7 @@ const AddProduct = ({ onProductCreated }) => {
     name: "",
     description: "",
     price: "",
+    category: "Other",
     images: [], // changed from image: null
   });
   
@@ -140,6 +142,8 @@ const AddProduct = ({ onProductCreated }) => {
     form.append("name", formData.name);
     form.append("description", formData.description);
     form.append("price", formData.price);
+    form.append("category", formData.category); // <-- Add this line
+
     // form.append("image", formData.image); // Make sure the image file is being appended
     formData.images.forEach((image) => {
       form.append("images", image); // 'images' must match multer field name
@@ -172,7 +176,7 @@ const AddProduct = ({ onProductCreated }) => {
 
       setMessage("Product created successfully!");
       // setFormData({ name: "", description: "", price: "", image: null }); // Reset form
-      setFormData({ name: "", description: "", price: "", images: [] }); 
+      setFormData({ name: "", description: "", price: "", category:"",images: [] }); 
 
       if (onProductCreated) {
         onProductCreated(response.data.product); // Handle response
@@ -226,6 +230,10 @@ const AddProduct = ({ onProductCreated }) => {
                 />
               </div>
             </div>
+            <CategoryDropdown
+  value={formData.category}
+  onChange={handleChange}
+/>
 
             <div className="flex flex-col justify-center gap-2">
               <label className="font-semibold text-[#e0e1dd]">

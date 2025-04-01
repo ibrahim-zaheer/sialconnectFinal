@@ -67,16 +67,15 @@ const cloudinary = require("../config/cloudinaryConfig");
 
 exports.createProduct = async (req, res) => {
     try {
-      const { name, description, price } = req.body;
+      const { name, description, price, category } = req.body;
   
       if (req.user.role !== "supplier") {
         return res.status(403).json({ message: "Only suppliers can create products." });
       }
   
-      if (!name || !description || !price) {
+      if (!name || !description || !price || !category) {
         return res.status(400).json({ message: "All fields are required." });
       }
-  
       const imageUrls = [];
   
       if (req.files && req.files.length > 0) {
@@ -104,6 +103,7 @@ exports.createProduct = async (req, res) => {
         name,
         description,
         price,
+        category,
         supplier: req.user.id,
         image: imageUrls, // multiple image URLs
       });
@@ -124,7 +124,7 @@ exports.createProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params; // Product ID
-        const { name, description, price } = req.body;
+        const { name, description, price, category } = req.body;
 
         const product = await Product.findById(id);
 
@@ -136,10 +136,11 @@ exports.updateProduct = async (req, res) => {
         if (product.supplier.toString() !== req.user.id) {
             return res.status(403).json({ message: "You are not authorized to update this product." });
         }
-
-        product.name = name || product.name;
-        product.description = description || product.description;
-        product.price = price || product.price;
+    // Update fields if provided
+    product.name = name || product.name;
+    product.description = description || product.description;
+    product.price = price || product.price;
+    product.category = category || product.category;
 
         await product.save();
         res.status(200).json({ message: "Product updated successfully", product });
