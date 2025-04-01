@@ -1,7 +1,8 @@
 const express = require("express");
 
 const User = require("../../models/User"); // Import User model
-const Product = require("../../models/Product")
+const Product = require("../../models/Product");
+const Order = require("../../models/offer/orderSchema");
 
 // Only return users who are NOT admin
 const getAllUsers = async (req, res) => {
@@ -87,5 +88,40 @@ const toggleUserStatus = async (req, res) => {
   }
 };
 
+const getProductsBySupplierId = async (req, res) => {
+  try {
+      const supplierId = req.params.supplierId;
+
+      const products = await Product.find({ supplier: supplierId });
+
+      if (products.length === 0) {
+          return res.status(404).json({ message: "No products found for this supplier." });
+      }
+
+      res.status(200).json({ products });
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+};
+
+  // ✅ Get all orders placed by a specific exporter via URL param
+const getOrdersByExporterId = async (req, res) => {
+  try {
+    const exporterId = req.params.exporterId;
+
+    const orders = await Order.find({ exporterId })
+      .populate("supplierId", "name email")    // Optional: show supplier info
+      .populate("productId", "name")           // Optional: show product info
+      .sort({ createdAt: -1 });
+
+    if (!orders.length) {
+      return res.status(404).json({ message: "No orders found for this exporter." });
+    }
+
+    res.status(200).json({ message: "Orders retrieved successfully", orders });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving orders", error });
+  }
+};
   // Export the functions for routes
-  module.exports =  { getAllUsers,suspendUser,reactivateUser,toggleUserStatus };
+  module.exports =  { getAllUsers,suspendUser,reactivateUser,toggleUserStatus, getProductsBySupplierId, getOrdersByExporterId };
