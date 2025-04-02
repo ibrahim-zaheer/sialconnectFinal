@@ -120,6 +120,27 @@ export default function SupplierOffers() {
               <p>Price: {offer.price} Rs</p>
               <p>Quantity: {offer.quantity}</p>
               <p>Total Value: {offer.quantity * offer.price}</p>
+
+              {/* Chatgpt update code */}
+              {offer.history && offer.history.length > 0 && (
+  <details className="mt-3 bg-gray-100 p-2 rounded">
+    <summary className="cursor-pointer font-semibold text-blue-600">
+      View Offer History
+    </summary>
+    <ul className="mt-2">
+      {offer.history.map((entry, index) => (
+        <li key={index} className="border-b py-1">
+          <p>Price: {entry.price} Rs</p>
+          <p>Quantity: {entry.quantity}</p>
+          <p>Message: {entry.message || "No message"}</p>
+          <p>Updated By: {entry.updatedBy?.name || entry.updatedBy}</p>
+          <p>Date: {new Date(entry.timestamp).toLocaleString()}</p>
+        </li>
+      ))}
+    </ul>
+  </details>
+)}
+
               <p>Message: {offer.message}</p>
               <p>
                 Status:{" "}

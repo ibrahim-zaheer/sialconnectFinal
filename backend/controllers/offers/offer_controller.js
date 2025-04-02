@@ -42,13 +42,30 @@ const createOffer = async (req, res) => {
       if (offer.exporterId.toString() !== req.user.id) {
         return res.status(403).json({ message: "You are not authorized to update this offer" });
       }
+         // ✅ Check if counter offer limit is reached
+   
+  
+
+      offer.history.push({
+        price: offer.price,
+        quantity: offer.quantity,
+        message: offer.message,
+        updatedBy: req.user.id,
+        timestamp: new Date()
+      });
+      offer.updateCount = (offer.updateCount || 0) + 1;
+
+      if (offer.updateCount >= 2) {
+        return res.status(400).json({ message: "Update limit reached." });
+      }
+      
   
       // ✅ Update offer details (only if provided)
       if (price !== undefined) offer.price = price;
       if (quantity !== undefined) offer.quantity = quantity;
       if (message !== undefined) offer.message = message;
       offer.isUpdated = true;
-  
+      offer.counterOfferCount += 1; 
       await offer.save();
   
       res.status(200).json({ message: "Offer updated successfully", offer });
@@ -134,7 +151,14 @@ const acceptOffer = async (req, res) => {
       if (req.user.id !== offer.supplierId.toString()) {
         return res.status(403).json({ message: "Unauthorized action." });
       }
-  
+     // ✅ Save snapshot before changing
+     offer.history.push({
+      price: offer.price,
+      quantity: offer.quantity,
+      message: offer.message,
+      updatedBy: req.user.id,
+      timestamp: new Date()
+    });
       offer.status = "counter";
       offer.counterOffer = { price, quantity, message };
       offer.counterOfferCount += 1; 
@@ -189,8 +213,8 @@ const getOffersByExporter = async (req, res) => {
   try {
       const offers = await Offer.find({ exporterId: req.user.id })
           .populate("productId", "name") // Fetch product name
-          .populate("supplierId", "name"); // Fetch supplier name
-
+          .populate("supplierId", "name") // Fetch supplier name
+          .populate("history.updatedBy", "name");
       if (!offers.length) {
           return res.status(404).json({ message: "No offers found for this user." });
       }
@@ -205,8 +229,8 @@ const getOffersBySupplier = async (req, res) => {
   try {
       const offers = await Offer.find({ supplierId: req.user.id })
           .populate("productId", "name") // Fetch product name
-          .populate("exporterId", "name"); // Fetch supplier name
-
+          .populate("exporterId", "name") // Fetch supplier name
+          .populate("history.updatedBy", "name");
       if (!offers.length) {
           return res.status(404).json({ message: "No offers found for this user." });
       }

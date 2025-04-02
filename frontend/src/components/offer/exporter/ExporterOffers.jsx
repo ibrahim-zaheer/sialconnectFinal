@@ -174,7 +174,6 @@ export default function ExporterOffers() {
           },
         });
         setOffers(response.data.offers);
-        
 
         setLoading(false);
       } catch (err) {
@@ -260,15 +259,56 @@ export default function ExporterOffers() {
               <p>Price: {offer.price} Rs</p>
               <p>Quantity: {offer.quantity}</p>
               <p>Total Value: {offer.quantity * offer.price}</p>
+              {/* chatgpt code */}
+              {offer.history && offer.history.length > 0 && (
+                <details className="mt-3 bg-gray-100 p-2 rounded">
+                  <summary className="cursor-pointer font-semibold text-blue-600">
+                    View Offer History
+                  </summary>
+                  <ul className="mt-2">
+                    {offer.history.map((entry, index) => (
+                      <li key={index} className="border-b py-1">
+                        <p>Price: {entry.price} Rs</p>
+                        <p>Quantity: {entry.quantity}</p>
+                        <p>Message: {entry.message || "No message"}</p>
+                        <p>
+                          Updated By: {entry.updatedBy?.name || entry.updatedBy}
+                        </p>
+                        <p>
+                          Date: {new Date(entry.timestamp).toLocaleString()}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+
               {/* ✅ Show Update Offer Button only if status is "counter" */}
-              {offer.status === "counter" && (
+              {/* {offer.status === "counter" && (
                 <button
                   onClick={() => setSelectedOffer(offer)}
                   className="mt-3 bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
                 >
                   Update Offer
                 </button>
+              )} */}
+
+              {offer.status === "counter" && (
+                <button
+                  onClick={() => setSelectedOffer(offer)}
+                  disabled={offer.updateCount >= 2}
+                  className={`mt-3 p-2 rounded ${
+                    offer.updateCount >= 2
+                      ? "bg-gray-400 cursor-not-allowed text-white"
+                      : "bg-blue-500 text-white hover:bg-blue-600"
+                  }`}
+                >
+                  {offer.updateCount >= 2
+                    ? "Update Limit Reached"
+                    : "Update Offer"}
+                </button>
               )}
+
               <p>
                 Status:
                 <span
