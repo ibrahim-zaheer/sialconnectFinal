@@ -81,16 +81,23 @@ const auctionSchema = new mongoose.Schema({
   quantity: { type: Number, default: 0 },
   startTime: String,
   endTime: String,
+  // image: {
+  //   public_id: {
+  //     type: String,
+  //     required: true,
+  //   },
+  //   url: {
+  //     type: String,
+  //     required: true,
+  //   },
+  // },
   image: {
-    public_id: {
-      type: String,
-      required: true,
-    },
-    url: {
-      type: String,
-      required: true,
-    },
+    type: [String],
+    default: [
+      "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg",
+    ],
   },
+  
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

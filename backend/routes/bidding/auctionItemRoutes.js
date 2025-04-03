@@ -43,7 +43,9 @@ const { uploadProductImage } = require("../../config/multerConfig");
 const router = express.Router();
 
 // Auction Routes
-router.post("/create", authenticateMiddleware, uploadProductImage.single("image"), createAuction);
+// router.post("/create", authenticateMiddleware, uploadProductImage.single("image"), createAuction);
+router.post("/create", authenticateMiddleware, uploadProductImage.array("images", 3), createAuction);
+
 router.get("/getAuctionsByExporter", authenticateMiddleware, getMyAuctions);
 router.get("/getAllAuctions", getAllAuctions);
 router.get("/:id", getAuctionDetails);

@@ -139,14 +139,35 @@ const AuctionList = () => {
         <ul className="flex gap-5 my-10">
           {filteredAuctions.map((auction) => (
             <li key={auction._id} className="auction-item p-5 border rounded-lg">
-              {auction.image && auction.image.url && (
+              {/* {auction.image && auction.image.url && (
                 <img
                 className="mb-3 flex justify-center items-center"
                   src={auction.image.url}
                   alt={auction.title}
                   style={{ width: "200px", height: "auto" }}
                 />
-              )}
+              )} */}
+              {/* {auction.image && auction.image.length > 0 && (
+  <img
+    className="mb-3 flex justify-center items-center"
+    src={auction.image[0]} // Show the first image
+    alt={auction.title}
+    style={{ width: "200px", height: "auto" }}
+  />
+)} */}
+{auction.image && (
+  <img
+    src={
+      Array.isArray(auction.image)
+        ? auction.image[0] // New format
+        : auction.image.url // Old format
+    }
+    alt="Auction"
+    className="w-24 h-24 object-cover rounded-lg"
+  />
+)}
+
+
 
               <h3>{auction.title}</h3>
               <p>{auction.description}</p>

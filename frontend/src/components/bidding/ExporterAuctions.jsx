@@ -94,9 +94,30 @@ const ExporterAuctions = () => {
                   )}
                 </div>
                 <div className="flex flex-col items-end">
-                  {auction.image && (
+                  {/* {auction.image && (
                     <img src={auction.image.url || "https://via.placeholder.com/150"} alt="Auction Image" className="w-24 h-24 object-cover rounded-lg" />
-                  )}
+                  )} */}
+                  {/* {auction.image && auction.image.length > 0 && (
+  <img
+    src={auction.image[0]}
+    alt="Auction"
+    className="w-24 h-24 object-cover rounded-lg"
+  />
+)} */}
+
+{auction.image && (
+  <img
+    src={
+      Array.isArray(auction.image)
+        ? auction.image[0] // New format
+        : auction.image.url // Old format
+    }
+    alt="Auction"
+    className="w-24 h-24 object-cover rounded-lg"
+  />
+)}
+
+
                 </div>
               </div>
               <div className="mt-4 flex justify-between">

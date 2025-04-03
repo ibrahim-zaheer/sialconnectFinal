@@ -376,6 +376,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import FavoriteToggle from "../../favourites/FavoriteToggle";
 
 const DisplayProducts = () => {
   const [products, setProducts] = useState([]);
@@ -405,14 +406,28 @@ const DisplayProducts = () => {
   }, []);
 
   // Fetch user's favorites
+  // useEffect(() => {
+  //   if (userId) {
+  //     const fetchFavorites = async () => {
+  //       try {
+  //         const response = await axios.get(`/api/favourites/favorites/id/${userId}`);
+  //         // Extract only the product IDs from the response
+  //         const favoriteIds = response.data.favorites.map((product) => product._id);
+  //         setFavorites(favoriteIds); // Initialize the favorites state
+  //       } catch (error) {
+  //         console.error("Error fetching favorites:", error);
+  //       }
+  //     };
+  //     fetchFavorites();
+  //   }
+  // }, [userId]);
+
   useEffect(() => {
     if (userId) {
       const fetchFavorites = async () => {
         try {
           const response = await axios.get(`/api/favourites/favorites/id/${userId}`);
-          // Extract only the product IDs from the response
-          const favoriteIds = response.data.favorites.map((product) => product._id);
-          setFavorites(favoriteIds); // Initialize the favorites state
+          setFavorites(response.data.favorites); // this is an array of string IDs
         } catch (error) {
           console.error("Error fetching favorites:", error);
         }
@@ -420,6 +435,7 @@ const DisplayProducts = () => {
       fetchFavorites();
     }
   }, [userId]);
+  
 
   // Handle search input change
   const handleSearchChange = (e) => {
@@ -544,11 +560,11 @@ return matchesSearch && isWithinPrice && matchesCategory;
 
                   <div className="mt-4">
                     {/* Heart Icon for Favorites */}
-                    <button
+                    {/* <button
                       onClick={() => toggleFavorite(product._id)}
                       className="btn btn-ghost btn-sm p-0"
                     >
-                      {favorites.includes(product._id) ? (
+                      {favorites.includes(product._id.toString())? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-6 w-6 text-red-500"
@@ -577,7 +593,14 @@ return matchesSearch && isWithinPrice && matchesCategory;
                           />
                         </svg>
                       )}
-                    </button>
+                    </button> */}
+
+<FavoriteToggle
+  productId={product._id}
+  favorites={favorites}
+  setFavorites={setFavorites}
+  userId={userId}
+/>
 
                     {/* View More Button */}
                     <Link

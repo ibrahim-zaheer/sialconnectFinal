@@ -288,10 +288,19 @@ const AuctionForm = () => {
     const form = new FormData();
 
     // Append all the form data to FormData object
+    // for (const key in formData) {
+    //   form.append(key, formData[key]);
+    // }
     for (const key in formData) {
-      form.append(key, formData[key]);
+      if (key === "image" && formData.image && formData.image.length > 0) {
+        for (let i = 0; i < formData.image.length; i++) {
+          form.append("images", formData.image[i]); // append multiple images
+        }
+      } else {
+        form.append(key, formData[key]);
+      }
     }
-
+    
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
@@ -441,14 +450,28 @@ const AuctionForm = () => {
 
         <div className="w-[100%] flex justify-evenly items-center mt-5">
           <label htmlFor="image">Image</label>
-          <input
+          {/* <input
             className="border rounded-lg overflow-hidden p-2"
             type="file"
             id="image"
             name="image"
             accept="image/*"
             onChange={handleFileChange}
-          />
+          /> */}
+          <input
+  type="file"
+  id="images"
+  name="images"
+  accept="image/*"
+  multiple
+  onChange={(e) =>
+    setFormData((prevData) => ({
+      ...prevData,
+      image: e.target.files, // This will now be a FileList
+    }))
+  }
+/>
+
         </div>
 
         <div className="w-full flex justify-center mt-6">

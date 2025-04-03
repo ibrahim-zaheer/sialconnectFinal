@@ -26,25 +26,60 @@ const createAuction = async (req, res) => {
         }
 
         // If there is an image, upload it to Cloudinary
-        let image = {};
-        if (req.file) {
-            image = {
-                public_id: req.file.filename,
-                url: req.file.path,
-            };
-        }
+        // let image = {};
+        // if (req.file) {
+        //     image = {
+        //         public_id: req.file.filename,
+        //         url: req.file.path,
+        //     };
+        // }
+        const imageUrls = [];
 
+if (req.files && req.files.length > 0) {
+  const uploadPromises = req.files.map((file) => {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "auctions",
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result.secure_url);
+        }
+      );
+      stream.end(file.buffer); // Send buffer to Cloudinary stream
+    });
+  });
+
+  const uploadedImages = await Promise.all(uploadPromises);
+  imageUrls.push(...uploadedImages);
+}
+
+
+        // const auction = new Auction({
+        //     title,
+        //     description,
+        //     startingBid,
+        //     category,
+        //     quantity,
+        //     startTime,
+        //     endTime,
+        //     createdBy: req.user.id,
+        //     image,
+        // });
         const auction = new Auction({
             title,
             description,
             startingBid,
             category,
-            quantity,
+            quantity: quantity || 1,
             startTime,
             endTime,
             createdBy: req.user.id,
-            image,
-        });
+            image: imageUrls, // array of URLs
+          });
+          
 
         await auction.save();
         res.status(201).json({ message: "Auction created successfully", auction });
