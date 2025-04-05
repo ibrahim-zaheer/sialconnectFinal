@@ -47,7 +47,7 @@ const SupplierOrders = () => {
   
     return (
       <div className="container mx-auto p-6">
-        <h2 className="text-2xl font-bold text-center mb-6">My Orders</h2>
+        <h2 className="text-2xl font-bold text-center mb-6">My Order</h2>
   
         {loading ? (
           <p className="text-center text-gray-500">Loading orders...</p>
@@ -59,9 +59,17 @@ const SupplierOrders = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {orders.map((order) => (
               <div key={order._id} className="bg-white p-4 shadow rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">
+                {/* <h3 className="text-lg font-semibold mb-2">
                   Product: {order.productId?.name || "Unknown"}
-                </h3>
+                </h3> */}
+                <h3 className="text-lg font-semibold mb-2">
+  {order.productId
+    ? `Product: ${order.productId.name}`
+    : order.auctionId
+    ? `Auction: ${order.auctionId.title || "Untitled Auction"}`
+    : "Unknown Product/Auction"}
+</h3>
+
                 <p>Exporter: {order.exporterId?.name || "Unknown"}</p>
                 <p>Price: {order.price} Rs</p>
                 <p>Quantity: {order.quantity}</p>

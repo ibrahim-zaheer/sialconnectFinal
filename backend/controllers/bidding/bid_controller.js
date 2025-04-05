@@ -106,7 +106,12 @@ const placeBid = async (req, res) => {
     }
 
     // Check if the user has already placed a bid on this auction
-    const existingBid = auction.bids.find((bid) => bid.userId.toString() === userId);
+    // const existingBid = auction.bids.find((bid) => bid.userId.toString() === userId);
+    const existingBid = await Bid.findOne({
+      auctionItem: auctionId,
+      "bidder.id": userId,
+    });
+    
     if (existingBid) {
       return res.status(400).json({ message: "You have already placed a bid on this auction." });
     }
@@ -138,14 +143,16 @@ const placeBid = async (req, res) => {
     // Update auction with the new highest bid
     auction.currentBid = amount;
     auction.highestBidder = userId;
-    auction.bids.push({
-      userId: userId, // Use userId instead of newBid._id
-      userName: user.name,
-      profileImage: user.profilePicture,
-      amount,
+    // auction.bids.push({
+    //   userId: userId, // Use userId instead of newBid._id
+    //   userName: user.name,
+    //   profileImage: user.profilePicture,
+    //   amount,
 
-      bidId: newBid._id  
-    });
+    //   bidId: newBid._id  
+    // });
+    auction.bids.push(newBid._id); // Store only Bid ObjectId
+
 
     await auction.save();
 

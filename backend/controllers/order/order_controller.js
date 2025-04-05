@@ -8,6 +8,7 @@ const getOrdersBySupplier = async (req, res) => {
       const orders = await Order.find({ supplierId })
         .populate("exporterId", "name email")   // Optional: populate exporter info
         .populate("productId", "name")          // Optional: populate product info
+        .populate("auctionId", "title")
         .sort({ createdAt: -1 });               // Optional: latest orders first
   
       if (!orders.length) {

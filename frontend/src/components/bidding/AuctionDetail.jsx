@@ -124,7 +124,7 @@ const AuctionDetail = () => {
         <div>
           <h4>Bids:</h4>
           <ul>
-            {auctionDetails?.bids?.map((bid) => (
+            {/* {auctionDetails?.bids?.map((bid) => (
               <li key={bid?.userId}>
                 <p>
                   <strong>{bid?.userName}:</strong> ${bid?.amount}
@@ -155,6 +155,38 @@ const AuctionDetail = () => {
                 </div>
               </li>
             ))}
+             */}
+             {auctionDetails?.bids?.map((bid) => (
+  <li key={bid?._id}>
+    <p>
+      <strong>{bid?.bidder?.id?.name}:</strong> ${bid?.amount}
+    </p>
+    <p>Bid ID: {bid?._id}</p>
+    <p>User ID: {bid?.bidder?.id?._id}</p>
+    {bid?.bidder?.profilePicture && (
+      <img
+        src={bid?.bidder?.profilePicture}
+        alt={bid?.bidder?.id?.name}
+        style={{
+          width: "50px",
+          height: "50px",
+          borderRadius: "50%",
+          marginLeft: "10px",
+        }}
+      />
+    )}
+    <div className="mt-4">
+      <Link
+        to={`/bidding/supplier/${bid?.bidder?.id?._id}`}
+        state={{ auctionId: id, bidId: bid?._id }}
+        className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+      >
+        View more
+      </Link>
+    </div>
+  </li>
+))}
+
           </ul>
         </div>
       ) : (

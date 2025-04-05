@@ -46,19 +46,26 @@ const auctionSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  // bids: [
+  //   {
+  //     userId: {  // This should reference User, not Bid
+  //       type: mongoose.Schema.Types.ObjectId,
+  //       ref: "User",  // Change reference to "User"
+  //       required: true
+  //     },
+  //     userName: String,
+  //     profileImage: String,
+  //     amount: Number,
+  //     bidId: { type: mongoose.Schema.Types.ObjectId, ref: "Bid" } 
+  //   },
+  // ],
   bids: [
     {
-      userId: {  // This should reference User, not Bid
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",  // Change reference to "User"
-        required: true
-      },
-      userName: String,
-      profileImage: String,
-      amount: Number,
-      bidId: { type: mongoose.Schema.Types.ObjectId, ref: "Bid" } 
-    },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Bid"
+    }
   ],
+  
   highestBidder: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
