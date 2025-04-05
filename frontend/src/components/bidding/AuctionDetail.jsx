@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "../../lib/axios";
@@ -55,31 +54,59 @@ const AuctionDetail = () => {
   return (
     <div className="auction-detail my-20 w-[80vw] mx-auto">
       <h2>{auctionDetails?.title}</h2>
-      <p><strong>Description:</strong> {auctionDetails?.description}</p>
-      <p><strong>Starting Bid:</strong> ${auctionDetails?.startingBid}</p>
-      <p><strong>Current Bid:</strong> ${auctionDetails?.currentBid}</p>
-      <p><strong>Category:</strong> {auctionDetails?.category}</p>
-      <p><strong>Start Time:</strong> {new Date(auctionDetails?.startTime).toLocaleString()}</p>
-      <p><strong>End Time:</strong> {new Date(auctionDetails?.endTime).toLocaleString()}</p>
+      <p>
+        <strong>Description:</strong> {auctionDetails?.description}
+      </p>
+      <p>
+        <strong>Starting Bid:</strong> ${auctionDetails?.startingBid}
+      </p>
+      <p>
+        <strong>Current Bid:</strong> ${auctionDetails?.currentBid}
+      </p>
+      <p>
+        <strong>Category:</strong> {auctionDetails?.category}
+      </p>
+      <p>
+        <strong>Start Time:</strong>{" "}
+        {new Date(auctionDetails?.startTime).toLocaleString()}
+      </p>
+      <p>
+        <strong>End Time:</strong>{" "}
+        {new Date(auctionDetails?.endTime).toLocaleString()}
+      </p>
 
       {auctionDetails?.image?.url && (
         <img
           src={auctionDetails?.image?.url}
           alt={auctionDetails?.title}
-          style={{ width: "250px", height: "auto", borderRadius: "10px", marginTop: "10px" }}
+          style={{
+            width: "250px",
+            height: "auto",
+            borderRadius: "10px",
+            marginTop: "10px",
+          }}
         />
       )}
 
       {auctionDetails?.createdBy && (
         <div style={{ marginTop: "20px" }}>
           <h4>Created By:</h4>
-          <p><strong>Name:</strong> {auctionDetails?.createdBy?.name}</p>
-          <p><strong>Email:</strong> {auctionDetails?.createdBy?.email}</p>
+          <p>
+            <strong>Name:</strong> {auctionDetails?.createdBy?.name}
+          </p>
+          <p>
+            <strong>Email:</strong> {auctionDetails?.createdBy?.email}
+          </p>
           {auctionDetails?.createdBy?.profilePicture && (
             <img
               src={auctionDetails?.createdBy?.profilePicture}
               alt={auctionDetails?.createdBy?.name}
-              style={{ width: "60px", height: "60px", borderRadius: "50%", marginTop: "10px" }}
+              style={{
+                width: "60px",
+                height: "60px",
+                borderRadius: "50%",
+                marginTop: "10px",
+              }}
             />
           )}
         </div>
@@ -99,24 +126,33 @@ const AuctionDetail = () => {
           <ul>
             {auctionDetails?.bids?.map((bid) => (
               <li key={bid?.userId}>
-                <p><strong>{bid?.userName}:</strong> ${bid?.amount}</p>
+                <p>
+                  <strong>{bid?.userName}:</strong> ${bid?.amount}
+                </p>
                 <p>{bid?._id}</p>
                 <p>UserID: {bid?.userId?._id}</p>
+                <p>Bid Ids: {bid?.bidId}</p>
                 {bid?.profileImage && (
                   <img
                     src={bid?.profileImage}
                     alt={bid?.userName}
-                    style={{ width: "50px", height: "50px", borderRadius: "50%", marginLeft: "10px" }}
+                    style={{
+                      width: "50px",
+                      height: "50px",
+                      borderRadius: "50%",
+                      marginLeft: "10px",
+                    }}
                   />
                 )}
                 <div className="mt-4">
-                                <Link
-                                  to={`/bidding/supplier/${bid?.userId._id}`}
-                                  className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
-                                >
-                                  View more
-                                </Link>
-                              </div>
+                  <Link
+                    to={`/bidding/supplier/${bid?.userId}`} // ✅ correctly get user ID string
+                    state={{ auctionId: id, bidId: bid.bidId }}
+                    className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                  >
+                    View more
+                  </Link>
+                </div>
               </li>
             ))}
           </ul>

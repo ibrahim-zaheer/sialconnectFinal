@@ -4,11 +4,17 @@ import axios from "../../lib/axios";
 import BidForm from "./BidForm";
 import { Link } from "react-router-dom";
 
+import { useLocation } from "react-router-dom";
+
+
+
 const SupplierDetails = () => {
   const { id } = useParams();
   const [userDetails, setUserDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const location = useLocation();
+const { auctionId, bidId } = location.state || {};
 
   useEffect(() => {
     const fetchAuctionDetails = async () => {
@@ -73,6 +79,28 @@ const SupplierDetails = () => {
                                         Chat
                                       </Link>
                     </div>
+                    {auctionId && bidId && (
+  <button
+    onClick={async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.post(
+          "/api/bidding/accept",
+          { auctionId, bidId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        alert("Bid accepted and order created!");
+      } catch (err) {
+        console.error("Error accepting bid:", err);
+        alert("Failed to accept bid.");
+      }
+    }}
+    className="ml-4 inline-block bg-green-600 text-white py-1.5 px-3 rounded-lg hover:bg-green-700 transition duration-300"
+  >
+    Accept Bid
+  </button>
+)}
+
     </div>
   );
 };

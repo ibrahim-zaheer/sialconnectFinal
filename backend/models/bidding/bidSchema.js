@@ -16,6 +16,11 @@ const bidSchema = new mongoose.Schema({
     ref: "Auction",
     required: true,
   },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  }
 });
 
 module.exports = mongoose.model("Bid", bidSchema);

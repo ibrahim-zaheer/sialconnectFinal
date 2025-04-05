@@ -38,7 +38,7 @@ const ExporterAuctions = () => {
     if (!window.confirm("Are you sure you want to delete this auction?")) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`/bidding/delete/${id}`, {
+      await axios.delete(`/api/bidding/delete/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

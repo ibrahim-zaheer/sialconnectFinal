@@ -144,30 +144,58 @@ const getMyAuctions = async (req, res) => {
     }
   };
 
+// const getAuctionDetails = async (req, res) => {
+//     try {
+//       // Fetch auction details by ID and populate related fields
+//       const auction = await Auction.findById(req.params.id)
+//         .populate("createdBy", "name email profilePicture") // Populate creator's details
+//         .populate("highestBidder", "name email profilePicture") // Populate highest bidder details
+//         .populate("bids.userId", "name email profilePicture"); // Populate all bid user details
+  
+//       if (!auction) {
+//         return res.status(404).json({ message: "Auction not found." });
+//       }
+  
+
+//       let userHasBid = false;
+//         if (req.user) {
+//             userHasBid = auction.bids.some(bid => bid.userId.toString() === req.user.id);
+//         }
+
+//         res.status(200).json({ ...auction.toObject(), userHasBid });
+//     //   res.status(200).json(auction);
+//     } catch (error) {
+//       res.status(500).json({ message: error.message });
+//     }
+//   };
+
 const getAuctionDetails = async (req, res) => {
-    try {
-      // Fetch auction details by ID and populate related fields
-      const auction = await Auction.findById(req.params.id)
-        .populate("createdBy", "name email profilePicture") // Populate creator's details
-        .populate("highestBidder", "name email profilePicture") // Populate highest bidder details
-        .populate("bids.userId", "name email profilePicture"); // Populate all bid user details
-  
-      if (!auction) {
-        return res.status(404).json({ message: "Auction not found." });
-      }
-  
-
-      let userHasBid = false;
-        if (req.user) {
-            userHasBid = auction.bids.some(bid => bid.userId.toString() === req.user.id);
+  try {
+    const auction = await Auction.findById(req.params.id)
+      .populate("createdBy", "name email profilePicture")
+      .populate("highestBidder", "name email profilePicture")
+      .populate({
+        path: "bids",
+        populate: {
+          path: "bidder.id",
+          select: "name email profilePicture"
         }
+      });
 
-        res.status(200).json({ ...auction.toObject(), userHasBid });
-    //   res.status(200).json(auction);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    if (!auction) {
+      return res.status(404).json({ message: "Auction not found." });
     }
-  };
+
+    let userHasBid = false;
+    if (req.user) {
+      userHasBid = auction.bids.some(bid => bid.bidder.id.toString() === req.user.id);
+    }
+
+    res.status(200).json({ ...auction.toObject(), userHasBid });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
   const deleteAuction = async (req, res) => {
       try {
