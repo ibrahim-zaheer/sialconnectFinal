@@ -24,7 +24,10 @@ const ExporterAuctions = () => {
       });
       setAuctions(response.data.auctions);
     } catch (error) {
-      setMessage(error.response?.data?.message || "Failed to load auctions. Please try again.");
+      setMessage(
+        error.response?.data?.message ||
+          "Failed to load auctions. Please try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -33,9 +36,16 @@ const ExporterAuctions = () => {
   useEffect(() => {
     fetchExporterAuctions();
   }, []);
+  useEffect(() => {
+    if (message.includes("successfully")) {
+      const timeout = setTimeout(() => setMessage(""), 3000); // Hide after 3s
+      return () => clearTimeout(timeout);
+    }
+  }, [message]);
 
   const handleDeleteAuction = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this auction?")) return;
+    if (!window.confirm("Are you sure you want to delete this auction?"))
+      return;
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`/api/bidding/delete/${id}`, {
@@ -50,8 +60,8 @@ const ExporterAuctions = () => {
     }
   };
 
-   // Function to check if the auction is expired
-   const isAuctionExpired = (endTime) => {
+  // Function to check if the auction is expired
+  const isAuctionExpired = (endTime) => {
     const currentDate = new Date();
     const auctionEndDate = new Date(endTime);
     return auctionEndDate < currentDate;
@@ -69,25 +79,42 @@ const ExporterAuctions = () => {
         />
       </div>
       <h1 className="text-center text-3xl font-semibold my-10">My Auctions</h1>
+      {message && (
+        <p
+          className={`text-center ${
+            message.includes("successfully") ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          {message}
+        </p>
+      )}
       {loading ? (
         <p className="text-center text-gray-500">Loading auctions...</p>
-      ) : message ? (
-        <p className="text-center text-red-500">{message}</p>
       ) : auctions.length > 0 ? (
         <div className="flex flex-wrap justify-center items-center gap-8 mt-4 bg-gray-100 rounded-lg w-[80vw] mx-auto p-8 my-5">
           {auctions.map((auction) => (
-            <div key={auction._id} className="w-full sm:w-1/2 lg:w-[30%] bg-white shadow-md rounded-lg py-8 px-5">
+            <div
+              key={auction._id}
+              className="w-full sm:w-1/2 lg:w-[30%] bg-white shadow-md rounded-lg py-8 px-5"
+            >
               <div className="flex justify-between gap-4">
                 <div className="flex-1">
                   <h1 className="text-lg font-bold">{auction.title}</h1>
-                  <p className="text-sm text-gray-500 mt-2">Starting Bid: Rs {auction.startingBid}</p>
-                  <p className="text-sm text-gray-600 mt-2">{auction.description || "No description provided"}</p>
-                  <p className="text-sm text-gray-600 mt-2">Category: {auction.category}</p>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Starting Bid: Rs {auction.startingBid}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-2">
+                    {auction.description || "No description provided"}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-2">
+                    Category: {auction.category}
+                  </p>
                   {/* <p className="text-sm text-gray-600 mt-2">
                     {new Date(auction.startTime).toLocaleString()} - {new Date(auction.endTime).toLocaleString()}
                   </p> */}
-                   <p className="text-sm text-gray-600 mt-2">
-                    {new Date(auction.startTime).toLocaleString()} - {new Date(auction.endTime).toLocaleString()}
+                  <p className="text-sm text-gray-600 mt-2">
+                    {new Date(auction.startTime).toLocaleString()} -{" "}
+                    {new Date(auction.endTime).toLocaleString()}
                   </p>
                   {isAuctionExpired(auction.endTime) && (
                     <span className="text-red-500 font-bold mt-2">Expired</span>
@@ -105,23 +132,24 @@ const ExporterAuctions = () => {
   />
 )} */}
 
-{auction.image && (
-  <img
-    src={
-      Array.isArray(auction.image)
-        ? auction.image[0] // New format
-        : auction.image.url // Old format
-    }
-    alt="Auction"
-    className="w-24 h-24 object-cover rounded-lg"
-  />
-)}
-
-
+                  {auction.image && (
+                    <img
+                      src={
+                        Array.isArray(auction.image)
+                          ? auction.image[0] // New format
+                          : auction.image.url // Old format
+                      }
+                      alt="Auction"
+                      className="w-24 h-24 object-cover rounded-lg"
+                    />
+                  )}
                 </div>
               </div>
               <div className="mt-4 flex justify-between">
-                <Link to={`/bidding/${auction._id}`} className="bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300">
+                <Link
+                  to={`/bidding/${auction._id}`}
+                  className="bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                >
                   View more
                 </Link>
                 <button

@@ -65,6 +65,9 @@ const Navbar = () => {
                     <li>
                       <Link to="/myOffers">My Offers</Link>
                     </li>
+                    <li>
+                      <Link to="/myExporterOrders">My Orders</Link>
+                    </li>
                   </>
                 )}
 

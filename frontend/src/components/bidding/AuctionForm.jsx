@@ -175,6 +175,7 @@
 
 import React, { useState,useEffect } from "react";
 import axios from "axios";
+import CategoryDropdown from "../Supplier/products/component/CategoryDropdown";
 
 const AuctionForm = () => {
   const [formData, setFormData] = useState({
@@ -384,7 +385,7 @@ const AuctionForm = () => {
           />
         </div>
 
-        <div className="w-[100%] flex justify-evenly items-center mt-3">
+        {/* <div className="w-[100%] flex justify-evenly items-center mt-3">
           <label htmlFor="category">Category</label>
           <input
             type="text"
@@ -395,7 +396,12 @@ const AuctionForm = () => {
             required
             className="border rounded-lg"
           />
-        </div>
+        </div> */}
+        <CategoryDropdown
+  value={formData.category}
+  onChange={handleChange}
+/>
+
 
         <div className="w-[100%] flex justify-evenly items-center mt-3">
           <label htmlFor="quantity">Quantity</label>

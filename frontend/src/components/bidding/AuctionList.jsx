@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 // import { Link } from "react-router-dom";
@@ -85,15 +77,20 @@
 
 // export default AuctionList;
 
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/reducers/userSlice"; // adjust path if needed
 
 const AuctionList = () => {
   const [auctions, setAuctions] = useState([]); // Ensure initial state is an empty array
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const user = useSelector(selectUser);
+  const role = user?.role;
 
   useEffect(() => {
     const fetchAuctions = async () => {
@@ -138,7 +135,10 @@ const AuctionList = () => {
       ) : (
         <ul className="flex gap-5 my-10">
           {filteredAuctions.map((auction) => (
-            <li key={auction._id} className="auction-item p-5 border rounded-lg">
+            <li
+              key={auction._id}
+              className="auction-item p-5 border rounded-lg"
+            >
               {/* {auction.image && auction.image.url && (
                 <img
                 className="mb-3 flex justify-center items-center"
@@ -155,36 +155,36 @@ const AuctionList = () => {
     style={{ width: "200px", height: "auto" }}
   />
 )} */}
-{auction.image && (
-  <img
-    src={
-      Array.isArray(auction.image)
-        ? auction.image[0] // New format
-        : auction.image.url // Old format
-    }
-    alt="Auction"
-    className="w-24 h-24 object-cover rounded-lg"
-  />
-)}
-
-
+              {auction.image && (
+                <img
+                  src={
+                    Array.isArray(auction.image)
+                      ? auction.image[0] // New format
+                      : auction.image.url // Old format
+                  }
+                  alt="Auction"
+                  className="w-24 h-24 object-cover rounded-lg"
+                />
+              )}
 
               <h3>{auction.title}</h3>
               <p>{auction.description}</p>
               <p>Starting Bid: ${auction.startingBid}</p>
               <p>Category: {auction.category}</p>
               <p>
-                Start Time: {new Date(auction.startTime).toLocaleString()} <br /> End
-                Time: {new Date(auction.endTime).toLocaleString()}
+                Start Time: {new Date(auction.startTime).toLocaleString()}{" "}
+                <br /> End Time: {new Date(auction.endTime).toLocaleString()}
               </p>
-              
+
               <div className="mt-4">
-                <Link
-                  to={`/bidding/${auction._id}`}
-                  className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
-                >
-                  View more
-                </Link>
+                {role === "exporter" && (
+                  <Link
+                    to={`/bidding/${auction._id}`}
+                    className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                  >
+                    View mores
+                  </Link>
+                )}
               </div>
             </li>
           ))}

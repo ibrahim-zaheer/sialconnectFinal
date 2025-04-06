@@ -4,11 +4,19 @@ import axios from "../../lib/axios";
 import BidForm from "./BidForm";
 import { Link } from "react-router-dom";
 
+import { useSelector } from "react-redux";
+import { selectUser } from "../../redux/reducers/userSlice"; // adjust path if needed
+
+
 const AuctionDetail = () => {
   const { id } = useParams();
   const [auctionDetails, setAuctionDetails] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const user = useSelector(selectUser);
+const role = user?.role;
+
 
   useEffect(() => {
     const fetchAuctionDetails = async () => {
@@ -176,6 +184,7 @@ const AuctionDetail = () => {
       />
     )}
     <div className="mt-4">
+    {role === "exporter" && (
       <Link
         to={`/bidding/supplier/${bid?.bidder?.id?._id}`}
         state={{ auctionId: id, bidId: bid?._id }}
@@ -183,6 +192,7 @@ const AuctionDetail = () => {
       >
         View more
       </Link>
+      )}
     </div>
   </li>
 ))}

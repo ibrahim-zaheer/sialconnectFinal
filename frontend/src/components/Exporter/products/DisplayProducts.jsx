@@ -389,6 +389,7 @@ const DisplayProducts = () => {
   // Access the user's ID from Redux state
   const user = useSelector((state) => state.user);
   const userId = user?.id;
+  const role = user.role;
 
   const categories = ["All", ...new Set(products.map((p) => p.category || "Other"))];
 
@@ -594,13 +595,14 @@ return matchesSearch && isWithinPrice && matchesCategory;
                         </svg>
                       )}
                     </button> */}
-
+ {role === "exporter" && (
 <FavoriteToggle
   productId={product._id}
   favorites={favorites}
   setFavorites={setFavorites}
   userId={userId}
 />
+ )}
 
                     {/* View More Button */}
                     <Link

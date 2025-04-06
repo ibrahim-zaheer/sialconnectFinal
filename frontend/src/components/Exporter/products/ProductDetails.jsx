@@ -13,6 +13,7 @@ import CreateOffer from "../../offer/createOffer";
 
 import ImageCarousel from "../../ImageCarousel";
 
+
 // import ChatRoom from "../../Chat/ChatRoom";
 
 const ProductDetails = () => {
@@ -27,6 +28,7 @@ const ProductDetails = () => {
   // for accessing the user profile id
   const user = useSelector((state) => state.user);
   const userId = user?.id;
+  const role = user?.role;
 
   // Fetch product details
   useEffect(() => {
@@ -87,6 +89,7 @@ const ProductDetails = () => {
                   {product.description}
                 </p>
                 <p className="text-gray-700 mb-2">Price: {product.price} Rs</p>
+              
               </div>
               <div>
                 <div className="flex justify-center items-center gap-5 mb-5">
@@ -144,24 +147,29 @@ const ProductDetails = () => {
                 >
                   Chat
                 </Link> */}
+
+                {role === "exporter" && (
                 <Link
                   to={`/chat?supplierId=${product.supplier?._id}`}
                   className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
                 >
                   Chat
                 </Link>
+                )}
                 {/* <button
                   onClick={handleSendOffer}
                   className="bg-green-500 text-white py-1.5 px-3 rounded-lg hover:bg-green-600 transition duration-300"
                 >
                   Send Offer
                 </button> */}
+                {role === "exporter" && (
                 <button
                   onClick={() => setShowOfferPopup(true)}
                   className="bg-green-500 text-white py-1.5 px-3 rounded-lg hover:bg-green-600 transition duration-300"
                 >
                   Send Offer
                 </button>
+                )}
               </div>
             </div>
           </div>

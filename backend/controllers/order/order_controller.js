@@ -22,13 +22,14 @@ const getOrdersBySupplier = async (req, res) => {
   };
 
   // ✅ Get all orders placed by a specific exporter via URL param
-const getOrdersByExporterId = async (req, res) => {
+const getOrdersByExporter = async (req, res) => {
   try {
-    const exporterId = req.params.exporterId;
+    const exporterId = req.user.id;
 
     const orders = await Order.find({ exporterId })
       .populate("supplierId", "name email")    // Optional: show supplier info
-      .populate("productId", "name")           // Optional: show product info
+      .populate("productId", "name") 
+      .populate("auctionId", "title")          // Optional: show product info
       .sort({ createdAt: -1 });
 
     if (!orders.length) {
@@ -43,5 +44,5 @@ const getOrdersByExporterId = async (req, res) => {
 
 
 module.exports = {
-    getOrdersBySupplier
+    getOrdersBySupplier,getOrdersByExporter
 };

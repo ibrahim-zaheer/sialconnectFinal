@@ -2,6 +2,8 @@
 import React from "react";
 import axios from "axios";
 
+
+
 const FavoriteToggle = ({ productId, favorites, setFavorites, userId }) => {
   const isFavorite = favorites.includes(productId.toString());
 
