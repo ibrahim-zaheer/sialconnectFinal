@@ -75,14 +75,21 @@
 
 import React from "react";
 import { Routes, Router, Route, useLocation } from "react-router-dom";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setUser,selectUser } from "./redux/reducers/userSlice"; // Import Redux actions and selector
-import { requestPermissionAndGetToken,listenForMessages, requestFCMToken,onMessageListener,onMessage,onMessageListening } from "./services/firebase"; // Import firebase functions
+import { setUser, selectUser } from "./redux/reducers/userSlice"; // Import Redux actions and selector
+import {
+  requestPermissionAndGetToken,
+  listenForMessages,
+  requestFCMToken,
+  onMessageListener,
+  onMessage,
+  onMessageListening,
+} from "./services/firebase"; // Import firebase functions
 import { messaging } from "./services/firebase";
 
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 
 import Navbar from "./components/NavigationBar";
 import UserAuth from "./pages/userauthentication";
@@ -103,40 +110,31 @@ import VerifyEmail from "./components/verifyEmail";
 
 import VerifyOTP from "./components/otp/verify-otp";
 
-
 import SupplierProductsPage from "./pages/Supplier/SupplierProductsPage";
 
 import CreateAuction from "./pages/bidding/createAuction";
 
-import GetAllAuctionsPage from "./pages/bidding/GetAllAuctionsPage"
+import GetAllAuctionsPage from "./pages/bidding/GetAllAuctionsPage";
 
-import ExporterAuctionsPage from "./pages/bidding/ExporterAuctionsPage"
-
+import ExporterAuctionsPage from "./pages/bidding/ExporterAuctionsPage";
 
 import AuctionDetail from "./components/bidding/AuctionDetail";
 
 import SupplierDetails from "./components/bidding/SupplierDetails";
 
-
 import SupplierReviewsPage from "./pages/reviews/SupplierReviewsPage";
-
 
 import FavouritePage from "./pages/favourites/FavouritePage";
 
 import OfferPage from "./pages/offers/OfferPage";
 import CreateOfferPage from "./pages/offers/CreateOfferPage";
 
-
 import ExporterOfferPage from "./pages/offers/ExporterOfferPage";
 
 import SupplierOfferPage from "./pages/offers/SupplierOfferPage";
-
-
-
-
+import ExporterProducts from "./pages/Exporter/ExporterProducts";
 
 const App = () => {
-
   return (
     <>
       <Main />
@@ -145,16 +143,12 @@ const App = () => {
 };
 
 const Main = () => {
-
-  
-
   const location = useLocation();
   const dispatch = useDispatch();
 
   const hideNavbarRoutes = ["/signIn"];
   // const user = useSelector(selectUser);
-  const user = useSelector((state) => state.user); 
-
+  const user = useSelector((state) => state.user);
 
   const [fcmToken, setFcmToken] = useState(null);
 
@@ -167,13 +161,13 @@ const Main = () => {
   //     } catch(err){
   //       console.error("Error getting token",err);
   //     }
-  //   } 
+  //   }
   //   fetchFCMToken();
   // })
 
-  useEffect(()=>{
-    return toast(<div>Thank you</div>)
-  },[])
+  useEffect(() => {
+    return toast(<div>Thank you</div>);
+  }, []);
 
   useEffect(() => {
     const fetchFCMToken = async () => {
@@ -187,13 +181,12 @@ const Main = () => {
     };
     fetchFCMToken();
   }, []);
-  
-  
+
   // useEffect(() => {
   //   onMessageListening()
   //     .then((payload) => {
   //       console.log("🚀 Foreground Message Received:", payload);
-  
+
   //       if (payload?.notification) {
   //         toast(
   //           <div>
@@ -212,7 +205,7 @@ const Main = () => {
   useEffect(() => {
     const unsubscribe = onMessage(messaging, (payload) => {
       console.log("🚀 Foreground Notification Received:", payload);
-      
+
       if (payload?.notification) {
         toast(
           <div>
@@ -225,14 +218,9 @@ const Main = () => {
         console.log("❌ No notification payload received");
       }
     });
-  
+
     return () => unsubscribe(); // Cleanup listener on unmount
   }, []);
-  
-  
-  
-  
- 
 
   // useEffect(() => {
   //   if (user.id) {
@@ -244,10 +232,9 @@ const Main = () => {
   //   }
   // }, [user.id, dispatch]); // Only run when the user state changes
 
-
   return (
     <>
-    <ToastContainer/>
+      {/* <ToastContainer/> */}
       {/* Render the Navbar unless the current path is in hideNavbarRoutes */}
       {!hideNavbarRoutes.includes(location.pathname) && <Navbar />}
 
@@ -259,10 +246,11 @@ const Main = () => {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/roleSelection" element={<RoleSelection />} />
         <Route path="/Exporter" element={<ExporterPage />} />
+        <Route path="/ExporterProducts" element={<ExporterProducts />} />
         <Route path="/Supplier" element={<SupplierPage />} />
         <Route path="/signIn" element={<UserAuth />} />
         <Route path="/supplier/product/:id" element={<ProductDetails />} />
-        
+
         <Route path="/View" element={<ProductViewing />} />
 
         <Route path="/VerifyEmail" element={<VerifyEmail />} />
@@ -273,39 +261,36 @@ const Main = () => {
 
         <Route path="/SupplierProducts" element={<SupplierProductsPage />} />
 
-{/* For Chat */}
+        {/* For Chat */}
         <Route path="/chat" element={<ChatPage />} />
 
-
-{/* Bidding */}
+        {/* Bidding */}
         <Route path="/createAuction" element={<CreateAuction />} />
 
-        <Route path="/getAllAuctions" element={<GetAllAuctionsPage  />} />
+        <Route path="/getAllAuctions" element={<GetAllAuctionsPage />} />
 
-        <Route path="/getAuctionsOfExporter" element={<ExporterAuctionsPage  />} />
+        <Route
+          path="/getAuctionsOfExporter"
+          element={<ExporterAuctionsPage />}
+        />
 
         <Route path="/bidding/:id" element={<AuctionDetail />} />
 
-       
         <Route path="/bidding/supplier/:id" element={<SupplierDetails />} />
-{/* Reivews */}
-          <Route path="/reviews/supplier/:id" element={< SupplierReviewsPage />} />
+        {/* Reivews */}
+        <Route path="/reviews/supplier/:id" element={<SupplierReviewsPage />} />
 
-{/* Favourites*/}
-<Route path="/favourites" element={< FavouritePage />} />  
+        {/* Favourites*/}
+        <Route path="/favourites" element={<FavouritePage />} />
 
-{/* Offers*/}
-<Route path="/offers" element={< OfferPage />} />  
+        {/* Offers*/}
+        <Route path="/offers" element={<OfferPage />} />
 
-<Route path="/createOffers" element={< CreateOfferPage />} />  
+        <Route path="/createOffers" element={<CreateOfferPage />} />
 
-<Route path="/myOffers" element={< ExporterOfferPage />} /> 
+        <Route path="/myOffers" element={<ExporterOfferPage />} />
 
-
-<Route path="/mySupplierOffers" element={< SupplierOfferPage />} /> 
-
-
-
+        <Route path="/mySupplierOffers" element={<SupplierOfferPage />} />
       </Routes>
     </>
   );

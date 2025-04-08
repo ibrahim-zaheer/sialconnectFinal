@@ -16,7 +16,7 @@ const SupplierPage = () => {
         Hello, Supplier!
       </h1> */}
 
-      <ManageProducts />
+      {/* <ManageProducts /> */}
       <SupplierReviews supplierId={user.id} />
     </div>
   );

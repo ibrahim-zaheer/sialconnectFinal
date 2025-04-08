@@ -2,21 +2,20 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "../../redux/reducers/userSlice";
 import axios from "axios";
-
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
 
 const getMaxDate = () => {
   const date = new Date();
   date.setFullYear(date.getFullYear() - 18);
   return date.toISOString().split("T")[0];
 };
-export default function ProfileUpdateForm() {
+
+export default function ProfileUpdateForm({ onClose }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
 
   const [formData, setFormData] = useState({
     city: user.city || "",
@@ -29,7 +28,6 @@ export default function ProfileUpdateForm() {
     dateOfBirth: user.dateOfBirth ? new Date(user.dateOfBirth).toISOString().split("T")[0] : "",
   });
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -43,7 +41,6 @@ export default function ProfileUpdateForm() {
   
     // Validate form data
     const validationErrors = {};
-
     const today = new Date();
     const minDate = new Date();
     minDate.setFullYear(today.getFullYear() - 18);
@@ -70,193 +67,199 @@ export default function ProfileUpdateForm() {
         validationErrors.dateOfBirth = "You must be at least 18 years old";
       }
     }
-    // If there are validation errors, stop submission
+
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
   
-    // Clear previous errors
     setErrors({});
-  
-    // Start loading
     setIsLoading(true);
   
     try {
-      // Make an API call using Axios
-      const response = await axios.put('/api/auth//update-profile', formData, {
+      const response = await axios.put('/api/auth/update-profile', formData, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, // Include the user's token
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       });
   
-      // Dispatch the updateProfile action with the updated form data
       dispatch(updateProfile(response.data.user));
-  
-      // Show success message
-      setIsSuccess(true);
-  
-      // Clear success message after 3 seconds
-      setTimeout(() => setIsSuccess(false), 3000);
+      toast.success("Profile updated successfully!");
+      onClose();
     } catch (error) {
       console.error('Error updating profile:', error);
-  
-      // Handle API errors
-      if (error.response) {
-        // Server responded with an error (e.g., 400, 500)
-        alert(error.response.data.message || 'Failed to update profile. Please try again.');
-      } else if (error.request) {
-        // No response received (e.g., network error)
-        alert('Network error. Please check your connection and try again.');
-      } else {
-        // Something went wrong in the request setup
-        alert('An error occurred. Please try again.');
-      }
+      toast.error(error.response?.data?.message || 'Failed to update profile');
     } finally {
-      // Stop loading
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="profile-update-form w-[60vw] bg-red-50 rounded-lg p-10 mx-auto flex flex-col items-center justify-center my-16">
-      <h2 className="text-2xl font-bold my-4">Update Your Profile</h2>
-      <form className="w-[60%]" onSubmit={handleSubmit}>
-        {/* City */}
-        <div className="form-group flex justify-evenly mt-3">
-          <label htmlFor="city">City: </label>
-          <input
-          className="border px-2 py-1 rounded-lg"
-            type="text"
-            id="city"
-            name="city"
-            value={formData.city}
-            onChange={handleChange}
-            placeholder="Enter your city"
-          />
-          {errors.city && <span className="error">{errors.city}</span>}
-        </div>
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+    >
+      <motion.div 
+        className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        initial={{ scale: 0.95 }}
+        animate={{ scale: 1 }}
+      >
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">Update Your Profile</h2>
+            <button 
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
 
-        {/* CNIC */}
-        <div className="form-group flex justify-evenly mt-3">
-          <label htmlFor="cnic">CNIC</label>
-          <input
-          className="border px-2 py-1 rounded-lg"
-            type="text"
-            id="cnic"
-            name="cnic"
-            value={formData.cnic}
-            onChange={handleChange}
-            placeholder="Enter your CNIC (e.g., 12345-6789012-3)"
-          />
-          {errors.cnic && <span className="error">{errors.cnic}</span>}
-        </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* City */}
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">City</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  className={`w-full px-3 py-2 border ${errors.city ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+                  placeholder="Enter your city"
+                />
+                {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
+              </div>
 
-        {/* Phone Number */}
-        <div className="form-group flex justify-evenly mt-3">
-          <label htmlFor="phoneNumber">Phone Number</label>
-          <input
-          className="border px-2 py-1 rounded-lg"
-            type="text"
-            id="phoneNumber"
-            name="phoneNumber"
-            value={formData.phoneNumber}
-            onChange={handleChange}
-            placeholder="Enter your phone number (e.g., +1234567890)"
-          />
-          {errors.phoneNumber && <span className="error">{errors.phoneNumber}</span>}
-        </div>
+              {/* CNIC */}
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">CNIC</label>
+                <input
+                  type="text"
+                  name="cnic"
+                  value={formData.cnic}
+                  onChange={handleChange}
+                  className={`w-full px-3 py-2 border ${errors.cnic ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+                  placeholder="12345-6789012-3"
+                />
+                {errors.cnic && <p className="text-red-500 text-xs mt-1">{errors.cnic}</p>}
+              </div>
 
-        {/* Business Name */}
-        <div className="form-group flex justify-evenly mt-3">
-          <label htmlFor="businessName">Business Name</label>
-          <input
-          className="border px-2 py-1 rounded-lg"
-            type="text"
-            id="businessName"
-            name="businessName"
-            value={formData.businessName}
-            onChange={handleChange}
-            placeholder="Enter your business name"
-          />
-        </div>
+              {/* Phone Number */}
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
+                  onChange={handleChange}
+                  className={`w-full px-3 py-2 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+                  placeholder="+1234567890"
+                />
+                {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
+              </div>
 
-        {/* Business Address */}
-        <div className="form-group flex justify-evenly mt-3">
-          <label htmlFor="businessAddress">Business Address</label>
-          <input
-          className="border px-2 py-1 rounded-lg"
-            type="text"
-            id="businessAddress"
-            name="businessAddress"
-            value={formData.businessAddress}
-            onChange={handleChange}
-            placeholder="Enter your business address"
-          />
-        </div>
+              {/* Business Name */}
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">Business Name</label>
+                <input
+                  type="text"
+                  name="businessName"
+                  value={formData.businessName}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Enter business name"
+                />
+              </div>
 
-        {/* Postal Code */}
-        <div className="form-group flex justify-evenly mt-3">
-          <label htmlFor="postalCode">Postal Code</label>
-          <input
-          className="border px-2 py-1 rounded-lg"
-            type="text"
-            id="postalCode"
-            name="postalCode"
-            value={formData.postalCode}
-            onChange={handleChange}
-            placeholder="Enter your postal code (e.g., 12345)"
-          />
-          {errors.postalCode && <span className="error">{errors.postalCode}</span>}
-        </div>
+              {/* Business Address */}
+              <div className="space-y-1 md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700">Business Address</label>
+                <input
+                  type="text"
+                  name="businessAddress"
+                  value={formData.businessAddress}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Enter business address"
+                />
+              </div>
 
-        {/* Bio */}
-        <div className="form-group flex justify-evenly mt-3">
-          <label htmlFor="bio">Bio</label>
-          <textarea
-          className="border px-2 py-1 rounded-lg"
-            id="bio"
-            name="bio"
-            value={formData.bio}
-            onChange={handleChange}
-            placeholder="Tell us about yourself"
-            rows="4"
-          />
-        </div>
+              {/* Postal Code */}
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">Postal Code</label>
+                <input
+                  type="text"
+                  name="postalCode"
+                  value={formData.postalCode}
+                  onChange={handleChange}
+                  className={`w-full px-3 py-2 border ${errors.postalCode ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+                  placeholder="12345"
+                />
+                {errors.postalCode && <p className="text-red-500 text-xs mt-1">{errors.postalCode}</p>}
+              </div>
 
-          {/* Date Of Birth */}
-          <div className="form-group flex justify-evenly mt-3">
-          <label htmlFor="dateOfBirth">Date of Birth</label>
-          <input
-          className="border px-2 py-1 rounded-lg"
-            // type="date"
-            type="date"
-            id="dateOfBirth"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
-            onChange={handleChange}
-            max={getMaxDate()}
-            min="1900-01-01" 
-          />
-          {errors.dateOfBirth && (
-            <span className="error">{errors.dateOfBirth}</span>
-          )}
-        </div>
+              {/* Date of Birth */}
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">Date of Birth</label>
+                <input
+                  type="date"
+                  name="dateOfBirth"
+                  value={formData.dateOfBirth}
+                  onChange={handleChange}
+                  max={getMaxDate()}
+                  min="1900-01-01"
+                  className={`w-full px-3 py-2 border ${errors.dateOfBirth ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+                />
+                {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth}</p>}
+              </div>
+            </div>
 
-        <div className="w-full flex justify-center items-center mt-6">
-          {/* Submit Button */}
-        <button type="submit" className="submit-button p-3 border rounded-lg" disabled={isLoading}>
-          {isLoading ? 'Updating...' : 'Update Profile'}
-        </button>
-        </div>
-      </form>
+            {/* Bio */}
+            <div className="space-y-1">
+              <label className="block text-sm font-medium text-gray-700">Bio</label>
+              <textarea
+                name="bio"
+                value={formData.bio}
+                onChange={handleChange}
+                rows="4"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Tell us about yourself"
+              />
+            </div>
 
-      {/* Success Message */}
-      {isSuccess && (
-        <div className="success-message">
-          Profile updated successfully!
+            <div className="flex justify-end space-x-3 pt-4">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                disabled={isLoading}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-70 flex items-center"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Updating...
+                  </>
+                ) : "Update Profile"}
+              </button>
+            </div>
+          </form>
         </div>
-      )}
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }

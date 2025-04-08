@@ -173,7 +173,7 @@
 
 // export default AuctionForm;
 
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const AuctionForm = () => {
@@ -185,13 +185,11 @@ const AuctionForm = () => {
     quantity: "",
     startTime: "",
     endTime: "",
-    image: null, // For file input
+    image: null,
   });
-
 
   const [minStartTime, setMinStartTime] = useState("");
 
-  // Function to get current date-time in YYYY-MM-DDTHH:MM format for min attribute
   const getCurrentDateTime = () => {
     const now = new Date();
     return now.toISOString().slice(0, 16);
@@ -201,20 +199,9 @@ const AuctionForm = () => {
     setMinStartTime(getCurrentDateTime());
   }, []);
 
-
-
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prevData) => ({
-  //     ...prevData,
-  //     [name]: value,
-  //   }));
-  // };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
   
-    // Ensure startTime is not in the past
     if (name === "startTime") {
       const selectedStartTime = new Date(value);
       const currentTime = new Date();
@@ -224,14 +211,13 @@ const AuctionForm = () => {
         return;
       }
   
-      // Add 24 hours to startTime
       const endTime = new Date(selectedStartTime);
       endTime.setHours(endTime.getHours() + 24);
   
       setFormData((prevData) => ({
         ...prevData,
         startTime: value,
-        endTime: endTime.toISOString().slice(0, 16), // Convert to datetime-local format
+        endTime: endTime.toISOString().slice(0, 16),
       }));
     } else {
       setFormData((prevData) => ({
@@ -244,22 +230,16 @@ const AuctionForm = () => {
   const handleFileChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
-      image: e.target.files[0], // Set the file
+      image: e.target.files[0],
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Convert to numbers and validate
     const startingBid = parseFloat(formData.startingBid);
     const quantity = parseInt(formData.quantity, 10);
 
-    if (
-      isNaN(startingBid) ||
-      isNaN(quantity) ||
-      startingBid * quantity <= 100000
-    ) {
+    if (isNaN(startingBid) || isNaN(quantity) || startingBid * quantity <= 100000) {
       alert("Error: Starting Bid * Quantity must be greater than 100,000");
       return;
     }
@@ -278,10 +258,7 @@ const AuctionForm = () => {
       return;
     }
 
-
     const form = new FormData();
-
-    // Append all the form data to FormData object
     for (const key in formData) {
       form.append(key, formData[key]);
     }
@@ -289,7 +266,7 @@ const AuctionForm = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "/api/bidding/create", // Your backend API endpoint
+        "/api/bidding/create",
         form,
         {
           headers: {
@@ -299,7 +276,18 @@ const AuctionForm = () => {
         }
       );
       alert("Auction created successfully!");
-      console.log(response.data); // Handle response data
+      console.log(response.data);
+      // Reset form after successful submission
+      setFormData({
+        title: "",
+        description: "",
+        startingBid: "",
+        category: "",
+        quantity: "",
+        startTime: "",
+        endTime: "",
+        image: null,
+      });
     } catch (error) {
       console.error("Error creating auction:", error);
       alert("Failed to create auction.");
@@ -307,146 +295,163 @@ const AuctionForm = () => {
   };
 
   return (
-    <div className="auction-form-container w-[60vw] bg-red-50 rounded-lg mx-auto p-10">
-      <h2 className="text-center text-2xl font-bold">Create Auction</h2>
-      <form className="my-10" onSubmit={handleSubmit}>
-        <div className="w-[100%] flex justify-evenly items-center mt-3">
-          <label htmlFor="title" className="font-semibold">
-            Title:{" "}
-          </label>
-          {/* <input
-            type="text"
-            id="title"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            required
-          /> */}
+    <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md border border-gray-200 mb-10">
+      <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Create Auction</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Title */}
+          <div className="space-y-1">
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+              Title *
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Enter auction title"
+              required
+            />
+          </div>
 
-          <input
-            type="text"
-            id="title"
-            name="title"
-            placeholder="Title"
-            class="input input-bordered w-full max-w-xs"
-            value={formData.title}
-            onChange={handleChange}
-            required
-          />
+          {/* Starting Bid */}
+          <div className="space-y-1">
+            <label htmlFor="startingBid" className="block text-sm font-medium text-gray-700">
+              Starting Bid (Rs) *
+            </label>
+            <input
+              type="number"
+              id="startingBid"
+              name="startingBid"
+              value={formData.startingBid}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="0.00"
+              min="0"
+              step="0.01"
+              required
+            />
+          </div>
+
+          {/* Category */}
+          <div className="space-y-1">
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+              Category *
+            </label>
+            <input
+              type="text"
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="e.g., Electronics, Furniture"
+              required
+            />
+          </div>
+
+          {/* Quantity */}
+          <div className="space-y-1">
+            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">
+              Quantity *
+            </label>
+            <input
+              type="number"
+              id="quantity"
+              name="quantity"
+              value={formData.quantity}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="1"
+              min="1"
+              required
+            />
+          </div>
+
+          {/* Start Time */}
+          <div className="space-y-1">
+            <label htmlFor="startTime" className="block text-sm font-medium text-gray-700">
+              Start Time *
+            </label>
+            <input
+              type="datetime-local"
+              id="startTime"
+              name="startTime"
+              min={minStartTime}
+              value={formData.startTime}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          {/* End Time */}
+          <div className="space-y-1">
+            <label htmlFor="endTime" className="block text-sm font-medium text-gray-700">
+              End Time (Auto-calculated)
+            </label>
+            <input
+              type="datetime-local"
+              id="endTime"
+              name="endTime"
+              value={formData.endTime}
+              readOnly
+              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100"
+            />
+          </div>
         </div>
 
-        <div className="w[100%] flex justify-evenly items-center mt-3">
-          <label htmlFor="description">Description</label>
-          {/* <textarea
-            id="description"
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          ></textarea> */}
-
+        {/* Description */}
+        <div className="space-y-1">
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+            Description *
+          </label>
           <textarea
-            class="textarea textarea-bordered"
-            placeholder="Bio"
             id="description"
             name="description"
             value={formData.description}
             onChange={handleChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            rows={4}
+            placeholder="Provide detailed information about the item"
             required
           ></textarea>
         </div>
 
-        <div className="w-[100%] flex justify-evenly items-center mt-3">
-          <label htmlFor="startingBid">Starting Bid</label>
-          <input
-            type="number"
-            id="startingBid"
-            name="startingBid"
-            value={formData.startingBid}
-            onChange={handleChange}
-            required
-            className="border rounded-lg"
-          />
+        {/* Image Upload */}
+        <div className="space-y-1">
+          <label htmlFor="image" className="block text-sm font-medium text-gray-700">
+            Product Image *
+          </label>
+          <div className="flex items-center gap-2">
+            <input
+              type="file"
+              id="image"
+              name="image"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="block w-full text-sm text-gray-500
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-md file:border-0
+                file:text-sm file:font-medium
+                file:bg-blue-50 file:text-blue-700
+                hover:file:bg-blue-100"
+              required
+            />
+            {formData.image && (
+              <span className="text-sm text-gray-500">{formData.image.name}</span>
+            )}
+          </div>
         </div>
 
-        <div className="w-[100%] flex justify-evenly items-center mt-3">
-          <label htmlFor="category">Category</label>
-          <input
-            type="text"
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-            className="border rounded-lg"
-          />
-        </div>
-
-        <div className="w-[100%] flex justify-evenly items-center mt-3">
-          <label htmlFor="quantity">Quantity</label>
-          <input
-            className="border rounded-lg"
-            type="number"
-            id="quantity"
-            name="quantity"
-            value={formData.quantity}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="w-[100%] flex justify-evenly items-center mt-3">
-          <label htmlFor="startTime">Start Time</label>
-          <input
-            className="border rounded-lg"
-            type="datetime-local"
-            id="startTime"
-            name="startTime"
-            min={minStartTime} // Prevent past time selection
-            value={formData.startTime}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        {/* <div className="w-[100%] flex justify-evenly items-center mt-3">
-          <label htmlFor="endTime">End Time</label>
-          <input
-            className="border rounded-lg"
-            type="datetime-local"
-            id="endTime"
-            name="endTime"
-            value={formData.endTime}
-            onChange={handleChange}
-            required
-          />
-        </div> */}
-        <div className="w-[100%] flex justify-evenly items-center mt-3">
-  <label>End Time (Auto-filled)</label>
-  <input
-    className="border rounded-lg bg-gray-200"
-    type="datetime-local"
-    id="endTime"
-    name="endTime"
-    value={formData.endTime}
-    readOnly
-  />
-</div>
-
-        <div className="w-[100%] flex justify-evenly items-center mt-5">
-          <label htmlFor="image">Image</label>
-          <input
-            className="border rounded-lg overflow-hidden p-2"
-            type="file"
-            id="image"
-            name="image"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-        </div>
-
-        <div className="w-full flex justify-center mt-6">
-          <button className="p-3 border rounded-lg" type="submit">
+        {/* Submit Button */}
+        <div className="pt-4">
+          <button
+            type="submit"
+            className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+          >
             Create Auction
           </button>
         </div>
