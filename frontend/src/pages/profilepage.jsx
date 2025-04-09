@@ -29,7 +29,7 @@ const ProfilePage = () => {
   return (
     <>
    
-      <div className="w-[80vw] mx-auto px-2 mt-5">
+      <div className="w-full mx-auto px-2 mt-5">
         {/* <h1>Welcome to the Home Page!</h1> */}
 
         <UserProfile />

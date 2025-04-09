@@ -1,40 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link,  useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-// for allowing people to chat with each other
-import Chat from "../../Chat/Chat";
 import { useSelector } from "react-redux";
-
+import Chat from "../../Chat/Chat";
 import WriteReview from "../../reviews/WriteReviews";
-
 import AverageReviewBySupplier from "../../reviews/averageReviewBySuppliers";
-
 import CreateOffer from "../../offer/createOffer";
 
 import ImageCarousel from "../../ImageCarousel";
 
 
-// import ChatRoom from "../../Chat/ChatRoom";
-
 const ProductDetails = () => {
-  const { id } = useParams(); // Get the product ID from the URL
+  const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [error, setError] = useState("");
-
   const [showOfferPopup, setShowOfferPopup] = useState(false);
-
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Get the active tab from URL
+  const queryParams = new URLSearchParams(location.search);
+  const activeTab = queryParams.get('tab') || 'your-products';
 
-  // for accessing the user profile id
   const user = useSelector((state) => state.user);
   const userId = user?.id;
   const role = user?.role;
 
-  // Fetch product details
   useEffect(() => {
     const fetchProductDetails = async () => {
       try {
-        const response = await axios.get(`/api/supplier/product/${id}`); // API endpoint for fetching a product by ID
+        const response = await axios.get(`/api/supplier/product/${id}`);
         setProduct(response.data);
       } catch (err) {
         setError("Error fetching product details.");
@@ -43,6 +38,11 @@ const ProductDetails = () => {
     };
     fetchProductDetails();
   }, [id]);
+
+  const handleBackClick = () => {
+    // Updated to match your exact route structure
+    navigate(`/SupplierProducts?tab=${activeTab}`);
+  };
 
   if (error) {
     return <div className="container mt-4 text-center">{error}</div>;
@@ -91,112 +91,177 @@ const ProductDetails = () => {
                 <p className="text-gray-700 mb-2">Price: {product.price} Rs</p>
               
               </div>
-              <div>
-                <div className="flex justify-center items-center gap-5 mb-5">
-                  {/* Supplier Profile Picture Section */}
-                  <div className="">
+
+              {/* Product Info */}
+              <div className="space-y-6">
+                <div>
+                  <h1 className="text-3xl font-bold text-neutral-900">{product.name}</h1>
+                  <p className="text-primary-600 font-medium text-xl mt-2">
+                    Rs {product.price.toLocaleString()} per piece
+                  </p>
+                  <div className="mt-4">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                      product.inStock ? 'bg-secondary-100 text-secondary-800' : 'bg-neutral-100 text-neutral-800'
+                    }`}>
+                      {product.inStock ? 'In Stock' : 'Out of Stock'}
+                    </span>
+                  </div>
+                  <p className="text-neutral-600 mt-4">{product.description}</p>
+                </div>
+
+                {/* Supplier Info */}
+                <div className="border-t border-neutral-200 pt-6">
+                  <h2 className="text-xl font-semibold text-neutral-900 mb-4">Supplier Information</h2>
+                  <div className="flex items-center gap-4">
                     {product.supplier?.profilePicture ? (
                       <img
                         src={product.supplier.profilePicture}
                         alt="Supplier Logo"
-                        className="w-16 h-16 object-cover rounded-full"
+                        className="w-16 h-16 object-cover rounded-full border-2 border-primary-200"
                       />
                     ) : (
-                      <img
-                        src="https://th.bing.com/th/id/OIP.mpXg7tyCFEecqgUsoW9eQwHaHk?w=206&h=210&c=7&r=0&o=5&pid=1.7"
-                        alt="Default Logo"
-                        className="w-16 h-16 object-cover rounded-full"
-                      />
+                      <div className="w-16 h-16 rounded-full bg-neutral-200 flex items-center justify-center">
+                        <svg
+                          className="w-8 h-8 text-neutral-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
+                      </div>
                     )}
-                  </div>
-
-                  <div>
-                    <p className="text-gray-500 mb-2 text-sm">
-                      {/* <AverageReviewBySupplier supplierId={product.supplier?._id} /> */}
+                    <div>
+                      <p className="font-medium text-neutral-900">{product.supplier?.name || "Unknown Supplier"}</p>
+                      <p className="text-neutral-500 text-sm">{product.supplier?.email || "Email not available"}</p>
                       {product.supplier?._id && (
                         <Link
                           to={`/reviews/supplier/${product.supplier._id}`}
-                          className="cursor-pointer"
+                          className="inline-block mt-2 text-primary-600 hover:text-primary-800"
                         >
                           <AverageReviewBySupplier
                             supplierId={product.supplier._id}
                           />
                         </Link>
                       )}
-                    </p>
-                    <p className="text-gray-500 mb-2 text-sm">
-                      {product.supplier?.name || "Unknown"}
-                    </p>
-                    <p className="text-gray-500 mb-2 text-sm">
-                      {product.supplier?.email || "Unknown"}
-                    </p>
+                    </div>
                   </div>
                 </div>
 
-                <p className="text-gray-500">
-                  {new Date(product.createdAt).toDateString()}
-                </p>
-
-                <p>Supplier ID:{product.supplier?._id}</p>
-                <p>User Id:{userId}</p>
-              </div>
-              <div className="mt-4">
-                {/* <Link
-                  to={`/chat`}
-                  className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
-                >
-                  Chat
-                </Link> */}
+                {/* Action Buttons */}
+                <div className="flex flex-wrap gap-4 pt-4">
 
                 {role === "exporter" && (
-                <Link
-                  to={`/chat?supplierId=${product.supplier?._id}`}
-                  className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
-                >
-                  Chat
-                </Link>
+                  <Link
+                    to={`/chat?supplierId=${product.supplier?._id}`}
+                    className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                  >
+                    <svg
+                      className="w-5 h-5 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
+                    Chat with Supplier
+                  </Link>
                 )}
-                {/* <button
-                  onClick={handleSendOffer}
-                  className="bg-green-500 text-white py-1.5 px-3 rounded-lg hover:bg-green-600 transition duration-300"
-                >
-                  Send Offer
-                </button> */}
                 {role === "exporter" && (
-                <button
-                  onClick={() => setShowOfferPopup(true)}
-                  className="bg-green-500 text-white py-1.5 px-3 rounded-lg hover:bg-green-600 transition duration-300"
-                >
-                  Send Offer
-                </button>
+                 <button
+                    onClick={() => setShowOfferPopup(true)}
+                    className="inline-flex items-center px-4 py-2 bg-secondary-600 text-white rounded-lg hover:bg-secondary-700 transition-colors"
+                  >
+                    <svg
+                      className="w-5 h-5 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    Send Offer
+                  </button>
                 )}
+                </div>
+
+                <div className="text-sm text-neutral-500">
+                  <p>Posted on: {new Date(product.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}</p>
+                </div>
               </div>
             </div>
-          </div>
-          {/* Write Review Section */}
-          <div className="mt-10">
-            <h2 className="text-2xl font-semibold mb-4">Write a Review</h2>
-            <WriteReview supplierId={product.supplier?._id} />
-          </div>
-        </div>
-      ) : (
-        <div className="text-center text-gray-500">
-          Loading product details...
-        </div>
-      )}
 
-      {showOfferPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <CreateOffer
-              supplierId={product.supplier?._id}
-              productId={product._id}
-              price={product.price}
-              onClose={() => setShowOfferPopup(false)}
-            />
+            {/* Write Review Section */}
+            <div className="border-t border-neutral-200 p-8">
+              <h2 className="text-2xl font-semibold text-neutral-900 mb-6">Write a Review</h2>
+              <WriteReview supplierId={product.supplier?._id} />
+            </div>
           </div>
-        </div>
-      )}
+        ) : (
+          <div className="bg-white rounded-lg shadow p-8 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500 mx-auto"></div>
+            <p className="mt-4 text-neutral-600">Loading product details...</p>
+            <button
+              onClick={handleBackClick}
+              className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"
+            >
+              Back to Products
+            </button>
+          </div>
+        )}
+
+              {/* Offer Popup */}
+        {showOfferPopup && product && (
+          <div className="fixed inset-0 flex items-center justify-center bg-neutral-900 bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-neutral-900">Create Offer
+             </h3>
+                <button 
+                  onClick={() => setShowOfferPopup(false)}
+                  className="text-neutral-400 hover:text-neutral-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <CreateOffer 
+                supplierId={product.supplier?._id}
+              
+                productId={product._id}
+              
+                price={product.price}
+              
+                onClose={() => setShowOfferPopup(false)}
+            
+              />
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

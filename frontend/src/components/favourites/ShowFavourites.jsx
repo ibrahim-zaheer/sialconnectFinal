@@ -6,25 +6,22 @@ import { useSelector } from "react-redux";
 export default function ShowFavourites() {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [priceRange, setPriceRange] = useState(100); // Default max value
-  const [favorites, setFavorites] = useState([]); // Store user's favorite product IDs
+  const [priceRange, setPriceRange] = useState(100);
+  const [favorites, setFavorites] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // for accessing the user profile id
   const user = useSelector((state) => state.user);
   const userId = user?.id;
 
-  const handleRemoveFromFavorites = (productId) => {
-    axios
-      .post("/api/favourites/remove-from-favorites", { userId, productId })
-      .then((response) => {
-        // Update the favorites state by removing the productId
-        setFavorites((prevFavorites) =>
-          prevFavorites.filter((id) => id !== productId)
-        );
-      })
-      .catch((error) => {
-        console.error("Error removing from favorites:", error);
-      });
+  const handleRemoveFromFavorites = async (productId) => {
+    try {
+      await axios.post("/api/favourites/remove-from-favorites", { userId, productId });
+      setFavorites((prevFavorites) => prevFavorites.filter((id) => id !== productId));
+    } catch (error) {
+      console.error("Error removing from favorites:", error);
+      setError("Failed to remove from favorites");
+    }
   };
   // Fetch user's favorites
   useEffect(() => {
@@ -50,22 +47,21 @@ export default function ShowFavourites() {
     }
   }, [userId]);
 
-  // Fetch all products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
           "/api/supplier/product/readAllProducts"
-        ); // API endpoint for all products
+        );
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
+        setError("Failed to load products");
       }
     };
     fetchProducts();
   }, []);
 
-  // Filter products to show only favorites
   const favoriteProducts = products.filter((product) =>
     favorites.includes(product._id)
   );
@@ -84,21 +80,25 @@ export default function ShowFavourites() {
       {/* Display Favorite Products */}
       <div className="flex flex-wrap justify-center items-center gap-8 mt-4 bg-gray-100 rounded-lg w-[80vw] mx-auto p-8 my-5">
         {favoriteProducts.length > 0 ? (
-          favoriteProducts.map((product) => (
-            <div
-              key={product._id}
-              className="w-full sm:w-1/2 lg:w-[30%] bg-white shadow-md rounded-lg py-8 px-5"
-            >
-              <div className="flex justify-between gap-4">
-                <div className="flex-1">
-                  <h1 className="text-lg font-bold">{product.name}</h1>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Price: Rs {product.price} per piece
-                  </p>
-                  <p className="text-sm text-gray-600 mt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {favoriteProducts.map((product) => (
+              <div
+                key={product._id}
+                className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden hover:shadow-md transition-shadow duration-300"
+              >
+                <div className="p-6">
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex-1">
+                      <h2 className="text-xl font-semibold text-neutral-900">{product.name}</h2>
+                      <p className="text-primary-600 font-medium mt-1">
+                        Rs {product.price.toLocaleString()} per piece
+                      </p>
+                      <p className="text-neutral-600 text-sm mt-2 line-clamp-2">
+                        
                     {product.description}
-                  </p>
-                </div>
+                  
+                      </p>
+                    </div>
 
                 <div className="flex flex-col items-end flex-1">
                   {/* <img

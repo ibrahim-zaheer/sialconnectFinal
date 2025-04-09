@@ -162,12 +162,18 @@ import VerifyEmailButton from "./VerifyEmailButton";
 import ProfileUpdateForm from "./profile/ProfileUpdateForm";
 import { motion } from "framer-motion";
 import ProfilePictureUpdate from "./Supplier/products/ProfilePictureUpdate";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import ProfilePictureUpdate from "./Supplier/products/ProfilePictureUpdate";
 
 const UserProfile = () => {
   const user = useSelector((state) => state.user);
   const averageRating = useSelector((state) => state.averageRating.value);
   const { connectSocket } = useAuthStore();
   const [showProfileUpdateForm, setShowProfileUpdateForm] = useState(false);
+
+  const [isUploading, setIsUploading] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     connectSocket();

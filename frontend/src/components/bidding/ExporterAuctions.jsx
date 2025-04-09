@@ -48,15 +48,17 @@ const ExporterAuctions = () => {
       return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`/api/bidding/delete/${id}`, {
+      await axios.delete(`/api/api/bidding/delete/${id}`, {  // Fixed API endpoint path
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setAuctions(auctions.filter((auction) => auction._id !== id));
       setMessage("Auction deleted successfully");
+      setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
     } catch (error) {
       setMessage(error.response?.data?.message || "Failed to delete auction");
+      setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
     }
   };
 
@@ -66,6 +68,11 @@ const ExporterAuctions = () => {
     const auctionEndDate = new Date(endTime);
     return auctionEndDate < currentDate;
   };
+
+  const filteredAuctions = auctions.filter(auction => 
+    auction.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    auction.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="mt-24 text-[#1b263b]">

@@ -381,8 +381,8 @@ import FavoriteToggle from "../../favourites/FavoriteToggle";
 const DisplayProducts = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [priceRange, setPriceRange] = useState(100); // Default max value
-  const [favorites, setFavorites] = useState([]); // Store user's favorite product IDs
+  const [priceRange, setPriceRange] = useState(10000); // Default max value
+  const [favorites, setFavorites] = useState([]);
 
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -393,11 +393,10 @@ const DisplayProducts = () => {
 
   const categories = ["All", ...new Set(products.map((p) => p.category || "Other"))];
 
-  // Fetch all products
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("/api/supplier/product/readAllProducts"); // API endpoint for all products
+        const response = await axios.get("/api/supplier/product/readAllProducts");
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -406,7 +405,6 @@ const DisplayProducts = () => {
     fetchProducts();
   }, []);
 
-  // Fetch user's favorites
   // useEffect(() => {
   //   if (userId) {
   //     const fetchFavorites = async () => {
@@ -438,25 +436,20 @@ const DisplayProducts = () => {
   }, [userId]);
   
 
-  // Handle search input change
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
-  // Handle price range change
   const handlePriceChange = (e) => {
     setPriceRange(parseInt(e.target.value));
   };
 
-  // Toggle favorite
   const toggleFavorite = async (productId) => {
     try {
       if (favorites.includes(productId)) {
-        // Remove from favorites
         await axios.post("/api/favourites/remove-from-favorites", { userId, productId });
         setFavorites((prevFavorites) => prevFavorites.filter((id) => id !== productId));
       } else {
-        // Add to favorites
         await axios.post("/api/favourites/add-to-favorites", { userId, productId });
         setFavorites((prevFavorites) => [...prevFavorites, productId]);
       }
@@ -465,7 +458,6 @@ const DisplayProducts = () => {
     }
   };
 
-  // Filter products based on search query and price range
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
     const isWithinPrice = product.price <= priceRange;
@@ -478,35 +470,57 @@ return matchesSearch && isWithinPrice && matchesCategory;
   });
 
   return (
-    <div className="mt-24 text-[#1b263b]">
-      {/* Search & Filter UI */}
-      <div className="flex flex-col items-center mt-4">
-        {/* Search Input */}
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className="border border-gray-300 rounded-lg p-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-
-        {/* Price Filter (DaisyUI Range Slider) */}
-        <div className="mt-6 w-1/2">
-          <input
-            type="range"
-            min="0"
-            max="10000"
-            value={priceRange}
-            className="range"
-            step="50"
-            onChange={handlePriceChange}
-          />
-          <div className="flex w-full justify-between px-2 text-xs">
-            <span>Rs 0</span>
-            <span>Rs 10000</span>
+    <div className="min-h-screen bg-neutral-100 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-neutral-900">All Products</h1>
+          
+          {/* Search Input */}
+          <div className="relative w-1/3">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="w-full px-4 py-2 rounded-lg border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500"
+            />
+            <svg
+              className="absolute right-3 top-2.5 h-5 w-5 text-neutral-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
           </div>
-          <p className="text-center mt-2 text-lg font-semibold">Max Price: Rs {priceRange}</p>
         </div>
+
+        {/* Price Filter */}
+        <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
+          <h2 className="text-lg font-semibold text-neutral-800 mb-4">Filter by Price</h2>
+          <div className="w-full">
+            <input
+              type="range"
+              min="0"
+              max="10000"
+              value={priceRange}
+              className="range range-primary"
+              step="50"
+              onChange={handlePriceChange}
+            />
+            <div className="flex justify-between text-neutral-600 text-sm mt-2">
+              <span>Rs 0</span>
+              <span>Rs {priceRange}</span>
+              <span>Rs 10000</span>
+            </div>
+          </div>
         {/* Category Filter Dropdown */}
 <div className="mt-4 w-1/2">
   <select
@@ -522,7 +536,7 @@ return matchesSearch && isWithinPrice && matchesCategory;
   </select>
 </div>
 
-      </div>
+        </div>
 
       <h1 className="text-center text-3xl font-semibold my-10">All Products</h1>
 
@@ -563,12 +577,12 @@ return matchesSearch && isWithinPrice && matchesCategory;
                     {/* Heart Icon for Favorites */}
                     {/* <button
                       onClick={() => toggleFavorite(product._id)}
-                      className="btn btn-ghost btn-sm p-0"
+                      className="text-neutral-400 hover:text-primary-500 transition-colors duration-200"
                     >
                       {favorites.includes(product._id.toString())? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6 text-red-500"
+                          className="h-6 w-6 text-primary-500"
                           viewBox="0 0 20 20"
                           fill="currentColor"
                         >
@@ -581,7 +595,7 @@ return matchesSearch && isWithinPrice && matchesCategory;
                       ) : (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6 text-gray-500"
+                          className="h-6 w-6"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -603,43 +617,59 @@ return matchesSearch && isWithinPrice && matchesCategory;
   userId={userId}
 />
  )}
+                  </div>
 
-                    {/* View More Button */}
+                  <div className="mt-4">
+                    <p className="text-neutral-600 text-sm">{product.description}</p>
+                  </div>
+
+                  {product.image && (
+                    <div className="mt-4 flex justify-center">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="h-32 object-contain rounded"
+                      />
+                    </div>
+                  )}
+
+                  <div className="mt-6 flex justify-between items-center">
+                    <span className="text-xs px-2 py-1 bg-secondary-100 text-secondary-800 rounded-full">
+                      {product.inStock ? "In Stock" : "Out of Stock"}
+                    </span>
                     <Link
                       to={`/supplier/product/${product._id}`}
-                      className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                      className="text-primary-600 hover:text-primary-800 font-medium text-sm flex items-center"
                     >
-                      View more
+                      View Details
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
                     </Link>
                   </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-neutral-500">No products found matching your criteria.</p>
             </div>
-          ))
-        ) : (
-          <p className="text-center text-gray-500">No products found.</p>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
 export default DisplayProducts;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

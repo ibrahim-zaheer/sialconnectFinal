@@ -109,18 +109,15 @@ const AddProduct = ({ onProductCreated }) => {
     category: "Other",
     images: [], // changed from image: null
   });
-  
 
-  const [message, setMessage] = useState(""); // Success/Error message
-  const [loading, setLoading] = useState(false); // For loading state
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle image upload
   // const handleImageChange = (e) => {
   //   const file = e.target.files[0];
   //   if (file) {
@@ -162,30 +159,27 @@ const AddProduct = ({ onProductCreated }) => {
     console.log("Images:", formData.images.map((img) => img.name));
 
     try {
-      const token = localStorage.getItem("token"); // Fetch token from local storage
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         "/api/supplier/product/create",
-        form, // Send the FormData object
+        form,
         {
           headers: {
-            "Content-Type": "multipart/form-data", // This must be set for file uploads
-            Authorization: `Bearer ${token}`, // Pass token for authentication
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
 
       setMessage("Product created successfully!");
-      // setFormData({ name: "", description: "", price: "", image: null }); // Reset form
+      // setFormData({ name: "", description: "", price: "", image: null });
       setFormData({ name: "", description: "", price: "", category:"",images: [] }); 
 
       if (onProductCreated) {
-        onProductCreated(response.data.product); // Handle response
+        onProductCreated(response.data.product);
       }
     } catch (error) {
-      console.error(
-        "Error creating product:",
-        error.response?.data || error.message
-      );
+      console.error("Error creating product:", error.response?.data || error.message);
       setMessage(
         error.response?.data?.message ||
           "Failed to create product. Please try again."
@@ -196,64 +190,77 @@ const AddProduct = ({ onProductCreated }) => {
   };
 
   return (
-    <>
-      <div className="my-10">
-        <div className="w-[50%] mx-auto flex flex-col bg-[#1b263b] rounded-2xl p-10">
-          <h2 className="text-2xl font-semibold my-3 text-[#e0e1dd] w-full text-center">
-            Add a Product
-          </h2>
-          <form className="flex flex-col" onSubmit={handleSubmit}>
-            <div className="w-full flex justify-between gap-5">
-              <div className="my-4 flex flex-1 flex-col justify-center gap-2">
-                <label className="font-semibold text-[#e0e1dd]">
-                  Product Name
-                </label>
-                <input
-                  className="px-2 flex-1 py-2 bg-[#f1f1f1] rounded-lg"
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+    <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-8">
+      <h2 className="text-2xl font-bold text-neutral-900 mb-6">Add New Product</h2>
+      
+      {message && (
+        <div className={`mb-6 p-4 rounded ${
+          message.includes("success") ? "bg-secondary-100 text-secondary-800" 
+                                    : "bg-red-100 text-red-800"
+        }`}>
+          {message}
+        </div>
+      )}
 
-              <div className="my-4 flex flex-col justify-center gap-2">
-                <label className="font-semibold text-[#e0e1dd]">Price</label>
-                <input
-                  className="px-2 py-2 flex-1 bg-[#f1f1f1] rounded-lg"
-                  type="number"
-                  name="price"
-                  value={formData.price}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
+              Product Name
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
+              Price (Rs)
+            </label>
+            <input
+              type="number"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+              required
+            />
+          </div>
+        </div>
             <CategoryDropdown
   value={formData.category}
   onChange={handleChange}
 />
 
-            <div className="flex flex-col justify-center gap-2">
-              <label className="font-semibold text-[#e0e1dd]">
-                Description
-              </label>
-              <textarea
-                className="px-2 py-2 bg-[#f1f1f1] max-w-full rounded-lg resize-none"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                required
-              ></textarea>
-            </div>
+        <div>
+          <label className="block text-sm font-medium text-neutral-700 mb-1">
+            Description
+          </label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            rows={4}
+            className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+            required
+          />
+        </div>
 
-            <div className="mt-5 mb-8 flex flex-col justify-center gap-3">
-              <label className="font-semibold text-[#e0e1dd]">
-                Product Image
-              </label>
+        <div>
+          <label className="block text-sm font-medium text-neutral-700 mb-1">
+            Product Image
+          </label>
+          <div className="mt-1 flex items-center">
+            <label className="cursor-pointer">
+              <span className="inline-block px-4 py-2 border border-neutral-300 rounded-lg bg-white text-neutral-700 hover:bg-neutral-50">
+                Choose File
+              </span>
               {/* <input
-                className="text-[#e0e1dd]"
                 type="file"
                 name="image"
                 accept="image/*"
@@ -266,22 +273,36 @@ const AddProduct = ({ onProductCreated }) => {
                 multiple
                 accept="image/*"
                 onChange={handleImageChange}
+                className="hidden"
               />
-            </div>
-            <div className="w-full flex justify-center items-center">
-              <button
-                className="border my-3 border-[#778da9] px-5 rounded-lg py-2 bg-[#415a77] text-white hover:bg-[#778da9] transition-all duration-300"
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? "Submitting..." : "Add Product"}
-              </button>
-            </div>
-          </form>
-          {/* {message && <p>{message}</p>} */}
+            </label>
+            <span className="ml-4 text-sm text-neutral-600">
+              {formData.image ? formData.image.name : "No file chosen"}
+            </span>
+          </div>
         </div>
-      </div>
-    </>
+
+        <div className="pt-4">
+          <button
+            type="submit"
+            disabled={loading}
+            className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Processing...
+              </>
+            ) : (
+              "Add Product"
+            )}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

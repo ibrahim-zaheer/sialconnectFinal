@@ -22,26 +22,21 @@ const role = user?.role;
     const fetchAuctionDetails = async () => {
       try {
         setLoading(true);
-        setError(""); // Reset errors on new fetch
+        setError("");
 
-        // Get data from localStorage first
         const cachedData = localStorage.getItem(`auction-${id}`);
         if (cachedData) {
           setAuctionDetails(JSON.parse(cachedData));
         }
-
-        // Fetch fresh data from API
-        // const response = await axios.get(`/api/bidding/${id}`);
 
         const response = await axios.get(`/api/bidding/${id}`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-        console.log("API Response:", response.data);
 
         setAuctionDetails(response.data);
-        localStorage.setItem(`auction-${id}`, JSON.stringify(response.data)); // Cache updated data
+        localStorage.setItem(`auction-${id}`, JSON.stringify(response.data));
         setLoading(false);
       } catch (error) {
         console.error("Error fetching auction details:", error);
@@ -55,9 +50,23 @@ const role = user?.role;
     }
   }, [id]);
 
-  if (loading) return <div>Loading details...</div>;
-  if (error) return <div>{error}</div>;
-  if (!auctionDetails) return <div>No details found.</div>;
+  if (loading) return (
+    <div className="flex justify-center items-center h-64">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded max-w-4xl mx-auto my-20">
+      {error}
+    </div>
+  );
+
+  if (!auctionDetails) return (
+    <div className="text-center text-neutral-500 py-20">
+      No auction details found
+    </div>
+  );
 
   return (
     <div className="auction-detail my-20 w-[80vw] mx-auto">
@@ -118,7 +127,6 @@ const role = user?.role;
             />
           )}
         </div>
-      )}
 
       {/* Render Bid Form only if the user hasn't placed a bid */}
       <BidForm
@@ -199,9 +207,7 @@ const role = user?.role;
 
           </ul>
         </div>
-      ) : (
-        <p>No bids placed yet.</p>
-      )}
+      </div>
     </div>
   );
 };

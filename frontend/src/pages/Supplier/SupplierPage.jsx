@@ -16,7 +16,7 @@ const SupplierPage = () => {
     <div className="w-full overflow-hidden mt-24">
       <SupplierOrders/>
 
-      <ManageProducts />
+      {/* <ManageProducts /> */}
       <SupplierReviews supplierId={user.id} />
       
     </div>
