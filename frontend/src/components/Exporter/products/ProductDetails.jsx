@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
+import { useParams, Link,  useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import Chat from "../../Chat/Chat";
 import WriteReview from "../../reviews/WriteReviews";
 import AverageReviewBySupplier from "../../reviews/averageReviewBySuppliers";
 import CreateOffer from "../../offer/createOffer";
+
+import ImageCarousel from "../../ImageCarousel";
+
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -21,6 +24,7 @@ const ProductDetails = () => {
 
   const user = useSelector((state) => state.user);
   const userId = user?.id;
+  const role = user?.role;
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -41,61 +45,51 @@ const ProductDetails = () => {
   };
 
   if (error) {
-    return (
-      <div className="min-h-screen bg-neutral-100 p-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded">
-            {error}
-          </div>
-          <button
-            onClick={handleBackClick}
-            className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700"
-          >
-            Back to Products
-          </button>
-        </div>
-      </div>
-    );
+    return <div className="container mt-4 text-center">{error}</div>;
   }
 
-  return (
-    <div className="min-h-screen bg-neutral-100 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Back Navigation */}
-        <div className="mt-20 mb-6">
-          <button
-            onClick={handleBackClick}
-            className="inline-flex items-center text-primary-600 hover:text-primary-800"
-          >
-            <svg
-              className="w-5 h-5 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 19l-7-7m0 0l7-7m-7 7h18"
-              />
-            </svg>
-            Back to {activeTab === 'your-products' ? 'Your Products' : 'All Products'}
-          </button>
-        </div>
+  const handleSendOffer = () => {
+    if (product) {
+      navigate(`/createOffers`, {
+        state: {
+          supplierId: product.supplier?._id,
+          productId: product._id,
+          price: product.price,
+        },
+      });
+    }
+  };
 
-        {product ? (
-          <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
-            {/* Product Details Section */}
-            <div className="p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Product Image */}
-              <div className="flex justify-center">
-                <img
-                  src={product.image || "https://via.placeholder.com/400"}
-                  alt={product.name}
-                  className="object-cover rounded-lg max-h-96 w-full"
-                />
+  return (
+    <div className="w-[80vw] min-h-[80vh] mx-auto mt-24 bg-gray-50 p-6 rounded-lg">
+      {product ? (
+        <div className="">
+          {/* Product Details Section */}
+          <div className="flex justify-between">
+            <div className="flex-1">
+              {/* <img
+                src={product.image}
+                alt="Product"
+                className="object-cover rounded-lg w-96"
+              /> */}
+              {/* <img
+  src={product.image?.[0] || "https://via.placeholder.com/100"} // default if image missing
+  alt="Product"
+  className="object-cover rounded-lg w-96"
+/> */}
+              <ImageCarousel images={product.image} className="w-96" />
+            </div>
+            <div className="flex flex-1 p-10 flex-col justify-around items-start mb-4">
+              <div>
+                <h1 className="text-4xl font-bold">{product.name}</h1>
+                <span className="block my-1 text-sm font-bold">
+                  Category: {product.category || "Other"}
+                </span>
+                <p className="text-gray-500 text-xl my-2">
+                  {product.description}
+                </p>
+                <p className="text-gray-700 mb-2">Price: {product.price} Rs</p>
+              
               </div>
 
               {/* Product Info */}
@@ -162,6 +156,8 @@ const ProductDetails = () => {
 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap gap-4 pt-4">
+
+                {role === "exporter" && (
                   <Link
                     to={`/chat?supplierId=${product.supplier?._id}`}
                     className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
@@ -182,7 +178,9 @@ const ProductDetails = () => {
                     </svg>
                     Chat with Supplier
                   </Link>
-                  <button
+                )}
+                {role === "exporter" && (
+                 <button
                     onClick={() => setShowOfferPopup(true)}
                     className="inline-flex items-center px-4 py-2 bg-secondary-600 text-white rounded-lg hover:bg-secondary-700 transition-colors"
                   >
@@ -202,6 +200,7 @@ const ProductDetails = () => {
                     </svg>
                     Send Offer
                   </button>
+                )}
                 </div>
 
                 <div className="text-sm text-neutral-500">
@@ -233,12 +232,13 @@ const ProductDetails = () => {
           </div>
         )}
 
-        {/* Offer Popup */}
+              {/* Offer Popup */}
         {showOfferPopup && product && (
           <div className="fixed inset-0 flex items-center justify-center bg-neutral-900 bg-opacity-50 z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-neutral-900">Create Offer</h3>
+                <h3 className="text-lg font-semibold text-neutral-900">Create Offer
+             </h3>
                 <button 
                   onClick={() => setShowOfferPopup(false)}
                   className="text-neutral-400 hover:text-neutral-600"
@@ -249,10 +249,14 @@ const ProductDetails = () => {
                 </button>
               </div>
               <CreateOffer 
-                supplierId={product.supplier?._id} 
-                productId={product._id} 
-                price={product.price} 
-                onClose={() => setShowOfferPopup(false)} 
+                supplierId={product.supplier?._id}
+              
+                productId={product._id}
+              
+                price={product.price}
+              
+                onClose={() => setShowOfferPopup(false)}
+            
               />
             </div>
           </div>

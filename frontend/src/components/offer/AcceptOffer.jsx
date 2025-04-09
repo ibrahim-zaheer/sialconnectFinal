@@ -90,6 +90,9 @@ export default function AcceptOffer({ offerId, updateStatus }) {
       setResponseMessage("User not authenticated. Please log in.");
       return;
     }
+     // ✅ Ask for confirmation
+  const confirm = window.confirm("Are you sure you want to accept this offer?");
+  if (!confirm) return;
 
     try {
       await axios.put(`/api/offers/accept/${offerId}`, {}, {

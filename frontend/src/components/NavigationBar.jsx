@@ -130,6 +130,9 @@ const Navbar = () => {
                   {/* <MobileNavLink to="/SupplierProducts" onClick={closeMobileMenu}>{t("YourProducts")}</MobileNavLink> */}
                   <MobileNavLink to="/getAllAuctions" onClick={closeMobileMenu}>{t("Auctions")}</MobileNavLink>
                   <MobileNavLink to="/mySupplierOffers" onClick={closeMobileMenu}>{t("MyOffers")}</MobileNavLink>
+                    <li>
+                      <Link to="/mySupplierOrders">My Orders</Link>
+                    </li>
                 </>
               )}
 
@@ -138,78 +141,50 @@ const Navbar = () => {
                   <MobileNavLink to="/createAuction" onClick={closeMobileMenu}>{t("CreateAuction")}</MobileNavLink>
                   <MobileNavLink to="/getAuctionsOfExporter" onClick={closeMobileMenu}>{t("YourAuctions")}</MobileNavLink>
                   <MobileNavLink to="/favourites" onClick={closeMobileMenu}>{t("Favorites")}</MobileNavLink>
+                    <li>
+                      <Link to="/myExporterOrders">My Orders</Link>
+                    </li>
+                  </>
+                )}
+
+{user.role === "admin" && (
+                  <>
+                    <li>
+                      <Link to="/admin/user">Users</Link>
+                    </li>
+                    <li>
+                      <Link to="/admin">Profile</Link>
+                    </li>
+                    
                 </>
               )}
 
-              {user.role && (
-                <MobileNavLink to="/chat" onClick={closeMobileMenu}>{t("Chat")}</MobileNavLink>
-              )}
 
-              {/* Auth/Profile Section */}
-              {!user.role ? (
-                <MobileNavLink to="/signIn" onClick={closeMobileMenu}>{t("SignIn")}</MobileNavLink>
-              ) : (
-                <MobileNavLink to="/profile" onClick={closeMobileMenu}>
-                  <div className="flex items-center">
-                    <i className="ri-user-fill mr-2"></i>
-                    {t("Profile")}
-                  </div>
-                </MobileNavLink>
-              )}
-            </div>
-          </div>
-        )}
-      </nav>
-    </div>
-  );
-};
+{user.role !== "admin" && (
+                  <>
+                      <li>
+                  <Link to="/chat">Chat</Link>
+                </li>
 
-// Reusable NavLink component for desktop
-const NavLink = ({ to, onClick, children }) => (
-  <Link 
-    to={to} 
-    className="text-primary-100 hover:text-accent-500 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-    onClick={onClick}
-  >
-    {children}
-  </Link>
-);
+                <li>
+                  <Link to="/profile">Profiles</Link>
+                </li>
+                    
+                  </>
+                )}
+              
 
-// Reusable MobileNavLink component
-const MobileNavLink = ({ to, onClick, children }) => (
-  <Link
-    to={to}
-    className="block px-3 py-2 rounded-md text-base font-medium text-primary-100 hover:text-accent-500 hover:bg-primary-800 transition-colors duration-200"
-    onClick={onClick}
-  >
-    {children}
-  </Link>
-);
+               
 
-// Language Selector Component (from your landing page)
-const LanguageSelector = () => {
-  const { i18n } = useTranslation();
-
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
-  };
-
-  return (
-    <div className="flex items-center space-x-1">
-      <button
-        onClick={() => changeLanguage('en')}
-        className={`px-2 py-1 rounded text-xs ${i18n.language === 'en' ? 'bg-primary-600 text-white' : 'text-primary-800 hover:bg-primary-100'}`}
-      >
-        EN
-      </button>
-      <span className="text-primary-800">|</span>
-      <button
-        onClick={() => changeLanguage('ur')}
-        className={`px-2 py-1 rounded text-xs ${i18n.language === 'ur' ? 'bg-primary-600 text-white' : 'text-primary-800 hover:bg-primary-100'}`}
-      >
-        UR
-      </button>
-    </div>
+                <li className="text-white">
+                  Welcome, {user.name || "User"} ({user.role})
+                </li>
+              </>
+            )}
+          </ul>
+        </nav>
+      </div>
+    </>
   );
 };
 

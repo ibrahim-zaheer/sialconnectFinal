@@ -376,6 +376,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import FavoriteToggle from "../../favourites/FavoriteToggle";
 
 const DisplayProducts = () => {
   const [products, setProducts] = useState([]);
@@ -383,8 +384,14 @@ const DisplayProducts = () => {
   const [priceRange, setPriceRange] = useState(10000); // Default max value
   const [favorites, setFavorites] = useState([]);
 
+  const [selectedCategory, setSelectedCategory] = useState("All");
+
+  // Access the user's ID from Redux state
   const user = useSelector((state) => state.user);
   const userId = user?.id;
+  const role = user.role;
+
+  const categories = ["All", ...new Set(products.map((p) => p.category || "Other"))];
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -398,13 +405,28 @@ const DisplayProducts = () => {
     fetchProducts();
   }, []);
 
+  // useEffect(() => {
+  //   if (userId) {
+  //     const fetchFavorites = async () => {
+  //       try {
+  //         const response = await axios.get(`/api/favourites/favorites/id/${userId}`);
+  //         // Extract only the product IDs from the response
+  //         const favoriteIds = response.data.favorites.map((product) => product._id);
+  //         setFavorites(favoriteIds); // Initialize the favorites state
+  //       } catch (error) {
+  //         console.error("Error fetching favorites:", error);
+  //       }
+  //     };
+  //     fetchFavorites();
+  //   }
+  // }, [userId]);
+
   useEffect(() => {
     if (userId) {
       const fetchFavorites = async () => {
         try {
           const response = await axios.get(`/api/favourites/favorites/id/${userId}`);
-          const favoriteIds = response.data.favorites.map((product) => product._id);
-          setFavorites(favoriteIds);
+          setFavorites(response.data.favorites); // this is an array of string IDs
         } catch (error) {
           console.error("Error fetching favorites:", error);
         }
@@ -412,6 +434,7 @@ const DisplayProducts = () => {
       fetchFavorites();
     }
   }, [userId]);
+  
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -438,7 +461,12 @@ const DisplayProducts = () => {
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
     const isWithinPrice = product.price <= priceRange;
-    return matchesSearch && isWithinPrice;
+    // return matchesSearch && isWithinPrice;
+    const matchesCategory =
+  selectedCategory === "All" || product.category === selectedCategory;
+
+return matchesSearch && isWithinPrice && matchesCategory;
+
   });
 
   return (
@@ -493,27 +521,65 @@ const DisplayProducts = () => {
               <span>Rs 10000</span>
             </div>
           </div>
+        {/* Category Filter Dropdown */}
+<div className="mt-4 w-1/2">
+  <select
+    value={selectedCategory}
+    onChange={(e) => setSelectedCategory(e.target.value)}
+    className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+  >
+    {categories.map((category, index) => (
+      <option key={index} value={category}>
+        {category}
+      </option>
+    ))}
+  </select>
+</div>
+
         </div>
 
-        {/* Products Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-              <div
-                key={product._id}
-                className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden hover:shadow-md transition-shadow duration-300"
-              >
-                <div className="p-6">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h2 className="text-xl font-semibold text-neutral-900">{product.name}</h2>
-                      <p className="text-primary-600 font-medium mt-1">Rs {product.price} per piece</p>
-                    </div>
-                    <button
+      <h1 className="text-center text-3xl font-semibold my-10">All Products</h1>
+
+      {/* Display Products */}
+      <div className="flex flex-wrap justify-center items-center gap-8 mt-4 bg-gray-100 rounded-lg w-[80vw] mx-auto p-8 my-5">
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((product) => (
+            <div
+              key={product._id}
+              className="w-full sm:w-1/2 lg:w-[30%] bg-white shadow-md rounded-lg py-8 px-5"
+            >
+              <div className="flex justify-between gap-4">
+                <div className="flex-1">
+                  <h1 className="text-lg font-bold">{product.name}</h1>
+                  <p className="text-sm text-gray-500 mt-2">
+                    Price: Rs {product.price} per piece
+                  </p>
+                  <span className="block my-1 text-sm font-bold">
+  Category: {product.category || "Other"}
+</span>
+
+                  <p className="text-sm text-gray-600 mt-2">{product.description}</p>
+                </div>
+
+                <div className="flex flex-col items-end flex-1">
+                  {/* <img
+                    src={product.image}
+                    alt="Product"
+                    className="w-24 h-24 object-cover rounded-lg"
+                  /> */}
+                  <img
+  src={product.image?.[0] || "https://via.placeholder.com/100"} // default if image missing
+  alt="Product"
+  className="w-24 h-24 object-cover rounded-lg"
+/>
+
+                  <div className="mt-4">
+                    {/* Heart Icon for Favorites */}
+                    {/* <button
                       onClick={() => toggleFavorite(product._id)}
                       className="text-neutral-400 hover:text-primary-500 transition-colors duration-200"
                     >
-                      {favorites.includes(product._id) ? (
+                      {favorites.includes(product._id.toString())? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-6 w-6 text-primary-500"
@@ -542,7 +608,15 @@ const DisplayProducts = () => {
                           />
                         </svg>
                       )}
-                    </button>
+                    </button> */}
+ {role === "exporter" && (
+<FavoriteToggle
+  productId={product._id}
+  favorites={favorites}
+  setFavorites={setFavorites}
+  userId={userId}
+/>
+ )}
                   </div>
 
                   <div className="mt-4">

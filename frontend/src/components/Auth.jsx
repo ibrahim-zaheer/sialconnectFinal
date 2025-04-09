@@ -66,7 +66,13 @@ const Auth = () => {
         dispatch(setUser(userData));
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("token", data.token);
+        // navigate("/profile");
+            // ✅ Redirect based on role
+      if (data.role === "admin") {
+        navigate("/admin");
+      } else {
         navigate("/profile");
+      }
       }
     } catch (error) {
       setMessage(error.response?.data?.message || "An error occurred");

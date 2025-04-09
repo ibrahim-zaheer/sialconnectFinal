@@ -37,6 +37,7 @@ import Sidebar from "../components/Chat/Sidebar";
 import NoChatSelected from "../components/Chat/NoChatSelected";
 import ChatContainer from "../components/Chat/ChatContainer";
 import { useChatStore } from "../store/useChatStore";
+import axios from "axios";
 
 const ChatPage = () => {
   const location = useLocation();
@@ -50,15 +51,52 @@ const ChatPage = () => {
     getUsers(); // Ensure chat users are loaded
   }, [getUsers]);
 
-  // Ensure supplier is selected when users are available
+ 
+
+  // useEffect(() => {
+  //   if (supplierId && users.length > 0) {
+  //     const supplier = users.find((user) => user._id === supplierId);
+  //     if (supplier) {
+  //       setSelectedUser(supplier);
+  //     } else {
+  //       // NEW: Fetch supplier manually and set as selected
+  //       const fetchSupplier = async () => {
+  //         try {
+  //           const { data } = await axios.get(`/api/message/users/${supplierId}`);
+  //           setSelectedUser(data); // Add to selectedUser
+  //         } catch (err) {
+  //           console.error("Failed to fetch supplier details", err);
+  //         }
+  //       };
+  //       fetchSupplier();
+  //     }
+  //   }
+  // }, [supplierId, users, setSelectedUser]);
+
   useEffect(() => {
-    if (supplierId && users.length > 0) {
-      const supplier = users.find((user) => user._id === supplierId);
-      if (supplier) {
-        setSelectedUser(supplier);
+    const trySetSelectedSupplier = async () => {
+      if (!supplierId) return;
+  
+      const supplierFromList = users.find((u) => u._id === supplierId);
+      if (supplierFromList) {
+        setSelectedUser(supplierFromList);
+      } else {
+        try {
+          const { data } = await axios.get(`/api/message/users/${supplierId}`);
+          setSelectedUser(data);
+        } catch (err) {
+          console.error("Failed to fetch supplier", err);
+        }
       }
+    };
+  
+    // Run only after users are fetched or supplierId changes
+    if (users.length > 0 || supplierId) {
+      trySetSelectedSupplier();
     }
-  }, [supplierId, users, setSelectedUser]); // Runs when users change
+  }, [supplierId, users]);
+  
+  
 
   return (
     <div className="h-screen bg-base-200">

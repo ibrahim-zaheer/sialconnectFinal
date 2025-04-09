@@ -73,7 +73,11 @@ const getFavoritesById = async (req, res) => {
       }
   
       // Extract only the product IDs
-      const favoriteIds = user.favorites.map((product) => product._id);
+      // const favoriteIds = user.favorites.map((product) => product._id);
+
+      
+    // Extract only product IDs for heart color check
+    const favoriteIds = user.favorites.map((product) => product._id.toString());
   
       res.status(200).json({ favorites: favoriteIds });
     } catch (error) {

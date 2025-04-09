@@ -23,19 +23,24 @@ export default function ShowFavourites() {
       setError("Failed to remove from favorites");
     }
   };
-
+  // Fetch user's favorites
   useEffect(() => {
     if (userId) {
       const fetchFavorites = async () => {
         try {
-          const response = await axios.get(`/api/favourites/favorites/${userId}`);
-          const favoriteIds = response.data.favorites.map((product) => product._id);
+          const response = await axios.get(
+            `/api/favourites/favorites/${userId}`
+          );
+
+          // Extract only the product IDs from the response
+          const favoriteIds = response.data.favorites.map(
+            (product) => product._id
+          );
+          // setFavorites(response.data.favorites);
           setFavorites(favoriteIds);
+          console.log("favourites found are: " + response.data.favorites);
         } catch (error) {
           console.error("Error fetching favorites:", error);
-          setError("Failed to load favorites");
-        } finally {
-          setLoading(false);
         }
       };
       fetchFavorites();
@@ -45,7 +50,9 @@ export default function ShowFavourites() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("/api/supplier/product/readAllProducts");
+        const response = await axios.get(
+          "/api/supplier/product/readAllProducts"
+        );
         setProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -59,29 +66,19 @@ export default function ShowFavourites() {
     favorites.includes(product._id)
   );
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mt-24 max-w-4xl mx-auto">
-        <p>{error}</p>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen bg-neutral-100 pt-24 pb-10 px-4">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-neutral-900 text-center mb-10">
-          Favorite Products
-        </h1>
+    <div className="mt-24 text-[#1b263b]">
+      {/* Search & Filter UI */}
+      <div className="flex flex-col items-center mt-4">
+        {/* Search Input */}
+      </div>
 
+      <h1 className="text-center text-3xl font-semibold my-10">
+        Favorite Products
+      </h1>
+
+      {/* Display Favorite Products */}
+      <div className="flex flex-wrap justify-center items-center gap-8 mt-4 bg-gray-100 rounded-lg w-[80vw] mx-auto p-8 my-5">
         {favoriteProducts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {favoriteProducts.map((product) => (
@@ -97,71 +94,51 @@ export default function ShowFavourites() {
                         Rs {product.price.toLocaleString()} per piece
                       </p>
                       <p className="text-neutral-600 text-sm mt-2 line-clamp-2">
-                        {product.description}
+                        
+                    {product.description}
+                  
                       </p>
                     </div>
 
-                    {product.image && (
-                      <div className="flex-shrink-0">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-20 h-20 object-cover rounded-lg border border-neutral-200"
-                        />
-                      </div>
-                    )}
-                  </div>
+                <div className="flex flex-col items-end flex-1">
+                  {/* <img
+                    src={product.image}
+                    alt="Product"
+                    className="w-24 h-24 object-cover rounded-lg"
+                  /> */}
+                  <img
+                    src={
+                      product.image?.[0] || "https://via.placeholder.com/100"
+                    } // default if image missing
+                    alt="Product"
+                    className="w-24 h-24 object-cover rounded-lg"
+                  />
 
-                  <div className="mt-6 flex justify-between items-center">
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      product.inStock 
-                        ? "bg-secondary-100 text-secondary-800" 
-                        : "bg-neutral-100 text-neutral-800"
-                    }`}>
-                      {product.inStock ? "In Stock" : "Out of Stock"}
-                    </span>
-                    
-                    <div className="flex gap-2">
-                      <Link
-                        to={`/supplier/product/${product._id}`}
-                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-                      >
-                        View Details
-                      </Link>
-                      <button
-                        onClick={() => handleRemoveFromFavorites(product._id)}
-                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                      >
-                        Remove
-                      </button>
-                    </div>
+                  <div className="mt-4">
+                    <Link
+                      to={`/supplier/product/${product._id}`}
+                      className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                    >
+                      View more
+                    </Link>
+                    {/* Remove from Favorites Button */}
+                    <button
+                      onClick={() => handleRemoveFromFavorites(product._id)}
+                      className="inline-block bg-red-500 text-white py-1.5 px-3 rounded-lg hover:bg-red-600 transition duration-300"
+                    >
+                      Remove
+                    </button>
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))
         ) : (
-          <div className="bg-white rounded-lg shadow p-8 text-center max-w-2xl mx-auto">
-            <svg
-              className="mx-auto h-12 w-12 text-neutral-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <h3 className="mt-2 text-lg font-medium text-neutral-900">
-              No favorite products found
-            </h3>
-            <p className="mt-1 text-neutral-500">
-              You haven't added any products to your favorites yet.
+          <>
+            <p className="text-center text-gray-500">
+              No favorite products found.
             </p>
-          </div>
+          </>
         )}
       </div>
     </div>

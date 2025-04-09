@@ -82,6 +82,7 @@
 
 const Bid = require("../../models/bidding/bidSchema");
 const { Auction } = require("../../models/bidding/auctionSchema");
+const Order = require("../../models/offer/orderSchema");
 const User = require("../../models/User");
 
 const Notification = require("../../models/notification/notificationSchema")
@@ -105,7 +106,12 @@ const placeBid = async (req, res) => {
     }
 
     // Check if the user has already placed a bid on this auction
-    const existingBid = auction.bids.find((bid) => bid.userId.toString() === userId);
+    // const existingBid = auction.bids.find((bid) => bid.userId.toString() === userId);
+    const existingBid = await Bid.findOne({
+      auctionItem: auctionId,
+      "bidder.id": userId,
+    });
+    
     if (existingBid) {
       return res.status(400).json({ message: "You have already placed a bid on this auction." });
     }
@@ -137,12 +143,16 @@ const placeBid = async (req, res) => {
     // Update auction with the new highest bid
     auction.currentBid = amount;
     auction.highestBidder = userId;
-    auction.bids.push({
-      userId: userId, // Use userId instead of newBid._id
-      userName: user.name,
-      profileImage: user.profilePicture,
-      amount,
-    });
+    // auction.bids.push({
+    //   userId: userId, // Use userId instead of newBid._id
+    //   userName: user.name,
+    //   profileImage: user.profilePicture,
+    //   amount,
+
+    //   bidId: newBid._id  
+    // });
+    auction.bids.push(newBid._id); // Store only Bid ObjectId
+
 
     await auction.save();
 
@@ -198,4 +208,70 @@ const getUserDetails = async(req,res)=>{
 }
 
 
-module.exports = { placeBid, getUserDetails };
+const acceptBidAndCreateOrder = async (req, res) => {
+  try {
+    const { auctionId, bidId } = req.body;
+    const userId = req.user.id;
+
+    const auction = await Auction.findById(auctionId);
+
+    // const realBids = await Bid.find({ auctionItem: auctionId });
+
+    const bid = await Bid.findById(bidId);
+
+    console.log("Received auctionId:", auctionId);
+console.log("Received bidId:", bidId);
+
+    if (!auction ) {
+      return res.status(404).json({ message: "Auction not found." });
+    }
+    if (!bid ) {
+      return res.status(404).json({ message: " bid not found." });
+    }
+
+    if (auction.isClosed) {
+      return res.status(400).json({ message: "This auction has already been closed." });
+    }
+
+    if (auction.createdBy.toString() !== userId) {
+      return res.status(403).json({ message: "You are not authorized to accept a bid on this auction." });
+    }
+
+    // Update auction
+    auction.acceptedBid = bidId;
+    auction.isClosed = true;
+    await auction.save();
+
+    // Update bid status
+    bid.status = "accepted";
+    await bid.save();
+
+    // Reject all other bids
+    await Bid.updateMany(
+      { auctionItem: auctionId, _id: { $ne: bidId } },
+      { $set: { status: "rejected" } }
+    );
+
+    // Create Order from accepted bid
+    const order = await Order.create({
+      auctionId: auction._id,
+      exporterId: auction.createdBy,
+      supplierId: bid.bidder.id,
+      price: bid.amount,
+      quantity: auction.quantity,
+      message: auction.description,
+    });
+
+    return res.status(201).json({
+      message: "Bid accepted and order created successfully.",
+      order,
+    });
+  } catch (error) {
+    console.error("Error accepting bid:", error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+
+
+module.exports = { placeBid, getUserDetails,acceptBidAndCreateOrder };

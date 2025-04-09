@@ -33,7 +33,7 @@
 
 const express = require("express");
 const { createAuction, getAllAuctions, getAuctionsByExporter, getAuctionDetails, getMyAuctions, deleteAuction } = require("../../controllers/bidding/auction_controller");
-const { placeBid,getUserDetails } = require("../../controllers/bidding/bid_controller");
+const { placeBid,getUserDetails,acceptBidAndCreateOrder } = require("../../controllers/bidding/bid_controller");
 const  authenticateMiddleware = require("../../middleware/authMiddleware");
 
 const  isAuthorized = require("../../middleware/isAuthorized");
@@ -43,15 +43,26 @@ const { uploadProductImage } = require("../../config/multerConfig");
 const router = express.Router();
 
 // Auction Routes
-router.post("/create", authenticateMiddleware, uploadProductImage.single("image"), createAuction);
+// router.post("/create", authenticateMiddleware, uploadProductImage.single("image"), createAuction);
+router.post("/create", authenticateMiddleware, uploadProductImage.array("images", 3), createAuction);
+
 router.get("/getAuctionsByExporter", authenticateMiddleware, getMyAuctions);
 router.get("/getAllAuctions", getAllAuctions);
-router.get("/:id", getAuctionDetails);
+
 router.delete("/delete/:id", authenticateMiddleware, deleteAuction);
+
+
+router.post("/accept",  authenticateMiddleware,acceptBidAndCreateOrder);
 
 // Use Bidding Routes (Correct Placement)
 router.post("/place/:id", authenticateMiddleware, isAuthorized("supplier"), placeBid);
 //for getting user details
 router.get("/user-details/:userId", getUserDetails);
+
+// router.get("/:id", getAuctionDetails);
+// Only match if it's a valid MongoDB ObjectId
+router.get("/:id([a-fA-F0-9]{24})", getAuctionDetails);
+
+
 
 module.exports = router;

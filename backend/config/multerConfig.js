@@ -19,6 +19,7 @@ const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('./cloudinaryConfig'); // Import your Cloudinary config
 
+const storage = multer.memoryStorage(); 
 // Create storage for profile pictures
 const profilePictureStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
@@ -41,6 +42,7 @@ const productImageStorage = new CloudinaryStorage({
 const uploadProfilePicture = multer({ storage: profilePictureStorage });
 
 // Set up multer upload for product images
-const uploadProductImage = multer({ storage: productImageStorage });
+// const uploadProductImage = multer({ storage: productImageStorage });
+const uploadProductImage = multer({ storage });
 
 module.exports = { uploadProfilePicture, uploadProductImage };

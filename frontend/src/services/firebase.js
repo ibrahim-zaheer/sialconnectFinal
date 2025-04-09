@@ -3,6 +3,8 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import {getMessaging,getToken,onMessage} from "firebase/messaging";
 
+import {getStorage,ref, uploadBytes, getDownloadURL} from "firebase/storage";
+
 
 import { useDispatch } from 'react-redux';
 import { updateFcmToken } from '../redux/reducers/userSlice';
@@ -27,9 +29,12 @@ export const app = initializeApp(firebaseConfig);
 
 export const messaging = getMessaging(app);
 
+ const storage = getStorage(app);
+
 
 const analytics = getAnalytics(app);
-export {  getToken, onMessage };
+// export {  getToken, onMessage };
+export {  getToken, onMessage, storage, ref, uploadBytes, getDownloadURL  };
 
 // export const requestFCMToken = async()=>{
 //   return Notification.requestPermission()

@@ -162,10 +162,14 @@ export const useAuthStore = create((set, get) => ({
     set({ socket: socket });
     socket.connect();
 
+    // socket.on("connect", () => {
+    //   console.log("Socket connected:", socket.id); // Log the socket ID
+    //   toast.success("Socket connected successfully!");
+    //   useChatStore.getState().subscribeToMessages(); 
+    // });
     socket.on("connect", () => {
-      console.log("Socket connected:", socket.id); // Log the socket ID
-      toast.success("Socket connected successfully!");
-      useChatStore.getState().subscribeToMessages(); 
+      console.log("Socket connected:", socket.id);
+      useChatStore.getState().subscribeToMessages(); // ✅ correct
     });
     
     socket.on("getOnlineUsers", (userIds) => {

@@ -26,25 +26,60 @@ const createAuction = async (req, res) => {
         }
 
         // If there is an image, upload it to Cloudinary
-        let image = {};
-        if (req.file) {
-            image = {
-                public_id: req.file.filename,
-                url: req.file.path,
-            };
-        }
+        // let image = {};
+        // if (req.file) {
+        //     image = {
+        //         public_id: req.file.filename,
+        //         url: req.file.path,
+        //     };
+        // }
+        const imageUrls = [];
 
+if (req.files && req.files.length > 0) {
+  const uploadPromises = req.files.map((file) => {
+    return new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: "auctions",
+          resource_type: "image",
+        },
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result.secure_url);
+        }
+      );
+      stream.end(file.buffer); // Send buffer to Cloudinary stream
+    });
+  });
+
+  const uploadedImages = await Promise.all(uploadPromises);
+  imageUrls.push(...uploadedImages);
+}
+
+
+        // const auction = new Auction({
+        //     title,
+        //     description,
+        //     startingBid,
+        //     category,
+        //     quantity,
+        //     startTime,
+        //     endTime,
+        //     createdBy: req.user.id,
+        //     image,
+        // });
         const auction = new Auction({
             title,
             description,
             startingBid,
             category,
-            quantity,
+            quantity: quantity || 1,
             startTime,
             endTime,
             createdBy: req.user.id,
-            image,
-        });
+            image: imageUrls, // array of URLs
+          });
+          
 
         await auction.save();
         res.status(201).json({ message: "Auction created successfully", auction });
@@ -109,30 +144,58 @@ const getMyAuctions = async (req, res) => {
     }
   };
 
+// const getAuctionDetails = async (req, res) => {
+//     try {
+//       // Fetch auction details by ID and populate related fields
+//       const auction = await Auction.findById(req.params.id)
+//         .populate("createdBy", "name email profilePicture") // Populate creator's details
+//         .populate("highestBidder", "name email profilePicture") // Populate highest bidder details
+//         .populate("bids.userId", "name email profilePicture"); // Populate all bid user details
+  
+//       if (!auction) {
+//         return res.status(404).json({ message: "Auction not found." });
+//       }
+  
+
+//       let userHasBid = false;
+//         if (req.user) {
+//             userHasBid = auction.bids.some(bid => bid.userId.toString() === req.user.id);
+//         }
+
+//         res.status(200).json({ ...auction.toObject(), userHasBid });
+//     //   res.status(200).json(auction);
+//     } catch (error) {
+//       res.status(500).json({ message: error.message });
+//     }
+//   };
+
 const getAuctionDetails = async (req, res) => {
-    try {
-      // Fetch auction details by ID and populate related fields
-      const auction = await Auction.findById(req.params.id)
-        .populate("createdBy", "name email profilePicture") // Populate creator's details
-        .populate("highestBidder", "name email profilePicture") // Populate highest bidder details
-        .populate("bids.userId", "name email profilePicture"); // Populate all bid user details
-  
-      if (!auction) {
-        return res.status(404).json({ message: "Auction not found." });
-      }
-  
-
-      let userHasBid = false;
-        if (req.user) {
-            userHasBid = auction.bids.some(bid => bid.userId.toString() === req.user.id);
+  try {
+    const auction = await Auction.findById(req.params.id)
+      .populate("createdBy", "name email profilePicture")
+      .populate("highestBidder", "name email profilePicture")
+      .populate({
+        path: "bids",
+        populate: {
+          path: "bidder.id",
+          select: "name email profilePicture"
         }
+      });
 
-        res.status(200).json({ ...auction.toObject(), userHasBid });
-    //   res.status(200).json(auction);
-    } catch (error) {
-      res.status(500).json({ message: error.message });
+    if (!auction) {
+      return res.status(404).json({ message: "Auction not found." });
     }
-  };
+
+    let userHasBid = false;
+    if (req.user) {
+      userHasBid = auction.bids.some(bid => bid.bidder.id.toString() === req.user.id);
+    }
+
+    res.status(200).json({ ...auction.toObject(), userHasBid });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
   const deleteAuction = async (req, res) => {
       try {

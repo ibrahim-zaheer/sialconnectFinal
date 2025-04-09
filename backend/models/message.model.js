@@ -15,6 +15,13 @@ const messageSchema = new mongoose.Schema(
     text: {
       type: String,
     },
+
+    voiceMessage: {
+      type: String, // This will store the Firebase Storage URL
+    },
+    duration: {
+      type: Number, // Duration of the voice message in seconds
+    }
    
   },
   { timestamps: true }

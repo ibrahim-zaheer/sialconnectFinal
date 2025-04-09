@@ -23,9 +23,21 @@ const OfferSchema = new mongoose.Schema(
       message:{type:String},
     },
     counterOfferCount: { type: Number, default: 0 },
+    updateCount: { type: Number, default: 0 },
+
     isUpdated: { type: Boolean, default: false },
     acceptedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Tracks who accepted the offer
     createdAt: { type: Date, default: Date.now },
+    history: [
+      {
+        price: Number,
+        quantity: Number,
+        message: String,
+        updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        timestamp: { type: Date, default: Date.now },
+      }
+    ]
+    
   }
 );
 

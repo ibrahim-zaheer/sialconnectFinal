@@ -38,7 +38,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "https://th.bing.com/th/id/OIP.mpXg7tyCFEecqgUsoW9eQwHaHk?w=206&h=210&c=7&r=0&o=5&pid=1.7",
   },
-  role: { type: String, enum: ["exporter", "supplier"], required: true },
+  role: { type: String, enum: ["exporter", "supplier","admin"], required: true },
   otp: String,
   otpExpires: Date,
   fcmToken: { type: String, default: null },
@@ -53,6 +53,17 @@ const UserSchema = new mongoose.Schema({
   postalCode: { type: String }, // New field
   bio: { type: String }, // New field
   dateOfBirth: { type: Date }, 
+  status: {
+    type: String,
+    enum: ['active', 'suspended', 'pending'],
+    default: 'active'
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+
+
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);

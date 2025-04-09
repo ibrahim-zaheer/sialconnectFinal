@@ -175,6 +175,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import CategoryDropdown from "../Supplier/products/component/CategoryDropdown";
 
 const AuctionForm = () => {
   const [formData, setFormData] = useState({
@@ -195,8 +196,14 @@ const AuctionForm = () => {
     return now.toISOString().slice(0, 16);
   };
 
+  // useEffect(() => {
+  //   setMinStartTime(getCurrentDateTime());
+  // }, []);
   useEffect(() => {
-    setMinStartTime(getCurrentDateTime());
+    const updateMinTime = () => setMinStartTime(getCurrentDateTime());
+    updateMinTime();
+    const interval = setInterval(updateMinTime, 60000); // update every 60 seconds
+    return () => clearInterval(interval);
   }, []);
 
   const handleChange = (e) => {
@@ -259,10 +266,19 @@ const AuctionForm = () => {
     }
 
     const form = new FormData();
+    // for (const key in formData) {
+    //   form.append(key, formData[key]);
+    // }
     for (const key in formData) {
-      form.append(key, formData[key]);
+      if (key === "image" && formData.image && formData.image.length > 0) {
+        for (let i = 0; i < formData.image.length; i++) {
+          form.append("images", formData.image[i]); // append multiple images
+        }
+      } else {
+        form.append(key, formData[key]);
+      }
     }
-
+    
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
@@ -336,7 +352,7 @@ const AuctionForm = () => {
           </div>
 
           {/* Category */}
-          <div className="space-y-1">
+          {/* <div className="space-y-1">
             <label htmlFor="category" className="block text-sm font-medium text-gray-700">
               Category *
             </label>
@@ -350,7 +366,12 @@ const AuctionForm = () => {
               placeholder="e.g., Electronics, Furniture"
               required
             />
-          </div>
+          </div> */}
+        <CategoryDropdown
+  value={formData.category}
+  onChange={handleChange}
+/>
+
 
           {/* Quantity */}
           <div className="space-y-1">
@@ -420,30 +441,30 @@ const AuctionForm = () => {
           ></textarea>
         </div>
 
-        {/* Image Upload */}
-        <div className="space-y-1">
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700">
-            Product Image *
-          </label>
-          <div className="flex items-center gap-2">
-            <input
-              type="file"
-              id="image"
-              name="image"
-              accept="image/*"
-              onChange={handleFileChange}
-              className="block w-full text-sm text-gray-500
-                file:mr-4 file:py-2 file:px-4
-                file:rounded-md file:border-0
-                file:text-sm file:font-medium
-                file:bg-blue-50 file:text-blue-700
-                hover:file:bg-blue-100"
-              required
-            />
-            {formData.image && (
-              <span className="text-sm text-gray-500">{formData.image.name}</span>
-            )}
-          </div>
+        <div className="w-[100%] flex justify-evenly items-center mt-5">
+          <label htmlFor="image">Image</label>
+          {/* <input
+            className="border rounded-lg overflow-hidden p-2"
+            type="file"
+            id="image"
+            name="image"
+            accept="image/*"
+            onChange={handleFileChange}
+          /> */}
+          <input
+  type="file"
+  id="images"
+  name="images"
+  accept="image/*"
+  multiple
+  onChange={(e) =>
+    setFormData((prevData) => ({
+      ...prevData,
+      image: e.target.files, // This will now be a FileList
+    }))
+  }
+/>
+
         </div>
 
         {/* Submit Button */}
