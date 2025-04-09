@@ -155,16 +155,16 @@
 
 
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import LogoutButton from "./LogoutButton";
 import { useAuthStore } from "../store/useAuthStore";
 import VerifyEmailButton from "./VerifyEmailButton";
 import ProfileUpdateForm from "./profile/ProfileUpdateForm";
 import { motion } from "framer-motion";
 import ProfilePictureUpdate from "./Supplier/products/ProfilePictureUpdate";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import { toast } from "react-toastify";
-import ProfilePictureUpdate from "./Supplier/products/ProfilePictureUpdate";
+// import ProfilePictureUpdate from "./Supplier/products/ProfilePictureUpdate";
 
 const UserProfile = () => {
   const user = useSelector((state) => state.user);

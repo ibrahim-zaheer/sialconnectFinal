@@ -3,10 +3,8 @@ import { useParams } from "react-router-dom";
 import axios from "../../lib/axios";
 import BidForm from "./BidForm";
 import { Link } from "react-router-dom";
-
 import { useSelector } from "react-redux";
-import { selectUser } from "../../redux/reducers/userSlice"; // adjust path if needed
-
+import { selectUser } from "../../redux/reducers/userSlice";
 
 const AuctionDetail = () => {
   const { id } = useParams();
@@ -15,8 +13,7 @@ const AuctionDetail = () => {
   const [error, setError] = useState("");
 
   const user = useSelector(selectUser);
-const role = user?.role;
-
+  const role = user?.role;
 
   useEffect(() => {
     const fetchAuctionDetails = async () => {
@@ -127,6 +124,7 @@ const role = user?.role;
             />
           )}
         </div>
+      )}
 
       {/* Render Bid Form only if the user hasn't placed a bid */}
       <BidForm
@@ -136,22 +134,21 @@ const role = user?.role;
       />
 
       {/* Bids Section */}
-      {auctionDetails?.bids?.length > 0 ? (
+      {auctionDetails?.bids?.length > 0 && (
         <div>
           <h4>Bids:</h4>
           <ul>
-            {/* {auctionDetails?.bids?.map((bid) => (
-              <li key={bid?.userId}>
+            {auctionDetails?.bids?.map((bid) => (
+              <li key={bid?._id}>
                 <p>
-                  <strong>{bid?.userName}:</strong> ${bid?.amount}
+                  <strong>{bid?.bidder?.id?.name}:</strong> ${bid?.amount}
                 </p>
-                <p>{bid?._id}</p>
-                <p>UserID: {bid?.userId?._id}</p>
-                <p>Bid Ids: {bid?.bidId}</p>
-                {bid?.profileImage && (
+                <p>Bid ID: {bid?._id}</p>
+                <p>User ID: {bid?.bidder?.id?._id}</p>
+                {bid?.bidder?.profilePicture && (
                   <img
-                    src={bid?.profileImage}
-                    alt={bid?.userName}
+                    src={bid?.bidder?.profilePicture}
+                    alt={bid?.bidder?.id?.name}
                     style={{
                       width: "50px",
                       height: "50px",
@@ -161,53 +158,21 @@ const role = user?.role;
                   />
                 )}
                 <div className="mt-4">
-                  <Link
-                    to={`/bidding/supplier/${bid?.userId}`} // ✅ correctly get user ID string
-                    state={{ auctionId: id, bidId: bid.bidId }}
-                    className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
-                  >
-                    View more
-                  </Link>
+                  {role === "exporter" && (
+                    <Link
+                      to={`/bidding/supplier/${bid?.bidder?.id?._id}`}
+                      state={{ auctionId: id, bidId: bid?._id }}
+                      className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                    >
+                      View more
+                    </Link>
+                  )}
                 </div>
               </li>
             ))}
-             */}
-             {auctionDetails?.bids?.map((bid) => (
-  <li key={bid?._id}>
-    <p>
-      <strong>{bid?.bidder?.id?.name}:</strong> ${bid?.amount}
-    </p>
-    <p>Bid ID: {bid?._id}</p>
-    <p>User ID: {bid?.bidder?.id?._id}</p>
-    {bid?.bidder?.profilePicture && (
-      <img
-        src={bid?.bidder?.profilePicture}
-        alt={bid?.bidder?.id?.name}
-        style={{
-          width: "50px",
-          height: "50px",
-          borderRadius: "50%",
-          marginLeft: "10px",
-        }}
-      />
-    )}
-    <div className="mt-4">
-    {role === "exporter" && (
-      <Link
-        to={`/bidding/supplier/${bid?.bidder?.id?._id}`}
-        state={{ auctionId: id, bidId: bid?._id }}
-        className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
-      >
-        View more
-      </Link>
-      )}
-    </div>
-  </li>
-))}
-
           </ul>
         </div>
-      </div>
+      )}
     </div>
   );
 };

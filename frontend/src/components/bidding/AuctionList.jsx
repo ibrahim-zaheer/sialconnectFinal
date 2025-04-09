@@ -177,10 +177,10 @@ const AuctionList = () => {
               </p>
 
               <div className="mt-4">
-                {role === "exporter" && (
+                {role === "supplier" && (
                   <Link
                     to={`/bidding/${auction._id}`}
-                    className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                    className="inline-block bg-blue-500 py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
                   >
                     View mores
                   </Link>

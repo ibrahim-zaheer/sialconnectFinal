@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
+import CategoryDropdown from "../../components/Supplier/products/component/CategoryDropdown";
 
 const ExporterProducts = () => {
   const [products, setProducts] = useState([]);
@@ -20,18 +21,7 @@ const ExporterProducts = () => {
   
   // Available options for filters
   const cities = ["Sialkot", "Faisalabad", "Karachi", "Lahore", "Daska", "Wazirabad"];
-  const categories = [
-    "Hosiery",
-    "Leather",
-    "Surgical",
-    "Sports",
-    "Textile",
-    "Ceramics",
-    "Cutlery",
-    "Gloves",
-    "Footwear",
-    "Garments"
-  ];
+ 
 
   const user = useSelector((state) => state.user);
   const userId = user?.id;
@@ -324,25 +314,28 @@ const ExporterProducts = () => {
   </motion.div>
   
   {/* Category Filter */}
-  <motion.div 
-    className="p-4 pt-3 border-b border-neutral-200"
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.35 }}
-  >
-    <h3 className="text-lg font-medium text-neutral-700 mb-2">Category</h3>
-    <motion.select
-      value={selectedCategory}
-      onChange={handleCategoryChange}
-      className="w-full px-3 py-2 text-sm border border-neutral-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary-500"
-      whileFocus={{ scale: 1.01 }}
-    >
-      <option value="">All Categories</option>
-      {categories.map(category => (
-        <option key={category} value={category}>{category}</option>
-      ))}
-    </motion.select>
-  </motion.div>
+ {/* Category Filter */}
+<motion.div 
+  className="p-4 pt-3 border-b border-neutral-200"
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.35 }}
+>
+  <CategoryDropdown 
+    value={selectedCategory}
+    onChange={(e) => {
+      setSelectedCategory(e.target.value);
+      applyFilters(
+        searchQuery,
+        priceRange,
+        selectedCities,
+        supplierName,
+        e.target.value
+      );
+    }}
+    label="Category"
+  />
+</motion.div>
 
   {/* Filter Actions */}
   <motion.div 
@@ -572,15 +565,16 @@ const ExporterProducts = () => {
 
                   {product.image && (
                     <div className="mt-4 flex justify-center">
-                      <img 
-                        src={product.image} 
-                        alt={product.name} 
-                        className="h-32 object-contain rounded"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "https://via.placeholder.com/150?text=No+Image";
-                        }}
-                      />
+                 <img
+  src={product.image?.[0] || "https://images.pexels.com/photos/258244/pexels-photo-258244.jpeg?auto=compress&cs=tinysrgb&w=600"}
+  alt="Product"
+  className="w-24 h-24 object-cover rounded-lg"
+  onError={(e) => {
+    e.target.onerror = null; // Prevent infinite loop if fallback fails
+    e.target.src = "https://images.pexels.com/photos/258244/pexels-photo-258244.jpeg?auto=compress&cs=tinysrgb&w=600"; // Fallback image
+  }}
+/>
+
                     </div>
                   )}
 
@@ -591,7 +585,7 @@ const ExporterProducts = () => {
                       {product.inStock ? "In Stock" : "Out of Stock"}
                     </span>
                     <Link
-                      to={`/product/${product._id}`}
+                      to={`/supplier/product/${product._id}`}
                       className="text-primary-600 hover:text-primary-800 font-medium text-sm flex items-center"
                     >
                       View Details

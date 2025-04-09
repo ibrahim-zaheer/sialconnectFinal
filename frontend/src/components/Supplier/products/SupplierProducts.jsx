@@ -71,7 +71,6 @@
 // };
 
 // export default SupplierProducts;
-
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
@@ -94,7 +93,6 @@ const SupplierProducts = () => {
   const user = useSelector((state) => state.user);
   const userId = user?.id;
 
-  // Custom function to check active tab
   const isTabActive = (tabName) => {
     return activeTab === tabName;
   };
@@ -161,10 +159,6 @@ const SupplierProducts = () => {
     setSearchQuery(e.target.value);
   };
 
-  // // Filter products based on the search query
-  // const searchedProducts = products.filter((product) =>
-  //   product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  // );
   const searchedProducts = Array.isArray(products)
     ? products.filter((product) =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -264,51 +258,47 @@ const SupplierProducts = () => {
               </div>
             </div>
 
-      <h1 className="text-center text-3xl font-semibold my-10">My Products</h1>
+            <h1 className="text-center text-3xl font-semibold my-10">My Products</h1>
 
-      {/* Display Products */}
-      {loading ? (
-        <p className="text-center text-gray-500">Loading products...</p>
-      ) : message ? (
-        <p className="text-center text-red-500">{message}</p>
-      ) : searchedProducts.length > 0 ? (
-        <div className="flex flex-wrap justify-center items-center gap-8 mt-4 bg-gray-100 rounded-lg w-[80vw] mx-auto p-8 my-5">
-          {searchedProducts.map((product) => (
-            <div
-              key={product._id}
-              className="w-full sm:w-1/2 lg:w-[30%] bg-white shadow-md rounded-lg py-8 px-5"
-            >
-              <div className="flex justify-between gap-4">
-                <div className="flex-1">
-                  <h1 className="text-lg font-bold">{product.name}</h1>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Price: Rs {product.price} per piece
-                  </p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    {product.description || "No description provided"}
-                  </p>
-                </div>
-                <div className="flex flex-col items-end">
-                  {/* <img
-                    src={product.image || "https://via.placeholder.com/150"}
-                    alt="Product"
-                    className="w-24 h-24 object-cover rounded-lg"
-                  /> */}
-                  <img
-                    src={
-                      product.image?.[0] || "https://via.placeholder.com/100"
-                    } // default if image missing
-                    alt="Product"
-                    className="w-24 h-24 object-cover rounded-lg"
-                  />
-                </div>
+            {/* Display Products */}
+            {loading ? (
+              <p className="text-center text-gray-500">Loading products...</p>
+            ) : message ? (
+              <p className="text-center text-red-500">{message}</p>
+            ) : searchedProducts.length > 0 ? (
+              <div className="flex flex-wrap justify-center items-center gap-8 mt-4 bg-gray-100 rounded-lg w-[80vw] mx-auto p-8 my-5">
+                {searchedProducts.map((product) => (
+                  <div
+                    key={product._id}
+                    className="w-full sm:w-1/2 lg:w-[30%] bg-white shadow-md rounded-lg py-8 px-5"
+                  >
+                    <div className="flex justify-between gap-4">
+                      <div className="flex-1">
+                        <h1 className="text-lg font-bold">{product.name}</h1>
+                        <p className="text-sm text-gray-500 mt-2">
+                          Price: Rs {product.price} per piece
+                        </p>
+                        <p className="text-sm text-gray-600 mt-2">
+                          {product.description || "No description provided"}
+                        </p>
+                      </div>
+                      <div className="flex flex-col items-end">
+                        <img
+                          src={product.image?.[0] || "https://via.placeholder.com/100"}
+                          alt="Product"
+                          className="w-24 h-24 object-cover rounded-lg"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-center text-gray-500 mt-4">No products found.</p>
-      )}
+            ) : (
+              <p className="text-center text-gray-500 mt-4">No products found.</p>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 };

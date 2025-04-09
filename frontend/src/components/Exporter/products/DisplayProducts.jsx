@@ -368,10 +368,6 @@
 
 
 
-
-
-
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -381,12 +377,10 @@ import FavoriteToggle from "../../favourites/FavoriteToggle";
 const DisplayProducts = () => {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [priceRange, setPriceRange] = useState(10000); // Default max value
+  const [priceRange, setPriceRange] = useState(10000);
   const [favorites, setFavorites] = useState([]);
-
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  // Access the user's ID from Redux state
   const user = useSelector((state) => state.user);
   const userId = user?.id;
   const role = user.role;
@@ -405,28 +399,12 @@ const DisplayProducts = () => {
     fetchProducts();
   }, []);
 
-  // useEffect(() => {
-  //   if (userId) {
-  //     const fetchFavorites = async () => {
-  //       try {
-  //         const response = await axios.get(`/api/favourites/favorites/id/${userId}`);
-  //         // Extract only the product IDs from the response
-  //         const favoriteIds = response.data.favorites.map((product) => product._id);
-  //         setFavorites(favoriteIds); // Initialize the favorites state
-  //       } catch (error) {
-  //         console.error("Error fetching favorites:", error);
-  //       }
-  //     };
-  //     fetchFavorites();
-  //   }
-  // }, [userId]);
-
   useEffect(() => {
     if (userId) {
       const fetchFavorites = async () => {
         try {
           const response = await axios.get(`/api/favourites/favorites/id/${userId}`);
-          setFavorites(response.data.favorites); // this is an array of string IDs
+          setFavorites(response.data.favorites);
         } catch (error) {
           console.error("Error fetching favorites:", error);
         }
@@ -434,7 +412,6 @@ const DisplayProducts = () => {
       fetchFavorites();
     }
   }, [userId]);
-  
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
@@ -461,12 +438,8 @@ const DisplayProducts = () => {
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
     const isWithinPrice = product.price <= priceRange;
-    // return matchesSearch && isWithinPrice;
-    const matchesCategory =
-  selectedCategory === "All" || product.category === selectedCategory;
-
-return matchesSearch && isWithinPrice && matchesCategory;
-
+    const matchesCategory = selectedCategory === "All" || product.category === selectedCategory;
+    return matchesSearch && isWithinPrice && matchesCategory;
   });
 
   return (
@@ -521,141 +494,71 @@ return matchesSearch && isWithinPrice && matchesCategory;
               <span>Rs 10000</span>
             </div>
           </div>
-        {/* Category Filter Dropdown */}
-<div className="mt-4 w-1/2">
-  <select
-    value={selectedCategory}
-    onChange={(e) => setSelectedCategory(e.target.value)}
-    className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-  >
-    {categories.map((category, index) => (
-      <option key={index} value={category}>
-        {category}
-      </option>
-    ))}
-  </select>
-</div>
-
+          
+          {/* Category Filter Dropdown */}
+          <div className="mt-4 w-1/2">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              {categories.map((category, index) => (
+                <option key={index} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-      <h1 className="text-center text-3xl font-semibold my-10">All Products</h1>
+        <h1 className="text-center text-3xl font-semibold my-10">All Products</h1>
 
-      {/* Display Products */}
-      <div className="flex flex-wrap justify-center items-center gap-8 mt-4 bg-gray-100 rounded-lg w-[80vw] mx-auto p-8 my-5">
-        {filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <div
-              key={product._id}
-              className="w-full sm:w-1/2 lg:w-[30%] bg-white shadow-md rounded-lg py-8 px-5"
-            >
-              <div className="flex justify-between gap-4">
-                <div className="flex-1">
-                  <h1 className="text-lg font-bold">{product.name}</h1>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Price: Rs {product.price} per piece
-                  </p>
-                  <span className="block my-1 text-sm font-bold">
-  Category: {product.category || "Other"}
-</span>
+        {/* Display Products */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <div
+                key={product._id}
+                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+              >
+                <div className="p-6">
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex-1">
+                      <h2 className="text-xl font-semibold text-neutral-900">{product.name}</h2>
+                      <p className="text-primary-600 font-medium mt-1">
+                        Rs {product.price.toLocaleString()} per piece
+                      </p>
+                      <span className="block my-1 text-sm font-bold">
+                        Category: {product.category || "Other"}
+                      </span>
+                      <p className="text-neutral-600 text-sm mt-2 line-clamp-2">
+                        {product.description}
+                      </p>
+                    </div>
 
-                  <p className="text-sm text-gray-600 mt-2">{product.description}</p>
-                </div>
-
-                <div className="flex flex-col items-end flex-1">
-                  {/* <img
-                    src={product.image}
-                    alt="Product"
-                    className="w-24 h-24 object-cover rounded-lg"
-                  /> */}
-                  <img
-  src={product.image?.[0] || "https://via.placeholder.com/100"} // default if image missing
-  alt="Product"
-  className="w-24 h-24 object-cover rounded-lg"
-/>
-
-                  <div className="mt-4">
-                    {/* Heart Icon for Favorites */}
-                    {/* <button
-                      onClick={() => toggleFavorite(product._id)}
-                      className="text-neutral-400 hover:text-primary-500 transition-colors duration-200"
-                    >
-                      {favorites.includes(product._id.toString())? (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6 text-primary-500"
-                          viewBox="0 0 20 20"
-                          fill="currentColor"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18.35l-1.45-1.32C3.4 12.36 0 9.28 0 5.5 0 2.42 2.42 0 5.5 0c1.74 0 3.41.81 4.5 2.09C10.09.81 11.76 0 13.5 0 16.58 0 19 2.42 19 5.5c0 3.78-3.4 6.86-8.55 11.54L10 18.35z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                      ) : (
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                          />
-                        </svg>
-                      )}
-                    </button> */}
- {role === "exporter" && (
-<FavoriteToggle
-  productId={product._id}
-  favorites={favorites}
-  setFavorites={setFavorites}
-  userId={userId}
-/>
- )}
-                  </div>
-
-                  <div className="mt-4">
-                    <p className="text-neutral-600 text-sm">{product.description}</p>
-                  </div>
-
-                  {product.image && (
-                    <div className="mt-4 flex justify-center">
+                    <div className="flex flex-col items-end">
                       <img
-                        src={product.image}
-                        alt={product.name}
-                        className="h-32 object-contain rounded"
+                        src={product.image?.[0] || "https://via.placeholder.com/100"}
+                        alt="Product"
+                        className="w-24 h-24 object-cover rounded-lg"
                       />
                     </div>
-                  )}
+                  </div>
 
-                  <div className="mt-6 flex justify-between items-center">
-                    <span className="text-xs px-2 py-1 bg-secondary-100 text-secondary-800 rounded-full">
-                      {product.inStock ? "In Stock" : "Out of Stock"}
-                    </span>
+                  <div className="mt-4 flex justify-between items-center">
+                    {role === "exporter" && (
+                      <FavoriteToggle
+                        productId={product._id}
+                        favorites={favorites}
+                        setFavorites={setFavorites}
+                        userId={userId}
+                      />
+                    )}
                     <Link
                       to={`/supplier/product/${product._id}`}
-                      className="text-primary-600 hover:text-primary-800 font-medium text-sm flex items-center"
+                      className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
                     >
                       View Details
-                      <svg
-                        className="w-4 h-4 ml-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
                     </Link>
                   </div>
                 </div>
