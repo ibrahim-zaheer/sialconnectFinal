@@ -184,12 +184,7 @@ const ProductDetails = () => {
                   </Link>
                   <button
                     onClick={() => setShowOfferPopup(true)}
-                    disabled={!product.inStock}
-                    className={`inline-flex items-center px-4 py-2 rounded-lg transition-colors ${
-                      product.inStock 
-                        ? 'bg-secondary-600 text-white hover:bg-secondary-700'
-                        : 'bg-neutral-300 text-neutral-500 cursor-not-allowed'
-                    }`}
+                    className="inline-flex items-center px-4 py-2 bg-secondary-600 text-white rounded-lg hover:bg-secondary-700 transition-colors"
                   >
                     <svg
                       className="w-5 h-5 mr-2"
@@ -205,7 +200,7 @@ const ProductDetails = () => {
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    {product.inStock ? 'Send Offer' : 'Out of Stock'}
+                    Send Offer
                   </button>
                 </div>
 

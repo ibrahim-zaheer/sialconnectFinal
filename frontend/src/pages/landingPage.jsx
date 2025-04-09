@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import "../assets/css/landingPage.css";
 import ProductImage from "../assets/images/image-1.jpg";
 import Footer from "./footer";
+
 
 // Animation variants
 const containerVariants = {
@@ -52,6 +54,25 @@ const scaleUp = {
 };
 
 export default function LandingPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleSearchSubmit = () => {
+    if (searchQuery.trim()) {
+      navigate(`/SupplierProducts?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSearchSubmit();
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white mt-16">
       {/* Hero Section */}
@@ -87,10 +108,18 @@ export default function LandingPage() {
                 type="text"
                 placeholder="Search products or suppliers..."
                 className="flex-grow px-6 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onKeyPress={handleKeyPress}
               />
-              <button className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+              <motion.button 
+                className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSearchSubmit}
+              >
                 Search
-              </button>
+              </motion.button>
             </motion.div>
           </div>
 
@@ -209,7 +238,10 @@ export default function LandingPage() {
           variants={itemVariants}
           className="text-center mt-12"
         >
-          <button className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+          <button 
+            className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
+            onClick={() => navigate('/products')}
+          >
             See all products →
           </button>
         </motion.div>
@@ -241,10 +273,16 @@ export default function LandingPage() {
             variants={itemVariants}
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
-            <button className="bg-white text-primary-800 hover:bg-primary-50 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md">
+            <button 
+              className="bg-white text-primary-800 hover:bg-primary-50 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
+              onClick={() => navigate('/products')}
+            >
               Explore
             </button>
-            <button className="border border-white text-white hover:bg-primary-700 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105">
+            <button 
+              className="border border-white text-white hover:bg-primary-700 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
+              onClick={() => navigate('/register')}
+            >
               Sign Up
             </button>
           </motion.div>
