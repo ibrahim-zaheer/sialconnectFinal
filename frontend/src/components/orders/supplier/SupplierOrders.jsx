@@ -93,6 +93,7 @@
 
 import React from "react";
 import useOrders from "../hook/useOrders";
+import { Link } from "react-router-dom";
 
 const SupplierOrders = () => {
   const { orders, loading, error } = useOrders();
@@ -138,6 +139,30 @@ const SupplierOrders = () => {
               <p className="text-sm text-gray-600 mt-2">
                 Created on: {formatDate(order.createdAt)}
               </p>
+              <Link
+  to={`/supplier/order/${order._id}`}
+  key={order._id}
+  className="block bg-white p-4 shadow rounded-lg hover:shadow-md transition"
+>
+  <h3 className="text-lg font-semibold mb-2">
+    {order.productId
+      ? `Product: ${order.productId.name}`
+      : order.auctionId
+      ? `Auction: ${order.auctionId.title || "Untitled Auction"}`
+      : "Unknown Product/Auction"}
+  </h3>
+
+  <p>Exporter: {order.exporterId?.name || "Unknown"}</p>
+  <p>Price: {order.price} Rs</p>
+  <p>Quantity: {order.quantity}</p>
+  <p>Total Value: {order.price * order.quantity}</p>
+  <p>Message: {order.message || "No message"}</p>
+
+  <p className="text-sm text-gray-600 mt-2">
+    Created on: {formatDate(order.createdAt)}
+  </p>
+</Link>
+
             </div>
           ))}
         </div>

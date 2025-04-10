@@ -412,7 +412,7 @@ const Navbar = () => {
               <Link to="/home">Home</Link>
             </li>
             <li>
-              <Link to="/products">Products</Link>
+              <Link to="/ExporterProducts">Products</Link>
             </li>
 
             {/* Conditionally render SignIn link if user.role does not exist */}

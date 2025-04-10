@@ -67,23 +67,63 @@ const getOrdersByExporter = async (req, res) => {
   }
 };
 
+const getOrderDetailsForSupplier = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const supplierId = req.user.id; // Assuming auth middleware sets req.user
 
-// Route for supplier to prepare and send the sample after payment confirmation
-const prepareSample = async (req, res) => {
+    const order = await Order.findOne({ _id: orderId, supplierId })
+      .populate("exporterId", "name email")
+      .populate("productId", "name")
+      .populate("auctionId", "title");
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found for this supplier." });
+    }
+
+    res.status(200).json({ message: "Order details retrieved successfully", order });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving order details", error });
+  }
+};
+
+
+const getOrderDetailsForExporter = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const exporterId = req.user.id; // Assuming auth middleware sets req.user
+
+    const order = await Order.findOne({ _id: orderId, exporterId })
+      .populate("supplierId", "name email")
+      .populate("productId", "name")
+      .populate("auctionId", "title");
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found for this supplier." });
+    }
+
+    res.status(200).json({ message: "Order details retrieved successfully", order });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving order details", error });
+  }
+};
+
+
+
+const markSampleSent = async (req, res) => {
   const { orderId } = req.body;
   const order = await Order.findById(orderId);
 
-  if (order.status !== "waiting_for_sample") {
-    return res.status(400).json({ message: "Order is not ready for sample preparation" });
+  if (order.sampleStatus !== 'waiting_for_sample') {
+    return res.status(400).json({ message: 'Not ready to send sample yet' });
   }
 
-  // Update the status of the order to "sample sent"
-  order.sampleStatus = "sent";
+  order.sampleStatus = 'sent';
   await order.save();
 
-  // Notify the supplier that the payment is secured and they can send the sample
-  res.status(200).json({ message: "Supplier notified to send sample", order });
+  res.status(200).json({ message: 'Sample marked as sent' });
 };
+
 // Route for the exporter to confirm sample receipt
 const confirmSampleReceipt = async (req, res) => {
   const { orderId } = req.body;
@@ -129,7 +169,26 @@ const rejectSample = async (req, res) => {
   res.status(200).json({ message: "Sample rejected, 50% refunded to the exporter and 50% to the supplier", order });
 };
 
+const approveSample = async (req, res) => {
+  const { orderId } = req.body;
+  const order = await Order.findById(orderId);
+
+  if (order.sampleStatus !== 'received') {
+    return res.status(400).json({ message: 'Sample not yet received' });
+  }
+
+  // Capture the full token payment
+  await stripe.paymentIntents.capture(order.paymentIntentId);
+
+  order.sampleStatus = 'sample_accepted';
+  order.status = 'completed';
+  order.paymentStatus = 'completed';
+  await order.save();
+
+  res.status(200).json({ message: 'Sample approved, payment released to supplier', order });
+};
+
 
 module.exports = {
-    getOrdersBySupplier,getOrdersByExporter
+    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter
 };
