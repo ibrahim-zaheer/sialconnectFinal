@@ -7,10 +7,12 @@ import TopOrderedProducts from '../../components/orders/supplier/TopOrderedProdu
 export default function ExporterOrderPage() {
   return (
     <div>
-      <ExporterOrders/>
-      <SupplierOrderCount/>
+      <div className="pt-20"></div>
+        <SupplierOrderCount/>
       <HighestOrderValue/>
       <TopOrderedProducts/>
+      <ExporterOrders/>
+    
     </div>
   )
 }

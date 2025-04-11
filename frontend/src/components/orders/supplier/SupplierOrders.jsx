@@ -1,94 +1,86 @@
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { useSelector } from "react-redux";
-// import { selectUser } from "../../../redux/reducers/userSlice";
+
+
+// import React from "react";
+// import useOrders from "../hook/useOrders";
+// import { Link } from "react-router-dom";
 
 // const SupplierOrders = () => {
-//     const user = useSelector(selectUser);
-//     const token = user?.id ? localStorage.getItem("token") : null;
-  
-//     const [orders, setOrders] = useState([]);
-//     const [loading, setLoading] = useState(true);
-//     const [error, setError] = useState("");
-  
-//     useEffect(() => {
-//       const fetchOrders = async () => {
-//         if (!token) {
-//           setError("User not authenticated.");
-//           setLoading(false);
-//           return;
-//         }
-  
-//         try {
-//           const response = await axios.get("/api/order/orders/supplier", {
-//             headers: { Authorization: `Bearer ${token}` },
-//           });
-//           setOrders(response.data.orders);
-//         } catch (err) {
-//           setError("Failed to fetch orders.");
-//           console.error(err);
-//         } finally {
-//           setLoading(false);
-//         }
-//       };
-  
-//       fetchOrders();
-//     }, [token]);
-  
-//     const formatDate = (dateString) => {
-//       return new Date(dateString).toLocaleDateString("en-GB", {
-//         day: "2-digit",
-//         month: "short",
-//         year: "numeric",
-//         hour: "2-digit",
-//         minute: "2-digit",
-//       });
-//     };
-  
-//     return (
-//       <div className="container mx-auto p-6">
-//         <h2 className="text-2xl font-bold text-center mb-6">My Order</h2>
-  
-//         {loading ? (
-//           <p className="text-center text-gray-500">Loading orders...</p>
-//         ) : error ? (
-//           <p className="text-center text-red-500">{error}</p>
-//         ) : orders.length === 0 ? (
-//           <p className="text-center text-gray-500">No orders found.</p>
-//         ) : (
-//           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-//             {orders.map((order) => (
-//               <div key={order._id} className="bg-white p-4 shadow rounded-lg">
-//                 {/* <h3 className="text-lg font-semibold mb-2">
-//                   Product: {order.productId?.name || "Unknown"}
-//                 </h3> */}
-//                 <h3 className="text-lg font-semibold mb-2">
-//   {order.productId
-//     ? `Product: ${order.productId.name}`
-//     : order.auctionId
-//     ? `Auction: ${order.auctionId.title || "Untitled Auction"}`
-//     : "Unknown Product/Auction"}
-// </h3>
+//   const { orders, loading, error } = useOrders();
 
-//                 <p>Exporter: {order.exporterId?.name || "Unknown"}</p>
-//                 <p>Price: {order.price} Rs</p>
-//                 <p>Quantity: {order.quantity}</p>
-//                 <p >Total Value: {order.price * order.quantity}</p>
-//                 <p>Message: {order.message || "No message"}</p>
-              
-//                 <p className="text-sm text-gray-600 mt-2">
-//                   Created on: {formatDate(order.createdAt)}
-//                 </p>
-//               </div>
-//             ))}
-//           </div>
-//         )}
-//       </div>
-//     );
+//   const formatDate = (dateString) => {
+//     return new Date(dateString).toLocaleDateString("en-GB", {
+//       day: "2-digit",
+//       month: "short",
+//       year: "numeric",
+//       hour: "2-digit",
+//       minute: "2-digit",
+//     });
 //   };
-  
-//   export default SupplierOrders;
-  
+
+//   return (
+//     <div className="container mx-auto p-6">
+//       <h2 className="text-2xl font-bold text-center mb-6">My Orders</h2>
+
+//       {loading ? (
+//         <p className="text-center text-gray-500">Loading orders...</p>
+//       ) : error ? (
+//         <p className="text-center text-red-500">{error}</p>
+//       ) : orders.length === 0 ? (
+//         <p className="text-center text-gray-500">No orders found.</p>
+//       ) : (
+//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//           {orders.map((order) => (
+//             <div key={order._id} className="bg-white p-4 shadow rounded-lg">
+//               <h3 className="text-lg font-semibold mb-2">
+//                 {order.productId
+//                   ? `Product: ${order.productId.name}`
+//                   : order.auctionId
+//                   ? `Auction: ${order.auctionId.title || "Untitled Auction"}`
+//                   : "Unknown Product/Auction"}
+//               </h3>
+
+//               <p>Exporter: {order.exporterId?.name || "Unknown"}</p>
+//               <p>Price: {order.price} Rs</p>
+//               <p>Quantity: {order.quantity}</p>
+//               <p>Total Value: {order.price * order.quantity}</p>
+//               <p>Message: {order.message || "No message"}</p>
+
+//               <p className="text-sm text-gray-600 mt-2">
+//                 Created on: {formatDate(order.createdAt)}
+//               </p>
+//               <Link
+//   to={`/supplier/order/${order._id}`}
+//   key={order._id}
+//   className="block bg-white p-4 shadow rounded-lg hover:shadow-md transition"
+// >
+//   <h3 className="text-lg font-semibold mb-2">
+//     {order.productId
+//       ? `Product: ${order.productId.name}`
+//       : order.auctionId
+//       ? `Auction: ${order.auctionId.title || "Untitled Auction"}`
+//       : "Unknown Product/Auction"}
+//   </h3>
+
+//   <p>Exporter: {order.exporterId?.name || "Unknown"}</p>
+//   <p>Price: {order.price} Rs</p>
+//   <p>Quantity: {order.quantity}</p>
+//   <p>Total Value: {order.price * order.quantity}</p>
+//   <p>Message: {order.message || "No message"}</p>
+
+//   <p className="text-sm text-gray-600 mt-2">
+//     Created on: {formatDate(order.createdAt)}
+//   </p>
+// </Link>
+
+//             </div>
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default SupplierOrders;
 
 
 import React from "react";
@@ -109,20 +101,20 @@ const SupplierOrders = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <h2 className="text-2xl font-bold text-center mb-6">My Orders</h2>
+    <div className="container mx-auto p-8">
+      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800">My Orders</h2>
 
       {loading ? (
-        <p className="text-center text-gray-500">Loading orders...</p>
+        <p className="text-center text-gray-500 text-lg">Loading orders...</p>
       ) : error ? (
-        <p className="text-center text-red-500">{error}</p>
+        <p className="text-center text-red-500 text-lg">{error}</p>
       ) : orders.length === 0 ? (
-        <p className="text-center text-gray-500">No orders found.</p>
+        <p className="text-center text-gray-500 text-lg">No orders found.</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {orders.map((order) => (
-            <div key={order._id} className="bg-white p-4 shadow rounded-lg">
-              <h3 className="text-lg font-semibold mb-2">
+            <div key={order._id} className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 rounded-lg shadow-lg hover:shadow-xl transition transform hover:scale-105">
+              <h3 className="text-xl font-semibold text-white mb-4">
                 {order.productId
                   ? `Product: ${order.productId.name}`
                   : order.auctionId
@@ -130,39 +122,24 @@ const SupplierOrders = () => {
                   : "Unknown Product/Auction"}
               </h3>
 
-              <p>Exporter: {order.exporterId?.name || "Unknown"}</p>
-              <p>Price: {order.price} Rs</p>
-              <p>Quantity: {order.quantity}</p>
-              <p>Total Value: {order.price * order.quantity}</p>
-              <p>Message: {order.message || "No message"}</p>
+              <div className="space-y-3 text-white">
+                <p>Exporter: <span className="font-medium">{order.exporterId?.name || "Unknown"}</span></p>
+                <p>Price: <span className="font-medium">{order.price} Rs</span></p>
+                <p>Quantity: <span className="font-medium">{order.quantity}</span></p>
+                <p>Total Value: <span className="font-medium">{order.price * order.quantity} Rs</span></p>
+                <p>Message: <span className="font-medium">{order.message || "No message"}</span></p>
 
-              <p className="text-sm text-gray-600 mt-2">
-                Created on: {formatDate(order.createdAt)}
-              </p>
+                <p className="text-sm text-gray-200 mt-2">
+                  Created on: {formatDate(order.createdAt)}
+                </p>
+              </div>
+
               <Link
-  to={`/supplier/order/${order._id}`}
-  key={order._id}
-  className="block bg-white p-4 shadow rounded-lg hover:shadow-md transition"
->
-  <h3 className="text-lg font-semibold mb-2">
-    {order.productId
-      ? `Product: ${order.productId.name}`
-      : order.auctionId
-      ? `Auction: ${order.auctionId.title || "Untitled Auction"}`
-      : "Unknown Product/Auction"}
-  </h3>
-
-  <p>Exporter: {order.exporterId?.name || "Unknown"}</p>
-  <p>Price: {order.price} Rs</p>
-  <p>Quantity: {order.quantity}</p>
-  <p>Total Value: {order.price * order.quantity}</p>
-  <p>Message: {order.message || "No message"}</p>
-
-  <p className="text-sm text-gray-600 mt-2">
-    Created on: {formatDate(order.createdAt)}
-  </p>
-</Link>
-
+                to={`/supplier/order/${order._id}`}
+                className="mt-4 inline-block bg-white text-indigo-600 p-3 rounded-lg shadow-md hover:bg-indigo-600 hover:text-white transition"
+              >
+                <span className="font-semibold">View Order Details</span>
+              </Link>
             </div>
           ))}
         </div>

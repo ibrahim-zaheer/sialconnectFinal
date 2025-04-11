@@ -49,8 +49,15 @@
 import React from "react";
 import useOrders from "../hook/useOrders";
 
+import EstimatedOrderValue from "./EstimatedOrderValue";
+
+import { useSelector } from "react-redux";
+
 const SupplierOrderCount = () => {
   const { orders, loading } = useOrders();
+
+  const user = useSelector((state) => state.user);
+  const userRole = user?.role;
 
   return (
     <div className="text-center mt-6">
@@ -59,7 +66,17 @@ const SupplierOrderCount = () => {
       ) : (
         <p className="text-lg font-semibold">
           Total Orders are: <span className="text-blue-600">{orders.length}</span>
+       
+          {/* Show EstimatedOrderValue only for suppliers */}
+          {userRole === "supplier" && (
+            <div className="mt-4">
+              <EstimatedOrderValue orders={orders} />
+            </div>
+          )}
+          
         </p>
+
+        
       )}
     </div>
   );

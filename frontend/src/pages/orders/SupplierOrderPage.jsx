@@ -8,12 +8,16 @@ import EstimatedOrderValue from '../../components/orders/supplier/EstimatedOrder
 export default function SupplierOrderPage() {
   return (
     <div>
-      
-      <SupplierOrders/>
+      <div className="pt-20"></div>
       <SupplierOrderCount/>
       <HighestOrderValue/>
       <TopOrderedProducts/>
-      <EstimatedOrderValue/>
+      {/* <EstimatedOrderValue/> */}
+      <SupplierOrders/>
+      
+      
+     
+      
    
     </div>
   )

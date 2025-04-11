@@ -43,6 +43,10 @@ const OrderSchema = new mongoose.Schema({
     default: "pending",
   },
 
+   // New fields for sample proof
+   sampleProof: { type: String, required: false },  // URL or path to the sample image
+   sampleDescription: { type: String, maxlength: 500, required: false },  // Optional description of the sample
+
   sampleDecisionDeadline: { type: Date },
 
   createdAt: { type: Date, default: Date.now },

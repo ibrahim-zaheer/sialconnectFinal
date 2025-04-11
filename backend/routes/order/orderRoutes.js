@@ -5,6 +5,9 @@ const {
   
 } = require("../../controllers/order/order_controller");
 
+const {uploadSampleImage } = require("../../config/multerConfig");
+
+
 const authenticateMiddleware = require("../../middleware/authMiddleware");
 
 // ✅ Protected route to get orders for supplier
@@ -20,10 +23,10 @@ router.post('/orders/reject-sample', rejectSample);
 router.post("/orders/initiate-token-payment",  initiateTokenPayment);
 
 // ✅ Supplier marks sample as sent
-router.post("/orders/mark-sample-sent",  markSampleSent);
+router.post("/orders/mark-sample-sent",authenticateMiddleware,uploadSampleImage.single('sampleImage'),markSampleSent);
 
 // ✅ Exporter confirms sample receipt
-router.post("/orders/confirm-sample-receipt",  confirmSampleReceipt);
+router.post("/orders/confirm-sample-receipt" ,confirmSampleReceipt);
 
 
 

@@ -38,6 +38,15 @@ const productImageStorage = new CloudinaryStorage({
   },
 });
 
+// Storage for sample images
+const sampleImageStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'sample_images',
+    allowed_formats: ['jpg', 'png', 'jpeg'],
+  },
+});
+
 // Set up multer upload for profile picture
 const uploadProfilePicture = multer({ storage: profilePictureStorage });
 
@@ -45,4 +54,6 @@ const uploadProfilePicture = multer({ storage: profilePictureStorage });
 // const uploadProductImage = multer({ storage: productImageStorage });
 const uploadProductImage = multer({ storage });
 
-module.exports = { uploadProfilePicture, uploadProductImage };
+const uploadSampleImage = multer({ storage: sampleImageStorage }); // New upload for samples
+
+module.exports = { uploadProfilePicture, uploadProductImage,uploadSampleImage };

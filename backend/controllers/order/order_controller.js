@@ -1,6 +1,9 @@
 const Order = require("../../models/offer/orderSchema");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
+const multer = require("multer");
+const path = require("path");
+// const cloudinary = require("../../utils/cloudinaryConfig"); 
 
 
 const initiateTokenPayment = async (req, res) => {
@@ -110,18 +113,54 @@ const getOrderDetailsForExporter = async (req, res) => {
 
 
 
+// const markSampleSent = async (req, res) => {
+//   const { orderId } = req.body;
+//   const order = await Order.findById(orderId);
+
+//   if (order.sampleStatus !== 'waiting_for_sample') {
+//     return res.status(400).json({ message: 'Not ready to send sample yet' });
+//   }
+
+//   order.sampleStatus = 'sent';
+//   await order.save();
+
+//   res.status(200).json({ message: 'Sample marked as sent' });
+// };
+
 const markSampleSent = async (req, res) => {
-  const { orderId } = req.body;
-  const order = await Order.findById(orderId);
+  try {
+    const { orderId, description } = req.body;
+    const order = await Order.findById(orderId);
 
-  if (order.sampleStatus !== 'waiting_for_sample') {
-    return res.status(400).json({ message: 'Not ready to send sample yet' });
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    if (order.sampleStatus !== 'waiting_for_sample') {
+      return res.status(400).json({ message: 'Not ready to send sample yet' });
+    }
+
+    // Check if file was uploaded
+    if (!req.file) {
+      return res.status(400).json({ message: 'Sample image is required' });
+    }
+
+    // Update order with sample details
+    order.sampleStatus = 'sent';
+    order.sampleProof = req.file.path; // Cloudinary URL
+    order.sampleDescription = description || '';
+    await order.save();
+
+    res.status(200).json({ 
+      message: 'Sample marked as sent with image', 
+      order 
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: 'Error sending sample', 
+      error: error.message 
+    });
   }
-
-  order.sampleStatus = 'sent';
-  await order.save();
-
-  res.status(200).json({ message: 'Sample marked as sent' });
 };
 
 // Route for the exporter to confirm sample receipt
