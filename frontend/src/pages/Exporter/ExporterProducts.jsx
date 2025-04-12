@@ -218,7 +218,7 @@ const ExporterProducts = () => {
 
   return (
     <div className="flex min-h-screen mt-16 bg-neutral-100">
-      import { motion } from "framer-motion";
+      
 
 {/* Sidebar Filters */}
 <motion.div 

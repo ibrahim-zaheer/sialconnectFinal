@@ -4,6 +4,7 @@ import ExporterOrderDetails from '../../components/orders/exporter/ExporterOrder
 export default function ExporterOrderDetailsPage() {
   return (
     <div>
+      <div className="pt-20"></div>
       <ExporterOrderDetails/>
     </div>
   )
