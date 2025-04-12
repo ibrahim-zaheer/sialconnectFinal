@@ -26,7 +26,7 @@ router.post("/orders/initiate-token-payment",  initiateTokenPayment);
 router.post("/orders/mark-sample-sent",authenticateMiddleware,uploadSampleImage.single('sampleImage'),markSampleSent);
 
 // ✅ Exporter confirms sample receipt
-router.post("/orders/confirm-sample-receipt" ,confirmSampleReceipt);
+router.post("/orders/confirm-sample-receipt" ,authenticateMiddleware,uploadSampleImage.single('sampleImage'),confirmSampleReceipt);
 
 
 

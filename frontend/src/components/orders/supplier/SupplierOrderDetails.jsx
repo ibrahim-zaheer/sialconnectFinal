@@ -1,70 +1,4 @@
-// import React, { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import axios from "axios";
 
-// const SupplierOrderDetails = () => {
-//   const { orderId } = useParams(); // get orderId from URL
-//   const [order, setOrder] = useState(null);
-//   const [loading, setLoading] = useState(true);
-//   const [message, setMessage] = useState("");
-
-//   useEffect(() => {
-//     const fetchOrderDetails = async () => {
-//       try {
-//         const token = localStorage.getItem("token");
-//         const response = await axios.get(`/api/order/orders/supplier/${orderId}`, {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         });
-
-//         setOrder(response.data.order);
-//       } catch (error) {
-//         setMessage(error.response?.data?.message || "Failed to load order details.");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchOrderDetails();
-//   }, [orderId]);
-
-//   if (loading) return <p className="text-center mt-8">Loading order details...</p>;
-//   if (message) return <p className="text-center text-red-500 mt-8">{message}</p>;
-//   if (!order) return null;
-
-//   return (
-//     <div className="max-w-3xl mx-auto p-6 bg-white shadow rounded">
-//       <h2 className="text-2xl font-bold mb-4">Order Details</h2>
-//       {order.auctionId && (
-//   <p><strong>Auction:</strong> {order.auctionId.title}</p>
-// )}
-
-// {order.productId && (
-//   <p><strong>Product:</strong> {order.productId.name}</p>
-// )}
-
-//       <p><strong>Exporter:</strong> {order.exporterId?.name}</p>
-//       <p><strong>Email:</strong> {order.exporterId?.email}</p>
-//       <p><strong>Quantity:</strong> {order.quantity}</p>
-//       <p><strong>Price:</strong> Rs {order.price}</p>
-//       <p><strong>Status:</strong> {order.status}</p>
-//       <p><strong>Sample Status:</strong> {order.sampleStatus}</p>
-//       <p><strong>Payment Status:</strong> {order.paymentStatus}</p>
-//       <p className="text-sm text-gray-500 mt-2">Ordered On: {new Date(order.createdAt).toLocaleString()}</p>
-
-//       {order.sampleStatus === "waiting_for_sample" && (
-//        <button
-//        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-       
-//      >
-//        Send Sample
-//      </button>
-
-//       )}
-//     </div>
-//   );
-// };
 
 // export default SupplierOrderDetails;
 
@@ -215,7 +149,6 @@
 
 // export default SupplierOrderDetails;
 
-
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
@@ -228,50 +161,60 @@ const SupplierOrderDetails = () => {
   const [description, setDescription] = useState("");
   const [sampleImage, setSampleImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showForm, setShowForm] = useState(false);  // State to handle dropdown visibility
+  const [showForm, setShowForm] = useState(false);
+
+  const fetchOrderDetails = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`/api/order/orders/supplier/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setOrder(response.data.order);
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Failed to load order details.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchOrderDetails = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`/api/order/orders/supplier/${orderId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setOrder(response.data.order);
-      } catch (error) {
-        setMessage(error.response?.data?.message || "Failed to load order details.");
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchOrderDetails();
-  }, [orderId]);
+  }, [orderId]); // Removed any dependencies that might cause infinite loops
 
   const handleSubmitSample = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-  
+    setMessage(""); // Clear previous messages
+
     try {
       const token = localStorage.getItem("token");
       const formData = new FormData();
       formData.append("orderId", orderId);
       formData.append("description", description);
       formData.append("sampleImage", sampleImage);
-  
-      const response = await axios.post("/api/order/orders/mark-sample-sent", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-  
+
+      const response = await axios.post(
+        "/api/order/orders/mark-sample-sent", 
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      // Reset form state
+      setDescription("");
+      setSampleImage(null);
+      setShowForm(false);
+      
+      // Update order data
       setOrder(response.data.order);
       setMessage("Sample sent successfully!");
-      setShowForm(false); // Close the form
-      setDescription(""); // Clear description
-      setSampleImage(null); // Clear image
+      
     } catch (error) {
       setMessage(error.response?.data?.message || "Failed to send sample.");
     } finally {
@@ -280,13 +223,21 @@ const SupplierOrderDetails = () => {
   };
 
   if (loading) return <p className="text-center mt-8">Loading order details...</p>;
-  if (message && !isSubmitting) return <p className={`text-center mt-8 ${message.includes("success") ? "text-green-500" : "text-red-500"}`}>{message}</p>;
   if (!order) return null;
 
   return (
     <div className="max-w-3xl mx-auto p-8 bg-white shadow-xl rounded-lg">
       <h2 className="text-3xl font-semibold text-center mb-8 text-gray-800">Order Details</h2>
       
+      {/* Display success/error message if exists */}
+      {message && (
+        <div className={`mb-6 p-4 rounded-lg text-center ${
+          message.includes("success") ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+        }`}>
+          {message}
+        </div>
+      )}
+
       <div className="space-y-4">
         {order.auctionId && <p className="text-lg font-medium"><strong>Auction:</strong> {order.auctionId.title}</p>}
         {order.productId && <p className="text-lg font-medium"><strong>Product:</strong> {order.productId.name}</p>}
@@ -300,53 +251,67 @@ const SupplierOrderDetails = () => {
         <p className="text-sm text-gray-500">Ordered On: {new Date(order.createdAt).toLocaleString()}</p>
       </div>
 
+      {/* Sample Submission Section */}
       {order.sampleStatus === "waiting_for_sample" && (
         <div className="mt-6 p-6 bg-gray-50 border border-gray-300 rounded-lg">
           <h3 className="text-xl font-semibold mb-4">Send Sample</h3>
-          <button
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-            onClick={() => setShowForm(!showForm)} // Toggle the form visibility
-          >
-            {showForm ? "Cancel" : "Enter Sample Details"}
-          </button>
-
-          {showForm && (
-            <form onSubmit={handleSubmitSample} className="mt-6 space-y-4">
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Sample Description</label>
-                <textarea
-                  className="w-full px-4 py-2 border rounded-lg"
-                  rows="4"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Describe the sample..."
-                />
-              </div>
-
-              <div className="mb-4">
-                <label className="block text-gray-700 mb-2">Sample Image</label>
-                <input
-                  type="file"
-                  className="w-full px-4 py-2 border rounded-lg"
-                  accept="image/jpeg, image/png"
-                  onChange={(e) => setSampleImage(e.target.files[0])}
-                  required
-                />
-                <p className="text-xs text-gray-500 mt-1">Upload a clear image of the sample (JPEG or PNG)</p>
-              </div>
-
+          
+          {order.sampleProof ? (
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <p className="text-blue-800">Sample already submitted</p>
+            </div>
+          ) : (
+            <>
               <button
-                type="submit"
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300 transition"
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                onClick={() => setShowForm(!showForm)}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Sending..." : "Send Sample"}
+                {showForm ? "Cancel" : "Enter Sample Details"}
               </button>
-            </form>
+
+              {showForm && (
+                <form onSubmit={handleSubmitSample} className="mt-6 space-y-4">
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2">Sample Description</label>
+                    <textarea
+                      className="w-full px-4 py-2 border rounded-lg"
+                      rows="4"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Describe the sample..."
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label className="block text-gray-700 mb-2">Sample Image</label>
+                    <input
+                      type="file"
+                      className="w-full px-4 py-2 border rounded-lg"
+                      accept="image/jpeg, image/png"
+                      onChange={(e) => setSampleImage(e.target.files[0])}
+                      required
+                      disabled={isSubmitting}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Upload a clear image of the sample (JPEG or PNG)</p>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-green-300 transition"
+                    disabled={isSubmitting || !sampleImage}
+                  >
+                    {isSubmitting ? "Submitting..." : "Send Sample"}
+                  </button>
+                </form>
+              )}
+            </>
           )}
         </div>
       )}
 
+      {/* Sample Proof Display */}
       {order.sampleProof && (
         <div className="mt-8">
           <h3 className="text-xl font-semibold mb-4">Sample Proof</h3>
@@ -356,7 +321,10 @@ const SupplierOrderDetails = () => {
             className="max-w-full h-auto rounded-lg shadow-lg border"
           />
           {order.sampleDescription && (
-            <p className="mt-4 text-lg"><strong>Description:</strong> {order.sampleDescription}</p>
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+              <h4 className="font-medium mb-2">Description:</h4>
+              <p className="text-gray-700">{order.sampleDescription}</p>
+            </div>
           )}
         </div>
       )}

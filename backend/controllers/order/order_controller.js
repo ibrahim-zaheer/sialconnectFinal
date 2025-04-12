@@ -168,24 +168,53 @@ const confirmSampleReceipt = async (req, res) => {
   const { orderId } = req.body;
   const order = await Order.findById(orderId);
 
+   // Check if the order exists
+   if (!order) {
+    return res.status(404).json({ message: "Order not found" });
+  }
   if (order.sampleStatus !== "sent") {
     return res.status(400).json({ message: "Sample not sent yet" });
   }
+    // Check if file was uploaded
+    if (!req.file) {
+      return res.status(400).json({ message: 'Sample image is required' });
+    }
+
 
   // Once the sample is received, mark it as "sample_received"
   order.sampleStatus = "received";
+  order.sampleRecievedProof = req.file.path;
   await order.save();
 
-  // Release the token payment to the supplier if the sample is accepted
-  if (order.status === "waiting_for_sample") {
-    await stripe.paymentIntents.capture(order.paymentIntentId);
-    order.paymentStatus = "completed";
-    order.status = "sample_accepted";  // Mark order as accepted
-    await order.save();
-  }
+  // // Release the token payment to the supplier if the sample is accepted
+  // if (order.sampleStatus === "received") {
+  //   await stripe.paymentIntents.capture(order.paymentIntentId);
+  //   order.paymentStatus = "completed";
+  //   // order.status = "sample_accepted";  // Mark order as accepted
+  //   await order.save();
+  // }
 
-  // Optionally, notify the supplier that the sample has been accepted
-  res.status(200).json({ message: "Sample received and token payment completed", order });
+  // // Optionally, notify the supplier that the sample has been accepted
+  // res.status(200).json({ message: "Sample received and token payment completed", order });
+    // Release the token payment to the supplier if the sample is received
+    try {
+      // Capture the payment intent
+      await stripe.paymentIntents.capture(order.paymentIntentId);
+      order.paymentStatus = "completed"; // Mark payment as completed
+  
+      // Optionally, you can set the order status to indicate the sample has been accepted.
+      // If you don't want to automatically mark the sample as accepted, you can leave this commented out:
+      // order.status = "sample_accepted";
+  
+      await order.save();
+  
+      res.status(200).json({ message: "Sample received and token payment completed", order });
+    } catch (error) {
+      res.status(500).json({
+        message: "Error capturing payment or updating order status",
+        error: error.message,
+      });
+    }
 };
 // Route for the exporter to reject the sample
 const rejectSample = async (req, res) => {

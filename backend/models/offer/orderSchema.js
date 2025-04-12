@@ -46,7 +46,7 @@ const OrderSchema = new mongoose.Schema({
    // New fields for sample proof
    sampleProof: { type: String, required: false },  // URL or path to the sample image
    sampleDescription: { type: String, maxlength: 500, required: false },  // Optional description of the sample
-
+  sampleRecievedProof:{ type: String, required: false },
   sampleDecisionDeadline: { type: Date },
 
   createdAt: { type: Date, default: Date.now },
