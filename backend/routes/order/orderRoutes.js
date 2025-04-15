@@ -16,11 +16,11 @@ router.get("/orders/exporter", authenticateMiddleware, getOrdersByExporter);
 router.get("/orders/supplier/:orderId", authenticateMiddleware, getOrderDetailsForSupplier);
 router.get("/orders/exporter/:orderId", authenticateMiddleware, getOrderDetailsForExporter);
 
-router.post('/orders/approve-sample', approveSample);
+router.post('/orders/approve-sample', authenticateMiddleware,approveSample);
 router.post('/orders/reject-sample', rejectSample);
 
 // ✅ Exporter initiates token payment (escrow hold)
-router.post("/orders/initiate-token-payment",  initiateTokenPayment);
+router.post("/orders/initiate-token-payment", authenticateMiddleware, initiateTokenPayment);
 
 // ✅ Supplier marks sample as sent
 router.post("/orders/mark-sample-sent",authenticateMiddleware,uploadSampleImage.single('sampleImage'),markSampleSent);

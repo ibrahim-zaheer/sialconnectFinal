@@ -19,6 +19,7 @@ const initiateTokenPayment = async (req, res) => {
       capture_method: 'manual',  // Hold the payment for later capture
     });
 
+    order.paymentStatus = "completed";
     order.paymentIntentId = paymentIntent.id;
     order.sampleStatus = "waiting_for_sample"; // Change the status to waiting for sample
     await order.save();
@@ -202,9 +203,7 @@ const confirmSampleReceipt = async (req, res) => {
       await stripe.paymentIntents.capture(order.paymentIntentId);
       order.paymentStatus = "completed"; // Mark payment as completed
   
-      // Optionally, you can set the order status to indicate the sample has been accepted.
-      // If you don't want to automatically mark the sample as accepted, you can leave this commented out:
-      // order.status = "sample_accepted";
+     
   
       await order.save();
   
