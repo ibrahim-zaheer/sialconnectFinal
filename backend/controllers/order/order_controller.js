@@ -19,7 +19,7 @@ const initiateTokenPayment = async (req, res) => {
       capture_method: 'manual',  // Hold the payment for later capture
     });
 
-    order.paymentStatus = "completed";
+    order.paymentStatus = "pending";
     order.paymentIntentId = paymentIntent.id;
     order.sampleStatus = "waiting_for_sample"; // Change the status to waiting for sample
     await order.save();
@@ -216,44 +216,59 @@ const confirmSampleReceipt = async (req, res) => {
     }
 };
 // Route for the exporter to reject the sample
+// Sample Reject Route
 const rejectSample = async (req, res) => {
-  const { orderId } = req.body;
-  const order = await Order.findById(orderId);
+  try {
+    const { orderId, rejectionReason } = req.body;
+    const order = await Order.findById(orderId);
 
-  if (order.sampleStatus !== "received") {
-    return res.status(400).json({ message: "Sample must be received before rejection" });
+    if (order.sampleStatus !== 'received') {
+      return res.status(400).json({ message: 'Sample not yet received' });
+    }
+
+    await stripe.refunds.create({ payment_intent: order.paymentIntentId });
+
+    order.sampleStatus = 'sample_rejected';
+    order.rejectionReason = rejectionReason;
+    await order.save();
+
+    res.status(200).json({ message: 'Sample rejected and refunded' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error rejecting sample', error });
   }
-
-  // Refund 50% to the exporter and give 50% to the supplier
-  const refundAmount = Math.round(order.price / 2 * 100); // Refund half of the token payment
-  await stripe.refunds.create({ payment_intent: order.paymentIntentId });
-
-  // Update order status
-  order.status = "sample_rejected";
-  await order.save();
-
-  // Notify both parties
-  res.status(200).json({ message: "Sample rejected, 50% refunded to the exporter and 50% to the supplier", order });
 };
 
 const approveSample = async (req, res) => {
-  const { orderId } = req.body;
-  const order = await Order.findById(orderId);
+  try {
+    const { orderId } = req.body;
+    const order = await Order.findById(orderId);
 
-  if (order.sampleStatus !== 'received') {
-    return res.status(400).json({ message: 'Sample not yet received' });
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    if (order.sampleStatus !== 'received') {
+      return res.status(400).json({ message: 'Sample not yet received' });
+    }
+
+    console.log("Order found and sample status is 'received'");
+
+    // Capture the payment intent
+    // await stripe.paymentIntents.capture(order.paymentIntentId);
+    order.sampleStatus = 'sample_accepted';
+    order.status = 'completed';
+    order.paymentStatus = 'completed';
+    order.status = 'terminated';
+
+    await order.save();
+    res.status(200).json({ message: 'Sample approved, payment released to supplier' });
+  } catch (error) {
+    console.error('Error in approveSample:', error);
+    res.status(500).json({ message: 'Error approving sample', error });
   }
-
-  // Capture the full token payment
-  await stripe.paymentIntents.capture(order.paymentIntentId);
-
-  order.sampleStatus = 'sample_accepted';
-  order.status = 'completed';
-  order.paymentStatus = 'completed';
-  await order.save();
-
-  res.status(200).json({ message: 'Sample approved, payment released to supplier', order });
 };
+
+
 
 
 module.exports = {

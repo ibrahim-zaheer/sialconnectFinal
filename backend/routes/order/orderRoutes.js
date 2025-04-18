@@ -16,8 +16,8 @@ router.get("/orders/exporter", authenticateMiddleware, getOrdersByExporter);
 router.get("/orders/supplier/:orderId", authenticateMiddleware, getOrderDetailsForSupplier);
 router.get("/orders/exporter/:orderId", authenticateMiddleware, getOrderDetailsForExporter);
 
-router.post('/orders/approve-sample', authenticateMiddleware,approveSample);
-router.post('/orders/reject-sample', rejectSample);
+router.post('/orders/approveSample',approveSample);
+router.post('/orders/rejectSample', rejectSample);
 
 // ✅ Exporter initiates token payment (escrow hold)
 router.post("/orders/initiate-token-payment", authenticateMiddleware, initiateTokenPayment);

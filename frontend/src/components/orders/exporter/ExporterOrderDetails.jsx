@@ -884,6 +884,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import PaymentPage from "../../../pages/payments/PaymentPage";
+import SampleApproval from "../components/SampleApproval";
+import PDFGenerator from "../components/PDFGenerator";
+import { useSelector } from "react-redux";
 
 export default function ExporterOrderDetails() {
   const { orderId } = useParams(); // get orderId from URL
@@ -897,6 +900,10 @@ export default function ExporterOrderDetails() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [description, setDescription] = useState(""); // Added missing state
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+
+    const user = useSelector((state) => state.user);
+    const userName = user?.name;
+    const userRole = user?.role;
 
   const handleImageSample = async (e) => {
     e.preventDefault();
@@ -959,6 +966,10 @@ export default function ExporterOrderDetails() {
     fetchOrderDetails();
   }, [orderId]);
 
+  const handleApproveSuccess = () => {
+    fetchOrderDetails(); // Re-fetch order details after sample is approved
+  };
+
   if (loading)
     return <p className="text-center mt-8">Loading order details...</p>;
   if (message)
@@ -976,6 +987,13 @@ export default function ExporterOrderDetails() {
         <h3 className="text-2xl font-semibold text-gray-700 mb-4">
           Order Overview
         </h3>
+           {/* PDF Generation Button */}
+     {/* PDF Generation Button */}
+     {order.status === "completed" && (
+        <div className="mt-6">
+          <PDFGenerator order={order} userName={userName} userRole={userRole}/>
+        </div>
+      )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="font-semibold text-gray-600">
             <strong>Auction:</strong> {order.auctionId?.title}
@@ -984,7 +1002,10 @@ export default function ExporterOrderDetails() {
             <strong>Product:</strong> {order.productId?.name}
           </div>
           <div className="font-semibold text-gray-600">
-            <strong>Exporter:</strong> {order.supplierId?.name}
+            <strong>Supplier:</strong> {order.supplierId?.name}
+          </div>
+          <div className="font-semibold text-gray-600">
+            <strong>Exporter:</strong> {userName}
           </div>
           <div className="font-semibold text-gray-600">
             <strong>Email:</strong> {order.supplierId?.email}
@@ -1040,6 +1061,11 @@ export default function ExporterOrderDetails() {
             </p>
           )}
         </div>
+      )}
+         {order.sampleStatus === "received" && (
+       <div className="mt-6 p-6 bg-gray-50 border border-gray-300 rounded-lg">
+       <SampleApproval orderId={order._id} onApproveSuccess={handleApproveSuccess} />
+     </div>
       )}
 
       

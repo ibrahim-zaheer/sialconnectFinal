@@ -152,8 +152,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import PDFGenerator from "../components/PDFGenerator";
+import { useSelector } from "react-redux";
 
 const SupplierOrderDetails = () => {
+
+      const user = useSelector((state) => state.user);
+      const userName = user?.name;
+      const userRole = user?.role;
+
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -228,6 +235,13 @@ const SupplierOrderDetails = () => {
   return (
     <div className="max-w-3xl mx-auto p-8 bg-white shadow-xl rounded-lg">
       <h2 className="text-3xl font-semibold text-center mb-8 text-gray-800">Order Details</h2>
+
+       {/* PDF Generation Button */}
+           {order.status === "completed" && (
+              <div className="mt-6">
+                <PDFGenerator order={order} userName={userName} userRole={userRole}/>
+              </div>
+            )}
       
       {/* Display success/error message if exists */}
       {message && (
@@ -247,7 +261,14 @@ const SupplierOrderDetails = () => {
         <p className="text-lg font-medium"><strong>Price:</strong> Rs {order.price}</p>
         <p className="text-lg font-medium"><strong>Status:</strong> {order.status}</p>
         <p className="text-lg font-medium"><strong>Sample Status:</strong> {order.sampleStatus}</p>
+        {order.sampleStatus === 'sample_rejected' && (
+          <>
+    <p className="text-lg font-medium text-red-500">Order Rejected</p>
+    <p className="text-lg font-medium"><strong>Reason:</strong> {order.rejectionReason}</p>
+    </>
+  )}
         <p className="text-lg font-medium"><strong>Payment Status:</strong> {order.paymentStatus}</p>
+
         <p className="text-sm text-gray-500">Ordered On: {new Date(order.createdAt).toLocaleString()}</p>
       </div>
 

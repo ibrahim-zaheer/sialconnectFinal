@@ -48,6 +48,7 @@ const OrderSchema = new mongoose.Schema({
    sampleDescription: { type: String, maxlength: 500, required: false },  // Optional description of the sample
   sampleRecievedProof:{ type: String, required: false },
   sampleDecisionDeadline: { type: Date },
+  rejectionReason: { type: String, maxlength: 500, required: false },
 
   createdAt: { type: Date, default: Date.now },
 });
