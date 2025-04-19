@@ -887,6 +887,8 @@ import PaymentPage from "../../../pages/payments/PaymentPage";
 import SampleApproval from "../components/SampleApproval";
 import PDFGenerator from "../components/PDFGenerator";
 import { useSelector } from "react-redux";
+import AgreementComponent from "../components/AgreementComponent";
+import AgreementPDFGenerator from "../components/AgreementPDFGenerator";
 
 export default function ExporterOrderDetails() {
   const { orderId } = useParams(); // get orderId from URL
@@ -969,6 +971,13 @@ export default function ExporterOrderDetails() {
   const handleApproveSuccess = () => {
     fetchOrderDetails(); // Re-fetch order details after sample is approved
   };
+  const handleAcceptSuccess = () => {
+    fetchOrderDetails(); // Re-fetch order details after agreement is accepted
+  };
+
+  const handleRejectSuccess = () => {
+    fetchOrderDetails(); // Re-fetch order details after agreement is rejected
+  };
 
   if (loading)
     return <p className="text-center mt-8">Loading order details...</p>;
@@ -992,8 +1001,22 @@ export default function ExporterOrderDetails() {
      {order.status === "completed" && (
         <div className="mt-6">
           <PDFGenerator order={order} userName={userName} userRole={userRole}/>
+          <AgreementPDFGenerator order={order} userName={userName} userRole={userRole} />
         </div>
       )}
+       {/* Agreement Component for Completed Orders */}
+       {order.status === "completed" && order.Agreement =="waiting_for_approval" && (
+          <div className="mt-6">
+            <AgreementComponent
+              orderId={order._id}
+              onAcceptSuccess={handleAcceptSuccess}
+              onRejectSuccess={handleRejectSuccess}
+              role={userRole}
+            />
+                
+
+          </div>
+        )}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="font-semibold text-gray-600">
             <strong>Auction:</strong> {order.auctionId?.title}
@@ -1024,6 +1047,9 @@ export default function ExporterOrderDetails() {
           </div>
           <div className="font-semibold text-gray-600">
             <strong>Payment Status:</strong> {order.paymentStatus}
+          </div>
+          <div className="font-semibold text-gray-600">
+            <strong>Agreement:</strong> {order.Agreement}
           </div>
           <div className="font-semibold text-gray-600">
             <strong>Ordered On:</strong>{" "}
@@ -1060,6 +1086,21 @@ export default function ExporterOrderDetails() {
               <strong>Description:</strong> {order.sampleDescription}
             </p>
           )}
+        </div>
+      )}
+
+       {/* Sample Recieved Proof */}
+       {order.sampleRecievedProof && (
+        <div className="card bg-white p-6 rounded-lg shadow-md mt-6">
+          <h3 className="text-lg font-semibold mb-2 text-gray-700">
+            Sample Recieved Proof
+          </h3>
+          <img
+            src={order.sampleRecievedProof}
+            alt="Sample proof"
+            className="max-w-full h-auto rounded-xl shadow-md"
+          />
+         
         </div>
       )}
          {order.sampleStatus === "received" && (

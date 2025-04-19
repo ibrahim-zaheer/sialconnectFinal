@@ -70,7 +70,7 @@ const SampleApproval = ({ orderId, onApproveSuccess }) => {
           onClick={handleApproveSample}
           disabled={loading || isRejection}
           className={`btn ${loading ? 'btn-loading' : 'btn-primary hover:bg-blue-700'}`}
-          title="Approve this sample"
+          title="If sample is approved then order will be considered accepted and the token amount will be sent to Supplier"
         >
           Approve Sample
         </button>
@@ -79,7 +79,8 @@ const SampleApproval = ({ orderId, onApproveSuccess }) => {
           onClick={() => setIsRejection(true)}
           disabled={loading || sampleStatus === 'sample_accepted'}
           className={`btn ${loading ? 'btn-loading' : 'btn-error hover:bg-red-700'}`}
-          title="Reject this sample"
+          title="If sample is rejected then order will be considered rejected and the half token amount will be sent to Supplier"
+         
         >
           Reject Sample
         </button>

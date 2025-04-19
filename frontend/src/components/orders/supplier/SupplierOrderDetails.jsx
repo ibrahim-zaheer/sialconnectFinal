@@ -154,6 +154,9 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import PDFGenerator from "../components/PDFGenerator";
 import { useSelector } from "react-redux";
+import AgreementComponent from "../components/AgreementComponent";
+import AgreementPDFGenerator from "../components/AgreementPDFGenerator";
+
 
 const SupplierOrderDetails = () => {
 
@@ -229,6 +232,14 @@ const SupplierOrderDetails = () => {
     }
   };
 
+  const handleAcceptSuccess = () => {
+    fetchOrderDetails(); // Re-fetch order details after agreement is accepted
+  };
+
+  const handleRejectSuccess = () => {
+    fetchOrderDetails(); // Re-fetch order details after agreement is rejected
+  };
+
   if (loading) return <p className="text-center mt-8">Loading order details...</p>;
   if (!order) return null;
 
@@ -240,8 +251,21 @@ const SupplierOrderDetails = () => {
            {order.status === "completed" && (
               <div className="mt-6">
                 <PDFGenerator order={order} userName={userName} userRole={userRole}/>
+                <AgreementPDFGenerator order={order} userName={userName} userRole={userRole} />
               </div>
             )}
+
+             {/* Agreement Component for Completed Orders */}
+                   {order.status === "completed" && order.Agreement =="waiting_for_supplier" && (
+                      <div className="mt-6">
+                        <AgreementComponent
+                          orderId={order._id}
+                          onAcceptSuccess={handleAcceptSuccess}
+                          onRejectSuccess={handleRejectSuccess}
+                          role={userRole}
+                        />
+                      </div>
+                    )}
       
       {/* Display success/error message if exists */}
       {message && (
@@ -268,6 +292,9 @@ const SupplierOrderDetails = () => {
     </>
   )}
         <p className="text-lg font-medium"><strong>Payment Status:</strong> {order.paymentStatus}</p>
+        <div className="font-semibold text-gray-600">
+            <strong>Agreement:</strong> {order.Agreement}
+          </div>
 
         <p className="text-sm text-gray-500">Ordered On: {new Date(order.createdAt).toLocaleString()}</p>
       </div>
@@ -347,6 +374,20 @@ const SupplierOrderDetails = () => {
               <p className="text-gray-700">{order.sampleDescription}</p>
             </div>
           )}
+        </div>
+      )}
+        {/* Sample Recieved Proof */}
+        {order.sampleRecievedProof && (
+        <div className="card bg-white p-6 rounded-lg shadow-md mt-6">
+          <h3 className="text-lg font-semibold mb-2 text-gray-700">
+            Sample Recieved Proof
+          </h3>
+          <img
+            src={order.sampleRecievedProof}
+            alt="Sample proof"
+            className="max-w-full h-auto rounded-xl shadow-md"
+          />
+         
         </div>
       )}
     </div>

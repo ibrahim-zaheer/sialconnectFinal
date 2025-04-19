@@ -258,7 +258,7 @@ const approveSample = async (req, res) => {
     order.sampleStatus = 'sample_accepted';
     order.status = 'completed';
     order.paymentStatus = 'completed';
-    order.status = 'terminated';
+    
 
     await order.save();
     res.status(200).json({ message: 'Sample approved, payment released to supplier' });
@@ -269,8 +269,83 @@ const approveSample = async (req, res) => {
 };
 
 
+const acceptAgreement = async (req, res) => {
+  try {
+    const { orderId, role } = req.body; // `role` indicates if the user is exporter or supplier
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Set the appropriate agreement status based on the role
+    if (role === "exporter") {
+      order.exporterAgreementStatus = "Accepted";
+      if (order.supplierAgreementStatus === "Accepted") {
+        order.Agreement = "Accepted"; // Both sides accepted
+      } else {
+        order.Agreement = "waiting_for_supplier"; // Waiting for supplier
+      }
+    } else if (role === "supplier") {
+      order.supplierAgreementStatus = "Accepted";
+      if (order.exporterAgreementStatus === "Accepted") {
+        order.Agreement = "Accepted"; // Both sides accepted
+      } else {
+        order.Agreement = "waiting_for_exporter"; // Waiting for exporter
+      }
+    }
+
+    await order.save();
+    res.status(200).json({ message: "Agreement status updated", order });
+  } catch (error) {
+    console.error("Error accepting the agreement:", error);
+    res.status(500).json({ message: "Error accepting the agreement", error });
+  }
+};
+// Handle rejection of agreement by the exporter
+const rejectAgreement = async (req, res) => {
+  try {
+    const { orderId, AgreementRejectionReason,role } = req.body;
+    const order = await Order.findById(orderId);
+
+    // Ensure order exists and sample is received
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    if (order.sampleStatus !== "sample_received") {
+      return res.status(400).json({ message: "Sample not yet received" });
+    }
+
+        // Reject the agreement if either party rejects
+        if (role === "exporter") {
+          order.exporterAgreementStatus = "Rejected";
+        } else if (role === "supplier") {
+          order.supplierAgreementStatus = "Rejected";
+        }
+    // Update the Agreement status to Rejected
+    order.Agreement = "Rejected";
+    order.status = "terminated";  // Mark order as terminated
+    order.AgreementRejectionReason = AgreementRejectionReason;
+
+    // Refund the token payment if any
+    if (order.paymentStatus === "pending") {
+      await stripe.refunds.create({ payment_intent: order.paymentIntentId });
+      order.paymentStatus = "partial_refund";
+    }
+
+    // Save rejection reason
+    order.AgreementRejectionReason = AgreementRejectionReason;
+
+    await order.save();
+
+    res.status(200).json({ message: "Agreement rejected, payment refunded", order });
+  } catch (error) {
+    console.error("Error in accept-agreement route:", error); // Log the error
+    res.status(500).json({ message: "Error rejecting the agreement", error });
+  }
+};
 
 
 module.exports = {
-    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter
+    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement
 };

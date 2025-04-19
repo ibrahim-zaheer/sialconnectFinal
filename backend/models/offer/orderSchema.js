@@ -49,6 +49,31 @@ const OrderSchema = new mongoose.Schema({
   sampleRecievedProof:{ type: String, required: false },
   sampleDecisionDeadline: { type: Date },
   rejectionReason: { type: String, maxlength: 500, required: false },
+  Agreement: {
+    type: String,
+    enum: [
+      "Accepted",  // after order accepted
+      "Rejected",   // after token paid
+      "waiting_for_exporter",                 // supplier has sent the sample
+      "waiting_for_supplier",             // exporter has received the sample
+      "waiting_for_approval",
+          // exporter rejected the sample
+    ],
+    default: "waiting_for_approval",
+  },
+  AgreementRejectionReason: { type: String, maxlength: 500, required: false },
+   // Agreement statuses for both parties
+   exporterAgreementStatus: {
+    type: String,
+    enum: ["Accepted", "Rejected", "Waiting"],
+    default: "Waiting",
+  },
+  supplierAgreementStatus: {
+    type: String,
+    enum: ["Accepted", "Rejected", "Waiting"],
+    default: "Waiting",
+  },
+
 
   createdAt: { type: Date, default: Date.now },
 });
