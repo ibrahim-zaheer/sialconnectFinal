@@ -123,5 +123,28 @@ const getOrdersByExporterId = async (req, res) => {
     res.status(500).json({ message: "Error retrieving orders", error });
   }
 };
+
+// ✅ Get all orders placed by a specific supplier via URL param
+const getOrdersBySupplierId = async (req, res) => {
+  try {
+    const supplierId = req.params.supplierId; // Supplier ID from the request URL
+
+    // Find orders where supplierId matches the passed supplierId
+    const orders = await Order.find({ supplierId })
+      .populate("exporterId", "name email")   // Populate exporter info
+      .populate("productId", "name")           // Populate product info
+      .populate("auctionId","title")
+      .sort({ createdAt: -1 });                // Sort by creation date in descending order
+
+    if (!orders.length) {
+      return res.status(404).json({ message: "No orders found for this supplier." });
+    }
+
+    res.status(200).json({ message: "Orders retrieved successfully", orders });
+  } catch (error) {
+    console.error("Error retrieving orders:", error);
+    res.status(500).json({ message: "Error retrieving orders", error });
+  }
+};
   // Export the functions for routes
-  module.exports =  { getAllUsers,suspendUser,reactivateUser,toggleUserStatus, getProductsBySupplierId, getOrdersByExporterId };
+  module.exports =  { getAllUsers,suspendUser,reactivateUser,toggleUserStatus, getProductsBySupplierId, getOrdersByExporterId,getOrdersBySupplierId };

@@ -132,7 +132,11 @@ import CreateOfferPage from "./pages/offers/CreateOfferPage";
 import ExporterOfferPage from "./pages/offers/ExporterOfferPage";
 
 import SupplierOfferPage from "./pages/offers/SupplierOfferPage";
-import SupplierOrderPage from "./pages/orders/SupplierOrderPage";import ExporterProducts from "./pages/Exporter/ExporterProducts";import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
+import SupplierOrderPage from "./pages/orders/SupplierOrderPage";
+import ExporterProducts from "./pages/Exporter/ExporterProducts";import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
+import SupplierList from "./pages/admin/functions/SupplierList";
+// import SupplierOrderPageByAdmin from "./pages/admin/functions/SupplierOrderPageByAdmin";
+// import SupplierProductsPageByAdmin from "./pages/admin/functions/SupplierProductsPageByAdmin";
 import AdminRoute from "./components/admin/AdminRoute";
 
 import UsersPage from "./pages/admin/functions/UsersPage";
@@ -140,6 +144,7 @@ import UsersPage from "./pages/admin/functions/UsersPage";
 import SupplierProductsPageByAdmin from "./pages/admin/functions/SupplierProductsPageByAdmin";
 
 import ExporterOrdersPageByAdmin from "./pages/admin/functions/ExporterOrdersPageByAdmin";
+import SupplierOrderPageByAdmin from "./pages/admin/functions/SupplierOrderPageByAdmin";
 
 import ExporterOrderPage from "./pages/orders/ExporterOrderPage";
 
@@ -318,7 +323,12 @@ const Main = () => {
 {/* Admin */}
 <Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
 <Route path="/admin/user" element={<AdminRoute><UsersPage /></AdminRoute>} />
-<Route path="/admin/user/supplier/:supplierId" element={<AdminRoute><SupplierProductsPageByAdmin /></AdminRoute>} />
+{/* <Route path="/admin/user/supplier/:supplierId" element={<AdminRoute><SupplierProductsPageByAdmin /></AdminRoute>} /> */}
+<Route path="/admin/user/supplier/:supplierId" element={<AdminRoute><SupplierList /></AdminRoute>} />
+<Route path="/admin/user/supplier/order/:supplierId" element={<AdminRoute><SupplierOrderPageByAdmin /></AdminRoute>} />
+<Route path="/admin/user/supplier/product/:supplierId" element={<AdminRoute><SupplierProductsPageByAdmin /></AdminRoute>} />
+
+
 <Route path="/admin/user/exporter/:exporterId" element={<AdminRoute><ExporterOrdersPageByAdmin /></AdminRoute>} />
 
 

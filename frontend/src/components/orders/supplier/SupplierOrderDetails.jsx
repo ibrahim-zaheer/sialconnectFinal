@@ -157,6 +157,8 @@ import { useSelector } from "react-redux";
 import AgreementComponent from "../components/AgreementComponent";
 import AgreementPDFGenerator from "../components/AgreementPDFGenerator";
 
+import PaymentForm from "../components/payment/PaymentForm";
+
 
 const SupplierOrderDetails = () => {
 
@@ -172,6 +174,8 @@ const SupplierOrderDetails = () => {
   const [sampleImage, setSampleImage] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
+
+  const [paymentSubmitted, setPaymentSubmitted] = useState(false);
 
   const fetchOrderDetails = async () => {
     try {
@@ -231,6 +235,10 @@ const SupplierOrderDetails = () => {
       setIsSubmitting(false);
     }
   };
+  const handlePaymentSubmitted = () => {
+    setPaymentSubmitted(true);
+    fetchOrderDetails();
+  };
 
   const handleAcceptSuccess = () => {
     fetchOrderDetails(); // Re-fetch order details after agreement is accepted
@@ -252,6 +260,22 @@ const SupplierOrderDetails = () => {
               <div className="mt-6">
                 <PDFGenerator order={order} userName={userName} userRole={userRole}/>
                 <AgreementPDFGenerator order={order} userName={userName} userRole={userRole} />
+              </div>
+            )}
+
+             {/* Order Agreement Payment Details */}
+           {order.Agreement === "Accepted" && order.paymentDetails.paymentStatus === "pending"&&(
+              <div className="mt-6">
+              {/* <PaymentForm orderId={order._id}/> */}
+              <PaymentForm orderId={order._id}onPaymentSubmitted={handlePaymentSubmitted} />
+              {paymentSubmitted && <p>Your payment details are submitted, awaiting approval.</p>}
+              </div>
+            )}
+             {order.Agreement === "Accepted" && order.paymentDetails.paymentStatus === "detailsGiven"&&(
+              <div className="mt-6">
+              {/* <PaymentForm orderId={order._id}/> */}
+             
+              {<p>Your payment details are submitted, awaiting approval.</p>}
               </div>
             )}
 

@@ -345,7 +345,55 @@ const rejectAgreement = async (req, res) => {
   }
 };
 
+const addPaymentDetailsForSupplier = async (req, res) => {
+  try {
+    const { orderId, paymentMethod, mobileNumber, accountName, paymentAmount } = req.body;
+
+    // Check if the order exists and if the logged-in user is the supplier for the order
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (order.supplierId.toString() !== req.user.id) {
+      return res.status(403).json({ message: "You are not authorized to update payment details for this order" });
+    }
+
+    // Check if the payment details are already entered
+    if (order.paymentDetails && order.paymentDetails.paymentStatus !== "pending") {
+      return res.status(400).json({ message: "Payment details have already been entered or completed" });
+    }
+
+    // Set the payment details for the supplier
+    order.paymentDetails = {
+      paymentMethod,
+      mobileNumber,
+      accountName,
+      paymentAmount,
+      paymentStatus: "detailsGiven",  // Set payment status as "pending"
+    };
+
+    // Update the sample status to indicate waiting for payment
+    // order.sampleStatus = "waiting_for_payment";
+
+    // Save the updated order
+    await order.save();
+
+    res.status(200).json({
+      message: "Payment details added successfully",
+      order,
+    });
+  } catch (error) {
+    console.error("Error adding payment details:", error);
+    res.status(500).json({
+      message: "Error adding payment details",
+      error: error.message,
+    });
+  }
+};
+
 
 module.exports = {
-    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement
+    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier
 };

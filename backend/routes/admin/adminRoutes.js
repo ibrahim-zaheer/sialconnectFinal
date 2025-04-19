@@ -7,7 +7,7 @@ const verifyToken = require("../../middleware/verifyToken")
 
 const authMiddleware = require("../../middleware/authMiddleware");
 
-const {getAllUsers,suspendUser,reactivateUser,toggleUserStatus,getProductsBySupplierId,getOrdersByExporterId} = require("../../controllers/admin/adminController");
+const {getAllUsers,suspendUser,reactivateUser,toggleUserStatus,getProductsBySupplierId,getOrdersByExporterId,getOrdersBySupplierId} = require("../../controllers/admin/adminController");
 
 
 // Admin-only route example
@@ -21,5 +21,8 @@ router.put("/toggle-status/:id", verifyToken, isAdmin, toggleUserStatus);
 router.get("/products/supplier/:supplierId",verifyToken,isAdmin,getProductsBySupplierId);
 
 router.get("/orders/exporter/:exporterId",verifyToken,isAdmin,getOrdersByExporterId);
+
+router.get("/orders/supplier/:supplierId",verifyToken,isAdmin,getOrdersBySupplierId);
+
 
 module.exports = router;

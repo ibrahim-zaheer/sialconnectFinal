@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement
+  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier
   
 } = require("../../controllers/order/order_controller");
 
@@ -34,6 +34,8 @@ router.post("/orders/accept-agreement",authenticateMiddleware,acceptAgreement);
 // Route for rejecting the agreement
 router.post("/orders/reject-agreement",authenticateMiddleware, rejectAgreement);
 
+// Route for the supplier to add payment details
+router.post("/orders/payment-details", authenticateMiddleware,addPaymentDetailsForSupplier);
 
 
 module.exports = router;
