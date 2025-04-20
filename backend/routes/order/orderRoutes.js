@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier
+  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier,markPaymentAsCompleted
   
 } = require("../../controllers/order/order_controller");
 
@@ -9,6 +9,10 @@ const {uploadSampleImage } = require("../../config/multerConfig");
 
 
 const authenticateMiddleware = require("../../middleware/authMiddleware");
+
+const isAdmin = require("../../middleware/isAdmin");
+
+const verifyToken = require("../../middleware/verifyToken")
 
 // ✅ Protected route to get orders for supplier
 router.get("/orders/supplier", authenticateMiddleware, getOrdersBySupplier);
@@ -36,6 +40,8 @@ router.post("/orders/reject-agreement",authenticateMiddleware, rejectAgreement);
 
 // Route for the supplier to add payment details
 router.post("/orders/payment-details", authenticateMiddleware,addPaymentDetailsForSupplier);
+
+router.post("/orders/accept-payment",markPaymentAsCompleted)
 
 
 module.exports = router;

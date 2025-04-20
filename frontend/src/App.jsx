@@ -138,6 +138,7 @@ import SupplierList from "./pages/admin/functions/SupplierList";
 // import SupplierOrderPageByAdmin from "./pages/admin/functions/SupplierOrderPageByAdmin";
 // import SupplierProductsPageByAdmin from "./pages/admin/functions/SupplierProductsPageByAdmin";
 import AdminRoute from "./components/admin/AdminRoute";
+import OrderPaymentListPage from "./pages/admin/functions/OrderPaymentListPage";
 
 import UsersPage from "./pages/admin/functions/UsersPage";
 
@@ -330,6 +331,7 @@ const Main = () => {
 
 
 <Route path="/admin/user/exporter/:exporterId" element={<AdminRoute><ExporterOrdersPageByAdmin /></AdminRoute>} />
+<Route path="/admin/user/order/payment" element={<AdminRoute><OrderPaymentListPage /></AdminRoute>} />
 
 
       </Routes>

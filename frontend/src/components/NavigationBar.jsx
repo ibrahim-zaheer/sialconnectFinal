@@ -472,6 +472,9 @@ const Navbar = () => {
                     <li>
                       <Link to="/admin">Profile</Link>
                     </li>
+                    <li>
+                      <Link to="/admin/user/order/payment">Payments</Link>
+                    </li>
                     
                   </>
                 )}

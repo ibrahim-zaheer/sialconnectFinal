@@ -393,7 +393,58 @@ const addPaymentDetailsForSupplier = async (req, res) => {
   }
 };
 
+const markPaymentAsCompleted = async (req, res) => {
+  try {
+    const { orderId } = req.body;
+
+    // Find the order by ID
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Ensure payment details were added previously
+    if (!order.paymentDetails || order.paymentDetails.paymentStatus !== "detailsGiven") {
+      return res.status(400).json({ message: "Payment details not provided or already completed" });
+    }
+
+    // Update the payment status inside paymentDetails
+    order.paymentDetails.paymentStatus = "completed";
+    await order.save();
+
+    res.status(200).json({
+      message: "Payment marked as completed successfully",
+      order,
+    });
+  } catch (error) {
+    console.error("Error marking payment as completed:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+
+const getAllOrdersWithPaymentDetails = async (req, res) => {
+  try {
+    const orders = await Order.find({}) // Fetch all orders
+      .select("price quantity paymentDetails") // Select only relevant fields
+      .populate("exporterId", "name email") // Optionally, populate exporter info
+      .populate("supplierId", "name email") // Optionally, populate supplier info
+      .sort({ createdAt: -1 }); // Sort by creation date (optional)
+
+    if (!orders.length) {
+      return res.status(404).json({ message: "No orders found." });
+    }
+
+    res.status(200).json({ message: "Orders retrieved successfully", orders });
+  } catch (err) {
+    res.status(500).json({ message: "Error retrieving orders", error: err.message });
+  }
+};
 
 module.exports = {
-    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier
+    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails
 };
