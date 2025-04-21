@@ -445,6 +445,28 @@ const getAllOrdersWithPaymentDetails = async (req, res) => {
   }
 };
 
+const getAllPaymentsForSupplier = async (req, res) => {
+  try {
+    const supplierId = req.user.id; // Get the logged-in supplier's ID from req.user
+
+    // Fetch all orders related to the supplier with payment details
+    const orders = await Order.find({ supplierId, "paymentDetails.paymentStatus": "completed" }) // Only fetch orders with provided payment details
+      .populate("exporterId", "name email")   // Optional: populate exporter info
+      .populate("productId", "name")          // Optional: populate product info
+      .populate("auctionId", "title")         // Optional: populate auction info
+      .sort({ createdAt: -1 });            
+      console.log("the supplier id is "+supplierId);   // Optional: latest orders first
+      console.log( "the orders are "+orders);  
+    if (!orders.length) {
+      return res.status(404).json({ message: "No orders found with payment details for this supplier." });
+    }
+
+    res.status(200).json({ message: "Orders with payment details retrieved successfully", orders });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving orders with payment details", error });
+  }
+};
+
 module.exports = {
-    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails
+    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier
 };

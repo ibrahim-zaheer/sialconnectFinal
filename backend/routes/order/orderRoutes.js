@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier,markPaymentAsCompleted
+  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllPaymentsForSupplier
   
 } = require("../../controllers/order/order_controller");
 
@@ -41,7 +41,9 @@ router.post("/orders/reject-agreement",authenticateMiddleware, rejectAgreement);
 // Route for the supplier to add payment details
 router.post("/orders/payment-details", authenticateMiddleware,addPaymentDetailsForSupplier);
 
-router.post("/orders/accept-payment",markPaymentAsCompleted)
+router.post("/orders/accept-payment",markPaymentAsCompleted);
+
+router.get("/orders/payments",authenticateMiddleware,getAllPaymentsForSupplier);
 
 
 module.exports = router;

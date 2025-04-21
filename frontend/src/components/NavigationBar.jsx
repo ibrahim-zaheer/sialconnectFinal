@@ -441,6 +441,9 @@ const Navbar = () => {
                     <li>
                       <Link to="/mySupplierOrders">My Orders</Link>
                     </li>
+                    <li>
+                      <Link to="/supplier/payments">Token Payments</Link>
+                    </li>
                   </>
                 )}
 

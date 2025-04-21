@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import CategoryDropdown from "../../components/Supplier/products/component/CategoryDropdown";
+import FavoriteToggle from "../../components/favourites/FavoriteToggle";
 
 const ExporterProducts = () => {
   const [products, setProducts] = useState([]);
@@ -25,6 +26,7 @@ const ExporterProducts = () => {
 
   const user = useSelector((state) => state.user);
   const userId = user?.id;
+  const role = user.role;
 
   // Animation variants
   const containerVariants = {
@@ -119,20 +121,33 @@ const ExporterProducts = () => {
     }
   };
 
+  // useEffect(() => {
+  //   if (userId) {
+  //     const fetchFavorites = async () => {
+  //       try {
+  //         const response = await axios.get(`/api/favourites/favorites/id/${userId}`);
+  //         const favoriteIds = response.data.favorites.map((product) => product._id);
+  //         setFavorites(favoriteIds);
+  //       } catch (error) {
+  //         console.error("Error fetching favorites:", error);
+  //       }
+  //     };
+  //     fetchFavorites();
+  //   }
+  // }, [userId]);
   useEffect(() => {
-    if (userId) {
-      const fetchFavorites = async () => {
-        try {
-          const response = await axios.get(`/api/favourites/favorites/id/${userId}`);
-          const favoriteIds = response.data.favorites.map((product) => product._id);
-          setFavorites(favoriteIds);
-        } catch (error) {
-          console.error("Error fetching favorites:", error);
-        }
-      };
-      fetchFavorites();
-    }
-  }, [userId]);
+      if (userId) {
+        const fetchFavorites = async () => {
+          try {
+            const response = await axios.get(`/api/favourites/favorites/id/${userId}`);
+            setFavorites(response.data.favorites);
+          } catch (error) {
+            console.error("Error fetching favorites:", error);
+          }
+        };
+        fetchFavorites();
+      }
+    }, [userId]);
 
   useEffect(() => {
     fetchAllProducts();
@@ -537,7 +552,7 @@ const ExporterProducts = () => {
                         </p>
                       )}
                     </div>
-                    <button 
+                    {/* <button 
                       onClick={() => toggleFavorite(product._id)} 
                       className="text-neutral-400 hover:text-primary-500 transition-colors duration-200"
                       aria-label={favorites.includes(product._id) ? "Remove from favorites" : "Add to favorites"}
@@ -551,7 +566,15 @@ const ExporterProducts = () => {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
                       )}
-                    </button>
+                    </button> */}
+                     {role === "exporter" && (
+                                          <FavoriteToggle
+                                            productId={product._id}
+                                            favorites={favorites}
+                                            setFavorites={setFavorites}
+                                            userId={userId}
+                                          />
+                                        )}
                   </div>
 
                   <div className="mt-4">

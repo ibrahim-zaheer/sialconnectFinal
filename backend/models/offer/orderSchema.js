@@ -78,22 +78,22 @@ const OrderSchema = new mongoose.Schema({
     paymentMethod: { 
       type: String, 
       enum: ["Easypaisa", "JazzCash", "SadaPay", "NayaPay"], 
-      required: true 
+      required: false 
     },
     mobileNumber: { 
       type: String, 
-      required: true 
+      required: false 
     },
     accountName: { 
       type: String, 
-      required: true 
+      required: false 
     },
     paymentStatus: {
       type: String,
       enum: ["pending", "completed", "failed","detailsGiven"],
       default: "pending",
     },
-    paymentAmount: { type: Number, required: true },
+    paymentAmount: { type: Number, required: false },
   },
 
   createdAt: { type: Date, default: Date.now },

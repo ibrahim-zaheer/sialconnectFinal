@@ -1,5 +1,6 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
+import BackButton from "../../../components/BackButton";
 
 export default function SupplierList() {
   const { supplierId } = useParams(); // Get supplierId from the URL
@@ -7,6 +8,7 @@ export default function SupplierList() {
   return (
     <div>
       <div className="pt-20"></div>
+      <BackButton/>
       <h2 className="text-xl font-semibold">Supplier Details</h2>
 
       {/* Display Supplier's Order and Product Links */}

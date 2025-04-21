@@ -153,6 +153,8 @@ import SupplierOrderDetails from "./components/orders/supplier/SupplierOrderDeta
 import SupplierOrderDetailsPage from "./pages/orders/SupplierOrderDetailsPage";
 import ExporterOrderDetailsPage from "./pages/orders/ExporterOrderDetailsPage";
 
+import PaymentListPage from "./pages/payments/PaymentListPage";
+
 const App = () => {
   return (
     <>
@@ -315,6 +317,8 @@ const Main = () => {
 <Route path="/mySupplierOrders" element={< SupplierOrderPage/>} />
 
 <Route path="/supplier/order/:orderId" element={<SupplierOrderDetailsPage/>} />
+<Route path="/supplier/payments" element={<PaymentListPage/>} />
+
 
 {/* Exporter Orders */}
 <Route path="/myExporterOrders" element={< ExporterOrderPage/>} />

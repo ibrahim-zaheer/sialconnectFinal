@@ -108,6 +108,7 @@ const acceptOffer = async (req, res) => {
     return res.status(200).json({ message: "Offer accepted and order created!", order: newOrder });
     } catch (error) {
       res.status(500).json({ message: "Error accepting offer", error });
+      console.log(error);
     }
   };
 

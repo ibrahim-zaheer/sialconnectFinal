@@ -319,6 +319,9 @@ const SupplierOrderDetails = () => {
         <div className="font-semibold text-gray-600">
             <strong>Agreement:</strong> {order.Agreement}
           </div>
+          <div className="font-semibold text-gray-600">
+            <strong>Token Payment Status:</strong> {order.paymentDetails.paymentStatus}
+          </div>
 
         <p className="text-sm text-gray-500">Ordered On: {new Date(order.createdAt).toLocaleString()}</p>
       </div>
