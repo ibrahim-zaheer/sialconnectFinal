@@ -29,6 +29,51 @@ const initiateTokenPayment = async (req, res) => {
     res.status(500).json({ message: 'Error initiating payment', error });
   }
 };
+
+const initiateLocalPayment = async (req, res) => {
+  try {
+    const { orderId, paymentMethod, mobileNumber, accountName, paymentAmount, localPaymentProof } = req.body;
+
+    // Validate required fields
+    if (!orderId || !paymentMethod || !mobileNumber || !paymentAmount) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+    if (!req.file) {
+      return res.status(400).json({ message: 'Payment Proof is required' });
+    }
+
+    // Find the order by ID
+    const order = await Order.findById(orderId);
+
+    // If order is not found, return error
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Update the order's LocalPaymentDetails
+    order.LocalPaymentDetails.paymentMethod = paymentMethod;
+    order.LocalPaymentDetails.mobileNumber = mobileNumber;
+    order.LocalPaymentDetails.accountName = accountName;
+    order.LocalPaymentDetails.paymentAmount = paymentAmount;
+    order.LocalPaymentDetails.localPaymentProof = req.file.path;
+    order.LocalPaymentDetails.paymentStatus = "pending"; // Initially, set payment status to "pending"
+
+    // Change the sample status to "waiting_for_payment"
+    order.sampleStatus = "waiting_for_payment";
+
+    // Save the order with the updated local payment details
+    await order.save();
+
+    // Respond with the updated order details
+    res.status(200).json({
+      message: "Local payment details updated successfully",
+      order: order,
+    });
+  } catch (error) {
+    console.error("Error initiating local payment:", error);
+    res.status(500).json({ message: "Error initiating local payment", error });
+  }
+};
 // ✅ Get all orders for the logged-in supplier
 const getOrdersBySupplier = async (req, res) => {
     try {
@@ -450,7 +495,7 @@ const getAllPaymentsForSupplier = async (req, res) => {
     const supplierId = req.user.id; // Get the logged-in supplier's ID from req.user
 
     // Fetch all orders related to the supplier with payment details
-    const orders = await Order.find({ supplierId, "paymentDetails.paymentStatus": "completed" }) // Only fetch orders with provided payment details
+    const orders = await Order.find({ supplierId}) // Only fetch orders with provided payment details
       .populate("exporterId", "name email")   // Optional: populate exporter info
       .populate("productId", "name")          // Optional: populate product info
       .populate("auctionId", "title")         // Optional: populate auction info
@@ -468,5 +513,5 @@ const getAllPaymentsForSupplier = async (req, res) => {
 };
 
 module.exports = {
-    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier
+    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment
 };

@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllPaymentsForSupplier
+  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllPaymentsForSupplier,initiateLocalPayment
   
 } = require("../../controllers/order/order_controller");
 
-const {uploadSampleImage } = require("../../config/multerConfig");
+const {uploadSampleImage, uploadTransactionProof } = require("../../config/multerConfig");
 
 
 const authenticateMiddleware = require("../../middleware/authMiddleware");
@@ -25,6 +25,8 @@ router.post('/orders/rejectSample', authenticateMiddleware,rejectSample);
 
 // ✅ Exporter initiates token payment (escrow hold)
 router.post("/orders/initiate-token-payment", authenticateMiddleware, initiateTokenPayment);
+router.post("/orders/initiate-local-token-payment", authenticateMiddleware, uploadTransactionProof.single('local_transaction_proof'),initiateTokenPayment);
+
 
 // ✅ Supplier marks sample as sent
 router.post("/orders/mark-sample-sent",authenticateMiddleware,uploadSampleImage.single('sampleImage'),markSampleSent);

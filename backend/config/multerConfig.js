@@ -47,6 +47,14 @@ const sampleImageStorage = new CloudinaryStorage({
   },
 });
 
+const localTransactionprof = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'local_transaction_proof',
+    allowed_formats: ['jpg', 'png', 'jpeg'],
+  },
+});
+
 // Set up multer upload for profile picture
 const uploadProfilePicture = multer({ storage: profilePictureStorage });
 
@@ -56,4 +64,6 @@ const uploadProductImage = multer({ storage });
 
 const uploadSampleImage = multer({ storage: sampleImageStorage }); // New upload for samples
 
-module.exports = { uploadProfilePicture, uploadProductImage,uploadSampleImage };
+const uploadTransactionProof = multer({ storage: localTransactionprof });
+
+module.exports = { uploadProfilePicture, uploadProductImage,uploadSampleImage,uploadTransactionProof };

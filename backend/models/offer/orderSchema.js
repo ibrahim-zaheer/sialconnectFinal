@@ -95,6 +95,31 @@ const OrderSchema = new mongoose.Schema({
     },
     paymentAmount: { type: Number, required: false },
   },
+  LocalPaymentDetails: {
+    paymentMethod: { 
+      type: String, 
+      enum: ["Easypaisa", "JazzCash", "SadaPay", "NayaPay","Upaisa","other"], 
+      required: false 
+    },
+    mobileNumber: { 
+      type: String, 
+      required: false 
+    },
+    accountName: { 
+      type: String, 
+      required: false 
+    },
+    paymentStatus: {
+      type: String,
+      enum: ["pending", "completed", "failed","detailsGiven"],
+      default: "pending",
+    },
+    localPaymentProof: { 
+      type: String, // URL to uploaded proof image
+      required: false 
+    },
+    paymentAmount: { type: Number, required: false },
+  },
 
   createdAt: { type: Date, default: Date.now },
 });
