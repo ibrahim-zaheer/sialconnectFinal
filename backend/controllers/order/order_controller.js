@@ -26,7 +26,7 @@ const initiateTokenPayment = async (req, res) => {
 
     res.status(200).json({ clientSecret: paymentIntent.client_secret, orderId: order._id });
   } catch (error) {
-    res.status(500).json({ message: 'Error initiating payment', error });
+    res.status(500).json({ message: 'Error initiating payment from stripe', error });
   }
 };
 
@@ -34,7 +34,7 @@ const initiateLocalPayment = async (req, res) => {
   try {
     const { orderId, paymentMethod, mobileNumber, accountName, paymentAmount, localPaymentProof } = req.body;
 
-    // Validate required fields
+    // Validate required fields\
     if (!orderId || !paymentMethod || !mobileNumber || !paymentAmount) {
       return res.status(400).json({ message: "Missing required fields" });
     }
@@ -58,8 +58,10 @@ const initiateLocalPayment = async (req, res) => {
     order.LocalPaymentDetails.localPaymentProof = req.file.path;
     order.LocalPaymentDetails.paymentStatus = "pending"; // Initially, set payment status to "pending"
 
-    // Change the sample status to "waiting_for_payment"
-    order.sampleStatus = "waiting_for_payment";
+
+    order.paymentStatus = "waiting_for_admin";
+   
+    // order.sampleStatus = "waiting_for_sample"; 
 
     // Save the order with the updated local payment details
     await order.save();
@@ -71,6 +73,7 @@ const initiateLocalPayment = async (req, res) => {
     });
   } catch (error) {
     console.error("Error initiating local payment:", error);
+    console.log("the error is "+error);
     res.status(500).json({ message: "Error initiating local payment", error });
   }
 };

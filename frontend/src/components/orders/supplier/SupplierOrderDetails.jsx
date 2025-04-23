@@ -158,6 +158,7 @@ import AgreementComponent from "../components/AgreementComponent";
 import AgreementPDFGenerator from "../components/AgreementPDFGenerator";
 
 import PaymentForm from "../components/payment/PaymentForm";
+import LocalPaymentForm from "../components/payment/LocalPaymentForm";
 
 
 const SupplierOrderDetails = () => {
@@ -268,6 +269,7 @@ const SupplierOrderDetails = () => {
               <div className="mt-6">
               {/* <PaymentForm orderId={order._id}/> */}
               <PaymentForm orderId={order._id}onPaymentSubmitted={handlePaymentSubmitted} />
+             
               {paymentSubmitted && <p>Your payment details are submitted, awaiting approval.</p>}
               </div>
             )}

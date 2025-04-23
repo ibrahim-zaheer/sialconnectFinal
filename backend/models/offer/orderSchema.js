@@ -39,7 +39,7 @@ const OrderSchema = new mongoose.Schema({
   paymentIntentId: { type: String },  // Stores the Stripe payment intent ID
   paymentStatus: {
     type: String,
-    enum: ["pending", "completed", "partial_refund"],
+    enum: ["pending", "completed", "partial_refund","waiting_for_admin"],
     default: "pending",
   },
 

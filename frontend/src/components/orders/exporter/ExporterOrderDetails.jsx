@@ -889,6 +889,7 @@ import PDFGenerator from "../components/PDFGenerator";
 import { useSelector } from "react-redux";
 import AgreementComponent from "../components/AgreementComponent";
 import AgreementPDFGenerator from "../components/AgreementPDFGenerator";
+import LocalPaymentForm from "../components/payment/LocalPaymentForm";
 
 export default function ExporterOrderDetails() {
   const { orderId } = useParams(); // get orderId from URL
@@ -896,12 +897,16 @@ export default function ExporterOrderDetails() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [activePaymentOrder, setActivePaymentOrder] = useState(null);
+  const [activeLocalPaymentOrder, setLocalActivePaymentOrder] = useState(null);
  
     const [sampleRecievedImage, setSampleRecievedImage] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [description, setDescription] = useState(""); // Added missing state
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
+  const [showLocalPaymentPopup, setShowLocalPaymentPopup] = useState(false);
 
     const user = useSelector((state) => state.user);
     const userName = user?.name;
@@ -968,6 +973,10 @@ export default function ExporterOrderDetails() {
     fetchOrderDetails();
   }, [orderId]);
 
+  const handleLocalPaymentSuccess = ()=>{
+    fetchOrderDetails();
+  };
+
   const handleApproveSuccess = () => {
     fetchOrderDetails(); // Re-fetch order details after sample is approved
   };
@@ -977,6 +986,21 @@ export default function ExporterOrderDetails() {
 
   const handleRejectSuccess = () => {
     fetchOrderDetails(); // Re-fetch order details after agreement is rejected
+  };
+
+    const handlePaymentButtonClick = () => {
+    // Toggle the payment form visibility for the card payment method
+    setShowPaymentPopup(!showPaymentPopup);
+    if (showPaymentPopup) {
+      setActivePaymentOrder(null); // Close the payment form if already open
+    }
+  };
+
+  const handleLocalPaymentButtonClick = () => {
+    setShowLocalPaymentPopup(!showLocalPaymentPopup);
+    if (showLocalPaymentPopup) {
+      setLocalActivePaymentOrder(null); // Close the payment form if already open
+    }
   };
 
   if (loading)
@@ -1150,14 +1174,18 @@ export default function ExporterOrderDetails() {
       
 
       {/* Payment Button Display */}
-      {order.sampleStatus === "waiting_for_payment" && (
+      {(order.sampleStatus === "waiting_for_payment" && order.paymentStatus === "pending" ) && (
         <div className="card bg-white p-6 rounded-lg shadow-md mt-6">
           <button
             className="btn btn-primary w-full mt-4"
-            onClick={() => setActivePaymentOrder(order._id)}
+            onClick={() => {setActivePaymentOrder(order._id);
+            handlePaymentButtonClick()}
+            }
+           
           >
-            Send Token Payment
+                    {showPaymentPopup ? "Cancel" : "Send Token Payment with Card"}
           </button>
+        
 
           {/* Render Payment Page when user clicks the button */}
           {activePaymentOrder === order._id && (
@@ -1167,6 +1195,46 @@ export default function ExporterOrderDetails() {
                 tokenAmount={order.price}
                 onPaymentSuccess={() => {
                   setActivePaymentOrder(null); // Hide the payment form after success
+                  fetchOrderDetails(); // Re-fetch order details after payment success
+                }}
+              />
+              
+            </div>
+          )}
+           
+          
+        </div>
+      )}
+{(order.paymentStatus === "pending" && order.sampleStatus === "waiting_for_payment" ) && (
+        <div className="card bg-white p-6 rounded-lg shadow-md mt-6">
+          
+          <button
+            className="btn btn-primary w-full mt-4"
+          //   onClick={() => setLocalActivePaymentOrder(order._id)}
+          // >
+          //   Send Token Payment with mobile wallet
+          onClick={() => {setLocalActivePaymentOrder(order._id);
+            handleLocalPaymentButtonClick()}
+            }>
+              {showLocalPaymentPopup ? "Cancel" : "Send Token Payment with Mobile"}
+          </button>
+
+          
+            {/* {activeLocalPaymentOrder === order._id && (
+            <div className="mt-4">
+              <LocalPaymentForm
+                orderId={order._id}
+               onPaymentSuccess={handleLocalPaymentSuccess} 
+               
+              />
+              
+            </div> */}
+             {showLocalPaymentPopup && activeLocalPaymentOrder === order._id && (
+            <div className="mt-4">
+              <LocalPaymentForm
+                orderId={order._id}
+                onPaymentSuccess={() => {
+                  setLocalActivePaymentOrder(null); // Hide the local payment form after success
                   fetchOrderDetails(); // Re-fetch order details after payment success
                 }}
               />

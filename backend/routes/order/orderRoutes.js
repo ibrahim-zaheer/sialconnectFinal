@@ -25,7 +25,7 @@ router.post('/orders/rejectSample', authenticateMiddleware,rejectSample);
 
 // ✅ Exporter initiates token payment (escrow hold)
 router.post("/orders/initiate-token-payment", authenticateMiddleware, initiateTokenPayment);
-router.post("/orders/initiate-local-token-payment", authenticateMiddleware, uploadTransactionProof.single('local_transaction_proof'),initiateTokenPayment);
+router.post("/orders/initiate-local-token-payment", authenticateMiddleware, uploadTransactionProof.single('local_transaction_proof'),initiateLocalPayment);
 
 
 // ✅ Supplier marks sample as sent
