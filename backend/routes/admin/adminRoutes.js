@@ -9,7 +9,7 @@ const authMiddleware = require("../../middleware/authMiddleware");
 
 const {getAllUsers,suspendUser,reactivateUser,toggleUserStatus,getProductsBySupplierId,getOrdersByExporterId,getOrdersBySupplierId} = require("../../controllers/admin/adminController");
 
-const {markPaymentAsCompleted,getAllOrdersWithPaymentDetails} = require("../../controllers/order/order_controller");
+const {markPaymentAsCompleted,getAllOrdersWithPaymentDetails,confirmLocalPaymentByAdmin} = require("../../controllers/order/order_controller");
 
 
 // Admin-only route example
@@ -27,6 +27,9 @@ router.get("/orders/exporter/:exporterId",verifyToken,isAdmin,getOrdersByExporte
 router.get("/orders/supplier/:supplierId",verifyToken,isAdmin,getOrdersBySupplierId);
 
 router.post("/orders/supplier/mark-payment-completed",verifyToken,isAdmin,markPaymentAsCompleted);
+
+router.post("/orders/exporter/mark-payment-completed",verifyToken,isAdmin,confirmLocalPaymentByAdmin);
+
 
 
 router.get("/orders", verifyToken,isAdmin,getAllOrdersWithPaymentDetails);

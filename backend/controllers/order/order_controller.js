@@ -56,7 +56,7 @@ const initiateLocalPayment = async (req, res) => {
     order.LocalPaymentDetails.accountName = accountName;
     order.LocalPaymentDetails.paymentAmount = paymentAmount;
     order.LocalPaymentDetails.localPaymentProof = req.file.path;
-    order.LocalPaymentDetails.paymentStatus = "pending"; // Initially, set payment status to "pending"
+    order.LocalPaymentDetails.paymentStatus = "detailsGiven"; // Initially, set payment status to "pending"
 
 
     order.paymentStatus = "waiting_for_admin";
@@ -77,6 +77,47 @@ const initiateLocalPayment = async (req, res) => {
     res.status(500).json({ message: "Error initiating local payment", error });
   }
 };
+
+
+const confirmLocalPaymentByAdmin = async (req, res) => {
+  try {
+    const { orderId } = req.body; // Order ID passed from the request
+
+    // Find the order by ID
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Check if the local payment details are available
+    if (!order.LocalPaymentDetails || order.LocalPaymentDetails.paymentStatus !== "pending") {
+      return res.status(400).json({ message: "Local payment is either not pending or missing" });
+    }
+
+    // Check if the payment proof is uploaded
+    if (!order.LocalPaymentDetails.localPaymentProof) {
+      return res.status(400).json({ message: "Local payment proof is missing" });
+    }
+
+    // Mark the local payment as completed
+    order.LocalPaymentDetails.paymentStatus = "completed";  // Update to completed
+
+    // Update the overall payment status to completed
+    // order.paymentStatus = "completed"; // Once confirmed, set the payment status to "completed"
+
+    // Optionally, we can also update sampleStatus to indicate it's ready for processing
+    order.sampleStatus = "waiting_for_sample"; // Set sample status to "waiting_for_sample"
+
+    await order.save(); // Save the updated order
+
+    res.status(200).json({ message: "Local payment confirmed successfully", order });
+  } catch (error) {
+    console.error("Error confirming local payment:", error);
+    res.status(500).json({ message: "Error confirming local payment", error });
+  }
+};
+
 // ✅ Get all orders for the logged-in supplier
 const getOrdersBySupplier = async (req, res) => {
     try {
@@ -161,6 +202,32 @@ const getOrderDetailsForExporter = async (req, res) => {
 };
 
 
+const getOrderDetailsById = async (req, res) => {
+  try {
+    const { orderId } = req.params; // Get the orderId from the URL parameter
+
+    // Find the order by its orderId
+    const order = await Order.findById(orderId)
+      .populate("exporterId", "name email") // Populate exporter information
+      .populate("supplierId", "name email") // Populate supplier information
+      .populate("productId", "name")        // Populate product information
+      .populate("auctionId", "title")      // Populate auction information
+      .populate("LocalPaymentDetails")     // Optionally, populate Local Payment Details
+      .populate("paymentDetails")          // Optionally, populate Payment Details
+      .sort({ createdAt: -1 });            // Optional: sort by the creation date if needed
+
+    // If the order does not exist, return a 404 error
+    if (!order) {
+      return res.status(404).json({ message: "Order not found." });
+    }
+
+    // Return the order details
+    res.status(200).json({ message: "Order details retrieved successfully", order });
+  } catch (error) {
+    // Handle any errors that occur during the process
+    res.status(500).json({ message: "Error retrieving order details", error });
+  }
+};
 
 // const markSampleSent = async (req, res) => {
 //   const { orderId } = req.body;
@@ -475,10 +542,29 @@ const markPaymentAsCompleted = async (req, res) => {
 };
 
 
+// const getAllOrdersWithPaymentDetails = async (req, res) => {
+//   try {
+//     const orders = await Order.find({}) // Fetch all orders
+//       .select("price quantity paymentDetails") // Select only relevant fields
+//       .populate("exporterId", "name email") // Optionally, populate exporter info
+//       .populate("supplierId", "name email") // Optionally, populate supplier info
+//       .sort({ createdAt: -1 }); // Sort by creation date (optional)
+
+//     if (!orders.length) {
+//       return res.status(404).json({ message: "No orders found." });
+//     }
+
+//     res.status(200).json({ message: "Orders retrieved successfully", orders });
+//   } catch (err) {
+//     res.status(500).json({ message: "Error retrieving orders", error: err.message });
+//   }
+// };
+
+
 const getAllOrdersWithPaymentDetails = async (req, res) => {
   try {
     const orders = await Order.find({}) // Fetch all orders
-      .select("price quantity paymentDetails") // Select only relevant fields
+      .select("price quantity paymentDetails LocalPaymentDetails paymentStatus") // Select relevant fields, including LocalPaymentDetails
       .populate("exporterId", "name email") // Optionally, populate exporter info
       .populate("supplierId", "name email") // Optionally, populate supplier info
       .sort({ createdAt: -1 }); // Sort by creation date (optional)
@@ -516,5 +602,5 @@ const getAllPaymentsForSupplier = async (req, res) => {
 };
 
 module.exports = {
-    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment
+    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment,confirmLocalPaymentByAdmin,getOrderDetailsById
 };

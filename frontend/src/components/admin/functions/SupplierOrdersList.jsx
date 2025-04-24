@@ -172,12 +172,15 @@ const PaymentDetailsModal = ({ isOpen, orderID,paymentDetails, onClose, onPayCli
         </div>
         {/* Pay Button */}
         <div className="flex justify-end">
-          <button
-            onClick={onPayClick}
-            className="bg-green-500 text-white px-4 py-2 rounded mr-2"
-          >
-            Pay
-          </button>
+        {paymentDetails?.paymentStatus  === 'detailsGiven' && (
+  <button
+    onClick={onPayClick}
+    className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+  >
+    Pay
+  </button>
+)}
+
           <button onClick={onClose} className="bg-red-500 text-white px-4 py-2 rounded">
             Close
           </button>

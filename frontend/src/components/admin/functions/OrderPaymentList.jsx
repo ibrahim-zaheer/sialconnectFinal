@@ -89,6 +89,9 @@ export default function OrderPaymentList() {
           
           setOrders(res.data.orders);
           // Filter orders to only show those with pending payment status
+          // const pendingOrders = res.data.orders.filter(
+          //   order => order.paymentStatus?.toLowerCase() === "waiting_for_admin"
+          // );
           const pendingOrders = res.data.orders.filter(
             order => order.paymentDetails?.paymentStatus?.toLowerCase() === "detailsgiven"
           );
