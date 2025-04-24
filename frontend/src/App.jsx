@@ -146,6 +146,7 @@ import SupplierProductsPageByAdmin from "./pages/admin/functions/SupplierProduct
 
 import ExporterOrdersPageByAdmin from "./pages/admin/functions/ExporterOrdersPageByAdmin";
 import SupplierOrderPageByAdmin from "./pages/admin/functions/SupplierOrderPageByAdmin";
+import AdminOrderDetailsPage from "./pages/orders/AdminOrderDetailsPage";
 
 import ExporterOrderPage from "./pages/orders/ExporterOrderPage";
 
@@ -154,6 +155,7 @@ import SupplierOrderDetailsPage from "./pages/orders/SupplierOrderDetailsPage";
 import ExporterOrderDetailsPage from "./pages/orders/ExporterOrderDetailsPage";
 
 import PaymentListPage from "./pages/payments/PaymentListPage";
+import AdminOrderDetails from "./components/orders/admin/AdminOrderDetails";
 
 const App = () => {
   return (
@@ -332,6 +334,8 @@ const Main = () => {
 <Route path="/admin/user/supplier/:supplierId" element={<AdminRoute><SupplierList /></AdminRoute>} />
 <Route path="/admin/user/supplier/order/:supplierId" element={<AdminRoute><SupplierOrderPageByAdmin /></AdminRoute>} />
 <Route path="/admin/user/supplier/product/:supplierId" element={<AdminRoute><SupplierProductsPageByAdmin /></AdminRoute>} />
+<Route path="/admin/order/:orderId" element={<AdminOrderDetailsPage />} />
+
 
 
 <Route path="/admin/user/exporter/:exporterId" element={<AdminRoute><ExporterOrdersPageByAdmin /></AdminRoute>} />

@@ -269,7 +269,7 @@ const SupplierOrders = () => {
             >
               {/* Display Payment and Order Status Tags */}
               <div className="flex justify-between mb-4">
-                {order.paymentStatus === "completed" && (
+                {(order.paymentStatus === "completed" || order.LocalPaymentDetails?.paymentStatus === "completed" || order.sampleStatus == "waiting_for_admin" )&& (
                   <span className="px-3 py-1 bg-green-500 text-white text-sm rounded-full">Payment Paid</span>
                 )}
                 {order.paymentStatus === "pending" && (

@@ -19,7 +19,9 @@ const initiateTokenPayment = async (req, res) => {
       capture_method: 'manual',  // Hold the payment for later capture
     });
 
-    order.paymentStatus = "pending";
+    // order.paymentStatus = "pending";
+    order.paymentStatus = "completed";
+
     order.paymentIntentId = paymentIntent.id;
     order.sampleStatus = "waiting_for_sample"; // Change the status to waiting for sample
     await order.save();
@@ -220,6 +222,7 @@ const getOrderDetailsById = async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: "Order not found." });
     }
+    console.log(order);
 
     // Return the order details
     res.status(200).json({ message: "Order details retrieved successfully", order });
