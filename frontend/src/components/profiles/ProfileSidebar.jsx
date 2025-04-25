@@ -1,0 +1,112 @@
+import React from "react";
+import { NavLink } from "react-router-dom";
+import { motion } from "framer-motion";
+
+const ProfileSidebar = ({ activeTab, setActiveTab, user }) => {
+  const menuItems = [
+    { id: "profile", label: "Profile", icon: "user" },
+    { id: "offers", label: "Offers", icon: "briefcase" },
+    { id: "payments", label: "Payments", icon: "credit-card" },
+    { id: "reviews", label: "Reviews", icon: "star" },
+  ];
+
+  return (
+    <motion.div 
+      initial={{ x: -20, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="w-full lg:w-64"
+    >
+      <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="p-6 border-b border-gray-100">
+          <div className="flex items-center space-x-3">
+            <img
+              src={user.profilePicture || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"}
+              alt={`${user.name}'s profile`}
+              className="w-12 h-12 rounded-full object-cover border-2 border-white shadow"
+            />
+            <div>
+              <h3 className="font-medium text-gray-900">{user.name || "Guest"}</h3>
+              <p className="text-sm text-indigo-600">{user.role || "No Role"}</p>
+            </div>
+          </div>
+        </div>
+        
+        <nav className="p-4">
+          <ul className="space-y-1">
+            {menuItems.map((item) => (
+              <li key={item.id}>
+                <button
+                  onClick={() => setActiveTab(item.id)}
+                  className={`w-full flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                    activeTab === item.id
+                      ? "bg-indigo-50 text-indigo-700"
+                      : "text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  <svg
+                    className={`w-5 h-5 mr-3 ${
+                      activeTab === item.id ? "text-indigo-500" : "text-gray-400"
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    {getIconPath(item.icon)}
+                  </svg>
+                  {item.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </motion.div>
+  );
+};
+
+// Helper function for SVG icons
+const getIconPath = (icon) => {
+  switch (icon) {
+    case "user":
+      return (
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+        />
+      );
+    case "briefcase":
+      return (
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+        />
+      );
+    case "credit-card":
+      return (
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+        />
+      );
+    case "star":
+      return (
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+        />
+      );
+    default:
+      return null;
+  }
+};
+
+export default ProfileSidebar;
