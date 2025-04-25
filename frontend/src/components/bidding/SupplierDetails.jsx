@@ -190,7 +190,7 @@ const SupplierDetails = () => {
         />
       )}
       <p><strong>Name:</strong> {userDetails.name}</p>
-      <p><strong>Email:</strong> {userDetails.email}</p>
+      {/* <p><strong>Email:</strong> {userDetails.email}</p> */}
 
       <div className="mt-4">
         <Link

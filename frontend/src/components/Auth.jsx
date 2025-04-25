@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../redux/reducers/userSlice";
 
 const Auth = () => {
-  const [isRegister, setIsRegister] = useState(true); // Toggle between register and login forms
+  const [isRegister, setIsRegister] = useState(false); // Toggle between register and login forms
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -70,8 +70,11 @@ const Auth = () => {
             // ✅ Redirect based on role
       if (data.role === "admin") {
         navigate("/admin");
-      } else {
+      } else if (data.role === "supplier") {
         navigate("/profile");
+      }
+      else{
+        navigate("/home");
       }
       }
     } catch (error) {

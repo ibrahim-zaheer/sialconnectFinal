@@ -62,12 +62,12 @@ exports.updateProfile = async (req, res) => {
     }
 
     // Check for duplicate phone number
-    if (phoneNumber) {
-      const existingUserWithPhone = await User.findOne({ phoneNumber });
-      if (existingUserWithPhone && existingUserWithPhone._id.toString() !== id) {
-        return res.status(400).json({ message: "Phone number already in use" });
-      }
-    }
+    // if (phoneNumber) {
+    //   const existingUserWithPhone = await User.findOne({ phoneNumber });
+    //   if (existingUserWithPhone && existingUserWithPhone._id.toString() !== id) {
+    //     return res.status(400).json({ message: "Phone number already in use" });
+    //   }
+    // }
 
     // Update only the specified fields
     const updatedUser = await User.findByIdAndUpdate(

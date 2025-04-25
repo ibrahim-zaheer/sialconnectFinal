@@ -126,7 +126,7 @@ const ProductDetails = () => {
                     )}
                     <div>
                       <p className="font-medium text-neutral-900">{product.supplier?.name || "Unknown Supplier"}</p>
-                      <p className="text-neutral-500 text-sm">{product.supplier?.email || "Email not available"}</p>
+                      {/* <p className="text-neutral-500 text-sm">{product.supplier?.email || "Email not available"}</p> */}
                       {product.supplier?._id && (
                         <Link
                           to={`/reviews/supplier/${product.supplier._id}`}

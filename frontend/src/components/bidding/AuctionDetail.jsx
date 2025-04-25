@@ -278,7 +278,7 @@ const AuctionDetail = () => {
             />
             <div className="ml-4">
               <p><strong>Name:</strong> {auctionDetails?.createdBy?.name}</p>
-              <p><strong>Email:</strong> {auctionDetails?.createdBy?.email}</p>
+              {/* <p><strong>Email:</strong> {auctionDetails?.createdBy?.email}</p> */}
             </div>
           </div>
         </div>
