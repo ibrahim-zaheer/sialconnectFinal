@@ -395,7 +395,7 @@ const Navbar = () => {
                       <NavLink to="/createAuction" onClick={closeMobileMenu}>{t("Create Auction")}</NavLink>
                       <NavLink to="/getAuctionsOfExporter" onClick={closeMobileMenu}>{t("Your Auction")}</NavLink>
                       <NavLink to="/favourites" onClick={closeMobileMenu}>{t("Your Favourites")}</NavLink>
-                      <NavLink to="/myOffers" onClick={closeMobileMenu}>{t("My Offers")}</NavLink>
+                      {/* <NavLink to="/myOffers" onClick={closeMobileMenu}>{t("My Offers")}</NavLink> */}
                       <NavLink to="/myExporterOrders" onClick={closeMobileMenu}>{t("My Orders")}</NavLink>
                     </>
                   )}
