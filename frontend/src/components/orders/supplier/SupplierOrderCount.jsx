@@ -48,37 +48,38 @@
 
 import React from "react";
 import useOrders from "../hook/useOrders";
-
 import EstimatedOrderValue from "./EstimatedOrderValue";
-
 import { useSelector } from "react-redux";
+import { motion } from "framer-motion";
 
 const SupplierOrderCount = () => {
   const { orders, loading } = useOrders();
-
   const user = useSelector((state) => state.user);
-  const userRole = user?.role;
 
   return (
-    <div className="text-center mt-6">
+    <motion.div 
+      initial={{ y: 20 }}
+      animate={{ y: 0 }}
+      className="bg-surface rounded-xl shadow-sm p-6 border border-neutral-100"
+    >
+      <h3 className="text-xl font-semibold text-primary-800 mb-4">Order Summary</h3>
+      
       {loading ? (
-        <p className="text-gray-500">Loading order count...</p>
+        <div className="animate-pulse space-y-2">
+          <div className="h-6 bg-neutral-100 rounded"></div>
+        </div>
       ) : (
-        <p className="text-lg font-semibold">
-          Total Orders are: <span className="text-blue-600">{orders.length}</span>
-       
-          {/* Show EstimatedOrderValue only for suppliers */}
-          {userRole === "supplier" && (
-            <div className="mt-4">
-              <EstimatedOrderValue orders={orders} />
-            </div>
-          )}
+        <div className="space-y-4">
+          <p className="text-lg text-neutral-700">
+            Total Orders: <span className="font-bold text-primary-600">{orders.length}</span>
+          </p>
           
-        </p>
-
-        
+          {user?.role === "supplier" && (
+            <EstimatedOrderValue orders={orders} />
+          )}
+        </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 
