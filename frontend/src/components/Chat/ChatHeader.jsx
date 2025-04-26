@@ -10,39 +10,61 @@ const ChatHeader = () => {
   if (!selectedUser) return null;
 
   return (
-    <div className="bg-white p-4 border-b border-neutral-200 shadow-sm">
+    <div className="bg-surface px-4 py-3 border-b border-neutral-200 shadow-sm flex-shrink-0">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {/* Avatar */}
-          <div className="relative">
-            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-200">
+          {/* Avatar with interactive status */}
+          <div className="relative group">
+            <div className="size-10 rounded-full overflow-hidden border-2 border-primary-300 bg-primary-50 flex items-center justify-center">
               <img 
-                src={selectedUser.profilePicture || "https://media.istockphoto.com/id/619400810/photo/mr-who.jpg?s=1024x1024&w=is&k=20&c=qDFp7p4f3PzMLr3x4j9VA4lTI6fdUDWDVhP6wU9S0Kg="} 
+                src={selectedUser.profilePicture || "/default-avatar.png"} 
                 alt={selectedUser.name}
-                className="w-full h-full object-cover"
+                className="size-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.src = "/default-avatar.png";
+                }}
               />
             </div>
-            {/* Online status indicator */}
-            {onlineUsers.includes(selectedUser._id) && (
-              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-            )}
+            {/* Animated status indicator */}
+            <div 
+              className={`absolute bottom-0 right-0 size-3 rounded-full border-2 border-surface ${
+                onlineUsers.includes(selectedUser._id)
+                  ? "bg-success animate-pulse"
+                  : "bg-neutral-400"
+              }`}
+              title={onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
+            />
           </div>
 
-          {/* User info */}
-          <div>
-            <h3 className="font-semibold text-neutral-900">{selectedUser.name}</h3>
-            <p className={`text-xs ${onlineUsers.includes(selectedUser._id) ? 'text-green-600' : 'text-neutral-500'}`}>
-              {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
-            </p>
+          {/* User info with better hierarchy */}
+          <div className="min-w-0">
+            <h3 className="font-medium text-neutral-900 truncate max-w-[160px] md:max-w-xs">
+              {selectedUser.fullName || selectedUser.name}
+            </h3>
+            <div className="flex items-center gap-1">
+              <span 
+                className={`text-xs ${
+                  onlineUsers.includes(selectedUser._id)
+                    ? "text-success font-medium"
+                    : "text-neutral-500"
+                }`}
+              >
+                {onlineUsers.includes(selectedUser._id) ? "Active now" : "Last seen recently"}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* Close button */}
+        {/* Enhanced close button */}
         <button 
           onClick={() => setSelectedUser(null)}
-          className="text-neutral-400 hover:text-neutral-600 transition-colors duration-200"
+          className="p-1.5 rounded-full transition-all duration-200
+                    text-neutral-500 hover:text-neutral-700 
+                    hover:bg-neutral-100 active:bg-neutral-200
+                    focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-2"
+          aria-label="Close conversation"
         >
-          <X size={20} />
+          <X size={20} strokeWidth={2.5} />
         </button>
       </div>
     </div>
