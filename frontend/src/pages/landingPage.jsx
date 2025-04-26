@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import "../assets/css/landingPage.css";
 import ProductImage from "../assets/images/image-1.jpg";
 import Footer from "./footer";
+import ProductSearch from "../components/ProductSearch";
+import TopProducts from "../components/TopProducts";
+import { useSelector } from "react-redux";
+import TopSuppliers from "../components/TopSuppliers";
 
 
 // Animation variants
@@ -54,6 +58,7 @@ const scaleUp = {
 };
 
 export default function LandingPage() {
+  const user = useSelector((state) => state.user);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
@@ -89,7 +94,7 @@ export default function LandingPage() {
               variants={itemVariants}
               className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary-800 leading-tight"
             >
-              Connecting Exporters with <span className="text-primary-600">Reliable</span> Suppliers
+              Connecting Exporter with <span className="text-primary-600">Reliable</span> Suppliers
             </motion.h1>
             
             <motion.p 
@@ -104,23 +109,24 @@ export default function LandingPage() {
               variants={itemVariants}
               className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto lg:mx-0"
             >
-              <input
+              {/* <input
                 type="text"
                 placeholder="Search products or suppliers..."
                 className="flex-grow px-6 py-3 border border-primary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 value={searchQuery}
                 onChange={handleSearchChange}
                 onKeyPress={handleKeyPress}
-              />
-              <motion.button 
+              /> */}
+              {/* <motion.button 
                 className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleSearchSubmit}
               >
                 Search
-              </motion.button>
+              </motion.button> */}
             </motion.div>
+            <ProductSearch   onProductSelect={(product) => navigate(`/supplier/product/${product._id}`)}/>
           </div>
 
           {/* Image Content */}
@@ -173,9 +179,10 @@ export default function LandingPage() {
           <p className="text-primary-600">
             Get in on the trend with our curated selection of best-selling styles.
           </p>
+          <TopProducts/>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+        {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
           {[1, 2, 3].map((item) => (
             <motion.div
               key={item}
@@ -232,7 +239,7 @@ export default function LandingPage() {
               </div>
             </motion.div>
           ))}
-        </div>
+        </div> */}
 
         <motion.div 
           variants={itemVariants}
@@ -240,7 +247,7 @@ export default function LandingPage() {
         >
           <button 
             className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
-            onClick={() => navigate('/products')}
+            onClick={() => navigate('/ExporterProducts')}
           >
             See all products →
           </button>
@@ -275,16 +282,27 @@ export default function LandingPage() {
           >
             <button 
               className="bg-white text-primary-800 hover:bg-primary-50 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
-              onClick={() => navigate('/products')}
+              onClick={() => navigate('/ExporterProducts')}
             >
               Explore
             </button>
-            <button 
+            {/* <button 
               className="border border-white text-white hover:bg-primary-700 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105"
               onClick={() => navigate('/register')}
             >
               Sign Up
+            </button> */}
+             {!user.role && (
+              // <li>
+              //   <Link to="/signIn">SignIn</Link>
+              // </li>
+              <button 
+              className="bg-white text-primary-800 hover:bg-primary-50 px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-md"
+              onClick={() => navigate('/signIn')}
+            >
+              Sign Up
             </button>
+            )}
           </motion.div>
         </div>
       </motion.section>
@@ -304,52 +322,11 @@ export default function LandingPage() {
           <p className="text-primary-600">
             Partnered with the best to bring you quality products
           </p>
+          <TopSuppliers/>
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-          {[1, 2, 3].map((item) => (
-            <motion.div
-              key={item}
-              variants={itemVariants}
-              whileHover={{ scale: 1.03 }}
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
-            >
-              <div
-                className={`h-48 ${
-                  item === 1
-                    ? "bg-primary-100"
-                    : item === 2
-                    ? "bg-primary-200"
-                    : "bg-primary-300"
-                } flex items-center justify-center`}
-              >
-                <motion.div 
-                  whileHover={{ rotate: 5 }}
-                  className="w-32 h-32 rounded-full bg-white/30 flex items-center justify-center"
-                >
-                  <span className="text-primary-800 font-medium">
-                    Supplier Logo
-                  </span>
-                </motion.div>
-              </div>
-              <div className="p-6 text-center">
-                <h3 className="text-lg font-semibold text-primary-800 mb-2">
-                  {item === 1
-                    ? "EcoFabric Inc."
-                    : item === 2
-                    ? "GreenStitch Co."
-                    : "Sustainable Styles"}
-                </h3>
-                <p className="text-primary-600">
-                  {item === 1
-                    ? "Premium organic materials since 2010"
-                    : item === 2
-                    ? "Ethical manufacturing practices"
-                    : "Innovative sustainable designs"}
-                </p>
-              </div>
-            </motion.div>
-          ))}
+          
         </div>
       </motion.section>
 

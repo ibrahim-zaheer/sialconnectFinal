@@ -162,6 +162,99 @@ const getOrdersByExporter = async (req, res) => {
   }
 };
 
+// ✅ Get all orders from the Order schema in the database
+const getAllOrders = async (req, res) => {
+  try {
+    // Fetch all orders from the database
+    const orders = await Order.find()
+      .populate("supplierId", "name email")    // Optional: show supplier info
+      .populate("productId", "name") 
+      .populate("auctionId", "title")          // Optional: show product info
+      .sort({ createdAt: -1 });
+
+    if (!orders.length) {
+      return res.status(404).json({ message: "No orders found." });
+    }
+
+    res.status(200).json({ message: "Orders retrieved successfully", orders });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving orders", error });
+  }
+};
+
+// Get top 3 most ordered products
+const getTopProducts = async (req, res) => {
+  try {
+    const topProducts = await Order.aggregate([
+      {
+        $group: {
+          _id: "$productId",
+          count: { $sum: 1 } // Count occurrences of each productId
+        }
+      },
+      { $sort: { count: -1 } }, // Sort by count descending
+      { $limit: 3 }, // Limit to top 3
+      {
+        $lookup: { // Join with Product collection to get product details
+          from: "products",
+          localField: "_id",
+          foreignField: "_id",
+          as: "productDetails"
+        }
+      },
+      { $unwind: "$productDetails" } // Flatten the array
+    ]);
+
+    if (!topProducts.length) {
+      return res.status(404).json({ message: "No products found." });
+    }
+
+    res.status(200).json({ 
+      message: "Top products retrieved successfully", 
+      topProducts 
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving top products", error });
+  }
+};
+
+const getTopSuppliers = async (req, res) => {
+  try {
+    const topSuppliers = await Order.aggregate([
+      {
+        $group: {
+          _id: "$supplierId",  // Group by supplierId
+          count: { $sum: 1 }    // Count the occurrences (orders) for each supplierId
+        }
+      },
+      { $sort: { count: -1 } },  // Sort by the number of orders in descending order (top suppliers first)
+      { $limit: 3 },             // Limit to the top 3 suppliers
+      {
+        $lookup: {               // Join with the "User" collection to get supplier details
+          from: "users",         // The collection containing the supplier data (assuming "User" collection holds both exporters and suppliers)
+          localField: "_id",     // The field to join on (supplierId)
+          foreignField: "_id",   // The field in the "User" collection (supplierId)
+          as: "supplierDetails"  // Alias for the result of the join
+        }
+      },
+      { $unwind: "$supplierDetails" }  // Flatten the supplierDetails array to access individual fields
+    ]);
+
+    if (!topSuppliers.length) {
+      return res.status(404).json({ message: "No suppliers found." });
+    }
+
+    // Return the top suppliers
+    res.status(200).json({
+      message: "Top suppliers retrieved successfully",
+      topSuppliers
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving top suppliers", error });
+  }
+};
+
+
 const getOrderDetailsForSupplier = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -605,5 +698,5 @@ const getAllPaymentsForSupplier = async (req, res) => {
 };
 
 module.exports = {
-    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment,confirmLocalPaymentByAdmin,getOrderDetailsById
+    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment,confirmLocalPaymentByAdmin,getOrderDetailsById,getAllOrders,getTopProducts,getTopSuppliers
 };

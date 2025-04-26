@@ -405,7 +405,7 @@ const ExporterOrders = () => {
                 <p><strong>Supplier:</strong> {order.supplierId?.name || "Unknown Supplier"}</p>
                 <p><strong>Email:</strong> {order.supplierId?.email || "N/A"}</p>
                 <p><strong>Quantity:</strong> {order.quantity}</p>
-                <p><strong>Total Price:</strong> Rs {order.totalPrice}</p>
+                <p><strong>Total Price:</strong> Rs {order.price * order.quantity}</p>
                 <p>Status: {order.status}</p>
                 <p>Payment: {order.paymentStatus}</p>
 
