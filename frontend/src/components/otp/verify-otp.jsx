@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+import { useDispatch } from 'react-redux';
+import { verifyEmail } from "../../redux/reducers/userSlice";
+
 import { useNavigate } from "react-router-dom";
 
 const VerifyOTP = () => {
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -21,6 +25,7 @@ const VerifyOTP = () => {
     try {
       const res = await axios.post("/api/auth/verify-otp", { email, otp });
       setMessage(res.data.message);
+      dispatch(verifyEmail());
       navigate("/profile")
     } catch (error) {
       console.error("Error verifying OTP:", error);

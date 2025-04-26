@@ -228,9 +228,22 @@ const ProfileInfo = () => {
               variants={itemVariants}
               className="mt-10 flex flex-wrap justify-center gap-4"
             >
-              <VerifyEmailButton className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" />
-              {/* <VerifyEmail/> */}
+              {/* <VerifyEmailButton className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" /> */}
+              {!user.emailVerified && (
+          <VerifyEmailButton className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" />
+        )}
+            
               <LogoutButton className="px-6 py-3 bg-gradient-to-r from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-400 text-gray-800 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" />
+              {user.emailVerified && (
+        <div className="flex items-center mt-1">
+          <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+            Email Verified
+          </span>
+        </div>
+      )}
             </motion.div>
           </div>
         </motion.div>

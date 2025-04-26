@@ -1,4 +1,5 @@
 import React from "react";
+import { ContactForm } from "../components/ContactForm";
 
 const Footer = () => {
   return (
@@ -78,7 +79,7 @@ const Footer = () => {
         {/* Contact Form */}
         <div>
           <h3 className="text-lg font-semibold text-primary-50 mb-4">CONTACT US</h3>
-          <form className="space-y-4">
+          {/* <form className="space-y-4">
             <div>
               <label htmlFor="email" className="sr-only">Email</label>
               <input
@@ -105,8 +106,10 @@ const Footer = () => {
             >
               Send Message
             </button>
-          </form>
+          </form> */}
+          <ContactForm/>
         </div>
+       
       </div>
 
       {/* Copyright */}

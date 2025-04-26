@@ -41,6 +41,7 @@ const UserSchema = new mongoose.Schema({
   role: { type: String, enum: ["exporter", "supplier","admin"], required: true },
   otp: String,
   otpExpires: Date,
+  emailVerified: { type: Boolean, default: false },
   fcmToken: { type: String, default: null },
   favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
 

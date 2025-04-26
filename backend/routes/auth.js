@@ -82,9 +82,12 @@ router.post("/send-otp", async (req, res) => {
       // OTP is valid; clear it from the database
       user.otp = undefined;
       user.otpExpires = undefined;
+      user.emailVerified = true;
       await user.save();
   
-      res.status(200).json({ message: "OTP verified successfully" });
+      res.status(200).json({ message: "OTP verified successfully" ,
+        emailVerified: true
+      });
     } catch (error) {
       console.error("Error in /verify-otp route:", error);
       res.status(500).json({ message: "Internal Server Error" });
