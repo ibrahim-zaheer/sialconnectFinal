@@ -245,13 +245,20 @@ const SupplierOrders = () => {
     >
       <h2 className="text-2xl font-bold text-primary-800 mb-6">Order History</h2>
 
-      <FilterOrders
+      {/* <FilterOrders
         filterOptions={{
           sampleStatuses: ["waiting_for_sample", "sent", "received", "sample_accepted", "sample_rejected"],
           paymentStatuses: ["pending", "completed"],
         }}
         onFilterChange={setFilterCriteria}
-      />
+      /> */}
+      <FilterOrders
+  filterOptions={{
+    sampleStatuses: ["waiting_for_sample", "sent", "received", "sample_accepted", "sample_rejected"],
+    paymentStatuses: ["pending", "completed"],
+  }}
+  onFilterChange={(newFilters) => setFilterCriteria(newFilters)}
+/>
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

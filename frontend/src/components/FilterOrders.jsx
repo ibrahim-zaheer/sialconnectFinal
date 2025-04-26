@@ -49,9 +49,16 @@
 import React from 'react';
 
 const FilterOrders = ({ filterOptions, onFilterChange }) => {
+  // const handleFilterChange = (event) => {
+  //   const { name, value } = event.target;
+  //   onFilterChange(name, value);
+  // };
   const handleFilterChange = (event) => {
     const { name, value } = event.target;
-    onFilterChange(name, value);
+    onFilterChange(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   return (

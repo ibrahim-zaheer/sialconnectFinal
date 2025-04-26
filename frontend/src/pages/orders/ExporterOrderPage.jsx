@@ -5,7 +5,7 @@ import HighestOrderValue from '../../components/orders/supplier/HighestOrderValu
 import TopOrderedProducts from '../../components/orders/supplier/TopOrderedProducts'
 import BackButton from '../../components/BackButton'
 
-export default function ExporterOrderPage() {
+export default function deExporterOrderPage() {
   return (
     <div>
       <div className="pt-20"></div>

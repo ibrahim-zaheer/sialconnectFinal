@@ -360,7 +360,7 @@ const ExporterOrders = () => {
       <h2 className="text-3xl font-semibold text-center mb-8 text-gray-800">Your Orders</h2>
 
       {/* Filter Section */}
-      <FilterOrders
+      {/* <FilterOrders
         filterOptions={{
           sampleStatuses: ["waiting_for_sample", "sent", "received", "sample_accepted", "sample_rejected"],
           paymentStatuses: ["pending", "completed"],
@@ -371,7 +371,14 @@ const ExporterOrders = () => {
             [name]: value,
           }));
         }}
-      />
+      /> */}
+      <FilterOrders
+  filterOptions={{
+    sampleStatuses: ["waiting_for_sample", "sent", "received", "sample_accepted", "sample_rejected"],
+    paymentStatuses: ["pending", "completed"],
+  }}
+  onFilterChange={(newFilters) => setFilterCriteria(newFilters)}
+/>
 
       {filteredOrders.length === 0 ? (
         <p className="text-center text-gray-500">No orders found.</p>
