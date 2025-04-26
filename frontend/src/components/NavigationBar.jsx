@@ -382,9 +382,9 @@ const Navbar = () => {
                     <>
                       <NavLink to="/SupplierProducts" onClick={closeMobileMenu}>{t("Products")}</NavLink>
                       <NavLink to="/getAllAuctions" onClick={closeMobileMenu}>{t("Auctions")}</NavLink>
-                      <NavLink to="/mySupplierOffers" onClick={closeMobileMenu}>{t("My Offers")}</NavLink>
+                      {/* <NavLink to="/mySupplierOffers" onClick={closeMobileMenu}>{t("My Offers")}</NavLink> */}
                       <NavLink to="/mySupplierOrders" onClick={closeMobileMenu}>{t("My Orders")}</NavLink>
-                      <NavLink to="/supplier/payments" onClick={closeMobileMenu}>{t("Token Payments")}</NavLink>
+                      {/* <NavLink to="/supplier/payments" onClick={closeMobileMenu}>{t("Token Payments")}</NavLink> */}
                     </>
                   )}
 
