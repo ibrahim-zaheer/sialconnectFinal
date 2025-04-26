@@ -323,7 +323,7 @@ export default function LocalOrderPaymentList() {
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Pending Local Payments</h2>
+      <h2 className="text-2xl font-bold mb-4">Pending Local Paymentss</h2>
       {error && <p className="text-red-600">{error}</p>}
 
       {filteredOrders.length === 0 && !error ? (

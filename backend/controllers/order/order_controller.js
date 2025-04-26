@@ -93,8 +93,11 @@ const confirmLocalPaymentByAdmin = async (req, res) => {
     }
 
     // Check if the local payment details are available
-    if (!order.LocalPaymentDetails || order.LocalPaymentDetails.paymentStatus !== "pending") {
-      return res.status(400).json({ message: "Local payment is either not pending or missing" });
+    if (!order.LocalPaymentDetails) {
+      return res.status(400).json({ message: "Local payment is  missing" });
+    }
+    if (order.LocalPaymentDetails.paymentStatus === "pending") {
+      return res.status(400).json({ message: "Local payment is  not pending" });
     }
 
     // Check if the payment proof is uploaded

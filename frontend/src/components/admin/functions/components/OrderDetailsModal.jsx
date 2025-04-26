@@ -66,7 +66,7 @@ const OrderDetailsModal = ({ order, closeModal, fetchOrderDetails }) => {
         </p>
 
         {/* Confirm Payment Button */}
-        {order.LocalPaymentDetails?.paymentStatus === "pending" && (
+        {order.LocalPaymentDetails?.paymentStatus === "detailsGiven" && (
           <div className="mt-4">
             <ConfirmPaymentButton 
               orderId={order._id}
