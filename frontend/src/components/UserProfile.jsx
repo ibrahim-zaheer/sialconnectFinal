@@ -521,7 +521,6 @@ import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import ProfileSidebar from "./profiles/ProfileSidebar";
 import ProfileContent from "./profiles/ProfileContent";
-import ProfileHeader from "./profiles/ProfileHeader";
 
 const UserProfile = () => {
   const [activeTab, setActiveTab] = useState("profile");
@@ -540,32 +539,32 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <motion.div 
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12"
-      >
-        {/* Main Profile Layout */}
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Sidebar */}
+    <div className="min-h-screen bg-neutral-100 pt-16">
+      {/* Main Container */}
+      <div className="flex">
+        {/* Fixed Sidebar */}
+        <div className="hidden lg:block fixed left-0 top-16 bottom-0 w-64 border-r border-neutral-200 bg-surface z-10">
           <ProfileSidebar 
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             user={user}
           />
-          
-          {/* Main Content Area */}
-          <div className="flex-1">
-            {/* Profile Header */}
-            <ProfileHeader user={user} />
-            
-            {/* Dynamic Content */}
-            <ProfileContent activeTab={activeTab} user={user} />
-          </div>
         </div>
-      </motion.div>
+
+        {/* Scrollable Content Area */}
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          className="flex-1 lg:ml-64"
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-surface rounded-xl shadow-sm overflow-hidden">
+              <ProfileContent activeTab={activeTab} user={user} />
+            </div>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 };

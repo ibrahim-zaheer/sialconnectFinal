@@ -133,7 +133,8 @@ import ExporterOfferPage from "./pages/offers/ExporterOfferPage";
 
 import SupplierOfferPage from "./pages/offers/SupplierOfferPage";
 import SupplierOrderPage from "./pages/orders/SupplierOrderPage";
-import ExporterProducts from "./pages/Exporter/ExporterProducts";import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
+import ExporterProducts from "./pages/Exporter/ExporterProducts";
+import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import SupplierList from "./pages/admin/functions/SupplierList";
 // import SupplierOrderPageByAdmin from "./pages/admin/functions/SupplierOrderPageByAdmin";
 // import SupplierProductsPageByAdmin from "./pages/admin/functions/SupplierProductsPageByAdmin";
@@ -306,42 +307,93 @@ const Main = () => {
         {/* Favourites*/}
         <Route path="/favourites" element={<FavouritePage />} />
 
-{/* Offers*/}
-<Route path="/offers" element={< OfferPage />} />  
+        {/* Offers*/}
+        <Route path="/offers" element={<OfferPage />} />
 
-<Route path="/createOffers" element={< CreateOfferPage />} />  
+        <Route path="/createOffers" element={<CreateOfferPage />} />
 
-<Route path="/myOffers" element={< ExporterOfferPage />} /> 
+        <Route path="/myOffers" element={<ExporterOfferPage />} />
 
+        <Route path="/mySupplierOffers" element={<SupplierOfferPage />} />
 
-<Route path="/mySupplierOffers" element={< SupplierOfferPage />} /> 
+        <Route path="/mySupplierOrders" element={<SupplierOrderPage />} />
 
-<Route path="/mySupplierOrders" element={< SupplierOrderPage/>} />
+        <Route
+          path="/supplier/order/:orderId"
+          element={<SupplierOrderDetailsPage />}
+        />
+        <Route path="/supplier/payments" element={<PaymentListPage />} />
 
-<Route path="/supplier/order/:orderId" element={<SupplierOrderDetailsPage/>} />
-<Route path="/supplier/payments" element={<PaymentListPage/>} />
+        {/* Exporter Orders */}
+        <Route path="/myExporterOrders" element={<ExporterOrderPage />} />
+        <Route
+          path="/exporter/order/:orderId"
+          element={<ExporterOrderDetailsPage />}
+        />
 
+        {/* Admin */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <AdminDashboardPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/user"
+          element={
+            <AdminRoute>
+              <UsersPage />
+            </AdminRoute>
+          }
+        />
+        {/* <Route path="/admin/user/supplier/:supplierId" element={<AdminRoute><SupplierProductsPageByAdmin /></AdminRoute>} /> */}
+        <Route
+          path="/admin/user/supplier/:supplierId"
+          element={
+            <AdminRoute>
+              <SupplierList />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/user/supplier/order/:supplierId"
+          element={
+            <AdminRoute>
+              <SupplierOrderPageByAdmin />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/user/supplier/product/:supplierId"
+          element={
+            <AdminRoute>
+              <SupplierProductsPageByAdmin />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/order/:orderId"
+          element={<AdminOrderDetailsPage />}
+        />
 
-{/* Exporter Orders */}
-<Route path="/myExporterOrders" element={< ExporterOrderPage/>} />
-<Route path="/exporter/order/:orderId" element={<ExporterOrderDetailsPage/>} />
-
-
-{/* Admin */}
-<Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
-<Route path="/admin/user" element={<AdminRoute><UsersPage /></AdminRoute>} />
-{/* <Route path="/admin/user/supplier/:supplierId" element={<AdminRoute><SupplierProductsPageByAdmin /></AdminRoute>} /> */}
-<Route path="/admin/user/supplier/:supplierId" element={<AdminRoute><SupplierList /></AdminRoute>} />
-<Route path="/admin/user/supplier/order/:supplierId" element={<AdminRoute><SupplierOrderPageByAdmin /></AdminRoute>} />
-<Route path="/admin/user/supplier/product/:supplierId" element={<AdminRoute><SupplierProductsPageByAdmin /></AdminRoute>} />
-<Route path="/admin/order/:orderId" element={<AdminOrderDetailsPage />} />
-
-
-
-<Route path="/admin/user/exporter/:exporterId" element={<AdminRoute><ExporterOrdersPageByAdmin /></AdminRoute>} />
-<Route path="/admin/user/order/payment" element={<AdminRoute><OrderPaymentListPage /></AdminRoute>} />
-
-
+        <Route
+          path="/admin/user/exporter/:exporterId"
+          element={
+            <AdminRoute>
+              <ExporterOrdersPageByAdmin />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/user/order/payment"
+          element={
+            <AdminRoute>
+              <OrderPaymentListPage />
+            </AdminRoute>
+          }
+        />
       </Routes>
     </>
   );

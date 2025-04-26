@@ -5,8 +5,8 @@ import BackButton from '../../components/BackButton'
 export default function PaymentListPage() {
   return (
     <>
-    <div className="pt-20"></div>
-    <BackButton/>
+    <div className=""></div>
+    {/* <BackButton/> */}
     <PaymentDetails/>
     </>
   )

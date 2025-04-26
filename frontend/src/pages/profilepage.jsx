@@ -35,9 +35,9 @@ const ProfilePage = () => {
         <UserProfile />
         {/* <PlaceOrder /> */}
       </div>
-      <div>
+      {/* <div>
         {user.role === "exporter" ? <ExporterPage /> : <SupplierPage />}
-      </div>
+      </div> */}
     </>
   );
 };
