@@ -77,6 +77,9 @@ const SupplierOrderCount = () => {
           {user?.role === "supplier" && (
             <EstimatedOrderValue orders={orders} />
           )}
+            {user?.role === "exporter" && (
+            <EstimatedOrderValue orders={orders} />
+          )}
          
         </div>
       )}

@@ -1266,6 +1266,7 @@ const ExporterProducts = () => {
     "Lahore",
     "Daska",
     "Wazirabad",
+    "KPK",
   ];
 
   const user = useSelector((state) => state.user);
@@ -1456,6 +1457,41 @@ const ExporterProducts = () => {
     );
   };
 
+  // const applyFilters = (
+  //   search = searchQuery,
+  //   price = priceRange,
+  //   cities = selectedCities,
+  //   supplier = supplierName,
+  //   category = selectedCategory
+  // ) => {
+  //   const filtered = products.filter((product) => {
+  //     const matchesSearch =
+  //       product.name?.toLowerCase().includes(search.toLowerCase()) ||
+  //       product.description?.toLowerCase().includes(search.toLowerCase());
+  //     const isWithinPrice = product.price <= price;
+  //     const matchesCity =
+  //       cities.length === 0 || (product.city && cities.includes(product.city));
+  //     const matchesSupplier =
+  //       !supplier ||
+  //       (product.supplierName &&
+  //         product.supplierName.toLowerCase().includes(supplier.toLowerCase()));
+  //     const matchesCategory =
+  //       !category ||
+  //       (product.category &&
+  //         product.category.toLowerCase() === category.toLowerCase());
+
+  //     return (
+  //       matchesSearch &&
+  //       isWithinPrice &&
+  //       matchesCity &&
+  //       matchesSupplier &&
+  //       matchesCategory
+  //     );
+  //   });
+
+  //   setFilteredProducts(filtered);
+  // };
+
   const applyFilters = (
     search = searchQuery,
     price = priceRange,
@@ -1468,28 +1504,33 @@ const ExporterProducts = () => {
         product.name?.toLowerCase().includes(search.toLowerCase()) ||
         product.description?.toLowerCase().includes(search.toLowerCase());
       const isWithinPrice = product.price <= price;
+  
+      // Update this line to filter based on supplier's city
       const matchesCity =
-        cities.length === 0 || (product.city && cities.includes(product.city));
-      const matchesSupplier =
-        !supplier ||
-        (product.supplierName &&
-          product.supplierName.toLowerCase().includes(supplier.toLowerCase()));
+        cities.length === 0 || (product.supplier?.city && cities.includes(product.supplier.city));
+  
+  // Filter based on supplier's name
+  const matchesSupplier =
+  !supplier ||
+  (product.supplier?.name &&
+    product.supplier.name.toLowerCase().includes(supplier.toLowerCase()));
+  
       const matchesCategory =
         !category ||
-        (product.category &&
-          product.category.toLowerCase() === category.toLowerCase());
-
+        (product.category && product.category.toLowerCase() === category.toLowerCase());
+  
       return (
         matchesSearch &&
         isWithinPrice &&
-        matchesCity &&
+        matchesCity && // Use the updated city condition
         matchesSupplier &&
         matchesCategory
       );
     });
-
+  
     setFilteredProducts(filtered);
   };
+  
 
   const resetFilters = () => {
     setPriceRange(10000);
@@ -1843,6 +1884,18 @@ const ExporterProducts = () => {
                       {product.supplierName}
                     </p>
                   )}
+                    {product.supplier?.name && (
+                    <p className="text-sm text-neutral-600 mt-1">
+                      <span className="font-medium">Supplier:</span>{" "}
+                      {product.supplier.name}
+                    </p>
+                  )}
+                   {product.supplier?.city && (
+                <p className="text-sm text-neutral-600">
+                    <span className="font-medium">Location:</span>{" "}
+                    {product.supplier.city}  {/* Render the supplier's city */}
+                </p>
+            )}
                   {product.city && (
                     <p className="text-sm text-neutral-600">
                       <span className="font-medium">Location:</span>{" "}

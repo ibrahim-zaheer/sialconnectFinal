@@ -195,9 +195,21 @@ exports.getProductsBySupplier = async (req, res) => {
 
 
 
+// exports.getAllProducts = async (req, res) => {
+//     try {
+//         const products = await Product.find();
+//         res.status(200).json(products);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
 exports.getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find();
+        // Fetch products and populate the supplier field to get the supplier details
+        const products = await Product.find()
+            .populate('supplier', 'name city') // Populating supplier details (name and city)
+            .exec();
+
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ message: error.message });
