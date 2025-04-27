@@ -379,19 +379,149 @@
 //     </div>
 //   );
 // }
+
+
+
+
+
+
+
+// import React, { useState } from "react";
+// import { useSelector } from "react-redux";
+// import { selectUser } from "../../redux/reducers/userSlice";
+// import axios from "axios";
+
+// export default function CreateOffer({ supplierId, productId, price, onClose }) {
+//   const user = useSelector(selectUser);
+//   const token = user?.id ? localStorage.getItem("token") : null;
+
+//   const [offerData, setOfferData] = useState({
+//     supplierId: supplierId || "",
+//     productId: productId || "",
+//     price: price || "", // Make the price editable
+//     quantity: "",
+//     message: "",
+//   });
+
+//   const [responseMessage, setResponseMessage] = useState("");
+
+//   const createOffer = async (offerData, token) => {
+//     try {
+//       const response = await axios.post("/api/offers/create", offerData, {
+//         headers: {
+//           "Content-Type": "application/json",
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
+//       return response.data;
+//     } catch (error) {
+//       console.error("Error creating offer:", error);
+//       return { message: "Failed to send offer. Try again." };
+//     }
+//   };
+
+//   const handleChange = (e) => {
+//     setOfferData({ ...offerData, [e.target.name]: e.target.value });
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     if (!token) {
+//       setResponseMessage("User not authenticated. Please log in.");
+//       return;
+//     }
+//     if (!offerData.message) {
+//       setOfferData((prevData) => ({
+//         ...prevData,
+//         message: "No message provided",
+//       }));
+//     }
+//     try {
+//       const response = await createOffer(offerData, token);
+//       const successMsg = response.message || "Offer sent successfully!";
+//       setResponseMessage(response.message || "Offer sent successfully!");
+//          // ✅ Show alert BEFORE closing popup
+//     alert(successMsg);         // Show alert
+//       onClose();
+//     } catch (error) {
+//       setResponseMessage("Failed to send offer. Try again.");
+//     }
+//   };
+
+//   return (
+//     <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+//       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6 relative">
+//         <button
+//           className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
+//           onClick={onClose}
+//         >
+//           ✖
+//         </button>
+//         <h2 className="text-xl font-semibold text-center mb-4">
+//           Create an Offer
+//         </h2>
+//         <form onSubmit={handleSubmit} className="space-y-4">
+//           {/* Price input field is now editable */}
+//           <input
+//             type="number"
+//             name="price"
+//             value={offerData.price}
+//             onChange={handleChange} // Allow user to update the price
+//             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           />
+
+//           <input
+//             type="number"
+//             name="quantity"
+//             placeholder="Quantity"
+//             value={offerData.quantity}
+//             onChange={handleChange}
+//             required
+//             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           />
+
+//           <textarea
+//             name="message"
+//             placeholder="Message"
+//             value={offerData.message}
+//             onChange={handleChange}
+//             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           ></textarea>
+
+//           <button
+//             type="submit"
+//             className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
+//           >
+//             Send Offer
+//           </button>
+//         </form>
+//         {responseMessage && (
+//           <p className="text-center text-sm text-red-500 mt-2">
+//             {responseMessage}
+//           </p>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/reducers/userSlice";
 import axios from "axios";
 
-export default function CreateOffer({ supplierId, productId, price, onClose }) {
+
+export default function CreateOffer({ supplierId, productId, price, onClose, isOrder = false }) {
   const user = useSelector(selectUser);
   const token = user?.id ? localStorage.getItem("token") : null;
 
   const [offerData, setOfferData] = useState({
     supplierId: supplierId || "",
     productId: productId || "",
-    price: price || "", // Make the price editable
+    price: price || "",
     quantity: "",
     message: "",
   });
@@ -400,7 +530,8 @@ export default function CreateOffer({ supplierId, productId, price, onClose }) {
 
   const createOffer = async (offerData, token) => {
     try {
-      const response = await axios.post("/api/offers/create", offerData, {
+      const endpoint = isOrder ? "/api/offers/create" : "/api/offers/create";
+      const response = await axios.post(endpoint, offerData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -408,8 +539,8 @@ export default function CreateOffer({ supplierId, productId, price, onClose }) {
       });
       return response.data;
     } catch (error) {
-      console.error("Error creating offer:", error);
-      return { message: "Failed to send offer. Try again." };
+      console.error(`Error creating ${isOrder ? 'order' : 'offer'}:`, error);
+      return { message: `Failed to send ${isOrder ? 'order' : 'offer'}. Try again.` };
     }
   };
 
@@ -431,69 +562,68 @@ export default function CreateOffer({ supplierId, productId, price, onClose }) {
     }
     try {
       const response = await createOffer(offerData, token);
-      const successMsg = response.message || "Offer sent successfully!";
-      setResponseMessage(response.message || "Offer sent successfully!");
-         // ✅ Show alert BEFORE closing popup
-    alert(successMsg);         // Show alert
+      const successMsg = response.message || 
+        `${isOrder ? 'Order' : 'Offer'} sent successfully!`;
+      setResponseMessage(successMsg);
+      alert(successMsg);
       onClose();
     } catch (error) {
-      setResponseMessage("Failed to send offer. Try again.");
+      setResponseMessage(`Failed to send ${isOrder ? 'order' : 'offer'}. Try again.`);
     }
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6 relative">
-        <button
-          className="absolute top-2 right-2 text-gray-600 hover:text-gray-900"
-          onClick={onClose}
-        >
-          ✖
-        </button>
-        <h2 className="text-xl font-semibold text-center mb-4">
-          Create an Offer
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Price input field is now editable */}
+    <div className="w-full">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Price field - editable for offers, fixed for orders */}
+        {isOrder ? (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Price (per piece)</label>
+            <div className="w-full p-2 border border-gray-300 rounded-lg bg-gray-100">
+              Rs {offerData.price.toLocaleString()}
+            </div>
+            <input type="hidden" name="price" value={offerData.price} />
+          </div>
+        ) : (
           <input
             type="number"
             name="price"
             value={offerData.price}
-            onChange={handleChange} // Allow user to update the price
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-
-          <input
-            type="number"
-            name="quantity"
-            placeholder="Quantity"
-            value={offerData.quantity}
-            onChange={handleChange}
-            required
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-
-          <textarea
-            name="message"
-            placeholder="Message"
-            value={offerData.message}
             onChange={handleChange}
             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          ></textarea>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
-          >
-            Send Offer
-          </button>
-        </form>
-        {responseMessage && (
-          <p className="text-center text-sm text-red-500 mt-2">
-            {responseMessage}
-          </p>
+          />
         )}
-      </div>
+
+        <input
+          type="number"
+          name="quantity"
+          placeholder="Quantity"
+          value={offerData.quantity}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+
+        <textarea
+          name="message"
+          placeholder="Message"
+          value={offerData.message}
+          onChange={handleChange}
+          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        ></textarea>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
+        >
+          {isOrder ? 'Send Order' : 'Send Offer'}
+        </button>
+      </form>
+      {responseMessage && (
+        <p className="text-center text-sm text-red-500 mt-2">
+          {responseMessage}
+        </p>
+      )}
     </div>
   );
 }

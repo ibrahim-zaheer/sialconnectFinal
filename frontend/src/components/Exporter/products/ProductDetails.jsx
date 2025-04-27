@@ -267,6 +267,7 @@ const ProductDetails = () => {
   const [product, setProduct] = useState(null);
   const [error, setError] = useState("");
   const [showOfferPopup, setShowOfferPopup] = useState(false);
+  const [showOrderPopup, setShowOrderPopup] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
@@ -483,6 +484,17 @@ const ProductDetails = () => {
                       Send Offer
                     </button>
                   )}
+                  {role === "exporter" && (
+  <button
+    onClick={() => setShowOrderPopup(true)}
+    className="inline-flex items-center px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+  >
+    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+    </svg>
+    Send Order
+  </button>
+)}
                 </div>
                 
                 <div className="text-sm text-gray-500 pt-2">
@@ -529,6 +541,35 @@ const ProductDetails = () => {
           </div>
         </div>
       )}
+
+
+{showOrderPopup && product && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
+    <div className="bg-white rounded-xl shadow-xl w-full max-w-md">
+      <div className="flex justify-between items-center border-b p-4">
+        <h3 className="text-lg font-semibold text-gray-900">Create Order</h3>
+        <button 
+          onClick={() => setShowOrderPopup(false)}
+          className="text-gray-400 hover:text-gray-600 rounded-full p-1"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div className="p-6">
+        <CreateOffer 
+          supplierId={product.supplier?._id}
+          productId={product._id}
+          price={product.price}
+          onClose={() => setShowOrderPopup(false)}
+          isOrder={true} // This prop will make price uneditable
+        />
+      </div>
+    </div>
+  </div>
+)}
+      
     </div>
   );
 };

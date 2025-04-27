@@ -192,12 +192,14 @@
 // }
 
 
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/reducers/userSlice";
 import { motion } from "framer-motion";
+import AcceptOffer from "../AcceptOffer";
+import RejectOffer from "../RejectOffer";
+import CounterOffer from "../CounterOffer";
 
 export default function SupplierOffers() {
   const user = useSelector(selectUser);
@@ -394,25 +396,22 @@ export default function SupplierOffers() {
 
                   {(offer.status === "pending" || offer.status === "counter") && (
                     <div className="mt-6 flex flex-wrap gap-3">
-                      <button
-                        onClick={() => updateOfferStatus(offer._id, "accepted")}
+                      <AcceptOffer
+                        offerId={offer._id}
+                        updateStatus={updateOfferStatus}
                         className="flex-1 px-4 py-2 bg-success-500 hover:bg-success-600 text-white rounded-lg text-sm font-medium transition-colors"
-                      >
-                        Accept
-                      </button>
-                      <button
-                        onClick={() => updateOfferStatus(offer._id, "rejected")}
+                      />
+                      <RejectOffer
+                        offerId={offer._id}
+                        updateStatus={updateOfferStatus}
                         className="flex-1 px-4 py-2 bg-error-500 hover:bg-error-600 text-white rounded-lg text-sm font-medium transition-colors"
-                      >
-                        Reject
-                      </button>
-                      <button
-                        onClick={() => {/* Counter offer logic */}}
+                      />
+                      <CounterOffer
+                        offerId={offer._id}
+                        updateStatus={updateCounterOfferStatus}
                         disabled={offer.counterOfferCount >= 2}
                         className="flex-1 px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        Counter
-                      </button>
+                      />
                     </div>
                   )}
                 </div>
