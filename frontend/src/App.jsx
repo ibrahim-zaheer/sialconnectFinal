@@ -157,6 +157,8 @@ import ExporterOrderDetailsPage from "./pages/orders/ExporterOrderDetailsPage";
 
 import PaymentListPage from "./pages/payments/PaymentListPage";
 import AdminOrderDetails from "./components/orders/admin/AdminOrderDetails";
+import ExporterAuctions from "./components/bidding/ExporterAuctions";
+import ExporterLayout from "./components/bidding/ExporterLayout";
 
 const App = () => {
   return (
@@ -394,6 +396,15 @@ const Main = () => {
             </AdminRoute>
           }
         />
+        
+        <Route 
+  path="/exporter" 
+  element={<ExporterLayout />}
+>
+  <Route index element={<ExporterAuctions />} />
+  <Route path="auctions" element={<ExporterAuctions />} />
+  <Route path="create-auction" element={<CreateAuction />} />
+</Route>
       </Routes>
     </>
   );

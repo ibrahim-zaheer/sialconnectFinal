@@ -36,9 +36,10 @@ const ExporterAuctions = () => {
   useEffect(() => {
     fetchExporterAuctions();
   }, []);
+
   useEffect(() => {
     if (message.includes("successfully")) {
-      const timeout = setTimeout(() => setMessage(""), 3000); // Hide after 3s
+      const timeout = setTimeout(() => setMessage(""), 3000);
       return () => clearTimeout(timeout);
     }
   }, [message]);
@@ -48,130 +49,192 @@ const ExporterAuctions = () => {
       return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`/api/api/bidding/delete/${id}`, {  // Fixed API endpoint path
+      await axios.delete(`/api/bidding/delete/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setAuctions(auctions.filter((auction) => auction._id !== id));
       setMessage("Auction deleted successfully");
-      setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
     } catch (error) {
       setMessage(error.response?.data?.message || "Failed to delete auction");
-      setTimeout(() => setMessage(""), 3000); // Clear message after 3 seconds
     }
   };
 
-  // Function to check if the auction is expired
   const isAuctionExpired = (endTime) => {
     const currentDate = new Date();
     const auctionEndDate = new Date(endTime);
     return auctionEndDate < currentDate;
   };
 
-  const filteredAuctions = auctions.filter(auction => 
-    auction.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    auction.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredAuctions = auctions.filter((auction) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      auction.title.toLowerCase().includes(searchLower) ||
+      auction.description.toLowerCase().includes(searchLower) ||
+      auction.category.toLowerCase().includes(searchLower)
+    );
+  });
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
-    <div className="mt-24 text-[#1b263b]">
-      <div className="flex justify-center mt-4">
-        <input
-          type="text"
-          placeholder="Search your auctions..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="border border-gray-300 rounded-lg p-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      <h1 className="text-center text-3xl font-semibold my-10">My Auctions</h1>
-      {message && (
-        <p
-          className={`text-center ${
-            message.includes("successfully") ? "text-green-500" : "text-red-500"
-          }`}
-        >
-          {message}
-        </p>
-      )}
-      {loading ? (
-        <p className="text-center text-gray-500">Loading auctions...</p>
-      ) : auctions.length > 0 ? (
-        <div className="flex flex-wrap justify-center items-center gap-8 mt-4 bg-gray-100 rounded-lg w-[80vw] mx-auto p-8 my-5">
-          {auctions.map((auction) => (
-            <div
-              key={auction._id}
-              className="w-full sm:w-1/2 lg:w-[30%] bg-white shadow-md rounded-lg py-8 px-5"
-            >
-              <div className="flex justify-between gap-4">
-                <div className="flex-1">
-                  <h1 className="text-lg font-bold">{auction.title}</h1>
-                  <p className="text-sm text-gray-500 mt-2">
-                    Starting Bid: Rs {auction.startingBid}
-                  </p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    {auction.description || "No description provided"}
-                  </p>
-                  <p className="text-sm text-gray-600 mt-2">
-                    Category: {auction.category}
-                  </p>
-                  {/* <p className="text-sm text-gray-600 mt-2">
-                    {new Date(auction.startTime).toLocaleString()} - {new Date(auction.endTime).toLocaleString()}
-                  </p> */}
-                  <p className="text-sm text-gray-600 mt-2">
-                    {new Date(auction.startTime).toLocaleString()} -{" "}
-                    {new Date(auction.endTime).toLocaleString()}
-                  </p>
-                  {isAuctionExpired(auction.endTime) && (
-                    <span className="text-red-500 font-bold mt-2">Expired</span>
-                  )}
-                </div>
-                <div className="flex flex-col items-end">
-                  {/* {auction.image && (
-                    <img src={auction.image.url || "https://via.placeholder.com/150"} alt="Auction Image" className="w-24 h-24 object-cover rounded-lg" />
-                  )} */}
-                  {/* {auction.image && auction.image.length > 0 && (
-  <img
-    src={auction.image[0]}
-    alt="Auction"
-    className="w-24 h-24 object-cover rounded-lg"
-  />
-)} */}
+    <div className="p-6">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">My Auctions</h1>
+        
+        <div className="relative mb-8">
+          <input
+            type="text"
+            placeholder="Search auctions by title, description or category..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <svg
+            className="absolute left-3 top-3 h-5 w-5 text-gray-400"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </div>
+
+        {message && (
+          <div
+            className={`mb-6 p-4 rounded-lg ${
+              message.includes("successfully")
+                ? "bg-green-50 text-green-800"
+                : "bg-red-50 text-red-800"
+            }`}
+          >
+            {message}
+          </div>
+        )}
+
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        ) : filteredAuctions.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredAuctions.map((auction) => (
+              <div
+                key={auction._id}
+                className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow"
+              >
+                <div className="p-6">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      {auction.title}
+                    </h3>
+                    {isAuctionExpired(auction.endTime) ? (
+                      <span className="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">
+                        Expired
+                      </span>
+                    ) : (
+                      <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                        Active
+                      </span>
+                    )}
+                  </div>
 
                   {auction.image && (
-                    <img
-                      src={
-                        Array.isArray(auction.image)
-                          ? auction.image[0] // New format
-                          : auction.image.url // Old format
-                      }
-                      alt="Auction"
-                      className="w-24 h-24 object-cover rounded-lg"
-                    />
+                    <div className="mb-4">
+                      <img
+                        src={
+                          Array.isArray(auction.image)
+                            ? auction.image[0]
+                            : auction.image.url
+                        }
+                        alt={auction.title}
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                    </div>
                   )}
+
+                  <div className="space-y-3 text-gray-700">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Starting Bid:</span>
+                      <span className="font-medium">Rs {auction.startingBid}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Category:</span>
+                      <span className="font-medium">{auction.category}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Starts:</span>
+                      <span className="font-medium">{formatDate(auction.startTime)}</span>
+                    </div>
+                    <div className="flex justify-between border-b border-gray-100 pb-3">
+                      <span className="text-gray-600">Ends:</span>
+                      <span className="font-medium">{formatDate(auction.endTime)}</span>
+                    </div>
+
+                    {auction.description && (
+                      <p className="text-sm text-gray-600 mt-3 line-clamp-2">
+                        {auction.description}
+                      </p>
+                    )}
+
+                    <div className="mt-4 flex justify-between">
+                      <Link
+                        to={`/bidding/${auction._id}`}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+                      >
+                        View Details
+                      </Link>
+                      <button
+                        onClick={() => handleDeleteAuction(auction._id)}
+                        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="mt-4 flex justify-between">
-                <Link
-                  to={`/bidding/${auction._id}`}
-                  className="bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
-                >
-                  View more
-                </Link>
-                <button
-                  onClick={() => handleDeleteAuction(auction._id)}
-                  className="bg-red-500 text-white py-1.5 px-3 rounded-lg hover:bg-red-600 transition duration-300"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-center text-gray-500 mt-4">No auctions found.</p>
-      )}
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white rounded-xl shadow-sm p-8 text-center">
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1}
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <h3 className="mt-2 text-lg font-medium text-gray-900">
+              No auctions found
+            </h3>
+            <p className="mt-1 text-gray-500">
+              {searchQuery
+                ? "No auctions match your search criteria"
+                : "You haven't created any auctions yet"}
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

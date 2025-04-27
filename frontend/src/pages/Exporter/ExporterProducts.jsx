@@ -1501,7 +1501,7 @@ const ExporterProducts = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-neutral-100 mt-20">
+    <div className="flex min-h-screen bg-neutral-100 mt-16">
       {/* Sidebar Filters */}
       <motion.div
         className="w-64 bg-white shadow-md fixed h-full overflow-y-auto z-10"

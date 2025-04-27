@@ -186,6 +186,7 @@ import BidForm from "./BidForm";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/reducers/userSlice";
+import BackButton from "../BackButton";
 
 const AuctionDetail = () => {
   const { id } = useParams();
@@ -248,6 +249,7 @@ const AuctionDetail = () => {
 
   return (
     <div className="auction-detail my-20 w-[80vw] mx-auto p-6 bg-white shadow-xl rounded-lg space-y-8">
+      <BackButton/>
       <h2 className="text-3xl font-bold text-center text-gray-800">{auctionDetails?.title}</h2>
       <p className="text-lg text-gray-700">{auctionDetails?.description}</p>
 
