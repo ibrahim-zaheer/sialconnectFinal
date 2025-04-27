@@ -226,7 +226,7 @@ const ProfileInfo = () => {
             {/* Action Buttons */}
             <motion.div 
               variants={itemVariants}
-              className="mt-10 flex flex-wrap justify-center gap-4"
+              className="mt-10 flex flex-wrap justify-between items-center gap-4"
             >
               {/* <VerifyEmailButton className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" /> */}
               {!user.emailVerified && (
