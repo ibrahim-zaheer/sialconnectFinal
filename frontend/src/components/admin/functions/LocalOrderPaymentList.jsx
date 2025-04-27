@@ -84,7 +84,7 @@ import ConfirmPaymentButton from "./components/ConfirmPaymentButton";
 // import OrderDetailsModal from "./components/OrderDetailsModal";
 
 
-const OrderDetailsModal = ({ order, closeModal }) => {
+const OrderDetailsModal = ({ order, closeModal,refreshOrders  }) => {
   const [isImagePopupOpen, setIsImagePopupOpen] = useState(false); // State to control image popup visibility
   const [imageUrl, setImageUrl] = useState(""); // State to store the image URL
 
@@ -99,6 +99,7 @@ const OrderDetailsModal = ({ order, closeModal }) => {
   };
   const handleSuccess = (message) => {
     alert(message); // You can update this to show a notification or update UI after successful payment confirmation
+    refreshOrders(); 
     closeModal(); // Close the modal after payment confirmation
   };
 
@@ -188,32 +189,64 @@ export default function LocalOrderPaymentList() {
   const [error, setError] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null); // State for the selected order
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Fetch orders with payment details on component mount
+  // // Fetch orders with payment details on component mount
+  // useEffect(() => {
+  //   const fetchOrders = async () => {
+  //     try {
+  //       const token = localStorage.getItem("token");
+  //       const res = await axios.get("/api/admin/orders", {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
+
+  //       setOrders(res.data.orders);
+  //       // Filter orders to only show those with pending local payment status
+  //       const pendingOrders = res.data.orders.filter(
+  //         (order) => order.paymentStatus?.toLowerCase() === "waiting_for_admin"
+  //       );
+  //       setFilteredOrders(pendingOrders);
+  //     } catch (err) {
+  //       setError(err.response?.data?.message || "Failed to fetch orders");
+  //     }
+  //   };
+
+  //   fetchOrders();
+  // }, []);
+
+  
+  const fetchOrders = async () => {
+    setIsRefreshing(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("/api/admin/orders", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setOrders(res.data.orders);
+      const pendingOrders = res.data.orders.filter(
+        (order) => order.paymentStatus?.toLowerCase() === "waiting_for_admin"
+      );
+      setFilteredOrders(pendingOrders);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch orders");
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get("/api/admin/orders", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setOrders(res.data.orders);
-        // Filter orders to only show those with pending local payment status
-        const pendingOrders = res.data.orders.filter(
-          (order) => order.paymentStatus?.toLowerCase() === "waiting_for_admin"
-        );
-        setFilteredOrders(pendingOrders);
-      } catch (err) {
-        setError(err.response?.data?.message || "Failed to fetch orders");
-      }
-    };
-
     fetchOrders();
   }, []);
 
+
+  const handleRefresh = () => {
+    fetchOrders();
+  };
   // Handle Order ID click to open the modal
   const handleOrderClick = (order) => {
     setSelectedOrder(order);
@@ -280,7 +313,7 @@ export default function LocalOrderPaymentList() {
 
       {/* Render the modal when an order is clicked */}
       {isModalOpen && selectedOrder && (
-        <OrderDetailsModal order={selectedOrder} closeModal={closeModal} />
+        <OrderDetailsModal order={selectedOrder} closeModal={closeModal} refreshOrders={fetchOrders} />
       )}
     </div>
   );

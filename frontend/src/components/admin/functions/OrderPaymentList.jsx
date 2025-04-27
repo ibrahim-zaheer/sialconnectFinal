@@ -159,28 +159,55 @@ export default function OrderPaymentList() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const res = await axios.get("/api/admin/orders", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  // useEffect(() => {
+  //   const fetchOrders = async () => {
+  //     try {
+  //       const token = localStorage.getItem("token");
+  //       const res = await axios.get("/api/admin/orders", {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
         
-        setOrders(res.data.orders);
-        const pendingOrders = res.data.orders.filter(
-          order => order.paymentDetails?.paymentStatus?.toLowerCase() === "detailsgiven"
-        );
-        setFilteredOrders(pendingOrders);
-      } catch (err) {
-        setError(err.response?.data?.message || "Failed to fetch orders");
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  //       setOrders(res.data.orders);
+  //       const pendingOrders = res.data.orders.filter(
+  //         order => order.paymentDetails?.paymentStatus?.toLowerCase() === "detailsgiven"
+  //       );
+  //       setFilteredOrders(pendingOrders);
+  //     } catch (err) {
+  //       setError(err.response?.data?.message || "Failed to fetch orders");
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
 
+  //   fetchOrders();
+  // }, []);
+
+   // Extract fetchOrders to make it reusable
+   const fetchOrders = async () => {
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem("token");
+      const res = await axios.get("/api/admin/orders", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      setOrders(res.data.orders);
+      const pendingOrders = res.data.orders.filter(
+        order => order.paymentDetails?.paymentStatus?.toLowerCase() === "detailsgiven"
+      );
+      setFilteredOrders(pendingOrders);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch orders");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchOrders();
   }, []);
 
@@ -260,7 +287,7 @@ export default function OrderPaymentList() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">
                       ${order.paymentDetails?.paymentAmount?.toFixed(2) || '0.00'}
                     </td>
-                    
+
                   </tr>
                 ))}
               </tbody>
@@ -273,6 +300,7 @@ export default function OrderPaymentList() {
         <OrderDetailsModal 
           order={selectedOrder} 
           closeModal={closeModal} 
+          fetchOrderDetails={fetchOrders}
         />
       )}
     </div>
