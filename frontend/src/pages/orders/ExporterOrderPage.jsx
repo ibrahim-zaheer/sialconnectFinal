@@ -5,14 +5,24 @@ import HighestOrderValue from '../../components/orders/supplier/HighestOrderValu
 import TopOrderedProducts from '../../components/orders/supplier/TopOrderedProducts'
 import BackButton from '../../components/BackButton'
 
-export default function deExporterOrderPage() {
+export default function ExporterOrderPage() {
   return (
     <div>
-      <div className="pt-20"></div>
     
-        <SupplierOrderCount/>
+        {/* <SupplierOrderCount/>
       <HighestOrderValue/>
-      <TopOrderedProducts/>
+      <TopOrderedProducts/> */}
+         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-[80%] mx-auto mt-24">
+          <div className="md:col-span-2 lg:col-span-1">
+            <SupplierOrderCount />
+          </div>
+          <div className="md:col-span-1">
+            <HighestOrderValue />
+          </div>
+          <div className="md:col-span-1">
+            <TopOrderedProducts />
+          </div>
+        </div>
       <ExporterOrders/>
     
     </div>

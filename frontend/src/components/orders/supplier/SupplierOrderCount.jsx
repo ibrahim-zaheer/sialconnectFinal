@@ -77,6 +77,7 @@ const SupplierOrderCount = () => {
           {user?.role === "supplier" && (
             <EstimatedOrderValue orders={orders} />
           )}
+         
         </div>
       )}
     </motion.div>
