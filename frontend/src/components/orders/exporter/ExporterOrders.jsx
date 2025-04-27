@@ -258,7 +258,7 @@ const ExporterOrders = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="mt-8 w-[80%] mx-auto"
+      className="mt-20 w-[80%] mx-auto"
     >
       <h2 className="text-2xl font-bold text-primary-800 mb-6">Your Orders</h2>
 

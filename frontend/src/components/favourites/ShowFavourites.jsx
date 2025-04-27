@@ -260,6 +260,7 @@ export default function ShowFavourites() {
   return (
     <div className="min-h-screen bg-neutral-100 pt-24 pb-10 px-4">
       <div className="max-w-7xl mx-auto">
+        <div>
         <h1 className="text-3xl font-bold text-neutral-900 text-center mb-6">
           Favorite Products
         </h1>
@@ -268,8 +269,8 @@ export default function ShowFavourites() {
         <ProductSearchBar
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          
         />
+        </div>
 
         {favoriteProducts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

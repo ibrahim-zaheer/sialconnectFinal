@@ -198,7 +198,7 @@ const PaymentDetails = () => {
   };
 
   return (
-    <div className="min-h-screen bg-neutral-50 py-8 px-4 sm:px-6">
+    <div className="min-h-screen">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

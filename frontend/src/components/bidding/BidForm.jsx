@@ -126,17 +126,17 @@ const BidForm = ({ auctionId, refreshAuction }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md mt-6">
       <h4 className="text-xl font-semibold mb-4">Place a Bid:</h4>
-      <form onSubmit={handleBidSubmit} className="flex items-center space-x-4">
+      <form onSubmit={handleBidSubmit} className="flex flex-col items-center gap-4">
         <input
           type="number"
           value={bidAmount}
           onChange={(e) => setBidAmount(e.target.value)}
           placeholder="Enter your bid"
-          className="border p-2 rounded-md w-64"
+          className="border p-2 rounded-md w-full"
         />
         <button
           type="submit"
-          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
+          className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 w-full"
         >
           Submit Bid
         </button>
