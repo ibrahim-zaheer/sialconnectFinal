@@ -298,6 +298,7 @@ const getOrderDetailsForSupplier = async (req, res) => {
 
     const order = await Order.findOne({ _id: orderId, supplierId })
       .populate("exporterId", "name email")
+      .populate("supplierId", "name email")
       .populate("productId", "name")
       .populate("auctionId", "title");
 

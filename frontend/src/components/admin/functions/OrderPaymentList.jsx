@@ -148,12 +148,16 @@
 // OrderPaymentList.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import OrderDetailsModal from "./components/OrderDetailsModal";
+
 
 export default function OrderPaymentList() {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -179,6 +183,16 @@ export default function OrderPaymentList() {
 
     fetchOrders();
   }, []);
+
+  const handleOrderClick = (order) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrder(null);
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-xs border border-neutral-200 overflow-hidden">
@@ -218,8 +232,14 @@ export default function OrderPaymentList() {
               </thead>
               <tbody className="bg-white divide-y divide-neutral-200">
                 {filteredOrders.map((order) => (
-                  <tr key={order._id} className="hover:bg-neutral-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">{order._id}</td>
+                  <tr 
+                    key={order._id} 
+                    className="hover:bg-neutral-50 transition-colors cursor-pointer"
+                    onClick={() => handleOrderClick(order)}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-600 hover:underline">
+                      {order._id}
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">{order.exporterId?.name || '—'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">${order.price?.toFixed(2) || '0.00'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">{order.quantity}</td>
@@ -240,6 +260,7 @@ export default function OrderPaymentList() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">
                       ${order.paymentDetails?.paymentAmount?.toFixed(2) || '0.00'}
                     </td>
+                    
                   </tr>
                 ))}
               </tbody>
@@ -247,6 +268,13 @@ export default function OrderPaymentList() {
           </div>
         )}
       </div>
+
+      {isModalOpen && selectedOrder && (
+        <OrderDetailsModal 
+          order={selectedOrder} 
+          closeModal={closeModal} 
+        />
+      )}
     </div>
   );
 }

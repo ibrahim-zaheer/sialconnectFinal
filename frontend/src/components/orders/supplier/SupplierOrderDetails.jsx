@@ -561,9 +561,15 @@ const SupplierOrderDetails = () => {
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
-              <DetailItem label="Auction" value={order.auctionId?.title} />
-              <DetailItem label="Product" value={order.productId?.name} />
+              {/* <DetailItem label="Auction" value={order.auctionId?.title} />
+              <DetailItem label="Product" value={order.productId?.name} /> */}
+                {order.auctionId ? (
+    <DetailItem label="Auction" value={order.auctionId?.title} />
+  ) : (
+    <DetailItem label="Product" value={order.productId?.name} />
+  )}
               <DetailItem label="Exporter" value={order.exporterId?.name} />
+              <DetailItem label="Supplier" value={order.supplierId?.name} />
             </div>
             <div className="space-y-4">
               <DetailItem label="Quantity" value={order.quantity} />
