@@ -211,6 +211,7 @@ import { setUpdated } from "../../../redux/reducers/updateSlice";
 import CounterOffer from "../CounterOffer";
 import UpdateOffer from "../UpdateOffer";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 export default function ExporterOffers() {
   const user = useSelector(selectUser);
@@ -220,6 +221,8 @@ export default function ExporterOffers() {
   const [error, setError] = useState("");
   const [selectedOffer, setSelectedOffer] = useState(null);
   const dispatch = useDispatch();
+  const [orderIds, setOrderIds] = useState({});
+  const navigate = useNavigate();
 
   const acceptedCount = offers.filter(
     (offer) => offer.status === "accepted"
@@ -243,6 +246,9 @@ export default function ExporterOffers() {
           },
         });
         setOffers(response.data.offers);
+
+        const acceptedOffers = response.data.offers.filter(offer => offer.status === "accepted");
+        await fetchOrderIds(acceptedOffers);
         setLoading(false);
       } catch (err) {
         setError("We couldn't load your offers. Please try again later.");
@@ -250,12 +256,71 @@ export default function ExporterOffers() {
       }
     };
 
+    // const fetchOrderIds = async (acceptedOffers) => {
+    //   const ids = {};
+    //   for (const offer of acceptedOffers) {
+    //     try {
+    //       const orderResponse = await axios.get(`/api/order/orders/offer/${offer._id}`, {
+    //         headers: {
+    //           Authorization: `Bearer ${token}`,
+    //         },
+    //       });
+    //       ids[offer._id] = orderResponse.data.order._id;
+    //       console.log("orderResponse.data.order._id");
+    //     } catch (err) {
+    //       console.error(`Failed to fetch order for offer ${offer._id}:`, err);
+    //       ids[offer._id] = null;
+    //     }
+    //   }
+    //   setOrderIds(ids);
+    // };
+    const fetchOrderIds = async (acceptedOffers) => {
+      const ids = {};
+      console.log('Fetching orders for', acceptedOffers.length, 'accepted offers');
+      
+      for (const offer of acceptedOffers) {
+        try {
+          console.log('Fetching order for offer:', offer._id);
+          const orderResponse = await axios.get(`/api/order/orders/offer/${offer._id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          
+          if (orderResponse.data?.order?._id) {
+            console.log('Found order:', orderResponse.data.order._id);
+            ids[offer._id] = orderResponse.data.order._id;
+          } else {
+            console.warn('No order ID in response for offer:', offer._id);
+            ids[offer._id] = null;
+          }
+        } catch (err) {
+          console.error(`Failed to fetch order for offer ${offer._id}:`, err.response?.data || err.message);
+          ids[offer._id] = null;
+        }
+      }
+      
+      console.log('Final order IDs:', ids);
+      setOrderIds(ids);
+    };
     fetchOffers();
   }, [token]);
+
+
+  const handleViewOrder = (offerId) => {
+    const orderId = orderIds[offerId];
+    if (orderId) {
+      navigate(`/exporter/order/${orderId}`);
+    } else {
+      alert("Order details not available yet. Please try again later.");
+    }
+  };
+
+  
 
   const updateState = () => {
     dispatch(setUpdated("Yes"));
   };
+
+  
 
   const updateCounterOfferStatus = (
     offerId,
@@ -475,6 +540,33 @@ export default function ExporterOffers() {
                     onUpdate={handleUpdateOffer}
                   />
                 )}
+                {/* {offer.status === "accepted" && (
+            <button
+              onClick={() => handleViewOrder(offer._id)}
+              className="mt-4 w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium"
+              disabled={!orderIds[offer._id]}
+            >
+              {orderIds[offer._id] ? "View Order Details" : "Loading Order..."}
+            </button>
+          )} */}
+          {offer.status === "accepted" && (
+  <div className="mt-2">
+    {orderIds[offer._id] === undefined ? (
+      <div className="text-sm text-gray-500">Checking order status...</div>
+    ) : orderIds[offer._id] ? (
+      <button
+        onClick={() => handleViewOrder(offer._id)}
+        className="w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium"
+      >
+        View Order Details
+      </button>
+    ) : (
+      <div className="text-sm text-yellow-600">
+        Order processing not completed
+      </div>
+    )}
+  </div>
+)}
               </motion.div>
             ))}
           </div>

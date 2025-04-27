@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllPaymentsForSupplier,initiateLocalPayment,getAllOrders,getTopProducts,getTopSuppliers
+  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllPaymentsForSupplier,initiateLocalPayment,getAllOrders,getTopProducts,getTopSuppliers,getOrderByOfferId
   
 } = require("../../controllers/order/order_controller");
 
@@ -53,5 +53,7 @@ router.get("/orders/all",getAllOrders);
 router.get("/orders/top-products", getTopProducts);
 
 router.get("/orders/top-suppliers", getTopSuppliers);
+
+router.get("/orders/offer/:offerId",getOrderByOfferId);
 
 module.exports = router;

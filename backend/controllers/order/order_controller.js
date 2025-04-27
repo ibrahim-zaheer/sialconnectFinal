@@ -221,6 +221,39 @@ const getTopProducts = async (req, res) => {
   }
 };
 
+const getOrderByOfferId = async (req, res) => {
+  try {
+    const { offerId } = req.params;
+    // const userId = req.user.id; // Get the logged-in user's ID
+
+    // Find the order by offerId and ensure the user is either exporter or supplier
+    const order = await Order.findOne({
+      offerId,
+      // $or: [{ exporterId: userId }, { supplierId: userId }]
+    })
+      .populate("exporterId", "name email")
+      .populate("supplierId", "name email")
+      .populate("productId", "name")
+      .populate("auctionId", "title");
+
+    if (!order) {
+      return res.status(404).json({ 
+        message: "Order not found or you don't have access to this order" 
+      });
+    }
+
+    res.status(200).json({ 
+      message: "Order retrieved successfully", 
+      order 
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      message: "Error retrieving order", 
+      error: error.message 
+    });
+  }
+};
+
 const getTopSuppliers = async (req, res) => {
   try {
     const topSuppliers = await Order.aggregate([
@@ -701,5 +734,5 @@ const getAllPaymentsForSupplier = async (req, res) => {
 };
 
 module.exports = {
-    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment,confirmLocalPaymentByAdmin,getOrderDetailsById,getAllOrders,getTopProducts,getTopSuppliers
+    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment,confirmLocalPaymentByAdmin,getOrderDetailsById,getAllOrders,getTopProducts,getTopSuppliers,getOrderByOfferId
 };
