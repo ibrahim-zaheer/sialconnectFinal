@@ -181,7 +181,7 @@ const ProductSearch = ({ onProductSelect }) => {
                 className="p-4 text-center text-gray-500"
                 variants={itemVariants}
               >
-                tyoe to search
+                type to search
               </motion.div>
             )}
           </motion.div>
