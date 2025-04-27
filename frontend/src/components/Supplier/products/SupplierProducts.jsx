@@ -883,11 +883,24 @@ const SupplierProducts = () => {
                         <p className="text-neutral-600 text-sm">{product.description}</p>
                       </div>
 
-                      {product.image && (
+                      {/* {product.image && (
                         <div className="mt-4 flex justify-center">
                           <img src={product.image} alt={product.name} className="h-32 object-contain rounded" />
                         </div>
-                      )}
+                      )} */}
+                      {product.image && (
+  <div className="mt-4 flex justify-center">
+    <img 
+      src={Array.isArray(product.image) ? product.image[0] : product.image} 
+      alt={product.name} 
+      className="h-32 object-contain rounded"
+      onError={(e) => {
+        e.target.onerror = null;
+        e.target.src = "https://via.placeholder.com/300?text=No+Image";
+      }}
+    />
+  </div>
+)}
 
                       {/* <div className="mt-6 flex justify-between items-center">
                         <span className={`text-xs px-2 py-1 rounded-full ${
