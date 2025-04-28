@@ -653,6 +653,7 @@ import axios from "axios";
 import { NavLink, Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AddProduct from "./AddProduct";
+import EditProductForm from "./EditProductForm";
 
 const SupplierProducts = () => {
   const [products, setProducts] = useState([]);
@@ -661,6 +662,7 @@ const SupplierProducts = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [priceRange, setPriceRange] = useState(10000);
   const [favorites, setFavorites] = useState([]);
+  const [editingProduct, setEditingProduct] = useState(null);
   
   const location = useLocation();
   const navigate = useNavigate();
@@ -675,11 +677,42 @@ const SupplierProducts = () => {
     return activeTab === tabName;
   };
 
+  // Add this function inside the SupplierProducts component
+const handleDelete = async (id) => {
+  if (!window.confirm("Are you sure you want to delete this product?")) return;
+  
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.delete(`/api/supplier/product/delete/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    setMessage(response.data.message);
+    // Remove the deleted product from the local state
+    setProducts(prevProducts => prevProducts.filter(product => product._id !== id));
+  } catch (error) {
+    console.error("Error deleting product:", error.response?.data || error.message);
+    setMessage(error.response?.data?.message || "Failed to delete product. Please try again.");
+  }
+};
+
   const setActiveTab = (tab) => {
     navigate(`?tab=${tab}`, { replace: true });
     if (tab !== 'add-products') {
       fetchSupplierProducts(tab);
     }
+  };
+
+  const handleProductUpdated = (updatedProduct) => {
+    setProducts(prevProducts => 
+      prevProducts.map(product => 
+        product._id === updatedProduct._id ? updatedProduct : product
+      )
+    );
+    setEditingProduct(null);
+    setMessage("Product updated successfully!");
   };
 
   const fetchSupplierProducts = async (tab = activeTab) => {
@@ -876,6 +909,30 @@ const SupplierProducts = () => {
                           <h2 className="text-xl font-semibold text-neutral-900">{product.name}</h2>
                           <p className="text-primary-600 font-medium mt-1">Rs {product.price.toLocaleString()} per piece</p>
                         </div>
+                        {activeTab === "your-products" && (
+                            <div className="flex gap-2">
+                                  <button 
+                              onClick={() => setEditingProduct(product)}
+                              className="text-gray-600 hover:text-gray-800"
+                              title="Edit product"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                            </button>
+                          
+          <button 
+            onClick={() => handleDelete(product._id)}
+            className="text-red-600 hover:text-red-800"
+            title="Delete product"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+             </div>
+        )}
+                        
                         
                       </div>
 
@@ -901,6 +958,7 @@ const SupplierProducts = () => {
     />
   </div>
 )}
+
 
                       {/* <div className="mt-6 flex justify-between items-center">
                         <span className={`text-xs px-2 py-1 rounded-full ${
@@ -939,9 +997,19 @@ const SupplierProducts = () => {
               </div>
             )}
           </>
+          
         )}
       </div>
+        {/* Edit Product Modal */}
+        {editingProduct && (
+        <EditProductForm 
+          product={editingProduct}
+          onClose={() => setEditingProduct(null)}
+          onProductUpdated={handleProductUpdated}
+        />
+      )}
     </div>
+    
   );
 };
 

@@ -120,11 +120,134 @@ exports.createProduct = async (req, res) => {
 
 
 
+// // Update a Product
+// exports.updateProduct = async (req, res) => {
+//     try {
+//         const { id } = req.params; // Product ID
+//         const { name, description, price, category } = req.body;
+
+//         const product = await Product.findById(id);
+
+//         if (!product) {
+//             return res.status(404).json({ message: "Product not found." });
+//         }
+
+//         // Ensure the logged-in supplier owns the product
+//         if (product.supplier.toString() !== req.user.id) {
+//             return res.status(403).json({ message: "You are not authorized to update this product." });
+//         }
+//     // Update fields if provided
+//     product.name = name || product.name;
+//     product.description = description || product.description;
+//     product.price = price || product.price;
+//     product.category = category || product.category;
+
+//         await product.save();
+//         res.status(200).json({ message: "Product updated successfully", product });
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
+
 // Update a Product
+// exports.updateProduct = async (req, res) => {
+//     try {
+//         const { id } = req.params; // Product ID
+//         const { name, description, price, category } = req.body;
+//         const files = req.files; // New images
+
+//         const product = await Product.findById(id);
+
+//         if (!product) {
+//             return res.status(404).json({ message: "Product not found." });
+//         }
+
+//         // Ensure the logged-in supplier owns the product
+//         if (product.supplier.toString() !== req.user.id) {
+//             return res.status(403).json({ message: "You are not authorized to update this product." });
+//         }
+
+//         // Update fields if provided
+//         product.name = name || product.name;
+//         product.description = description || product.description;
+//         product.price = price || product.price;
+//         product.category = category || product.category;
+
+//         // Handle image updates if new files are uploaded
+//         if (files && files.length > 0) {
+//             const imageUrls = files.map(file => {
+//                 // This assumes you're using a service like Cloudinary or AWS S3
+//                 // Adjust according to your file storage solution
+//                 return file.path || file.location;
+//             });
+//             product.image = imageUrls;
+//         }
+
+//         await product.save();
+//         res.status(200).json({ message: "Product updated successfully", product });
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
+// exports.updateProduct = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const { name, description, price, category } = req.body;
+//         const files = req.files;
+
+//         const product = await Product.findById(id);
+
+//         if (!product) {
+//             return res.status(404).json({ message: "Product not found." });
+//         }
+
+//         if (product.supplier.toString() !== req.user.id) {
+//             return res.status(403).json({ message: "You are not authorized to update this product." });
+//         }
+
+//         // Update basic fields
+//         product.name = name || product.name;
+//         product.description = description || product.description;
+//         product.price = price || product.price;
+//         product.category = category || product.category;
+
+//         // Handle new image uploads
+//         if (files && files.length > 0) {
+//             // Upload new images to Cloudinary
+//             const uploadPromises = files.map(file => {
+//                 return new Promise((resolve, reject) => {
+//                     cloudinary.uploader.upload_stream(
+//                         { folder: 'productImages' },
+//                         (error, result) => {
+//                             if (error) return reject(error);
+//                             resolve(result.secure_url);
+//                         }
+//                     ).end(file.buffer);
+//                 });
+//             });
+
+//             const newImageUrls = await Promise.all(uploadPromises);
+            
+//             // Combine new images with existing ones (or replace if you prefer)
+//             product.image = [...product.image, ...newImageUrls];
+//         }
+
+//         await product.save();
+//         res.status(200).json({ message: "Product updated successfully", product });
+//     } catch (error) {
+//         console.error("Update product error:", error);
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
+
 exports.updateProduct = async (req, res) => {
     try {
-        const { id } = req.params; // Product ID
-        const { name, description, price, category } = req.body;
+        const { id } = req.params;
+        const { name, description, price, category, imagesToDelete } = req.body;
+        const files = req.files;
 
         const product = await Product.findById(id);
 
@@ -132,23 +255,58 @@ exports.updateProduct = async (req, res) => {
             return res.status(404).json({ message: "Product not found." });
         }
 
-        // Ensure the logged-in supplier owns the product
         if (product.supplier.toString() !== req.user.id) {
             return res.status(403).json({ message: "You are not authorized to update this product." });
         }
-    // Update fields if provided
-    product.name = name || product.name;
-    product.description = description || product.description;
-    product.price = price || product.price;
-    product.category = category || product.category;
+
+        // Update basic fields
+        product.name = name || product.name;
+        product.description = description || product.description;
+        product.price = price || product.price;
+        product.category = category || product.category;
+
+        // Handle image deletions if any
+        if (imagesToDelete && imagesToDelete.length > 0) {
+            // Convert single string to array if needed
+            const imagesToDeleteArray = Array.isArray(imagesToDelete) ? imagesToDelete : [imagesToDelete];
+            
+            // Delete from Cloudinary
+            const deletePromises = imagesToDeleteArray.map(imageUrl => {
+                const publicId = imageUrl.split('/').pop().split('.')[0];
+                return cloudinary.uploader.destroy(`productImages/${publicId}`);
+            });
+
+            await Promise.all(deletePromises);
+
+            // Remove from product's image array
+            product.image = product.image.filter(img => !imagesToDeleteArray.includes(img));
+        }
+
+        // Handle new image uploads
+        if (files && files.length > 0) {
+            const uploadPromises = files.map(file => {
+                return new Promise((resolve, reject) => {
+                    cloudinary.uploader.upload_stream(
+                        { folder: 'productImages' },
+                        (error, result) => {
+                            if (error) return reject(error);
+                            resolve(result.secure_url);
+                        }
+                    ).end(file.buffer);
+                });
+            });
+
+            const newImageUrls = await Promise.all(uploadPromises);
+            product.image = [...product.image, ...newImageUrls];
+        }
 
         await product.save();
         res.status(200).json({ message: "Product updated successfully", product });
     } catch (error) {
+        console.error("Update product error:", error);
         res.status(500).json({ message: error.message });
     }
 };
-
 // Delete a Product
 exports.deleteProduct = async (req, res) => {
     try {

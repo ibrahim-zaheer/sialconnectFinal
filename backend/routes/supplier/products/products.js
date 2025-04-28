@@ -24,7 +24,7 @@ router.post(
     uploadProductImage.array("images", 5), // Accept up to 5 images
     productController.createProduct
   );
-router.put("/update/:id", authenticateMiddleware, productController.updateProduct);
+router.put("/update/:id", authenticateMiddleware,  uploadProductImage.array("images", 5),productController.updateProduct);
 router.delete("/delete/:id", authenticateMiddleware, productController.deleteProduct);
 
 

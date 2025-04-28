@@ -119,7 +119,7 @@ const OrderDetailsModal = ({ order, closeModal,refreshOrders  }) => {
         <h2 className="text-xl font-bold mb-4">Order Details - {order._id}</h2>
         <p><strong>Exporter:</strong> {order.exporterId?.name}</p>
         <p><strong>Supplier:</strong> {order.supplierId?.name}</p>
-        <p><strong>Price:</strong> ${order.price}</p>
+        <p><strong>Price:</strong> Rs {order.price}</p>
         <p><strong>Quantity:</strong> {order.quantity}</p>
         <p><strong>Status:</strong> {order.status}</p>
         <p><strong>Account Name:</strong> {order.LocalPaymentDetails?.accountName || order.paymentDetails?.accountName || "N/A"}</p>
@@ -289,11 +289,11 @@ export default function LocalOrderPaymentList() {
                 >
                   <td className="py-2 px-4 text-blue-500 underline">{order._id}</td> {/* Order ID is clickable */}
                   <td className="py-2 px-4">{order.exporterId?.name}</td>
-                  <td className="py-2 px-4">${order.price}</td>
+                  <td className="py-2 px-4">Rs {order.price}</td>
                   <td className="py-2 px-4">{order.quantity}</td>
                   <td className="py-2 px-4">{order.paymentDetails?.paymentMethod || "N/A"}</td>
                   <td className="py-2 px-4">{order.paymentDetails?.paymentStatus || "N/A"}</td>
-                  <td className="py-2 px-4">${order.paymentDetails?.paymentAmount || "0.00"}</td>
+                  <td className="py-2 px-4">Rs {order.paymentDetails?.paymentAmount || "0.00"}</td>
                   <Link
   to={`/admin/order/${order._id}`}  // Dynamically pass the order ID
   className="block mt-4 p-4 bg-gray-100 rounded-lg hover:shadow-md transition"

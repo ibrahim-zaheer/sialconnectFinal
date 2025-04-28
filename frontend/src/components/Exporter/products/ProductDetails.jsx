@@ -295,6 +295,29 @@ const ProductDetails = () => {
   const handleBackClick = () => {
     navigate(`/SupplierProducts?tab=${activeTab}`);
   };
+   // Handle delete functionality
+   const handleDelete = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.delete(`/api/supplier/product/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      alert(response.data.message);
+      navigate(`/SupplierProducts?tab=${activeTab}`);
+    } catch (error) {
+      console.error(
+        "Error deleting product:",
+        error.response?.data || error.message
+      );
+      alert(
+        error.response?.data?.message ||
+          "Failed to delete product. Please try again."
+      );
+    }
+  };
 
   const handleThumbnailClick = (index) => {
     setCurrentImageIndex(index);
@@ -457,6 +480,13 @@ const ProductDetails = () => {
                       )}
                     </div>
                   </div>
+                </div>
+                <div>
+                {role === "supplier" && (
+                <>
+                </>
+                  )}
+                  
                 </div>
                 
                 {/* Action Buttons */}

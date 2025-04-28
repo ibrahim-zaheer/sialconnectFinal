@@ -268,7 +268,7 @@ export default function OrderPaymentList() {
                       {order._id}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">{order.exporterId?.name || '—'}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">${order.price?.toFixed(2) || '0.00'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">Rs {order.price?.toFixed(2) || '0.00'}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">{order.quantity}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">
                       <span className="capitalize">
