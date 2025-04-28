@@ -326,8 +326,252 @@
 // export default Navbar;
 
 
+// import React, { useState } from "react";
+// import { Link } from "react-router-dom";
+// import { useSelector } from "react-redux";
+// import { useTranslation } from "react-i18next";
+// import Sial from "../assets/images/sial3.png";
+
+// const Navbar = () => {
+//   const user = useSelector((state) => state.user);
+//   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+//   const { t, i18n } = useTranslation();
+
+//   const toggleMobileMenu = () => {
+//     setIsMobileMenuOpen(!isMobileMenuOpen);
+//   };
+
+//   const closeMobileMenu = () => {
+//     setIsMobileMenuOpen(false);
+//   };
+
+//   const changeLanguage = (lng) => {
+//     i18n.changeLanguage(lng);
+//   };
+
+//   return (
+//     <div className="w-full fixed top-0 bg-primary-950 shadow-md z-50">
+//       <nav className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+//         <div className="flex justify-between items-center h-16">
+//           {/* Logo */}
+//           <div className="flex-shrink-0">
+//             <Link to="/home" className="flex items-center" onClick={closeMobileMenu}>
+//               <img 
+//                 src={Sial} 
+//                 className="h-10 w-auto" 
+//                 alt="SialConnect Logo"
+//               />
+//               <span className="ml-2 text-white font-bold text-xl hidden sm:inline">
+//                 SialConnect
+//               </span>
+//             </Link>
+//           </div>
+
+//           {/* Desktop Navigation - Centered */}
+//           <div className="hidden md:flex items-center justify-center flex-1">
+//             <div className="flex space-x-4">
+//               {/* Common Links */}
+//               <NavLink to="/home" onClick={closeMobileMenu}>{t("Home")}</NavLink>
+//               {/* <NavLink to="/ExporterProducts" onClick={closeMobileMenu}>{t("Products")}</NavLink> */}
+
+//               {/* Conditionally render user-specific content */}
+//               {user.role && (
+//                 <>
+//                   {/* Supplier Links */}
+//                   {user.role === "supplier" && (
+//                     <>
+//                       <NavLink to="/SupplierProducts" onClick={closeMobileMenu}>{t("Products")}</NavLink>
+//                       <NavLink to="/getAllAuctions" onClick={closeMobileMenu}>{t("Auctions")}</NavLink>
+//                       {/* <NavLink to="/mySupplierOffers" onClick={closeMobileMenu}>{t("My Offers")}</NavLink> */}
+//                       <NavLink to="/mySupplierOrders" onClick={closeMobileMenu}>{t("My Orders")}</NavLink>
+//                       {/* <NavLink to="/supplier/payments" onClick={closeMobileMenu}>{t("Token Payments")}</NavLink> */}
+//                     </>
+//                   )}
+
+//                   {/* Exporter Links */}
+//                   {user.role === "exporter" && (
+//                     <>
+//                         <NavLink to="/ExporterProducts" onClick={closeMobileMenu}>{t("Products")}</NavLink>
+//                       {/* <NavLink to="/createAuction" onClick={closeMobileMenu}>{t("Create Auction")}</NavLink> */}
+//                       {/* <NavLink to="/getAuctionsOfExporter" onClick={closeMobileMenu}>{t("Your Auction")}</NavLink> */}
+//                       <NavLink to="/exporter" onClick={closeMobileMenu}>{t("Auction")}</NavLink>
+
+//                       <NavLink to="/favourites" onClick={closeMobileMenu}>{t("Your Favourites")}</NavLink>
+//                       {/* <NavLink to="/myOffers" onClick={closeMobileMenu}>{t("My Offers")}</NavLink> */}
+//                       <NavLink to="/myExporterOrders" onClick={closeMobileMenu}>{t("My Orders")}</NavLink>
+//                     </>
+//                   )}
+
+//                   {/* Admin Links */}
+//                   {user.role === "admin" && (
+//                     <>
+//                       <NavLink to="/admin/user" onClick={closeMobileMenu}>{t("Users")}</NavLink>
+//                       <NavLink to="/admin" onClick={closeMobileMenu}>{t("Dashboard")}</NavLink>
+//                       <NavLink to="/admin/user/order/payment" onClick={closeMobileMenu}>{t("Payments")}</NavLink>
+//                     </>
+//                   )}
+
+//                   {/* Common for non-admin users */}
+//                   {user.role !== "admin" && (
+//                     <>
+//                       <NavLink to="/chat" onClick={closeMobileMenu}>{t("Chat")}</NavLink>
+//                       <NavLink to="/profile" onClick={closeMobileMenu}>{t("Profile")}</NavLink>
+//                     </>
+//                   )}
+//                 </>
+//               )}
+//             </div>
+//           </div>
+
+//           {/* Right-side elements */}
+//           <div className="flex items-center space-x-4">
+//             {/* Auth Section */}
+//             {!user.role && (
+//               <NavLink to="/signIn" onClick={closeMobileMenu} className="whitespace-nowrap">
+//                 {t("SignIn")}
+//               </NavLink>
+//             )}
+
+//             {/* Welcome message
+//             {user.role && (
+//               <div className="text-primary-100 px-3 py-2 text-sm whitespace-nowrap hidden md:block">
+//                 {t("Welcome")}, {user.name || t("User")} ({t(user.role)})
+//               </div>
+//             )} */}
+
+//             {/* Language Selector */}
+//             <div className="w-fit bg-secondary-100 rounded-lg p-1">
+//               <div className="flex items-center space-x-1">
+//                 <button
+//                   onClick={() => changeLanguage('en')}
+//                   className={`px-2 py-1 rounded text-xs ${i18n.language === 'en' ? 'bg-primary-600 text-white' : 'text-primary-800 hover:bg-primary-100'}`}
+//                 >
+//                   EN
+//                 </button>
+//                 <span className="text-primary-800">|</span>
+//                 <button
+//                   onClick={() => changeLanguage('ur')}
+//                   className={`px-2 py-1 rounded text-xs ${i18n.language === 'ur' ? 'bg-primary-600 text-white' : 'text-primary-800 hover:bg-primary-100'}`}
+//                 >
+//                   UR
+//                 </button>
+//               </div>
+//             </div>
+
+//             {/* Mobile menu button */}
+//             <div className="md:hidden flex items-center">
+//               <button
+//                 type="button"
+//                 className="inline-flex items-center justify-center p-2 rounded-md text-primary-100 hover:text-accent-500 focus:outline-none"
+//                 onClick={toggleMobileMenu}
+//                 aria-label="Toggle menu"
+//               >
+//                 {isMobileMenuOpen ? (
+//                   <i className="ri-close-line text-xl"></i>
+//                 ) : (
+//                   <i className="ri-menu-line text-xl"></i>
+//                 )}
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Mobile menu */}
+//         {isMobileMenuOpen && (
+//           <div className="md:hidden bg-primary-900">
+//             <div className="px-2 pt-2 pb-3 space-y-1">
+//               {/* Common Links */}
+//               <MobileNavLink to="/home" onClick={closeMobileMenu}>{t("Home")}</MobileNavLink>
+//               <MobileNavLink to="/ExporterProducts" onClick={closeMobileMenu}>{t("Products")}</MobileNavLink>
+
+//               {/* Conditionally render SignIn link if user.role does not exist */}
+//               {!user.role && (
+//                 <MobileNavLink to="/signIn" onClick={closeMobileMenu}>{t("SignIn")}</MobileNavLink>
+//               )}
+
+//               {/* Conditionally render user-specific content */}
+//               {user.role && (
+//                 <>
+//                   {/* Supplier Links */}
+//                   {user.role === "supplier" && (
+//                     <>
+//                       <MobileNavLink to="/SupplierProducts" onClick={closeMobileMenu}>{t("Your Products")}</MobileNavLink>
+//                       <MobileNavLink to="/getAllAuctions" onClick={closeMobileMenu}>{t("Auctions")}</MobileNavLink>
+//                       <MobileNavLink to="/mySupplierOffers" onClick={closeMobileMenu}>{t("My Offers")}</MobileNavLink>
+//                       <MobileNavLink to="/mySupplierOrders" onClick={closeMobileMenu}>{t("My Orders")}</MobileNavLink>
+//                       <MobileNavLink to="/supplier/payments" onClick={closeMobileMenu}>{t("Token Payments")}</MobileNavLink>
+//                     </>
+//                   )}
+
+//                   {/* Exporter Links */}
+//                   {user.role === "exporter" && (
+//                     <>
+//                       <MobileNavLink to="/createAuction" onClick={closeMobileMenu}>{t("Create Auction")}</MobileNavLink>
+//                       <MobileNavLink to="/getAuctionsOfExporter" onClick={closeMobileMenu}>{t("Your Auction")}</MobileNavLink>
+//                       <MobileNavLink to="/favourites" onClick={closeMobileMenu}>{t("Your Favourites")}</MobileNavLink>
+//                       <MobileNavLink to="/myOffers" onClick={closeMobileMenu}>{t("My Offers")}</MobileNavLink>
+//                       <MobileNavLink to="/myExporterOrders" onClick={closeMobileMenu}>{t("My Orders")}</MobileNavLink>
+//                     </>
+//                   )}
+
+//                   {/* Admin Links */}
+//                   {user.role === "admin" && (
+//                     <>
+//                       <MobileNavLink to="/admin/user" onClick={closeMobileMenu}>{t("Users")}</MobileNavLink>
+//                       <MobileNavLink to="/admin" onClick={closeMobileMenu}>{t("Profile")}</MobileNavLink>
+//                       <MobileNavLink to="/admin/user/order/payment" onClick={closeMobileMenu}>{t("Payments")}</MobileNavLink>
+//                     </>
+//                   )}
+
+//                   {/* Common for non-admin users */}
+//                   {user.role !== "admin" && (
+//                     <>
+//                       <MobileNavLink to="/chat" onClick={closeMobileMenu}>{t("Chat")}</MobileNavLink>
+//                       <MobileNavLink to="/profile" onClick={closeMobileMenu}>{t("Profile")}</MobileNavLink>
+//                     </>
+//                   )}
+
+//                   {/* Welcome message */}
+//                   <div className="text-primary-100 px-3 py-2 text-sm">
+//                     {t("Welcome")}, {user.name || t("User")} ({t(user.role)})
+//                   </div>
+//                 </>
+//               )}
+//             </div>
+//           </div>
+//         )}
+//       </nav>
+//     </div>
+//   );
+// };
+
+// // Reusable NavLink component for desktop
+// const NavLink = ({ to, onClick, children, className = "" }) => (
+//   <Link 
+//     to={to} 
+//     className={`text-primary-100 hover:text-accent-500 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${className}`}
+//     onClick={onClick}
+//   >
+//     {children}
+//   </Link>
+// );
+
+// // Reusable MobileNavLink component
+// const MobileNavLink = ({ to, onClick, children }) => (
+//   <Link
+//     to={to}
+//     className="block px-3 py-2 rounded-md text-base font-medium text-primary-100 hover:text-accent-500 hover:bg-primary-800 transition-colors duration-200"
+//     onClick={onClick}
+//   >
+//     {children}
+//   </Link>
+// );
+
+// export default Navbar;
+
+// New navbar above is previous
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import Sial from "../assets/images/sial3.png";
@@ -336,6 +580,7 @@ const Navbar = () => {
   const user = useSelector((state) => state.user);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
+  const location = useLocation();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -347,6 +592,12 @@ const Navbar = () => {
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
+  };
+
+  // Function to check if a path is active
+  const isActive = (path) => {
+    return location.pathname === path || 
+           (path !== "/home" && location.pathname.startsWith(path));
   };
 
   return (
@@ -370,52 +621,85 @@ const Navbar = () => {
           {/* Desktop Navigation - Centered */}
           <div className="hidden md:flex items-center justify-center flex-1">
             <div className="flex space-x-4">
-              {/* Common Links */}
-              <NavLink to="/home" onClick={closeMobileMenu}>{t("Home")}</NavLink>
-              {/* <NavLink to="/ExporterProducts" onClick={closeMobileMenu}>{t("Products")}</NavLink> */}
-
-              {/* Conditionally render user-specific content */}
-              {user.role && (
+              {/* Default links shown when not signed in */}
+              {!user.role ? (
                 <>
+                  <NavLink to="/home" onClick={closeMobileMenu} isActive={isActive("/home")}>
+                    <i className="ri-home-2-line mr-1"></i> {t("Home")}
+                  </NavLink>
+                  <NavLink to="/ExporterProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
+                    <i className="ri-search-line mr-1"></i> {t("Products")}
+                  </NavLink>
+                  <NavLink to="/signIn" onClick={closeMobileMenu} isActive={isActive("/signIn")}>
+                    <i className="ri-login-box-line mr-1"></i> {t("SignIn")}
+                  </NavLink>
+                </>
+              ) : (
+                <>
+                  {/* Show Home link for suppliers and exporters but not admin */}
+                  {(user.role === "supplier" || user.role === "exporter") && (
+                    <NavLink to="/home" onClick={closeMobileMenu} isActive={isActive("/home")}>
+                      <i className="ri-home-2-line mr-1"></i> {t("Home")}
+                    </NavLink>
+                  )}
+
                   {/* Supplier Links */}
                   {user.role === "supplier" && (
                     <>
-                      <NavLink to="/SupplierProducts" onClick={closeMobileMenu}>{t("Products")}</NavLink>
-                      <NavLink to="/getAllAuctions" onClick={closeMobileMenu}>{t("Auctions")}</NavLink>
-                      {/* <NavLink to="/mySupplierOffers" onClick={closeMobileMenu}>{t("My Offers")}</NavLink> */}
-                      <NavLink to="/mySupplierOrders" onClick={closeMobileMenu}>{t("My Orders")}</NavLink>
-                      {/* <NavLink to="/supplier/payments" onClick={closeMobileMenu}>{t("Token Payments")}</NavLink> */}
+                      <NavLink to="/SupplierProducts" onClick={closeMobileMenu} isActive={isActive("/SupplierProducts")}>
+                        <i className="ri-box-3-line mr-1"></i> {t("Products")}
+                      </NavLink>
+                      <NavLink to="/getAllAuctions" onClick={closeMobileMenu} isActive={isActive("/getAllAuctions")}>
+                        <i className="ri-auction-line mr-1"></i> {t("Auctions")}
+                      </NavLink>
+                      <NavLink to="/mySupplierOrders" onClick={closeMobileMenu} isActive={isActive("/mySupplierOrders")}>
+                        <i className="ri-list-check-2 mr-1"></i> {t("My Orders")}
+                      </NavLink>
                     </>
                   )}
 
                   {/* Exporter Links */}
                   {user.role === "exporter" && (
                     <>
-                        <NavLink to="/ExporterProducts" onClick={closeMobileMenu}>{t("Products")}</NavLink>
-                      {/* <NavLink to="/createAuction" onClick={closeMobileMenu}>{t("Create Auction")}</NavLink> */}
-                      {/* <NavLink to="/getAuctionsOfExporter" onClick={closeMobileMenu}>{t("Your Auction")}</NavLink> */}
-                      <NavLink to="/exporter" onClick={closeMobileMenu}>{t("Auction")}</NavLink>
-
-                      <NavLink to="/favourites" onClick={closeMobileMenu}>{t("Your Favourites")}</NavLink>
-                      {/* <NavLink to="/myOffers" onClick={closeMobileMenu}>{t("My Offers")}</NavLink> */}
-                      <NavLink to="/myExporterOrders" onClick={closeMobileMenu}>{t("My Orders")}</NavLink>
+                      <NavLink to="/ExporterProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
+                        <i className="ri-search-line mr-1"></i> {t("Products")}
+                      </NavLink>
+                      <NavLink to="/exporter" onClick={closeMobileMenu} isActive={isActive("/exporter")}>
+                        <i className="ri-auction-line mr-1"></i> {t("Auction")}
+                      </NavLink>
+                      <NavLink to="/favourites" onClick={closeMobileMenu} isActive={isActive("/favourites")}>
+                        <i className="ri-heart-line mr-1"></i> {t("Your Favourites")}
+                      </NavLink>
+                      <NavLink to="/myExporterOrders" onClick={closeMobileMenu} isActive={isActive("/myExporterOrders")}>
+                        <i className="ri-list-check-2 mr-1"></i> {t("My Orders")}
+                      </NavLink>
                     </>
                   )}
 
                   {/* Admin Links */}
                   {user.role === "admin" && (
                     <>
-                      <NavLink to="/admin/user" onClick={closeMobileMenu}>{t("Users")}</NavLink>
-                      <NavLink to="/admin" onClick={closeMobileMenu}>{t("Dashboard")}</NavLink>
-                      <NavLink to="/admin/user/order/payment" onClick={closeMobileMenu}>{t("Payments")}</NavLink>
+                      <NavLink to="/admin/user" onClick={closeMobileMenu}>
+                        <i className="ri-user-line mr-1"></i> {t("Users")}
+                      </NavLink>
+                      <NavLink to="/admin" onClick={closeMobileMenu}>
+                        <i className="ri-dashboard-line mr-1"></i> {t("Dashboard")}
+                      </NavLink>
+                      <NavLink to="/admin/user/order/payment" onClick={closeMobileMenu}>
+                        <i className="ri-money-dollar-circle-line mr-1"></i> {t("Payments")}
+                      </NavLink>
                     </>
                   )}
 
                   {/* Common for non-admin users */}
                   {user.role !== "admin" && (
                     <>
-                      <NavLink to="/chat" onClick={closeMobileMenu}>{t("Chat")}</NavLink>
-                      <NavLink to="/profile" onClick={closeMobileMenu}>{t("Profile")}</NavLink>
+                      <NavLink to="/chat" onClick={closeMobileMenu} isActive={isActive("/chat")}>
+                        <i className="ri-chat-3-line mr-1"></i> {t("Chat")}
+                      </NavLink>
+                      <NavLink to="/profile" onClick={closeMobileMenu} isActive={isActive("/profile")}>
+                        <i className="ri-user-line mr-1"></i> {t("Profile")}
+                      </NavLink>
                     </>
                   )}
                 </>
@@ -425,20 +709,6 @@ const Navbar = () => {
 
           {/* Right-side elements */}
           <div className="flex items-center space-x-4">
-            {/* Auth Section */}
-            {!user.role && (
-              <NavLink to="/signIn" onClick={closeMobileMenu} className="whitespace-nowrap">
-                {t("SignIn")}
-              </NavLink>
-            )}
-
-            {/* Welcome message
-            {user.role && (
-              <div className="text-primary-100 px-3 py-2 text-sm whitespace-nowrap hidden md:block">
-                {t("Welcome")}, {user.name || t("User")} ({t(user.role)})
-              </div>
-            )} */}
-
             {/* Language Selector */}
             <div className="w-fit bg-secondary-100 rounded-lg p-1">
               <div className="flex items-center space-x-1">
@@ -480,54 +750,85 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <div className="md:hidden bg-primary-900">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {/* Common Links */}
-              <MobileNavLink to="/home" onClick={closeMobileMenu}>{t("Home")}</MobileNavLink>
-              <MobileNavLink to="/ExporterProducts" onClick={closeMobileMenu}>{t("Products")}</MobileNavLink>
-
-              {/* Conditionally render SignIn link if user.role does not exist */}
-              {!user.role && (
-                <MobileNavLink to="/signIn" onClick={closeMobileMenu}>{t("SignIn")}</MobileNavLink>
-              )}
-
-              {/* Conditionally render user-specific content */}
-              {user.role && (
+              {/* Default links shown when not signed in */}
+              {!user.role ? (
                 <>
+                  <MobileNavLink to="/home" onClick={closeMobileMenu} isActive={isActive("/home")}>
+                    <i className="ri-home-2-line mr-2"></i> {t("Home")}
+                  </MobileNavLink>
+                  <MobileNavLink to="/ExporterProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
+                    <i className="ri-search-line mr-2"></i> {t("Products")}
+                  </MobileNavLink>
+                  <MobileNavLink to="/signIn" onClick={closeMobileMenu} isActive={isActive("/signIn")}>
+                    <i className="ri-login-box-line mr-2"></i> {t("SignIn")}
+                  </MobileNavLink>
+                </>
+              ) : (
+                <>
+                  {/* Show Home link for suppliers and exporters but not admin */}
+                  {(user.role === "supplier" || user.role === "exporter") && (
+                    <MobileNavLink to="/home" onClick={closeMobileMenu} isActive={isActive("/home")}>
+                      <i className="ri-home-2-line mr-2"></i> {t("Home")}
+                    </MobileNavLink>
+                  )}
+
                   {/* Supplier Links */}
                   {user.role === "supplier" && (
                     <>
-                      <MobileNavLink to="/SupplierProducts" onClick={closeMobileMenu}>{t("Your Products")}</MobileNavLink>
-                      <MobileNavLink to="/getAllAuctions" onClick={closeMobileMenu}>{t("Auctions")}</MobileNavLink>
-                      <MobileNavLink to="/mySupplierOffers" onClick={closeMobileMenu}>{t("My Offers")}</MobileNavLink>
-                      <MobileNavLink to="/mySupplierOrders" onClick={closeMobileMenu}>{t("My Orders")}</MobileNavLink>
-                      <MobileNavLink to="/supplier/payments" onClick={closeMobileMenu}>{t("Token Payments")}</MobileNavLink>
+                      <MobileNavLink to="/SupplierProducts" onClick={closeMobileMenu} isActive={isActive("/SupplierProducts")}>
+                        <i className="ri-box-3-line mr-2"></i> {t("Your Products")}
+                      </MobileNavLink>
+                      <MobileNavLink to="/getAllAuctions" onClick={closeMobileMenu} isActive={isActive("/getAllAuctions")}>
+                        <i className="ri-auction-line mr-2"></i> {t("Auctions")}
+                      </MobileNavLink>
+                      <MobileNavLink to="/mySupplierOrders" onClick={closeMobileMenu} isActive={isActive("/mySupplierOrders")}>
+                        <i className="ri-list-check-2 mr-2"></i> {t("My Orders")}
+                      </MobileNavLink>
                     </>
                   )}
 
                   {/* Exporter Links */}
                   {user.role === "exporter" && (
                     <>
-                      <MobileNavLink to="/createAuction" onClick={closeMobileMenu}>{t("Create Auction")}</MobileNavLink>
-                      <MobileNavLink to="/getAuctionsOfExporter" onClick={closeMobileMenu}>{t("Your Auction")}</MobileNavLink>
-                      <MobileNavLink to="/favourites" onClick={closeMobileMenu}>{t("Your Favourites")}</MobileNavLink>
-                      <MobileNavLink to="/myOffers" onClick={closeMobileMenu}>{t("My Offers")}</MobileNavLink>
-                      <MobileNavLink to="/myExporterOrders" onClick={closeMobileMenu}>{t("My Orders")}</MobileNavLink>
+                      <MobileNavLink to="/ExporterProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
+                        <i className="ri-search-line mr-2"></i> {t("Products")}
+                      </MobileNavLink>
+                      <MobileNavLink to="/exporter" onClick={closeMobileMenu} isActive={isActive("/exporter")}>
+                        <i className="ri-auction-line mr-2"></i> {t("Auction")}
+                      </MobileNavLink>
+                      <MobileNavLink to="/favourites" onClick={closeMobileMenu} isActive={isActive("/favourites")}>
+                        <i className="ri-heart-line mr-2"></i> {t("Your Favourites")}
+                      </MobileNavLink>
+                      <MobileNavLink to="/myExporterOrders" onClick={closeMobileMenu} isActive={isActive("/myExporterOrders")}>
+                        <i className="ri-list-check-2 mr-2"></i> {t("My Orders")}
+                      </MobileNavLink>
                     </>
                   )}
 
                   {/* Admin Links */}
                   {user.role === "admin" && (
                     <>
-                      <MobileNavLink to="/admin/user" onClick={closeMobileMenu}>{t("Users")}</MobileNavLink>
-                      <MobileNavLink to="/admin" onClick={closeMobileMenu}>{t("Profile")}</MobileNavLink>
-                      <MobileNavLink to="/admin/user/order/payment" onClick={closeMobileMenu}>{t("Payments")}</MobileNavLink>
+                      <MobileNavLink to="/admin/user" onClick={closeMobileMenu}>
+                        <i className="ri-user-line mr-2"></i> {t("Users")}
+                      </MobileNavLink>
+                      <MobileNavLink to="/admin" onClick={closeMobileMenu}>
+                        <i className="ri-dashboard-line mr-2"></i> {t("Dashboard")}
+                      </MobileNavLink>
+                      <MobileNavLink to="/admin/user/order/payment" onClick={closeMobileMenu}>
+                        <i className="ri-money-dollar-circle-line mr-2"></i> {t("Payments")}
+                      </MobileNavLink>
                     </>
                   )}
 
                   {/* Common for non-admin users */}
                   {user.role !== "admin" && (
                     <>
-                      <MobileNavLink to="/chat" onClick={closeMobileMenu}>{t("Chat")}</MobileNavLink>
-                      <MobileNavLink to="/profile" onClick={closeMobileMenu}>{t("Profile")}</MobileNavLink>
+                      <MobileNavLink to="/chat" onClick={closeMobileMenu} isActive={isActive("/chat")}>
+                        <i className="ri-chat-3-line mr-2"></i> {t("Chat")}
+                      </MobileNavLink>
+                      <MobileNavLink to="/profile" onClick={closeMobileMenu} isActive={isActive("/profile")}>
+                        <i className="ri-user-line mr-2"></i> {t("Profile")}
+                      </MobileNavLink>
                     </>
                   )}
 
@@ -546,10 +847,10 @@ const Navbar = () => {
 };
 
 // Reusable NavLink component for desktop
-const NavLink = ({ to, onClick, children, className = "" }) => (
+const NavLink = ({ to, onClick, children, isActive, className = "" }) => (
   <Link 
     to={to} 
-    className={`text-primary-100 hover:text-accent-500 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${className}`}
+    className={`${isActive ? 'text-accent-500 font-semibold' : 'text-primary-100'} hover:text-accent-500 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center ${className}`}
     onClick={onClick}
   >
     {children}
@@ -557,10 +858,10 @@ const NavLink = ({ to, onClick, children, className = "" }) => (
 );
 
 // Reusable MobileNavLink component
-const MobileNavLink = ({ to, onClick, children }) => (
+const MobileNavLink = ({ to, onClick, children, isActive }) => (
   <Link
     to={to}
-    className="block px-3 py-2 rounded-md text-base font-medium text-primary-100 hover:text-accent-500 hover:bg-primary-800 transition-colors duration-200"
+    className={`block px-3 py-2 rounded-md text-base font-medium ${isActive ? 'text-accent-500 bg-primary-800 font-semibold' : 'text-primary-100 hover:text-accent-500 hover:bg-primary-800'} transition-colors duration-200 flex items-center`}
     onClick={onClick}
   >
     {children}
@@ -568,9 +869,6 @@ const MobileNavLink = ({ to, onClick, children }) => (
 );
 
 export default Navbar;
-
-
-
 
 // import React, { useState } from "react";
 // import { Link } from "react-router-dom";
