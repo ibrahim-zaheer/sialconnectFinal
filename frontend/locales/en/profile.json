@@ -1,0 +1,12 @@
+{
+    "loading": "Loading...",
+    "tabs": {
+      "profile": "Profile",
+      "offers": "Offers",
+      "payments": "Payments",
+      "reviews": "Reviews"
+    },
+    "messages": {
+      "restrictedAccess": "This section is not available for your account type"
+    }
+  }

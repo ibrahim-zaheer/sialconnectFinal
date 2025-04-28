@@ -1,20 +1,45 @@
 {
-  "greeting": "Hello",
-  "description": {
-    "line1": "You're watching YouTube <1>{{channel}}</1>",
-    "line2": "This is an Internationalisation Tutorial"
+  "hero": {
+    "title": "Connecting Exporters with <1>Reliable</1> Suppliers",
+    "description": "SialConnect simplifies product sourcing by bridging the gap between exporters and trusted suppliers. Find, compare, and negotiate - all in one platform.",
+    "stats": {
+      "matches": "1000+",
+      "matchesLabel": "Successful Matches"
+    }
   },
-  "landingPage":{
-    "mainHeading":"Streamline Your Sourcing with SialConnect Today",
-     "mainsecondHeading": "SialConnect bridges the gap between exporters and suppliers, making sourcing effortless and efficient. Experience competitive deals and seamless transactions with our user-friendly platform."
+  "bestSelling": {
+    "title": "Best Selling",
+    "description": "Get in on the trend with our curated selection of best-selling styles.",
+    "seeAll": "See all products →"
   },
-  "mainBody":{
-    "mainText":" Join The SialConnect Revolution",
-    "bodyText":"Explore the seamless sourcing and connect with trusted suppliers effortlessly on our platform"
+  "cta": {
+    "title": "Join Our Sustainable Fashion Movement",
+    "description": "Be part of the change towards a more eco-conscious wardrobe without compromising on style.",
+    "buttons": {
+      "explore": "Explore",
+      "signUp": "Sign Up"
+    }
   },
-  "commentBody":{
-    "bodyText1":"The customer experience was exceptional from start to finish. The website is user-friendly, and the checkout process was smooth. I'm beyond satisfied!",
-    "bodyText2":"I absolutely love the quality and style of the clothing I purchased. Customer service was outstanding, and I received my order quickly. Highly recommended!",
-    "bodyText3":"I had a great experience shopping on this website. The clothes are fashionable and comfortable. Highly satisfied!"
+  "suppliers": {
+    "title": "Trusted Suppliers",
+    "description": "Partnered with the best to bring you quality products"
+  },
+  "testimonials": {
+    "title": "Customer Voices",
+    "description": "What our community says about us",
+    "quotes": [
+      {
+        "text": "I love how these clothes make me feel good about my fashion choices. The quality is outstanding and they're so comfortable!",
+        "author": "Emily Wilson"
+      },
+      {
+        "text": "Finally found a brand that aligns with my values. The pieces are stylish, durable, and ethically made. Worth every penny!",
+        "author": "Sarah Thompson"
+      },
+      {
+        "text": "The customer service is exceptional and the clothes are even better than I expected. I'm slowly replacing my entire wardrobe with their pieces.",
+        "author": "Olivia Martinez"
+      }
+    ]
   }
 }

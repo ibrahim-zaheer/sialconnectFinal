@@ -1,0 +1,12 @@
+{
+    "loading": "لوڈنگ ...",
+    "tabs": {
+      "profile": "پروفائل",
+      "offers": "پیش کش",
+      "payments": "ادائیگی",
+      "reviews": "جائزے"
+    },
+    "messages": {
+      "restrictedAccess": "یہ سیکشن آپ کے اکاؤنٹ کی قسم کے لئے دستیاب نہیں ہے"
+    }
+  }

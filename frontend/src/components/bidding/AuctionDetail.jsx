@@ -386,6 +386,21 @@ const AuctionDetail = () => {
     }
   }, [id]);
 
+
+  const refreshAuctionDetails = async () => {
+    try {
+      const response = await axios.get(`/api/bidding/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+  
+      setAuctionDetails(response.data);
+      localStorage.setItem(`auction-${id}`, JSON.stringify(response.data));
+    } catch (error) {
+      console.error("Error refreshing auction:", error);
+    }
+  };
   // Helper to handle image (array or object)
   const getImageUrl = () => {
     if (!auctionDetails?.image) return null;
@@ -528,9 +543,13 @@ const AuctionDetail = () => {
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-neutral-600">Starting Bid:</span>
-                  <span className="font-medium text-neutral-800">
+                  {/* <span className="font-medium text-neutral-800">
                     Rs {auctionDetails.startingBid.toLocaleString()}
-                  </span>
+                  </span> */}
+                  <span className="font-medium text-neutral-800">
+  Rs {auctionDetails.startingBid ? auctionDetails.startingBid.toLocaleString() : 'N/A'}
+</span>
+
                 </div>
                 <div className="flex justify-between">
                   <span className="text-neutral-600">Current Bid:</span>
@@ -597,7 +616,7 @@ const AuctionDetail = () => {
             <div className="lg:col-span-1">
               <BidForm
                 auctionId={id}
-                refreshAuction={setAuctionDetails}
+                refreshAuction={refreshAuctionDetails}
                 userHasBid={auctionDetails.userHasBid}
                 currentBid={auctionDetails.currentBid || auctionDetails.startingBid}
               />

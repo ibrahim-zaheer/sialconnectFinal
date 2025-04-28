@@ -168,6 +168,7 @@ const placeBid = async (req, res) => {
       });
 
       await notification.save();
+      console.log("notification created successfully");
 
       const message = {
         notification: {

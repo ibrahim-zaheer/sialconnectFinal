@@ -1,34 +1,35 @@
-import i18n from 'i18next'
+// import i18n from 'i18next'
 
-import LanguageDetector from "i18next-browser-languagedetector"
+// import LanguageDetector from "i18next-browser-languagedetector"
 
-import {initReactI18next, Translation} from "react-i18next"
-import Backend from "i18next-http-backend";
+// import {initReactI18next, Translation} from "react-i18next"
+// import Backend from "i18next-http-backend";
 
 
-i18n.use(LanguageDetector).use(initReactI18next).use(Backend).init({
-    debug: true,
-    returnObjects: true,
-    fallbackLng:"en",
+// i18n.use(LanguageDetector).use(initReactI18next).use(Backend).init({
+//     debug: true,
+//     returnObjects: true,
+//     fallbackLng:"en",
+//   });
+
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import Backend from 'i18next-http-backend';
+import LanguageDetector from 'i18next-browser-languagedetector';
+
+i18n
+  .use(LanguageDetector) // Language detection plugin
+  .use(initReactI18next)  // React integration plugin
+  .use(Backend)           // Load translations from the backend
+  .init({
+    debug: true,           // Enable debug logging
+    returnObjects: true,   // Return objects instead of strings for complex translations
+    fallbackLng: 'en',     // Default language if no translation is found
+    ns: ['translation', 'profile'], // Specify the namespaces you're using
+    defaultNS: 'translation', // Default namespace to use if none is specified
+    backend: {
+      loadPath: '/locales/{{lng}}/{{ns}}.json', // Path to translation files
+    },
   });
 
-  //   resources:{
-  //       en:{
-  //         translation:{
-  //           greeting:"Hello Supplier",
-  //           description: {
-  //   "line1": "You're watching  YouTube <1>{{channel}}</1>",
-  //   "line2": "This is an Internationalisation Tutorial"
-  // }
-  //         }
-  //       },
-  //       ur:{
-  //           translation:{
-  //               greeting:"ہیلو سپلائر",
-  //               description: {
-  //                 "line1": "<1>{{channel}}</1> دیکھ رہے ہیں",
-  //                 "line2": "یہ ایک انٹرنیشنلائزیشن ٹیوٹوریل ہے"
-  //               }
-  //             }
-  //       }
-  //   }
+export default i18n;
