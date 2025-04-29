@@ -461,7 +461,7 @@ const AddProduct = ({ onProductCreated }) => {
 
         <div>
           <label className="block text-sm font-medium text-neutral-700 mb-1">
-            Product Images (Multiple allowed)
+            Product Images (Multiple allowed up to 5)
           </label>
           <div className="mt-1 flex items-center">
             <label className="cursor-pointer">

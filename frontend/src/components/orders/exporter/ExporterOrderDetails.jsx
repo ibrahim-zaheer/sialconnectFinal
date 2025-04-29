@@ -1318,6 +1318,7 @@ const ExporterOrderDetails = () => {
               {showLocalPaymentPopup && (
                 <LocalPaymentForm
                   orderId={order._id}
+                  orderPrice={order.price} 
                   onPaymentSuccess={handleLocalPaymentSuccess}
                 />
               )}

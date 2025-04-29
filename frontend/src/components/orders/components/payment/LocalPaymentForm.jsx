@@ -361,6 +361,249 @@
 // export default LocalPaymentForm;
 
 
+// import React, { useState } from "react";
+// import axios from "axios";
+// import easypaisaLogo from "../../../../assets/images/payments/easypaisaLogo.png";
+// import jazzcashLogo from "../../../../assets/images/payments/jazzcashLogo.jpeg";
+// import nayapayLogo from "../../../../assets/images/payments/nayapayLogo.png";
+// import sadapayLogo from "../../../../assets/images/payments/sadapayLogo.png";
+// import upaisaLogo from "../../../../assets/images/payments/upaisaLogo.png";
+
+// const LocalPaymentForm = ({ orderId, onPaymentSuccess }) => {
+//   const [paymentMethod, setPaymentMethod] = useState("");
+//   const [mobileNumber, setMobileNumber] = useState("");
+//   const [accountName, setAccountName] = useState("");
+//   const [paymentAmount, setPaymentAmount] = useState("");
+//   const [paymentProof, setPaymentProof] = useState(null);
+//   const [status, setStatus] = useState(null);
+//   const [error, setError] = useState(null);
+  
+//   // Add your IBAN number here
+//   const ibanNumber = "PK36SCBL0000001123456702";
+//   const [copyStatus, setCopyStatus] = useState("Copy");
+
+//   const handlePaymentProofChange = (e) => {
+//     setPaymentProof(e.target.files[0]);
+//   };
+
+//   const copyIbanToClipboard = () => {
+//     navigator.clipboard.writeText(ibanNumber)
+//       .then(() => {
+//         setCopyStatus("Copied!");
+//         setTimeout(() => setCopyStatus("Copy"), 2000);
+//       })
+//       .catch(err => {
+//         console.error('Failed to copy IBAN: ', err);
+//         setCopyStatus("Failed to copy");
+//       });
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     const token = localStorage.getItem("token");
+//     if (!token) {
+//       setError("No authentication token found.");
+//       return;
+//     }
+
+//     const formData = new FormData();
+//     formData.append("orderId", orderId);
+//     formData.append("paymentMethod", paymentMethod);
+//     formData.append("mobileNumber", mobileNumber);
+//     formData.append("accountName", accountName);
+//     formData.append("paymentAmount", paymentAmount);
+//     formData.append("local_transaction_proof", paymentProof);
+
+//     try {
+//       const response = await axios.post(
+//         "/api/order/orders/initiate-local-token-payment",
+//         formData,
+//         {
+//           headers: {
+//             "Content-Type": "multipart/form-data",
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
+//       setStatus(response.data.message);
+//       setError(null);
+
+//       if (onPaymentSuccess) {
+//         onPaymentSuccess();
+//       }
+//     } catch (err) {
+//       setStatus(null);
+//       setError(err.response?.data?.message || "Error initiating payment.");
+//     }
+//   };
+
+//   return (
+//     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+//       <h2 className="text-3xl font-bold text-center mb-6">Local Payment Details</h2>
+      
+//       {/* IBAN Number Section */}
+//       <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+//         <h3 className="text-xl font-semibold text-gray-700 mb-2">Bank Transfer Details</h3>
+//         <p className="text-gray-600 mb-3">Please transfer the exact amount to our IBAN account:</p>
+        
+//         <div className="flex items-center justify-between bg-white p-3 rounded border border-gray-300">
+//           <div className="flex-1">
+//             <p className="font-mono text-lg">{ibanNumber}</p>
+//           </div>
+//           <button
+//             onClick={copyIbanToClipboard}
+//             className="ml-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           >
+//             {copyStatus}
+//           </button>
+//         </div>
+        
+//         <p className="mt-2 text-sm text-gray-500">
+//           After transfer, please upload the payment proof below.
+//         </p>
+//       </div>
+      
+//       <form onSubmit={handleSubmit} className="space-y-6">
+//         <div className="space-y-2">
+//           <label htmlFor="paymentMethod" className="block text-lg font-semibold text-gray-700">
+//             Payment Method
+//           </label>
+          
+//           <div className="relative">
+//             <select
+//               id="paymentMethod"
+//               value={paymentMethod}
+//               onChange={(e) => setPaymentMethod(e.target.value)}
+//               required
+//               className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+//             >
+//               <option value="">Select Payment Method</option>
+//               <option value="Easypaisa">Easypaisa</option>
+//               <option value="JazzCash">JazzCash</option>
+//               <option value="SadaPay">SadaPay</option>
+//               <option value="NayaPay">NayaPay</option>
+//               <option value="Upaisa">Upaisa</option>
+//               <option value="other">Other</option>
+//             </select>
+//             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+//               <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+//                 <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+//               </svg>
+//             </div>
+//           </div>
+
+//           {paymentMethod === "Easypaisa" && (
+//             <img 
+//               src={easypaisaLogo} 
+//               alt="Easypaisa" 
+//               className="h-8 mt-2"
+//             />
+//           )}
+//           {paymentMethod === "JazzCash" && (
+//             <img 
+//               src={jazzcashLogo} 
+//               alt="JazzCash" 
+//               className="h-8 mt-2"
+//             />
+//           )}
+//           {paymentMethod === "SadaPay" && (
+//             <img 
+//               src={sadapayLogo} 
+//               alt="Sadapay" 
+//               className="h-8 mt-2"
+//             />
+//           )}
+//           {paymentMethod === "NayaPay" && (
+//             <img 
+//               src={nayapayLogo} 
+//               alt="nayapay" 
+//               className="h-8 mt-2"
+//             />
+//           )}
+//           {paymentMethod === "Upaisa" && (
+//             <img 
+//               src={upaisaLogo} 
+//               alt="upaisa" 
+//               className="h-8 mt-2"
+//             />
+//           )}
+//         </div>
+
+//         <div className="space-y-2">
+//           <label htmlFor="mobileNumber" className="block text-lg font-semibold text-gray-700">
+//             Mobile Number
+//           </label>
+//           <input
+//             type="text"
+//             id="mobileNumber"
+//             value={mobileNumber}
+//             onChange={(e) => setMobileNumber(e.target.value)}
+//             required
+//             className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           />
+//         </div>
+
+//         <div className="space-y-2">
+//           <label htmlFor="accountName" className="block text-lg font-semibold text-gray-700">
+//             Account Name
+//           </label>
+//           <input
+//             type="text"
+//             id="accountName"
+//             value={accountName}
+//             onChange={(e) => setAccountName(e.target.value)}
+//             required
+//             className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           />
+//         </div>
+
+//         <div className="space-y-2">
+//           <label htmlFor="paymentAmount" className="block text-lg font-semibold text-gray-700">
+//             Payment Amount
+//           </label>
+//           <input
+//             type="number"
+//             id="paymentAmount"
+//             value={paymentAmount}
+//             onChange={(e) => setPaymentAmount(e.target.value)}
+//             required
+//             className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+//           />
+//         </div>
+
+//         <div className="space-y-2">
+//           <label htmlFor="paymentProof" className="block text-lg font-semibold text-gray-700">
+//             Payment Proof (Screenshot/Receipt)
+//           </label>
+//           <input
+//             type="file"
+//             id="paymentProof"
+//             name="local_transaction_proof"
+//             onChange={handlePaymentProofChange}
+//             required
+//             className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+//             accept="image/*,.pdf"
+//           />
+//         </div>
+
+//         <button
+//           type="submit"
+//           className="w-full py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+//         >
+//           Submit Payment
+//         </button>
+//       </form>
+
+//       {status && <div className="mt-4 text-center text-green-600 font-semibold">{status}</div>}
+//       {error && <div className="mt-4 text-center text-red-600 font-semibold">{error}</div>}
+//     </div>
+//   );
+// };
+
+// export default LocalPaymentForm;
+
+
 import React, { useState } from "react";
 import axios from "axios";
 import easypaisaLogo from "../../../../assets/images/payments/easypaisaLogo.png";
@@ -369,18 +612,16 @@ import nayapayLogo from "../../../../assets/images/payments/nayapayLogo.png";
 import sadapayLogo from "../../../../assets/images/payments/sadapayLogo.png";
 import upaisaLogo from "../../../../assets/images/payments/upaisaLogo.png";
 
-const LocalPaymentForm = ({ orderId, onPaymentSuccess }) => {
+const LocalPaymentForm = ({ orderId, orderPrice, onPaymentSuccess }) => {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [accountName, setAccountName] = useState("");
-  const [paymentAmount, setPaymentAmount] = useState("");
   const [paymentProof, setPaymentProof] = useState(null);
   const [status, setStatus] = useState(null);
   const [error, setError] = useState(null);
-  
-  // Add your IBAN number here
-  const ibanNumber = "PK36SCBL0000001123456702";
   const [copyStatus, setCopyStatus] = useState("Copy");
+
+  const ibanNumber = "PK36SCBL0000001123456702";  // Your IBAN number
 
   const handlePaymentProofChange = (e) => {
     setPaymentProof(e.target.files[0]);
@@ -412,7 +653,7 @@ const LocalPaymentForm = ({ orderId, onPaymentSuccess }) => {
     formData.append("paymentMethod", paymentMethod);
     formData.append("mobileNumber", mobileNumber);
     formData.append("accountName", accountName);
-    formData.append("paymentAmount", paymentAmount);
+    formData.append("paymentAmount", orderPrice);  // Use orderPrice directly
     formData.append("local_transaction_proof", paymentProof);
 
     try {
@@ -441,12 +682,12 @@ const LocalPaymentForm = ({ orderId, onPaymentSuccess }) => {
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <h2 className="text-3xl font-bold text-center mb-6">Local Payment Details</h2>
-      
+
       {/* IBAN Number Section */}
       <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
         <h3 className="text-xl font-semibold text-gray-700 mb-2">Bank Transfer Details</h3>
         <p className="text-gray-600 mb-3">Please transfer the exact amount to our IBAN account:</p>
-        
+
         <div className="flex items-center justify-between bg-white p-3 rounded border border-gray-300">
           <div className="flex-1">
             <p className="font-mono text-lg">{ibanNumber}</p>
@@ -458,18 +699,18 @@ const LocalPaymentForm = ({ orderId, onPaymentSuccess }) => {
             {copyStatus}
           </button>
         </div>
-        
+
         <p className="mt-2 text-sm text-gray-500">
           After transfer, please upload the payment proof below.
         </p>
       </div>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-2">
           <label htmlFor="paymentMethod" className="block text-lg font-semibold text-gray-700">
             Payment Method
           </label>
-          
+
           <div className="relative">
             <select
               id="paymentMethod"
@@ -488,45 +729,25 @@ const LocalPaymentForm = ({ orderId, onPaymentSuccess }) => {
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
               <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
               </svg>
             </div>
           </div>
 
           {paymentMethod === "Easypaisa" && (
-            <img 
-              src={easypaisaLogo} 
-              alt="Easypaisa" 
-              className="h-8 mt-2"
-            />
+            <img src={easypaisaLogo} alt="Easypaisa" className="h-8 mt-2" />
           )}
           {paymentMethod === "JazzCash" && (
-            <img 
-              src={jazzcashLogo} 
-              alt="JazzCash" 
-              className="h-8 mt-2"
-            />
+            <img src={jazzcashLogo} alt="JazzCash" className="h-8 mt-2" />
           )}
           {paymentMethod === "SadaPay" && (
-            <img 
-              src={sadapayLogo} 
-              alt="Sadapay" 
-              className="h-8 mt-2"
-            />
+            <img src={sadapayLogo} alt="Sadapay" className="h-8 mt-2" />
           )}
           {paymentMethod === "NayaPay" && (
-            <img 
-              src={nayapayLogo} 
-              alt="nayapay" 
-              className="h-8 mt-2"
-            />
+            <img src={nayapayLogo} alt="nayapay" className="h-8 mt-2" />
           )}
           {paymentMethod === "Upaisa" && (
-            <img 
-              src={upaisaLogo} 
-              alt="upaisa" 
-              className="h-8 mt-2"
-            />
+            <img src={upaisaLogo} alt="upaisa" className="h-8 mt-2" />
           )}
         </div>
 
@@ -565,9 +786,8 @@ const LocalPaymentForm = ({ orderId, onPaymentSuccess }) => {
           <input
             type="number"
             id="paymentAmount"
-            value={paymentAmount}
-            onChange={(e) => setPaymentAmount(e.target.value)}
-            required
+            value={orderPrice}  // Use the order price passed from the parent
+            disabled  // Disable the field to prevent user modification
             className="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>

@@ -483,6 +483,7 @@ const rejectSample = async (req, res) => {
     res.status(200).json({ message: 'Sample rejected and refunded' });
   } catch (error) {
     res.status(500).json({ message: 'Error rejecting sample', error });
+    console.log("error");
   }
 };
 

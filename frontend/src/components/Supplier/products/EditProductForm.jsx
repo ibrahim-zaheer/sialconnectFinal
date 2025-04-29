@@ -167,67 +167,113 @@ const EditProductForm = ({ product, onClose, onProductUpdated }) => {
   };
 
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setMessage("");
+
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const formDataToSend = new FormData();
+
+  //     // Append text fields
+  //     formDataToSend.append("name", formData.name);
+  //     formDataToSend.append("description", formData.description);
+  //     formDataToSend.append("price", formData.price);
+  //     formDataToSend.append("category", formData.category);
+
+  //     // // Append images to delete
+  //     // imagesToDelete.forEach(img => {
+  //     //   formDataToSend.append("imagesToDelete", img);
+  //     // });
+  //     if (imagesToDelete.length > 0) {
+  //       imagesToDelete.forEach(img => {
+  //           formDataToSend.append("imagesToDelete", img);
+  //       });
+  //   }
+  //      // Append new images
+  //     //  newImages.forEach(file => {
+  //     //   formDataToSend.append("images", file);
+  //     // });
+
+  //     // Append new images
+  //     if (newImages.length > 0) {
+  //       newImages.forEach(file => {
+  //           formDataToSend.append("images", file);
+  //       });
+  //   }
+  //     const response = await axios.put(
+  //       `/api/supplier/product/update/${product._id}`,
+  //       formDataToSend,
+  //       {
+  //         headers: {
+  //           // "Content-Type": "application/json",
+  //           "Content-Type": "multipart/form-data",
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     setMessage("Product updated successfully!");
+  //     onProductUpdated(response.data.product); // Update state in parent
+  //     onClose(); // Close the modal or form
+  //   } catch (error) {
+  //     console.error(
+  //       "Error updating product:",
+  //       error.response?.data || error.message
+  //     );
+  //     setMessage(error.response?.data?.message || "Failed to update product.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
 
     try {
-      const token = localStorage.getItem("token");
-      const formDataToSend = new FormData();
+        const token = localStorage.getItem("token");
+        const formDataToSend = new FormData();
 
-      // Append text fields
-      formDataToSend.append("name", formData.name);
-      formDataToSend.append("description", formData.description);
-      formDataToSend.append("price", formData.price);
-      formDataToSend.append("category", formData.category);
+        // Append text fields
+        formDataToSend.append("name", formData.name);
+        formDataToSend.append("description", formData.description);
+        formDataToSend.append("price", formData.price);
+        formDataToSend.append("category", formData.category);
 
-      // // Append images to delete
-      // imagesToDelete.forEach(img => {
-      //   formDataToSend.append("imagesToDelete", img);
-      // });
-      if (imagesToDelete.length > 0) {
-        imagesToDelete.forEach(img => {
-            formDataToSend.append("imagesToDelete", img);
+        // Append images to delete as separate fields
+        imagesToDelete.forEach((img, index) => {
+            formDataToSend.append(`imagesToDelete`, img);
         });
-    }
-       // Append new images
-      //  newImages.forEach(file => {
-      //   formDataToSend.append("images", file);
-      // });
 
-      // Append new images
-      if (newImages.length > 0) {
-        newImages.forEach(file => {
-            formDataToSend.append("images", file);
+        // Append new images
+        newImages.forEach((file, index) => {
+            formDataToSend.append(`images`, file);
         });
-    }
-      const response = await axios.put(
-        `/api/supplier/product/update/${product._id}`,
-        formDataToSend,
-        {
-          headers: {
-            // "Content-Type": "application/json",
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
 
-      setMessage("Product updated successfully!");
-      onProductUpdated(response.data.product); // Update state in parent
-      onClose(); // Close the modal or form
+        const response = await axios.put(
+            `/api/supplier/product/update/${product._id}`,
+            formDataToSend,
+            {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        setMessage("Product updated successfully!");
+        onProductUpdated(response.data.product);
+        onClose();
     } catch (error) {
-      console.error(
-        "Error updating product:",
-        error.response?.data || error.message
-      );
-      setMessage(error.response?.data?.message || "Failed to update product.");
+        console.error("Error updating product:", error.response?.data || error.message);
+        setMessage(error.response?.data?.message || "Failed to update product.");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
-
+};
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="w-[50vw] h-[80vh] bg-white p-16 rounded-xl shadow-md overflow-y-auto">

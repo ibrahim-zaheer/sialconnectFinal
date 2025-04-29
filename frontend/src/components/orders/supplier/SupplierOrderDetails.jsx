@@ -624,12 +624,22 @@ const SupplierOrderDetails = () => {
         )}
 
         {/* Payment Form */}
-        {order.Agreement === "Accepted" && order.paymentDetails?.paymentStatus === "pending" && (
+        {/* {order.Agreement === "Accepted" && order.paymentDetails?.paymentStatus === "pending" && (
           <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
             <h2 className="text-xl font-semibold text-neutral-800 mb-4">Payment Details</h2>
             <PaymentForm orderId={order._id} onPaymentSubmitted={handlePaymentSubmitted} />
           </div>
-        )}
+        )} */}
+        {((order.Agreement === "Accepted" && order.paymentDetails?.paymentStatus === "pending")||order.sampleStatus === "sample_rejected") && (
+  <div className="bg-white rounded-xl shadow-xs border border-gray-200 p-6">
+    <h2 className="text-xl font-semibold text-gray-800 mb-4">Payment Details</h2>
+    <PaymentForm 
+      orderId={order._id} 
+      onPaymentSubmitted={handlePaymentSubmitted}
+      orderPrice={order.price/2} // Pass the order price here
+    />
+  </div>
+)}
 
         {/* Payment Status */}
         {order.Agreement === "Accepted" && order.paymentDetails?.paymentStatus === "detailsGiven" && (

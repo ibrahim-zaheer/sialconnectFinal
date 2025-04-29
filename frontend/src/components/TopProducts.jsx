@@ -227,7 +227,7 @@ const TopProducts = () => {
               onClick={() => handleProductClick(product._id)}
             >
               {/* Product Image - Updated to handle array of images */}
-              <CardMedia
+              {/* <CardMedia
                 component="img"
                 height="200"
                 image={
@@ -241,7 +241,30 @@ const TopProducts = () => {
                   e.target.onerror = null;
                   e.target.src = '/default-product-image.jpg';
                 }}
-              />
+              /> */}
+              <CardMedia
+  component="img"
+  height="200"
+  image={
+    Array.isArray(product.productDetails.image) 
+      ? product.productDetails.image[0] || '/default-product-image.jpg'
+      : product.productDetails.image || '/default-product-image.jpg'
+  }
+  alt={product.productDetails.name}
+  sx={{
+    objectFit: 'contain', 
+    backgroundColor: '#f5f5f5', 
+    p: 2,
+    maxWidth: '100%',  // Ensures the image doesn't exceed its container width
+    maxHeight: '200px',  // Sets the maximum height of the image
+    width: 'auto',  // Maintains the aspect ratio of the image
+  }}
+  onError={(e) => {
+    e.target.onerror = null;
+    e.target.src = '/default-product-image.jpg';
+  }}
+/>
+
               
               {/* Badge for ranking */}
               <Box sx={{ position: 'absolute', top: 8, left: 8 }}>
@@ -271,7 +294,9 @@ const TopProducts = () => {
                 {/* Description */}
                 {product.productDetails.description && (
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                    {product.productDetails.description}
+                    {/* {product.productDetails.description} */}
+                    {product.productDetails.description.split(' ').slice(0, 10).join(' ') + (product.productDetails.description.split(' ').length > 20 ? '...' : '')}
+
                   </Typography>
                 )}
                 
