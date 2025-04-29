@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link,useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import CategoryDropdown from "../../components/Supplier/products/component/CategoryDropdown";
@@ -16,6 +16,9 @@ const ExporterProducts = () => {
   const [message, setMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [favorites, setFavorites] = useState([]);
+
+  const location = useLocation();
+const supplierNameFromState = location.state?.supplierName || "";
 
   // Filter states
   const [priceRange, setPriceRange] = useState(10000);
@@ -159,6 +162,20 @@ const ExporterProducts = () => {
   useEffect(() => {
     fetchAllProducts();
   }, []);
+
+  useEffect(() => {
+    if (supplierNameFromState && products.length > 0) {
+      setSupplierName(supplierNameFromState);
+      applyFilters(
+        searchQuery,
+        priceRange,
+        selectedCities,
+        supplierNameFromState,
+        selectedCategory
+      );
+    }
+  }, [supplierNameFromState, products]); 
+  
 
   const handleSearchChange = (e) => {
     const query = e.target.value;

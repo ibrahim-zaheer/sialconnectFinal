@@ -18,6 +18,8 @@ const TopSuppliers = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  
+
   useEffect(() => {
     const fetchTopSuppliers = async () => {
       try {
@@ -34,9 +36,12 @@ const TopSuppliers = () => {
     fetchTopSuppliers();
   }, []);
 
-  const handleSupplierClick = (supplierId) => {
-    // Navigate to supplier details page
-    navigate(`/supplier/details/${supplierId}`);
+  // const handleSupplierClick = (supplierId) => {
+  //   // Navigate to supplier details page
+  //   navigate(`/supplier/details/${supplierId}`);
+  // };
+  const handleSupplierClick = (supplierName) => {
+    navigate('/ExporterProducts', { state: { supplierName } });
   };
 
   if (loading) {
@@ -76,7 +81,9 @@ const TopSuppliers = () => {
                   transform: 'translateY(-5px)'
                 }
               }}
-              onClick={() => handleSupplierClick(supplier._id)}
+              // onClick={() => handleSupplierClick(supplier._id)}
+              onClick={() => handleSupplierClick(supplier.supplierDetails.name)}
+
             >
               {/* Supplier Badge for ranking */}
               <Box sx={{ position: 'absolute', top: 8, left: 8 }}>
