@@ -289,7 +289,12 @@ const SupplierOrders = () => {
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <h3 className="text-lg font-semibold text-primary-800">
-                    {order.productId?.name || "Unknown Product"}
+                    {/* {order.productId?.name || "Unknown Product"} */}
+                    {order.auctionId ? (
+                      <div>{order.auctionId?.title}</div>
+                    ) : (
+                      <div>{order.productId?.name || "Unknown Products"}</div>
+                    )}
                   </h3>
                   <div className="flex space-x-2">
                     {order.paymentStatus === "completed" && (

@@ -1,7 +1,5 @@
-
-
 // import React, { useEffect, useState } from "react";
-// import axios from "axios"; 
+// import axios from "axios";
 // import TokenPaymentForm from "../../payments/TokenPaymentForm";
 // import PaymentPage from "../../../pages/payments/PaymentPage";
 // import { Link } from "react-router-dom";
@@ -176,7 +174,7 @@
 // export default ExporterOrders;
 
 import React, { useEffect, useState } from "react";
-import axios from "axios"; 
+import axios from "axios";
 import TokenPaymentForm from "../../payments/TokenPaymentForm";
 import PaymentPage from "../../../pages/payments/PaymentPage";
 import { Link } from "react-router-dom";
@@ -209,12 +207,12 @@ const ExporterOrders = () => {
   const getStatusBadge = (status) => {
     const baseClasses = "px-3 py-1 rounded-full text-xs font-bold";
     switch (status) {
-      case 'completed':
+      case "completed":
         return `${baseClasses} bg-success-100 text-success-800`;
-      case 'pending':
+      case "pending":
         return `${baseClasses} bg-accent-100 text-accent-800`;
-      case 'sample_rejected':
-      case 'terminated':
+      case "sample_rejected":
+      case "terminated":
         return `${baseClasses} bg-error-100 text-error-800`;
       default:
         return `${baseClasses} bg-neutral-100 text-neutral-800`;
@@ -245,10 +243,12 @@ const ExporterOrders = () => {
 
   useEffect(() => {
     const filtered = orders.filter((order) => {
-      const matchesSample = !filterCriteria.sampleStatus || 
-                          order.sampleStatus === filterCriteria.sampleStatus;
-      const matchesPayment = !filterCriteria.paymentStatus || 
-                           order.paymentStatus === filterCriteria.paymentStatus;
+      const matchesSample =
+        !filterCriteria.sampleStatus ||
+        order.sampleStatus === filterCriteria.sampleStatus;
+      const matchesPayment =
+        !filterCriteria.paymentStatus ||
+        order.paymentStatus === filterCriteria.paymentStatus;
       return matchesSample && matchesPayment;
     });
     setFilteredOrders(filtered);
@@ -264,7 +264,13 @@ const ExporterOrders = () => {
 
       <FilterOrders
         filterOptions={{
-          sampleStatuses: ["waiting_for_sample", "sent", "received", "sample_accepted", "sample_rejected"],
+          sampleStatuses: [
+            "waiting_for_sample",
+            "sent",
+            "received",
+            "sample_accepted",
+            "sample_rejected",
+          ],
           paymentStatuses: ["pending", "completed"],
         }}
         onFilterChange={(newFilters) => setFilterCriteria(newFilters)}
@@ -273,7 +279,10 @@ const ExporterOrders = () => {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-neutral-100 rounded-xl h-64 animate-pulse"></div>
+            <div
+              key={i}
+              className="bg-neutral-100 rounded-xl h-64 animate-pulse"
+            ></div>
           ))}
         </div>
       ) : error ? (
@@ -282,11 +291,25 @@ const ExporterOrders = () => {
         </div>
       ) : filteredOrders.length === 0 ? (
         <div className="bg-surface rounded-xl shadow-sm p-8 text-center">
-          <svg className="mx-auto h-12 w-12 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            className="mx-auto h-12 w-12 text-neutral-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1}
+              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
-          <h3 className="mt-2 text-lg font-medium text-neutral-900">No orders found</h3>
-          <p className="mt-1 text-neutral-500">No orders match your current filters</p>
+          <h3 className="mt-2 text-lg font-medium text-neutral-900">
+            No orders found
+          </h3>
+          <p className="mt-1 text-neutral-500">
+            No orders match your current filters
+          </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -299,7 +322,13 @@ const ExporterOrders = () => {
               <div className="p-6">
                 <div className="flex justify-between items-start mb-4">
                   <h3 className="text-lg font-semibold text-primary-800">
-                    {order.productId?.name || "Unknown Product"}
+                    {/* {order.productId?.name || "Unknown Product"} */}
+
+                    {order.auctionId ? (
+                      <div>{order.auctionId?.title}</div>
+                    ) : (
+                      <div>{order.productId?.name || "Unknown Products"}</div>
+                    )}
                   </h3>
                   <div className="flex space-x-2">
                     {order.paymentStatus === "completed" && (
@@ -309,10 +338,14 @@ const ExporterOrders = () => {
                       <span className={getStatusBadge("pending")}>Pending</span>
                     )}
                     {order.sampleStatus === "sample_rejected" && (
-                      <span className={getStatusBadge("sample_rejected")}>Rejected</span>
+                      <span className={getStatusBadge("sample_rejected")}>
+                        Rejected
+                      </span>
                     )}
                     {order.status === "terminated" && (
-                      <span className={getStatusBadge("terminated")}>Terminated</span>
+                      <span className={getStatusBadge("terminated")}>
+                        Terminated
+                      </span>
                     )}
                   </div>
                 </div>
@@ -320,11 +353,15 @@ const ExporterOrders = () => {
                 <div className="space-y-3 text-neutral-700">
                   <div className="flex justify-between">
                     <span>Supplier:</span>
-                    <span className="font-medium">{order.supplierId?.name || "Unknown"}</span>
+                    <span className="font-medium">
+                      {order.supplierId?.name || "Unknown"}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Email:</span>
-                    <span className="font-medium">{order.supplierId?.email || "N/A"}</span>
+                    <span className="font-medium">
+                      {order.supplierId?.email || "N/A"}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Quantity:</span>

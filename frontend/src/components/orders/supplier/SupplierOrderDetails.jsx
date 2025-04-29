@@ -448,6 +448,7 @@ const SupplierOrderDetails = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [paymentSubmitted, setPaymentSubmitted] = useState(false);
+  const [showPaymentForm, setShowPaymentForm] = useState(true);
 
   const fetchOrderDetails = async () => {
     try {
@@ -506,6 +507,12 @@ const SupplierOrderDetails = () => {
 
   const handlePaymentSubmitted = () => {
     setPaymentSubmitted(true);
+    fetchOrderDetails();
+  };
+
+  const handleRejectedPaymentSubmitted = () => {
+    setPaymentSubmitted(true);
+    setShowPaymentForm(false); // Add this to close the form
     fetchOrderDetails();
   };
 
@@ -630,13 +637,36 @@ const SupplierOrderDetails = () => {
             <PaymentForm orderId={order._id} onPaymentSubmitted={handlePaymentSubmitted} />
           </div>
         )} */}
-        {((order.Agreement === "Accepted" && order.paymentDetails?.paymentStatus === "pending")||order.sampleStatus === "sample_rejected") && (
+        {(order.Agreement === "Accepted" && order.paymentDetails?.paymentStatus === "pending") && (
   <div className="bg-white rounded-xl shadow-xs border border-gray-200 p-6">
     <h2 className="text-xl font-semibold text-gray-800 mb-4">Payment Details</h2>
     <PaymentForm 
       orderId={order._id} 
       onPaymentSubmitted={handlePaymentSubmitted}
-      orderPrice={order.price/2} // Pass the order price here
+      orderPrice={order.price} // Pass the order price here
+    />
+  </div>
+)}
+{/* 
+{(order.sampleStatus === "sample_rejected") && (
+  <div className="bg-white rounded-xl shadow-xs border border-gray-200 p-6">
+    <h2 className="text-xl font-semibold text-gray-800 mb-4">Payment Details</h2>
+    <PaymentForm 
+      orderId={order._id} 
+      onPaymentSubmitted={handlePaymentSubmitted}
+      orderPrice={order.price} // Pass the order price here
+    />
+  </div>
+)} */}
+{/* Payment Form for Rejected Sample */}
+{((order.sampleStatus === "sample_rejected") && order.paymentStatus !== "completed")&& 
+ showPaymentForm &&  (
+  <div className="bg-white rounded-xl shadow-xs border border-gray-200 p-6">
+    <h2 className="text-xl font-semibold text-gray-800 mb-4">Payment Details</h2>
+    <PaymentForm 
+      orderId={order._id} 
+      onPaymentSubmitted={handlePaymentSubmitted}
+      orderPrice={order.price/2}
     />
   </div>
 )}

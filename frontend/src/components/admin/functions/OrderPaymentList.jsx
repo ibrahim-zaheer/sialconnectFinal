@@ -255,6 +255,8 @@ export default function OrderPaymentList() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Payment Method</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Amount</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Account Number</th>
+
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-neutral-200">
@@ -287,7 +289,9 @@ export default function OrderPaymentList() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">
                       Rs {order.paymentDetails?.paymentAmount?.toFixed(2) || '0.00'}
                     </td>
-
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">
+                      {order.paymentDetails?.mobileNumber}
+                    </td>
                   </tr>
                 ))}
               </tbody>

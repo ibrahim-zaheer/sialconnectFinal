@@ -477,6 +477,7 @@ const rejectSample = async (req, res) => {
     await stripe.refunds.create({ payment_intent: order.paymentIntentId });
 
     order.sampleStatus = 'sample_rejected';
+    order.status = 'terminated';
     order.rejectionReason = rejectionReason;
     await order.save();
 
@@ -664,6 +665,39 @@ const markPaymentAsCompleted = async (req, res) => {
 
     res.status(200).json({
       message: "Payment marked as completed successfully",
+      order,
+    });
+  } catch (error) {
+    console.error("Error marking payment as completed:", error);
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+const markPaymentAsRejected = async (req, res) => {
+  try {
+    const { orderId } = req.body;
+
+    // Find the order by ID
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Ensure payment details were added previously
+    if (!order.paymentDetails || order.paymentDetails.paymentStatus !== "detailsGiven") {
+      return res.status(400).json({ message: "Payment details not provided or already completed" });
+    }
+
+    // Update the payment status inside paymentDetails
+    order.paymentDetails.paymentStatus = "failed";
+    await order.save();
+
+    res.status(200).json({
+      message: "Payment marked as Rejected successfully",
       order,
     });
   } catch (error) {

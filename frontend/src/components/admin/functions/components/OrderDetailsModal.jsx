@@ -154,7 +154,8 @@ const OrderDetailsModal = ({ order, closeModal, fetchOrderDetails }) => {
         <p><strong>Account Name:</strong> {order.paymentDetails?.accountName}</p>
         <p><strong>Payment Method:</strong> {order.paymentDetails?.paymentMethod || "N/A"}</p>
         <p><strong>Payment Status:</strong> {order.paymentDetails?.paymentStatus || "N/A"}</p>
-        <p><strong>Payment Amount:</strong> ${order.paymentDetails?.paymentAmount || "0.00"}</p>
+        <p><strong>Payment Amount:</strong> Rs {order.paymentDetails?.paymentAmount || "0.00"}</p>
+        
 
         {/* Payment Proof button */}
        

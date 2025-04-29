@@ -45,6 +45,7 @@ router.post("/orders/payment-details", authenticateMiddleware,addPaymentDetailsF
 
 router.post("/orders/accept-payment",markPaymentAsCompleted);
 
+
 router.get("/orders/payments",authenticateMiddleware,getAllPaymentsForSupplier);
 
 router.get("/orders/all",getAllOrders);
