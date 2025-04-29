@@ -1043,6 +1043,7 @@ import { useSelector } from "react-redux";
 import AgreementComponent from "../components/AgreementComponent";
 import AgreementPDFGenerator from "../components/AgreementPDFGenerator";
 import LocalPaymentForm from "../components/payment/LocalPaymentForm";
+import WriteReview from "../../reviews/WriteReviews"
 
 const ExporterOrderDetails = () => {
   const { orderId } = useParams();
@@ -1287,6 +1288,14 @@ const ExporterOrderDetails = () => {
                 </button>
               </form>
             )}
+          </div>
+        )}
+
+        {/* Write Review Section (only show when agreement is "Accepted") */}
+        {order.Agreement === "Accepted" && (
+          <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
+            <h2 className="text-xl font-semibold text-neutral-800 mb-4">Write a Review</h2>
+            <WriteReview supplierId={order.supplierId?._id} productName={order.productId?.name} /> {/* Pass productName to WriteReview */}
           </div>
         )}
 
