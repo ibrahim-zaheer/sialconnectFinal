@@ -165,7 +165,7 @@ const Auth = () => {
               </label>
               <div className="relative">
                 <input
-                  placeholder="Min. 8 characters"
+                  placeholder="Enter Password"
                   className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-neutral-50"
                   type={showPassword ? "text" : "password"}
                   name="password"

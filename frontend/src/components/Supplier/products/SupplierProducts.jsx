@@ -937,7 +937,9 @@ const handleDelete = async (id) => {
                       </div>
 
                       <div className="mt-4">
-                        <p className="text-neutral-600 text-sm">{product.description}</p>
+                        <p className="text-neutral-600 text-sm">{product.description.length > 100
+                            ? `${product.description.substring(0, 100)}...`
+                            : product.description}</p>
                       </div>
 
                       {/* {product.image && (
