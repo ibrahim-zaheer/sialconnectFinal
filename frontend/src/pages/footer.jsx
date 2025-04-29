@@ -1,7 +1,80 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { ContactForm } from "../components/ContactForm";
 
 const Footer = () => {
+  const user = useSelector((state) => state.user);
+  const { t } = useTranslation();
+
+  // Common links for all users
+  const commonLinks = [
+    { to: "/home", text: "Home", icon: "ri-home-2-line" },
+    { to: "/ExporterProducts", text: "Products", icon: "ri-search-line" },
+  ];
+
+  // Links for non-logged in users
+  const guestLinks = [
+    { to: "/signIn", text: "SignIn", icon: "ri-login-box-line" },
+  ];
+
+  // Links for suppliers
+  const supplierLinks = [
+    { to: "/SupplierProducts", text: "Your Products", icon: "ri-box-3-line" },
+    { to: "/getAllAuctions", text: "Auctions", icon: "ri-auction-line" },
+    { to: "/mySupplierOrders", text: "My Orders", icon: "ri-list-check-2" },
+  ];
+
+  // Links for exporters
+  const exporterLinks = [
+    { to: "/exporter", text: "Auction", icon: "ri-auction-line" },
+    { to: "/favourites", text: "Your Favourites", icon: "ri-heart-line" },
+    { to: "/myExporterOrders", text: "My Orders", icon: "ri-list-check-2" },
+  ];
+
+  // Links for admin
+  const adminLinks = [
+    { to: "/admin/user", text: "Users", icon: "ri-user-line" },
+    { to: "/admin", text: "Dashboard", icon: "ri-dashboard-line" },
+    { to: "/admin/user/order/payment", text: "Payments", icon: "ri-money-dollar-circle-line" },
+  ];
+
+  // Common for non-admin users
+  const userLinks = [
+    { to: "/chat", text: "Chat", icon: "ri-chat-3-line" },
+    { to: "/profile", text: "Profile", icon: "ri-user-line" },
+  ];
+
+  // Company information links
+  const companyLinks = [
+    { to: "/about", text: "About Us" },
+    { to: "/careers", text: "Careers" },
+    { to: "/blog", text: "Blog" },
+    { to: "/faq", text: "FAQ" },
+  ];
+
+  // Legal links
+  const legalLinks = [
+    { to: "/privacy", text: "Privacy Policy" },
+    { to: "/terms", text: "Terms of Service" },
+    { to: "/cookies", text: "Cookies Policy" },
+  ];
+
+  // Determine which links to show based on user role
+  const getQuickLinks = () => {
+    if (!user.role) return [...commonLinks, ...guestLinks];
+    
+    let links = [...commonLinks];
+    
+    if (user.role === "supplier") links = [...links, ...supplierLinks];
+    if (user.role === "exporter") links = [...links, ...exporterLinks];
+    if (user.role === "admin") links = [...adminLinks];
+    if (user.role !== "admin") links = [...links, ...userLinks];
+    
+    return links;
+  };
+
   return (
     <footer className="bg-neutral-900 text-surface py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -9,7 +82,7 @@ const Footer = () => {
         <div className="space-y-4">
           <h2 className="text-2xl font-bold text-primary-50">SialConnect</h2>
           <p className="text-neutral-300 text-sm">
-            Connecting businesses with quality suppliers since 2023
+            {t("Connecting businesses with quality suppliers since 2023")}
           </p>
           <div className="flex space-x-4 pt-2">
             <a 
@@ -44,16 +117,17 @@ const Footer = () => {
 
         {/* Quick Links */}
         <div>
-          <h3 className="text-lg font-semibold text-primary-50 mb-4">QUICK LINKS</h3>
+          <h3 className="text-lg font-semibold text-primary-50 mb-4">{t("QUICK LINKS")}</h3>
           <ul className="space-y-3">
-            {['Products', 'Services', 'Pricing', 'Documentation'].map((item) => (
-              <li key={item}>
-                <a 
-                  href="#" 
-                  className="text-neutral-300 hover:text-primary-400 text-sm transition-colors"
+            {getQuickLinks().map((link) => (
+              <li key={link.to}>
+                <Link 
+                  to={link.to}
+                  className="text-neutral-300 hover:text-primary-400 text-sm transition-colors flex items-center"
                 >
-                  {item}
-                </a>
+                  <i className={`${link.icon} mr-2`}></i>
+                  {t(link.text)}
+                </Link>
               </li>
             ))}
           </ul>
@@ -61,16 +135,16 @@ const Footer = () => {
 
         {/* Company */}
         <div>
-          <h3 className="text-lg font-semibold text-primary-50 mb-4">COMPANY</h3>
+          <h3 className="text-lg font-semibold text-primary-50 mb-4">{t("COMPANY")}</h3>
           <ul className="space-y-3">
-            {['About Us', 'Careers', 'Contact', 'Blog'].map((item) => (
-              <li key={item}>
-                <a 
-                  href="#" 
+            {companyLinks.map((link) => (
+              <li key={link.to}>
+                <Link 
+                  to={link.to}
                   className="text-neutral-300 hover:text-primary-400 text-sm transition-colors"
                 >
-                  {item}
-                </a>
+                  {t(link.text)}
+                </Link>
               </li>
             ))}
           </ul>
@@ -78,48 +152,25 @@ const Footer = () => {
 
         {/* Contact Form */}
         <div>
-          <h3 className="text-lg font-semibold text-primary-50 mb-4">CONTACT US</h3>
-          {/* <form className="space-y-4">
-            <div>
-              <label htmlFor="email" className="sr-only">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Your email"
-                className="w-full px-4 py-2 text-neutral-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            </div>
-            <div>
-              <label htmlFor="message" className="sr-only">Message</label>
-              <textarea
-                id="message"
-                name="message"
-                placeholder="Your message"
-                rows="3"
-                className="w-full px-4 py-2 text-neutral-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              ></textarea>
-            </div>
-            <button
-              type="submit"
-              className="bg-primary-600 hover:bg-primary-700 text-surface px-4 py-2 rounded-md transition-colors w-full"
-            >
-              Send Message
-            </button>
-          </form> */}
-          <ContactForm/>
+          <h3 className="text-lg font-semibold text-primary-50 mb-4">{t("CONTACT US")}</h3>
+          <ContactForm />
         </div>
-       
       </div>
 
       {/* Copyright */}
       <div className="max-w-7xl mx-auto pt-8 mt-8 border-t border-neutral-800">
         <div className="flex flex-col md:flex-row justify-between items-center text-sm text-neutral-400">
-          <p>&copy; {new Date().getFullYear()} SialConnect. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} SialConnect. {t("All rights reserved.")}</p>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="hover:text-primary-400 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-primary-400 transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-primary-400 transition-colors">Cookies</a>
+            {legalLinks.map((link) => (
+              <Link 
+                key={link.to}
+                to={link.to}
+                className="hover:text-primary-400 transition-colors"
+              >
+                {t(link.text)}
+              </Link>
+            ))}
           </div>
         </div>
       </div>
