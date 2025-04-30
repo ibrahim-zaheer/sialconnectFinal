@@ -159,6 +159,7 @@ import PaymentListPage from "./pages/payments/PaymentListPage";
 import AdminOrderDetails from "./components/orders/admin/AdminOrderDetails";
 import ExporterAuctions from "./components/bidding/ExporterAuctions";
 import ExporterLayout from "./components/bidding/ExporterLayout";
+import About from "./pages/About";
 
 const App = () => {
   return (
@@ -313,6 +314,8 @@ const Main = () => {
         <Route path="/offers" element={<OfferPage />} />
 
         <Route path="/createOffers" element={<CreateOfferPage />} />
+
+        <Route path="/about" element={<About />} />
 
         <Route path="/myOffers" element={<ExporterOfferPage />} />
 

@@ -627,6 +627,9 @@ const Navbar = () => {
                   <NavLink to="/home" onClick={closeMobileMenu} isActive={isActive("/home")}>
                     <i className="ri-home-2-line mr-1"></i> {t("Home")}
                   </NavLink>
+                  <NavLink to="/about" onClick={closeMobileMenu} isActive={isActive("/about")}>
+                    <i className="ri-information-line mr-1"></i> {t("About")}
+                  </NavLink>
                   <NavLink to="/ExporterProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
                     <i className="ri-search-line mr-1"></i> {t("Products")}
                   </NavLink>
