@@ -4,6 +4,10 @@ const jwt = require("jsonwebtoken");
 // const User = require("../models/user");
 const User = require("../models/user");
 
+const crypto = require('crypto');
+
+const nodemailer = require('nodemailer');
+
 
 // Register User
 exports.registerUser = async (req, res) => {
@@ -165,6 +169,134 @@ exports.checkAuth = (req,res)=>{
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
+
+// exports.sendResetOTP = async (req, res) => {
+//   const { email } = req.body;
+//   const user = await User.findOne({ email });
+//   if (!user) return res.status(404).json({ message: 'User not found' });
+
+//   const otp = Math.floor(100000 + Math.random() * 900000).toString();
+//   const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+
+//   user.otp = otp;
+//   user.otpExpires = otpExpires;
+//   await user.save();
+
+//   // Send OTP via email
+//   const transporter = nodemailer.createTransport({
+//     service: 'Gmail', // or Mailtrap, SendGrid SMTP, etc.
+//     auth: {
+//       user: process.env.EMAIL_USER,
+//       pass: process.env.EMAIL_PASS,
+//     },
+//   });
+
+//   const mailOptions = {
+//     from: `"Support" <${process.env.EMAIL_USER}>`,
+//     to: user.email,
+//     subject: 'Password Reset OTP',
+//     text: `Your OTP is ${otp}. It expires in 10 minutes.`,
+//   };
+
+//   try {
+//     await transporter.sendMail(mailOptions);
+//     res.status(200).json({ message: 'OTP sent to email' });
+//   } catch (err) {
+//     res.status(500).json({ message: 'Email sending failed', error: err });
+//   }
+// };
+
+
+exports.sendResetOTP = async (req, res) => {
+  const { email } = req.body;
+  
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ 
+        message: 'No account found with this email address' 
+      });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+
+    user.otp = otp;
+    user.otpExpires = otpExpires;
+    await user.save();
+
+    // Send OTP via email
+    const transporter = nodemailer.createTransport({
+      service: 'Gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Support" <${process.env.EMAIL_USER}>`,
+      to: user.email,
+      subject: 'Password Reset OTP',
+      text: `Your OTP is ${otp}. It expires in 10 minutes.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'OTP sent to email' });
+  } catch (err) {
+    console.error('Error in sendResetOTP:', err);
+    res.status(500).json({ 
+      message: 'An error occurred while processing your request' 
+    });
+  }
+};
+
+
+exports.verifyOTPAndReset = async (req, res) => {
+  const { email, otp, newPassword } = req.body;
+  
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
+      return res.status(400).json({ message: 'Invalid or expired OTP' });
+    }
+
+    // Hash the new password before saving
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    user.password = hashedPassword;
+    user.otp = null;
+    user.otpExpires = null;
+    await user.save();
+
+    res.status(200).json({ message: 'Password reset successful' });
+  } catch (err) {
+    console.error('Error in verifyOTPAndReset:', err);
+    res.status(500).json({ 
+      message: 'An error occurred while resetting your password' 
+    });
+  }
+};
+
+// exports.verifyOTPAndReset = async (req, res) => {
+//   const { email, otp, newPassword } = req.body;
+//   const user = await User.findOne({ email });
+
+//   if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
+//     return res.status(400).json({ message: 'Invalid or expired OTP' });
+//   }
+
+//   user.password = newPassword; // Hash this in real use
+//   user.otp = null;
+//   user.otpExpires = null;
+//   await user.save();
+
+//   res.status(200).json({ message: 'Password reset successful' });
+// };
+
+
 
 
 // exports.selectRole = async (req, res, next) => {

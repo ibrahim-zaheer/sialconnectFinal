@@ -31,6 +31,11 @@ router.put("/profile-picture", authMiddleware,checkStatus,uploadProfilePicture.s
 //for editing and adding full details
 router.put("/update-profile",authMiddleware,profileController.updateProfile);
 
+// Route to send OTP
+router.post('/forgot-password', authController.sendResetOTP);
+
+// Route to verify OTP and reset password
+router.post('/reset-password', authController.verifyOTPAndReset);
 
 router.post("/send-otp", async (req, res) => {
     const { email } = req.body;

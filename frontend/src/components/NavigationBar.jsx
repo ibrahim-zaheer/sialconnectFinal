@@ -649,6 +649,9 @@ const Navbar = () => {
                   {/* Supplier Links */}
                   {user.role === "supplier" && (
                     <>
+                     <NavLink to="/about" onClick={closeMobileMenu} isActive={isActive("/about")}>
+                    <i className="ri-information-line mr-1"></i> {t("About")}
+                  </NavLink>
                       <NavLink to="/SupplierProducts" onClick={closeMobileMenu} isActive={isActive("/SupplierProducts")}>
                         <i className="ri-box-3-line mr-1"></i> {t("Products")}
                       </NavLink>
@@ -664,6 +667,9 @@ const Navbar = () => {
                   {/* Exporter Links */}
                   {user.role === "exporter" && (
                     <>
+                     <NavLink to="/about" onClick={closeMobileMenu} isActive={isActive("/about")}>
+                    <i className="ri-information-line mr-1"></i> {t("About")}
+                  </NavLink>
                       <NavLink to="/ExporterProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
                         <i className="ri-search-line mr-1"></i> {t("Products")}
                       </NavLink>
