@@ -433,12 +433,17 @@ import { useSelector } from "react-redux";
 import AgreementComponent from "../components/AgreementComponent";
 import AgreementPDFGenerator from "../components/AgreementPDFGenerator";
 import PaymentForm from "../components/payment/PaymentForm";
+import WriteReview from "../../reviews/WriteReviews";
 
 const SupplierOrderDetails = () => {
   const { orderId } = useParams();
   const user = useSelector((state) => state.user);
   const userName = user?.name;
   const userRole = user?.role;
+
+
+    const userID = user?.id;
+   
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -539,6 +544,7 @@ const SupplierOrderDetails = () => {
       </div>
     );
   }
+  const hasReviewed = order.reviews?.some((review) => review.user._id === user._id) || false;
 
   return (
     <div className="bg-neutral-50 min-h-screen p-6">
@@ -769,7 +775,21 @@ const SupplierOrderDetails = () => {
             <p className="text-red-700"><strong>Reason:</strong> {order.rejectionReason}</p>
           </div>
         )}
+{order.Agreement === "Accepted" && !hasReviewed && (
+          <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
+            <h2 className="text-xl font-semibold text-neutral-800 mb-4">Write a Review</h2>
+            <p>Exporter ID : {order.exporterId?._id} </p>
+            <p>UserID : {userID} </p>
+            <p>UserRole : {userRole} </p>
 
+            <WriteReview 
+              supplierId={order.exporterId?._id} 
+              productName={order.productId?.name} 
+              reviewerRole={userRole} // pass the userRole (exporter/supplier)
+              orderId={order._id} // pass the orderId to associate the review
+            />
+          </div>
+        )}
         {/* Message Display */}
         {message && (
           <div className={`p-4 rounded-lg ${

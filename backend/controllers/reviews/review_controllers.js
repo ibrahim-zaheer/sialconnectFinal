@@ -193,9 +193,16 @@ const submitReviewAndNotify = async (req, res) => {
 
       // Determine who is being reviewed
       // const reviewedUserId = reviewerRole === "exporter" ? req.user._id : supplierId;  // If reviewer is the exporter, supplier is the reviewed user.
-      const reviewedUserId = reviewerRole === "exporter" ? supplierId : req.user._id;
+    //   const reviewedUserId = reviewerRole === "exporter" ? supplierId : req.user._id;
+       const reviewedUserId = supplierId;
+
+      if (reviewerRole ==="exporter"){
       console.log("supplier id is: "+supplierId);
-      console.log("exporter id is: "+req.user._id);
+      console.log("exporter id is: "+req.user._id);}
+      else if(reviewerRole === "supplier"){
+        console.log("exporter id is: "+supplierId);
+      console.log("supplier(user id) id is: "+req.user._id);
+      }
 
 
       // Step 1: Save the review
