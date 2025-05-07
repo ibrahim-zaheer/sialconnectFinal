@@ -4,7 +4,7 @@ const  authenticateMiddleware = require("../../middleware/authMiddleware");
 
 const  isAuthorized = require("../../middleware/isAuthorized");
 
-const {WriteReview,getAllReviews,getReviewsBySupplier,submitReviewAndNotify,checkReviewExists} = require("../../controllers/reviews/review_controllers")
+const {WriteReview,getAllReviews,getReviewsBySupplier,getReviewsByExporter,submitReviewAndNotify,checkReviewExists} = require("../../controllers/reviews/review_controllers")
 
 const router = express.Router();
 
@@ -18,6 +18,7 @@ router.get("/",getAllReviews);
 
 // Get reviews by supplier email (Public)
 router.get("/supplier/:supplierId",getReviewsBySupplier);
+router.get("/exporter/:exporterId",getReviewsByExporter);
 
 router.get('/check/:orderId', authenticateMiddleware,checkReviewExists);
 

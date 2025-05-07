@@ -118,12 +118,13 @@ const ProfileSidebar = ({ activeTab, setActiveTab, user }) => {
   const baseMenuItems = [
     { id: "profile", label: "Profile", icon: "user" },
     { id: "offers", label: "Offers", icon: "briefcase" },
+    { id: "reviews", label: "Reviews", icon: "star" },
   ];
 
   // Additional menu items for non-exporters
   const additionalMenuItems = userRole !== "exporter" ? [
     { id: "payments", label: "Payments", icon: "credit-card" },
-    { id: "reviews", label: "Reviews", icon: "star" },
+    // { id: "reviews", label: "Reviews", icon: "star" },
   ] : [];
 
   // Combine menu items based on user role

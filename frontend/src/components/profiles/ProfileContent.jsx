@@ -109,6 +109,7 @@ import SupplierOfferPage from "../../pages/offers/SupplierOfferPage";
 import ExporterOfferPage from "../../pages/offers/ExporterOfferPage";
 import PaymentListPage from "../../pages/payments/PaymentListPage";
 import SupplierReviews from "../reviews/ReviewsBySupplier";
+import ExporterReviews from "../reviews/ReviewsByExporter";
 import { useSelector } from "react-redux";
 import { useTranslation, Trans } from "react-i18next";
 
@@ -121,7 +122,7 @@ const ProfileContent = ({ activeTab, user }) => {
 
   const renderContent = () => {
     // For exporters, only show profile and offers tabs
-    if (userRole === "exporter" && (activeTab === "payments" || activeTab === "reviews")) {
+    if (userRole === "exporter" && (activeTab === "payments")) {
       return null;
     }
 
@@ -137,7 +138,12 @@ const ProfileContent = ({ activeTab, user }) => {
       case "payments":
         return <PaymentListPage />;
       case "reviews":
-        return <SupplierReviews supplierId={user.id} />;
+        
+        return userRole === "exporter" ? (
+          <ExporterReviews exporterId={user.id} />
+        ) : (
+          <SupplierReviews supplierId={user.id} />
+        );
       default:
         return <ProfileInfo user={user} />;
     }
