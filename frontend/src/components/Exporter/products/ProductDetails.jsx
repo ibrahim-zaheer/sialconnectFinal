@@ -261,6 +261,7 @@ import Chat from "../../Chat/Chat";
 import AverageReviewBySupplier from "../../reviews/averageReviewBySuppliers";
 import CreateOffer from "../../offer/createOffer";
 import BackButton from "../../BackButton";
+import RelatedProducts from "./RelatedProducts";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -619,8 +620,14 @@ const ProductDetails = () => {
       </div>
     </div>
   </div>
+  
 )}
-      
+      {product && (
+  <RelatedProducts 
+    currentProductId={product._id} 
+    currentCategory={product.category} 
+  />
+)}
     </div>
   );
 };

@@ -439,19 +439,46 @@ exports.getProductsBySupplier = async (req, res) => {
 //         res.status(500).json({ message: error.message });
 //     }
 // };
+// exports.getAllProducts = async (req, res) => {
+//     try {
+//         // Fetch products and populate the supplier field to get the supplier details
+//         const products = await Product.find()
+//             .populate('supplier', 'name city') // Populating supplier details (name and city)
+//             .exec();
+
+//         res.status(200).json(products);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
+
+// controllers/productController.js
 exports.getAllProducts = async (req, res) => {
     try {
-        // Fetch products and populate the supplier field to get the supplier details
-        const products = await Product.find()
-            .populate('supplier', 'name city') // Populating supplier details (name and city)
-            .exec();
+        const { category, limit, exclude } = req.query;
+        let query = {};
 
+        if (category) {
+            query.category = category;
+        }
+        if (exclude) {
+            query._id = { $ne: exclude };
+        }
+
+        let productsQuery = Product.find(query)
+            .populate('supplier', 'name profilePicture city');
+
+        if (limit) {
+            productsQuery = productsQuery.limit(parseInt(limit));
+        }
+
+        const products = await productsQuery.exec();
         res.status(200).json(products);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
-
 exports.getProductDetails = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id)
