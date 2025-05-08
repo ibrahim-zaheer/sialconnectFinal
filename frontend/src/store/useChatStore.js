@@ -271,6 +271,7 @@ export const useChatStore = create((set, get) => ({
           },
         }
       );
+      console.log(res.data); 
       set({ messages: [...messages, res.data] });
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to send message");

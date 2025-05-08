@@ -326,7 +326,7 @@ const MessageInput = () => {
                 onClick={() => fileInputRef.current?.click()}
                 aria-label="Attach image"
               >
-                {/* <Image size={20} /> */}
+                <Image size={20} />
               </button>
             </div>
           </div>

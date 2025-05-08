@@ -15,6 +15,9 @@ const messageSchema = new mongoose.Schema(
     text: {
       type: String,
     },
+    image: {
+      type: String,
+    },
 
     voiceMessage: {
       type: String, // This will store the Firebase Storage URL

@@ -3,6 +3,8 @@
 const User = require("../models/user");
 // import Message from "../models/message.model";
 
+
+const cloudinary = require("../config/cloudinaryConfig");
 const Message = require("../models/message.model");
 
 
@@ -127,13 +129,13 @@ const getUsersForSidebar = async (req, res) => {
 
  const sendMessage = async (req, res) => {
     try {
-      const { text, voiceMessage, duration } = req.body;
+      const { text, voiceMessage, duration,image } = req.body;
       const { id: receiverId } = req.params;
       const senderId = req.user._id;
   
       
           // Validate that at least one message type exists
-    if (!text && !voiceMessage) {
+    if (!text && !voiceMessage && !image) {
       return res.status(400).json({ error: "Message content is required" });
     }
 
@@ -141,6 +143,17 @@ const getUsersForSidebar = async (req, res) => {
     if (voiceMessage && (!duration || typeof duration !== 'number')) {
       return res.status(400).json({ error: "Duration is required for voice messages" });
     }
+    let imageUrl = null;
+    if (image) {
+      // Upload base64 image to cloudinary
+      try {
+        const uploadResponse = await cloudinary.uploader.upload(image);
+        imageUrl = uploadResponse.secure_url;
+      } catch (error) {
+        return res.status(500).json({ error: "Image upload failed" });
+      }
+    }
+
   
       // const newMessage = new Message({
       //   senderId,
@@ -153,6 +166,7 @@ const getUsersForSidebar = async (req, res) => {
       senderId,
       receiverId,
       text: text || null,
+      image: imageUrl || null, 
       voiceMessage: voiceMessage || null,
       duration: voiceMessage ? duration : null
     });
@@ -166,6 +180,7 @@ const getUsersForSidebar = async (req, res) => {
           _id: newMessage._id,
           sender: newMessage.senderId, // Convert to sender
           receiver: newMessage.receiverId, // Convert to receiver
+          image: newMessage.image,
           text: newMessage.text,
           voiceMessage: newMessage.voiceMessage,
         duration: newMessage.duration,
