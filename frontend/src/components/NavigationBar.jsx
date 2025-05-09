@@ -673,6 +673,9 @@ const Navbar = () => {
                       <NavLink to="/ExporterProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
                         <i className="ri-search-line mr-1"></i> {t("Products")}
                       </NavLink>
+                       <NavLink to="/ExporterRecommendedProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
+                        <i className="ri-search-line mr-1"></i> {t("RecommendedProducts")}
+                      </NavLink>
                       <NavLink to="/exporter" onClick={closeMobileMenu} isActive={isActive("/exporter")}>
                         <i className="ri-auction-line mr-1"></i> {t("Auction")}
                       </NavLink>

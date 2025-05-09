@@ -134,6 +134,7 @@ import ExporterOfferPage from "./pages/offers/ExporterOfferPage";
 import SupplierOfferPage from "./pages/offers/SupplierOfferPage";
 import SupplierOrderPage from "./pages/orders/SupplierOrderPage";
 import ExporterProducts from "./pages/Exporter/ExporterProducts";
+import RecommendedProductsPage from "./pages/Exporter/RecommendedProductsPage";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import SupplierList from "./pages/admin/functions/SupplierList";
 // import SupplierOrderPageByAdmin from "./pages/admin/functions/SupplierOrderPageByAdmin";
@@ -154,6 +155,7 @@ import ExporterOrderPage from "./pages/orders/ExporterOrderPage";
 import SupplierOrderDetails from "./components/orders/supplier/SupplierOrderDetails";
 import SupplierOrderDetailsPage from "./pages/orders/SupplierOrderDetailsPage";
 import ExporterOrderDetailsPage from "./pages/orders/ExporterOrderDetailsPage";
+
 
 import PaymentListPage from "./pages/payments/PaymentListPage";
 import AdminOrderDetails from "./components/orders/admin/AdminOrderDetails";
@@ -274,6 +276,8 @@ const Main = () => {
         <Route path="/roleSelection" element={<RoleSelection />} />
         <Route path="/Exporter" element={<ExporterPage />} />
         <Route path="/ExporterProducts" element={<ExporterProducts />} />
+        <Route path="/ExporterRecommendedProducts" element={<RecommendedProductsPage />} />
+
         <Route path="/Supplier" element={<SupplierPage />} />
         <Route path="/signIn" element={<UserAuth />} />
         <Route path="/supplier/product/:id" element={<ProductDetails />} />

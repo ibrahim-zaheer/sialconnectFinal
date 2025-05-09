@@ -493,4 +493,31 @@ exports.getProductDetails = async (req, res) => {
     }
 };
 
+exports.getRecommendations = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId).populate("favorites");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const favoriteCategories = [
+      ...new Set(user.favorites.map((product) => product.category)),
+    ];
+
+    if (favoriteCategories.length === 0) {
+      return res.status(200).json([]); // No favorites = no recommendations
+    }
+
+    const recommendations = await Product.find({
+      category: { $in: favoriteCategories },
+      _id: { $nin: user.favorites.map((p) => p._id) },
+    }).limit(10);
+
+    res.json(recommendations);
+  } catch (error) {
+    console.error("Error generating recommendations:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 

@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import CategoryDropdown from "../../components/Supplier/products/component/CategoryDropdown";
 import FavoriteToggle from "../../components/favourites/FavoriteToggle";
 import ProductSearch from "../../components/ProductSearch";
+import RecommendedProducts from "../../components/Exporter/products/RecommendedProducts";
 
 const ExporterProducts = () => {
   const [products, setProducts] = useState([]);
@@ -669,14 +670,14 @@ const supplierNameFromState = location.state?.supplierName || "";
                       <img
                         src={
                           product.image?.[0] ||
-                          "https://via.placeholder.com/300?text=No+Image"
+                          "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600"
                         }
                         alt={product.name}
                         className="w-40 h-40 object-cover rounded-md"
                         onError={(e) => {
                           e.target.onerror = null;
                           e.target.src =
-                            "https://via.placeholder.com/300?text=No+Image";
+                            "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600";
                         }}
                       />
                     </div>
@@ -752,6 +753,7 @@ const supplierNameFromState = location.state?.supplierName || "";
           </motion.div>
         )}
       </div>
+     
     </div>
   );
 };

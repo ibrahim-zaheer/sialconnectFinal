@@ -14,7 +14,7 @@ const checkStatus = require("../../../middleware/checkStatus");
 // router.get("/update", authenticateMiddleware, productController.updateProduct);
 
 // router.get("/delete", authenticateMiddleware, productController.deleteProduct);
-
+router.get("/recommendations",authenticateMiddleware,productController.getRecommendations);
 
 router.get("/read", authenticateMiddleware, productController.getProductsBySupplier);
 // router.post("/create", authenticateMiddleware,uploadProductImage.single("image") ,productController.createProduct);
@@ -35,6 +35,8 @@ router.get("/readAllProducts",productController.getAllProducts)
 
 // for viewing all the details of the suppliers
 router.get("/:id", productController.getProductDetails);
+
+
 
 
 module.exports = router;
