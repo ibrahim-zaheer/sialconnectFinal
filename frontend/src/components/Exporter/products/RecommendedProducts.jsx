@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import ProductCard from '../../../pages/Exporter/ProductCard';
 
 const RecommendedProducts = () => {
   const [products, setProducts] = useState([]);
@@ -30,36 +31,19 @@ const RecommendedProducts = () => {
 
   if (products.length === 0) return <p>No recommendations available.</p>;
 
-  return (
+   return (
     <div>
-      <h2>Recommended Products</h2>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+      <h2 className="text-2xl font-bold text-neutral-900 mb-6">Recommended Products</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
-          <div
+          <ProductCard 
             key={product._id}
-            style={{
-              border: '1px solid #ccc',
-              borderRadius: '8px',
-              padding: '1rem',
-              width: '250px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            }}
-          >
-            <img
-              src={product.image[0]}
-              alt={product.name}
-              style={{
-                width: '100%',
-                height: '150px',
-                objectFit: 'cover',
-                borderRadius: '4px',
-              }}
-            />
-            <h3 style={{ marginTop: '0.5rem' }}>{product.name}</h3>
-            <p>{product.description.slice(0, 60)}...</p>
-            <p><strong>Category:</strong> {product.category}</p>
-            <p><strong>Price:</strong> ${product.price}</p>
-          </div>
+            product={product}
+            role="exporter" // or whatever role is appropriate
+            favorites={[]} // pass favorites if you have them
+            setFavorites={() => {}} // pass setFavorites if you have them
+            userId={null} // pass userId if you have it
+          />
         ))}
       </div>
     </div>

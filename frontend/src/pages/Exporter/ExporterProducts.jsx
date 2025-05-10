@@ -1,14 +1,13 @@
-
-
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link,useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import CategoryDropdown from "../../components/Supplier/products/component/CategoryDropdown";
 import FavoriteToggle from "../../components/favourites/FavoriteToggle";
 import ProductSearch from "../../components/ProductSearch";
 import RecommendedProducts from "../../components/Exporter/products/RecommendedProducts";
+import { fetchRecommendedProducts } from "../../components/Exporter/products/hooks/fetchRecommendedProducts";
 
 const ExporterProducts = () => {
   const [products, setProducts] = useState([]);
@@ -19,13 +18,15 @@ const ExporterProducts = () => {
   const [favorites, setFavorites] = useState([]);
 
   const location = useLocation();
-const supplierNameFromState = location.state?.supplierName || "";
+  const supplierNameFromState = location.state?.supplierName || "";
 
   // Filter states
   const [priceRange, setPriceRange] = useState(10000);
   const [selectedCities, setSelectedCities] = useState([]);
   const [supplierName, setSupplierName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
 
   // Available options for filters
   const cities = [
@@ -165,6 +166,16 @@ const supplierNameFromState = location.state?.supplierName || "";
   }, []);
 
   useEffect(() => {
+    const fetchData = async () => {
+      const recommendations = await fetchRecommendedProducts();
+      console.log(recommendations);
+      setRecommendedProducts(recommendations);
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
     if (supplierNameFromState && products.length > 0) {
       setSupplierName(supplierNameFromState);
       applyFilters(
@@ -175,8 +186,7 @@ const supplierNameFromState = location.state?.supplierName || "";
         selectedCategory
       );
     }
-  }, [supplierNameFromState, products]); 
-  
+  }, [supplierNameFromState, products]);
 
   const handleSearchChange = (e) => {
     const query = e.target.value;
@@ -240,7 +250,6 @@ const supplierNameFromState = location.state?.supplierName || "";
     );
   };
 
-  
   const applyFilters = (
     search = searchQuery,
     price = priceRange,
@@ -253,21 +262,23 @@ const supplierNameFromState = location.state?.supplierName || "";
         product.name?.toLowerCase().includes(search.toLowerCase()) ||
         product.description?.toLowerCase().includes(search.toLowerCase());
       const isWithinPrice = product.price <= price;
-  
+
       // Update this line to filter based on supplier's city
       const matchesCity =
-        cities.length === 0 || (product.supplier?.city && cities.includes(product.supplier.city));
-  
-  // Filter based on supplier's name
-  const matchesSupplier =
-  !supplier ||
-  (product.supplier?.name &&
-    product.supplier.name.toLowerCase().includes(supplier.toLowerCase()));
-  
+        cities.length === 0 ||
+        (product.supplier?.city && cities.includes(product.supplier.city));
+
+      // Filter based on supplier's name
+      const matchesSupplier =
+        !supplier ||
+        (product.supplier?.name &&
+          product.supplier.name.toLowerCase().includes(supplier.toLowerCase()));
+
       const matchesCategory =
         !category ||
-        (product.category && product.category.toLowerCase() === category.toLowerCase());
-  
+        (product.category &&
+          product.category.toLowerCase() === category.toLowerCase());
+
       return (
         matchesSearch &&
         isWithinPrice &&
@@ -276,10 +287,9 @@ const supplierNameFromState = location.state?.supplierName || "";
         matchesCategory
       );
     });
-  
+
     setFilteredProducts(filtered);
   };
-  
 
   const resetFilters = () => {
     setPriceRange(10000);
@@ -600,111 +610,117 @@ const supplierNameFromState = location.state?.supplierName || "";
             initial="hidden"
             animate="visible"
           >
-            {filteredProducts.map((product) => (
-              <motion.div
-                key={product._id}
-                className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden hover:shadow-md transition-shadow duration-300"
-                variants={cardVariants}
-                whileHover="hover"
-              >
-                <div className="p-6">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h2 className="text-lg font-semibold text-neutral-900 line-clamp-2">
-                        {product.name}
-                      </h2>
-                      <p className="text-primary-600 font-medium mt-1">
-                        Rs {product.price?.toLocaleString() || "N/A"} per piece
-                      </p>
-                    </div>
-                    {role === "exporter" && (
-                      <FavoriteToggle
-                        productId={product._id}
-                        favorites={favorites}
-                        setFavorites={setFavorites}
-                        userId={userId}
-                      />
-                    )}
-                  </div>
+            {filteredProducts.map((product) => {
+              const isRecommended = recommendedProducts.some(
+                (recommendedProduct) => {
+                  console.log(
+                    "Checking if product._id matches recommendedProduct._id"
+                  );
+                  console.log("Product _id:", product._id);
+                  console.log(
+                    "Recommended Product _id:",
+                    recommendedProduct._id
+                  );
+                  if (recommendedProduct._id === product._id) {
+                    console.log("it is matching");
+                  }
+                  return recommendedProduct._id === product._id;
+                }
+              );
 
-                  {product.supplierName && (
-                    <p className="text-sm text-neutral-600 mt-1">
-                      <span className="font-medium">Supplier:</span>{" "}
-                      {product.supplierName}
-                    </p>
-                  )}
-                    {product.supplier?.name && (
-                    <p className="text-sm text-neutral-600 mt-1">
-                      <span className="font-medium">Supplier:</span>{" "}
-                      {product.supplier.name}
-                    </p>
-                  )}
-                   {product.supplier?.city && (
-                <p className="text-sm text-neutral-600">
-                    <span className="font-medium">Location:</span>{" "}
-                    {product.supplier.city}  {/* Render the supplier's city */}
-                </p>
-            )}
-                  {product.city && (
-                    <p className="text-sm text-neutral-600">
-                      <span className="font-medium">Location:</span>{" "}
-                      {product.city}
-                    </p>
-                  )}
-
-                  <div className="mt-4">
-                    <p className="text-neutral-600 text-sm line-clamp-3">
-                    {product.description.length > 100
-                            ? `${product.description.substring(0, 100)}...`
-                            : product.description}
-                    </p>
-                    {product.category && (
-                      <span className="inline-block mt-2 bg-neutral-100 text-neutral-800 text-xs px-2 py-1 rounded">
-                        {product.category}
-                      </span>
-                    )}
-                  </div>
-
-                  {product.image && (
-                    <div className="mt-4 flex justify-center overflow-hidden">
-                      <img
-                        src={
-                          product.image?.[0] ||
-                          "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600"
-                        }
-                        alt={product.name}
-                        className="w-40 h-40 object-cover rounded-md"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src =
-                            "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600";
-                        }}
-                      />
-                    </div>
-                  )}
-
-                  <Link
-                    to={`/supplier/product/${product._id}`}
-                    className="text-primary-600 hover:text-white hover:bg-primary-800 duration-300 transition-all font-medium text-sm border-2 rounded-lg border-primary-600 p-2 mt-5 flex justify-center items-center"
-                  >
-                    View Details
-                    <svg
-                      className="w-4 h-4 ml-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+              return (
+                <motion.div
+                  key={product._id}
+                  className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden hover:shadow-md transition-shadow duration-300"
+                >
+                  <div className="p-6">
+                    {/* Display "Recommended" tag if applicable */}
+                    <motion.div
+                      key={product._id}
+                      className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden hover:shadow-md transition-shadow duration-300 relative" // Add `relative` class
+                      variants={cardVariants}
+                      whileHover="hover"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
+                      <div className="p-6">
+                        {/* Display "Recommended" tag if applicable */}
+                        {isRecommended && (
+                          <span className="absolute top-2 left-2 bg-primary-600 text-black text-xs px-2 py-1 rounded-full">
+                            Recommended
+                          </span>
+                        )}
+                        {/* Rest of the product details */}
+                      </div>
+                    </motion.div>
+
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h2 className="text-lg font-semibold text-neutral-900 line-clamp-2">
+                          {product.name}
+                        </h2>
+                        <p className="text-primary-600 font-medium mt-1">
+                          Rs {product.price?.toLocaleString() || "N/A"} per
+                          piece
+                        </p>
+                      </div>
+                      {role === "exporter" && (
+                        <FavoriteToggle
+                          productId={product._id}
+                          favorites={favorites}
+                          setFavorites={setFavorites}
+                          userId={userId}
+                        />
+                      )}
+                    </div>
+
+                    <div className="mt-4">
+                      <p className="text-neutral-600 text-sm line-clamp-3">
+                        {product.description.length > 100
+                          ? `${product.description.substring(0, 100)}...`
+                          : product.description}
+                      </p>
+                      {product.category && (
+                        <span className="inline-block mt-2 bg-neutral-100 text-neutral-800 text-xs px-2 py-1 rounded">
+                          {product.category}
+                        </span>
+                      )}
+                    </div>
+
+                    {product.image && (
+                      <div className="mt-4 flex justify-center overflow-hidden">
+                        <img
+                          src={
+                            product.image?.[0] ||
+                            "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600"
+                          }
+                          alt={product.name}
+                          className="w-40 h-40 object-cover rounded-md"
+                        />
+                      </div>
+                    )}
+
+                    <Link
+                      to={`/supplier/product/${product._id}`}
+                      className="text-primary-600 hover:text-white hover:bg-primary-800 duration-300 transition-all font-medium text-sm border-2 rounded-lg border-primary-600 p-2 mt-5 flex justify-center items-center"
+                    >
+                      View Details
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         ) : (
           <motion.div
@@ -753,7 +769,6 @@ const supplierNameFromState = location.state?.supplierName || "";
           </motion.div>
         )}
       </div>
-     
     </div>
   );
 };
