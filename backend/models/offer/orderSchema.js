@@ -1,6 +1,23 @@
 const mongoose = require("mongoose");
+// const customAlphabet = require("nanoid");
+
+// const numericAlphabet = "0123456789";
+// const generateOrderId = customAlphabet(numericAlphabet, 6);
+
+let generateOrderId;
+(async () => {
+  const { customAlphabet } = await import('nanoid');
+  const numericAlphabet = "0123456789";
+  generateOrderId = customAlphabet(numericAlphabet, 6);
+})();
 
 const OrderSchema = new mongoose.Schema({
+  orderId: {
+    type: String,
+    unique: true,  // Ensure the ID is unique
+    required: false,
+    default: () => generateOrderId(),  // Generate a new ID when creating an order
+  },
   offerId: { type: mongoose.Schema.Types.ObjectId, ref: "Offer", required: false },
   auctionId: { 
     type: mongoose.Schema.Types.ObjectId, 
