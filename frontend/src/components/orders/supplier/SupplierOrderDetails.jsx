@@ -553,7 +553,8 @@ const SupplierOrderDetails = () => {
         <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
           <h1 className="text-2xl font-bold text-neutral-800 mb-2">Order Details</h1>
           <div className="flex flex-wrap items-center gap-2 text-sm text-neutral-600">
-            <span>Order ID: {orderId}</span>
+            {/* <span>Order ID: {orderId}</span> */}
+            {order.orderId && <p className="text-neutral-600">Order ID: {order.orderId}</p>}
             <span className="px-1">•</span>
             <span>Status: 
               <span className={`ml-1 px-2 py-0.5 rounded-full text-xs font-medium ${

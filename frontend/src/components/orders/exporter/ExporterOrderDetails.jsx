@@ -890,8 +890,8 @@ const ExporterOrderDetails = () => {
         {/* Header Section */}
         <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
           <h1 className="text-2xl font-bold text-neutral-800 mb-2">Order Details</h1>
-          <p className="text-neutral-600">Order ID: {orderId}</p>
-          {order.orderId && <p className="text-neutral-600">Order Nano ID: {order.orderId}</p>}
+          {/* <p className="text-neutral-600">Order ID: {orderId}</p> */}
+          {order.orderId && <p className="text-neutral-600">Order ID: {order.orderId}</p>}
 
 
         </div>

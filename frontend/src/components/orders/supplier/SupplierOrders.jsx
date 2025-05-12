@@ -307,6 +307,12 @@ const SupplierOrders = () => {
                 </div>
 
                 <div className="space-y-3 text-neutral-700">
+                     <div className="flex justify-between">
+                    <span>Order ID:</span>
+                    <span className="font-medium">
+                      {order.orderId || "Unknown"}
+                    </span>
+                  </div>
                   <div className="flex justify-between">
                     <span>Exporter:</span>
                     <span className="font-medium">{order.exporterId?.name || "Unknown"}</span>

@@ -41,7 +41,8 @@ const PDFGenerator = ({ order, userName, userRole }) => {
 
     // Order details in a table
     const orderData = [
-      ["Order ID", String(order._id)],
+      // ["Order ID", String(order._id)],
+      ["Order ID", String(order.orderId)],
       ["Product", order.productId?.name || "Unknown Product"],
       userInfo,
       partnerInfo,
