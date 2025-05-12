@@ -11,12 +11,28 @@ let generateOrderId;
   generateOrderId = customAlphabet(numericAlphabet, 6);
 })();
 
+const generateUniqueOrderId = async () => {
+  let isUnique = false;
+  let orderId;
+
+  while (!isUnique) {
+    orderId = generateOrderId();
+    const existingOrder = await mongoose.model("Order").findOne({ orderId });
+
+    if (!existingOrder) {
+      isUnique = true; // No existing order with this orderId, so it's unique
+    }
+  }
+
+  return orderId;
+};
+
 const OrderSchema = new mongoose.Schema({
   orderId: {
     type: String,
     unique: true,  // Ensure the ID is unique
     required: false,
-    default: () => generateOrderId(),  // Generate a new ID when creating an order
+    // default: () => generateOrderId(),  // Generate a new ID when creating an order
   },
   offerId: { type: mongoose.Schema.Types.ObjectId, ref: "Offer", required: false },
   auctionId: { 
@@ -139,6 +155,13 @@ const OrderSchema = new mongoose.Schema({
   },
 
   createdAt: { type: Date, default: Date.now },
+});
+
+OrderSchema.pre("save", async function(next) {
+  if (!this.orderId) {
+    this.orderId = await generateUniqueOrderId();  // Generate and assign unique orderId
+  }
+  next();
 });
 
 module.exports = mongoose.model("Order", OrderSchema);
