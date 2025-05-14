@@ -1,12 +1,11 @@
 {
-    "loading": "Loading...",
-    "tabs": {
-      "profile": "Profile",
-      "offers": "Offers",
-      "payments": "Payments",
-      "reviews": "Reviews"
-    },
-    "messages": {
-      "restrictedAccess": "This section is not available for your account type"
-    }
+  "profile_sidebar": {
+    "profile": "Profile",
+    "offers": "Offers",
+    "reviews": "Reviews",
+    "payments": "Payments",
+    "footer_text": "© Your App",
+    "guest": "Guest",
+    "no_role": "No Role"
   }
+}

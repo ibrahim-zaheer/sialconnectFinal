@@ -1,14 +1,29 @@
+
+
 // import React from "react";
 // import { motion } from "framer-motion";
 // import { NavLink } from "react-router-dom";
+// import { useSelector } from "react-redux";
 
 // const ProfileSidebar = ({ activeTab, setActiveTab, user }) => {
-//   const menuItems = [
+//   const currentUser = useSelector((state) => state.user);
+//   const userRole = currentUser?.role || user?.role;
+
+//   // Base menu items
+//   const baseMenuItems = [
 //     { id: "profile", label: "Profile", icon: "user" },
 //     { id: "offers", label: "Offers", icon: "briefcase" },
-//     { id: "payments", label: "Payments", icon: "credit-card" },
 //     { id: "reviews", label: "Reviews", icon: "star" },
 //   ];
+
+//   // Additional menu items for non-exporters
+//   const additionalMenuItems = userRole !== "exporter" ? [
+//     { id: "payments", label: "Payments", icon: "credit-card" },
+//     // { id: "reviews", label: "Reviews", icon: "star" },
+//   ] : [];
+
+//   // Combine menu items based on user role
+//   const menuItems = [...baseMenuItems, ...additionalMenuItems];
 
 //   return (
 //     <motion.div
@@ -69,7 +84,7 @@
 //   );
 // };
 
-// // Icon component to clean up the code
+// // Icon component remains the same
 // const IconComponent = ({ icon }) => {
 //   const iconClasses = "w-5 h-5";
   
@@ -109,22 +124,23 @@ import React from "react";
 import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next"; // Import the hook for translation
 
 const ProfileSidebar = ({ activeTab, setActiveTab, user }) => {
+  const { t } = useTranslation();  // Initialize the useTranslation hook
   const currentUser = useSelector((state) => state.user);
   const userRole = currentUser?.role || user?.role;
 
   // Base menu items
   const baseMenuItems = [
-    { id: "profile", label: "Profile", icon: "user" },
-    { id: "offers", label: "Offers", icon: "briefcase" },
-    { id: "reviews", label: "Reviews", icon: "star" },
+    { id: "profile", label: t("profile:profile_sidebar.profile"), icon: "user" },
+    { id: "offers", label: t("profile:profile_sidebar.offers"), icon: "briefcase" },
+    { id: "reviews", label: t("profile:profile_sidebar.reviews"), icon: "star" },
   ];
 
   // Additional menu items for non-exporters
   const additionalMenuItems = userRole !== "exporter" ? [
-    { id: "payments", label: "Payments", icon: "credit-card" },
-    // { id: "reviews", label: "Reviews", icon: "star" },
+    { id: "payments", label: t("profile_sidebar.payments"), icon: "credit-card" },
   ] : [];
 
   // Combine menu items based on user role
@@ -149,8 +165,8 @@ const ProfileSidebar = ({ activeTab, setActiveTab, user }) => {
               />
             </div>
             <div>
-              <h3 className="font-semibold text-text-primary">{user.name || "Guest"}</h3>
-              <p className="text-sm text-primary-600">{user.role || "No Role"}</p>
+              <h3 className="font-semibold text-text-primary">{user.name || t("profile_sidebar.guest")}</h3>
+              <p className="text-sm text-primary-600">{user.role || t("profile_sidebar.no_role")}</p>
             </div>
           </div>
         </div>
@@ -182,7 +198,7 @@ const ProfileSidebar = ({ activeTab, setActiveTab, user }) => {
 
         {/* Footer (optional) */}
         <div className="p-4 border-t border-neutral-200">
-          <p className="text-xs text-neutral-500">© {new Date().getFullYear()} Your App</p>
+          <p className="text-xs text-neutral-500">{t("profile_sidebar.footer_text")} {new Date().getFullYear()}</p>
         </div>
       </div>
     </motion.div>
