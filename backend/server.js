@@ -196,6 +196,8 @@ const path = require("path");
 const Message = require("./models/message.model");
 const authRoutes = require("./routes/auth");
 const supplierRoutes = require("./routes/supplier/supplierRoutes");
+const exporterRoutes = require("./routes/exporter/exporterRoutes")
+
 const messageRoutes = require("./routes/messageRoutes");
 const auctionRoutes = require("./routes/bidding/auctionItemRoutes");
 
@@ -241,6 +243,9 @@ app.use(express.json());
 // ✅ Prefix all API routes with `/api` to avoid conflicts with frontend routes
 app.use("/api/auth", authRoutes);
 app.use("/api/supplier", supplierRoutes);
+app.use("/api/exporter", exporterRoutes);
+
+
 app.use("/api/message", messageRoutes);
 app.use("/api/bidding", auctionRoutes);
 

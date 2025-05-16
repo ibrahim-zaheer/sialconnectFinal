@@ -3,6 +3,18 @@ const mongoose = require("mongoose");
 
 // const numericAlphabet = "0123456789";
 // const generateOrderId = customAlphabet(numericAlphabet, 6);
+const { Counter } = require("./CounterSchema");  
+
+const getNextOrderId = async () => {
+  const counter = await Counter.findOneAndUpdate(
+    { _id: "orderId" },
+    { $inc: { seq: 1 } },
+    { new: true, upsert: true }
+  );
+  
+  // Format the number as needed, e.g., 6 digit zero-padded string
+  return counter.seq.toString().padStart(6, '0');
+};
 
 let generateOrderId;
 (async () => {
@@ -32,7 +44,7 @@ const OrderSchema = new mongoose.Schema({
     type: String,
     unique: true,  // Ensure the ID is unique
     required: false,
-    // default: () => generateOrderId(),  // Generate a new ID when creating an order
+    default: "000000",  // Generate a new ID when creating an order
   },
   offerId: { type: mongoose.Schema.Types.ObjectId, ref: "Offer", required: false },
   auctionId: { 
@@ -157,9 +169,16 @@ const OrderSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-OrderSchema.pre("save", async function(next) {
+// OrderSchema.pre("save", async function(next) {
+//   if (!this.orderId) {
+//     this.orderId = await generateUniqueOrderId();  // Generate and assign unique orderId
+//   }
+//   next();
+// });
+
+OrderSchema.pre("save", async function (next) {
   if (!this.orderId) {
-    this.orderId = await generateUniqueOrderId();  // Generate and assign unique orderId
+    this.orderId = await getNextOrderId();
   }
   next();
 });

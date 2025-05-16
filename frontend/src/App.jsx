@@ -161,6 +161,8 @@ import PaymentListPage from "./pages/payments/PaymentListPage";
 import AdminOrderDetails from "./components/orders/admin/AdminOrderDetails";
 import ExporterAuctions from "./components/bidding/ExporterAuctions";
 import ExporterLayout from "./components/bidding/ExporterLayout";
+
+import PricingPage from "./pages/pricing/PricingPage";
 import About from "./pages/About";
 
 const App = () => {
@@ -338,6 +340,11 @@ const Main = () => {
         <Route
           path="/exporter/order/:orderId"
           element={<ExporterOrderDetailsPage />}
+        />
+
+        <Route
+               path="/pricing"
+          element={<PricingPage />}
         />
 
         {/* Admin */}

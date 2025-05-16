@@ -59,6 +59,12 @@ const UserSchema = new mongoose.Schema({
     enum: ['active', 'suspended', 'pending'],
     default: 'active'
   },
+  subscription: {
+  plan: { type: String, enum: ['free', 'pro'], default: 'free' },
+  expiryDate: { type: Date }, // Set when upgrading to 'pro'
+  paymentProviderId: { type: String }, // Stripe Subscription ID (not just PaymentIntent)
+  status: { type: String, enum: ['active', 'canceled', 'expired'], default: 'active' } // Add subscription status
+},
   createdAt: {
     type: Date,
     default: Date.now

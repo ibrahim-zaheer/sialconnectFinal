@@ -165,22 +165,52 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 // Load initial user data from localStorage, if available
-const initialState = JSON.parse(localStorage.getItem("user")) || {
-  id: null,
-  name: '',
-  email: '',
-  role: '',
-  profilePicture: '',
-  fcmToken: '',
-  city: '',
-  cnic: '',
-  phoneNumber: '',
-  businessName: '',
-  businessAddress: '',
-  postalCode: '',
-  bio: '',
-  dateOfBirth: '',
-  emailVerified: false, // New field
+// const initialState = JSON.parse(localStorage.getItem("user")) || {
+//   id: null,
+//   name: '',
+//   email: '',
+//   role: '',
+//   profilePicture: '',
+//   fcmToken: '',
+//   city: '',
+//   cnic: '',
+//   phoneNumber: '',
+//   businessName: '',
+//   businessAddress: '',
+//   postalCode: '',
+//   bio: '',
+//   dateOfBirth: '',
+//   emailVerified: false, // New field
+//   subscription: {
+//     plan: 'free',        // default free plan
+//     expiryDate: null,    // subscription expiration date
+//     paymentProviderId: null,  // e.g. Stripe payment ID
+//   },
+// };
+
+const savedUser = JSON.parse(localStorage.getItem("user")) || {};
+
+const initialState = {
+  id: savedUser.id || null,
+  name: savedUser.name || '',
+  email: savedUser.email || '',
+  role: savedUser.role || '',
+  profilePicture: savedUser.profilePicture || '',
+  fcmToken: savedUser.fcmToken || '',
+  city: savedUser.city || '',
+  cnic: savedUser.cnic || '',
+  phoneNumber: savedUser.phoneNumber || '',
+  businessName: savedUser.businessName || '',
+  businessAddress: savedUser.businessAddress || '',
+  postalCode: savedUser.postalCode || '',
+  bio: savedUser.bio || '',
+  dateOfBirth: savedUser.dateOfBirth || '',
+  emailVerified: savedUser.emailVerified || false,
+  subscription: savedUser.subscription || {
+    plan: 'free',
+    expiryDate: null,
+    paymentProviderId: null,
+  }
 };
 
 const userSlice = createSlice({
@@ -207,6 +237,15 @@ const userSlice = createSlice({
       state.bio = action.payload.bio || '';
       state.dateOfBirth = action.payload.dateOfBirth || '';
 
+       // Update subscription info if available
+      if (action.payload.subscription) {
+        state.subscription.plan = action.payload.subscription.plan || 'free';
+        state.subscription.expiryDate = action.payload.subscription.expiryDate || null;
+        state.subscription.paymentProviderId = action.payload.subscription.paymentProviderId || null;
+      } else {
+        state.subscription = { plan: 'free', expiryDate: null, paymentProviderId: null };
+      }
+
       // Save updated user data to localStorage
       localStorage.setItem("user", JSON.stringify(state));
     },
@@ -227,6 +266,8 @@ const userSlice = createSlice({
       state.bio = '';
       state.dateOfBirth = '';
       state.emailVerified = false; // Reset this too
+
+      
 
       // Clear from localStorage on logout
       localStorage.removeItem("user");
@@ -258,6 +299,18 @@ const userSlice = createSlice({
       state.emailVerified = true;
       localStorage.setItem("user", JSON.stringify(state));
     },
+
+   updateSubscription: (state, action) => {
+  if (!state.subscription) {
+    state.subscription = {};
+  }
+  const { plan, expiryDate, paymentProviderId } = action.payload;
+  if (plan) state.subscription.plan = plan;
+  if (expiryDate) state.subscription.expiryDate = expiryDate;
+  if (paymentProviderId) state.subscription.paymentProviderId = paymentProviderId;
+  localStorage.setItem("user", JSON.stringify(state));
+},
+
   },
 });
 
@@ -271,6 +324,7 @@ export const {
   updateFcmToken,
   updateProfile,
   verifyEmail, // New action
+  updateSubscription
 } = userSlice.actions;
 
 export default userSlice.reducer;
