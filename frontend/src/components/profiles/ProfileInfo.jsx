@@ -86,7 +86,14 @@ const ProfileInfo = () => {
                   variants={itemVariants}
                   className="text-3xl font-bold text-gray-800"
                 >
-                  {user.name || "Guest"}
+                  {/* {user.name || "Guest"} */}
+                  <span>{user.name || "Guest"}</span>
+             
+                   {user.subscription?.plan === "pro" && (
+    <span className="bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-full uppercase">
+      Pro
+    </span>
+  )}
                 </motion.h1>
                 <motion.p 
                   variants={itemVariants}

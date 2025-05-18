@@ -798,6 +798,7 @@ const ExporterOrderDetails = () => {
   const userName = user?.name;
   const userID = user?.id;
   const userRole = user?.role;
+  const userSubscription = user?.subscription.plan;
 
   const fetchOrderDetails = async () => {
     try {
@@ -920,6 +921,8 @@ const ExporterOrderDetails = () => {
             <div className="space-y-2">
               <DetailItem label="Quantity" value={order.quantity} />
               <DetailItem label="Price" value={`Rs ${order.price}`} />
+          
+
               <DetailItem label="Status" value={order.status} badge />
               <DetailItem label="Order Date" value={new Date(order.createdAt).toLocaleString()} />
             </div>
@@ -1061,9 +1064,11 @@ const ExporterOrderDetails = () => {
               onToggle={togglePaymentPopup}
             >
               {showPaymentPopup && (
+
                 <PaymentPage
                   orderId={order._id}
-                  tokenAmount={order.price}
+                  // tokenAmount={order.price + (order.price*0.2)}
+                  tokenAmount={userSubscription === 'free' ? order.price + (order.price * 0.2) : order.price}
                   onPaymentSuccess={() => {
                     setActivePaymentOrder(null);
                     fetchOrderDetails();
@@ -1080,7 +1085,8 @@ const ExporterOrderDetails = () => {
               {showLocalPaymentPopup && (
                 <LocalPaymentForm
                   orderId={order._id}
-                  orderPrice={order.price} 
+                  // orderPrice={order.price} 
+                  orderPrice={userSubscription === 'free' ? order.price + (order.price * 0.2) : order.price}
                   onPaymentSuccess={handleLocalPaymentSuccess}
                 />
               )}
