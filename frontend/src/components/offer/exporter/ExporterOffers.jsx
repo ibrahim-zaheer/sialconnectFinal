@@ -1,5 +1,3 @@
-
-
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 // import { useSelector } from "react-redux";
@@ -247,8 +245,39 @@ export default function ExporterOffers() {
         });
         setOffers(response.data.offers);
 
-        const acceptedOffers = response.data.offers.filter(offer => offer.status === "accepted");
+        const acceptedOffers = response.data.offers.filter(
+          (offer) => offer.status === "accepted"
+        );
         await fetchOrderIds(acceptedOffers);
+
+        // Automatically activate reminders if user plan is pro
+        if (user?.subscription?.plan === "pro") {
+          const pendingOffersWithoutReminders = offers.filter(
+            (offer) => offer.status === "pending" && !offer.reminderActive
+          );
+
+          await Promise.all(
+            pendingOffersWithoutReminders.map((offer) =>
+              axios.post(
+                `/api/offers/${offer._id}/activate-reminders`,
+                {},
+                {
+                  headers: { Authorization: `Bearer ${token}` },
+                }
+              )
+            )
+          );
+
+          // Optionally update local state to reflect reminders activated
+          setOffers((prevOffers) =>
+            prevOffers.map((offer) =>
+              pendingOffersWithoutReminders.some((o) => o._id === offer._id)
+                ? { ...offer, reminderActive: true }
+                : offer
+            )
+          );
+        }
+
         setLoading(false);
       } catch (err) {
         setError("We couldn't load your offers. Please try again later.");
@@ -276,34 +305,43 @@ export default function ExporterOffers() {
     // };
     const fetchOrderIds = async (acceptedOffers) => {
       const ids = {};
-      console.log('Fetching orders for', acceptedOffers.length, 'accepted offers');
-      
+      console.log(
+        "Fetching orders for",
+        acceptedOffers.length,
+        "accepted offers"
+      );
+
       for (const offer of acceptedOffers) {
         try {
-          console.log('Fetching order for offer:', offer._id);
-          const orderResponse = await axios.get(`/api/order/orders/offer/${offer._id}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
-          
+          console.log("Fetching order for offer:", offer._id);
+          const orderResponse = await axios.get(
+            `/api/order/orders/offer/${offer._id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
           if (orderResponse.data?.order?._id) {
-            console.log('Found order:', orderResponse.data.order._id);
+            console.log("Found order:", orderResponse.data.order._id);
             ids[offer._id] = orderResponse.data.order._id;
           } else {
-            console.warn('No order ID in response for offer:', offer._id);
+            console.warn("No order ID in response for offer:", offer._id);
             ids[offer._id] = null;
           }
         } catch (err) {
-          console.error(`Failed to fetch order for offer ${offer._id}:`, err.response?.data || err.message);
+          console.error(
+            `Failed to fetch order for offer ${offer._id}:`,
+            err.response?.data || err.message
+          );
           ids[offer._id] = null;
         }
       }
-      
-      console.log('Final order IDs:', ids);
+
+      console.log("Final order IDs:", ids);
       setOrderIds(ids);
     };
     fetchOffers();
   }, [token]);
-
 
   const handleViewOrder = (offerId) => {
     const orderId = orderIds[offerId];
@@ -314,13 +352,42 @@ export default function ExporterOffers() {
     }
   };
 
-  
-
   const updateState = () => {
     dispatch(setUpdated("Yes"));
   };
 
-  
+  const activateReminders = async (offerId) => {
+    try {
+      await axios.post(
+        `/api/offers/${offerId}/activate-reminders`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert(
+        "Reminders activated! The supplier will receive up to 3 reminders every 8 hours."
+      );
+    } catch (error) {
+      console.error("Failed to activate reminders:", error);
+      alert("Failed to activate reminders. Please try again.");
+    }
+  };
+
+  const renderReminderButton = (offer) => {
+    if (offer.status !== "pending") return null;
+
+    return (
+      <button
+        onClick={() => activateReminders(offer._id)}
+        className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-sm font-medium mt-2"
+      >
+        Activate Reminders
+      </button>
+    );
+  };
 
   const updateCounterOfferStatus = (
     offerId,
@@ -370,8 +437,10 @@ export default function ExporterOffers() {
         transition={{ duration: 0.3 }}
         className="max-w-7xl mx-auto"
       >
-        <h2 className="text-2xl font-bold text-primary-800 mb-6">Your Offers</h2>
-        
+        <h2 className="text-2xl font-bold text-primary-800 mb-6">
+          Your Offers
+        </h2>
+
         <div className="flex justify-center gap-4 mb-6">
           <div className="bg-success-50 text-success-800 px-4 py-2 rounded-lg shadow-sm">
             Accepted Offers: <span className="font-bold">{acceptedCount}</span>
@@ -392,8 +461,16 @@ export default function ExporterOffers() {
           <div className="bg-error-50 border-l-4 border-error-400 p-4 mb-6 rounded">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-error-500" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                <svg
+                  className="h-5 w-5 text-error-500"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </div>
               <div className="ml-3">
@@ -403,11 +480,25 @@ export default function ExporterOffers() {
           </div>
         ) : offers.length === 0 ? (
           <div className="bg-surface rounded-xl shadow-sm p-8 text-center">
-            <svg className="mx-auto h-12 w-12 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              className="mx-auto h-12 w-12 text-neutral-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1}
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
-            <h3 className="mt-2 text-lg font-medium text-neutral-900">No offers yet</h3>
-            <p className="mt-1 text-neutral-500">You haven't made any offers yet.</p>
+            <h3 className="mt-2 text-lg font-medium text-neutral-900">
+              No offers yet
+            </h3>
+            <p className="mt-1 text-neutral-500">
+              You haven't made any offers yet.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -422,13 +513,15 @@ export default function ExporterOffers() {
                     <h3 className="text-lg font-semibold text-primary-800">
                       {offer.productId?.name || "Unnamed Product"}
                     </h3>
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      offer.status === "pending"
-                        ? "bg-accent-100 text-accent-800"
-                        : offer.status === "accepted"
-                        ? "bg-success-100 text-success-800"
-                        : "bg-error-100 text-error-800"
-                    }`}>
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${
+                        offer.status === "pending"
+                          ? "bg-accent-100 text-accent-800"
+                          : offer.status === "accepted"
+                          ? "bg-success-100 text-success-800"
+                          : "bg-error-100 text-error-800"
+                      }`}
+                    >
                       {offer.status}
                     </span>
                   </div>
@@ -456,7 +549,8 @@ export default function ExporterOffers() {
                     {offer.message && (
                       <div className="pt-3">
                         <p className="text-sm text-neutral-600">
-                          <span className="font-medium">Message:</span> {offer.message}
+                          <span className="font-medium">Message:</span>{" "}
+                          {offer.message}
                         </p>
                       </div>
                     )}
@@ -468,7 +562,10 @@ export default function ExporterOffers() {
                         </summary>
                         <ul className="mt-2 space-y-2 text-sm">
                           {offer.history.map((entry, index) => (
-                            <li key={index} className="border-l-2 border-primary-200 pl-3">
+                            <li
+                              key={index}
+                              className="border-l-2 border-primary-200 pl-3"
+                            >
                               <div className="flex justify-between">
                                 <span>Price:</span>
                                 <span>{entry.price} Rs</span>
@@ -479,11 +576,14 @@ export default function ExporterOffers() {
                               </div>
                               {entry.message && (
                                 <p className="text-neutral-600">
-                                  <span className="font-medium">Message:</span> {entry.message}
+                                  <span className="font-medium">Message:</span>{" "}
+                                  {entry.message}
                                 </p>
                               )}
                               <p className="text-xs text-neutral-500 mt-1">
-                                {new Date(entry.timestamp).toLocaleString()} • Updated by: {entry.updatedBy?.name || entry.updatedBy}
+                                {new Date(entry.timestamp).toLocaleString()} •
+                                Updated by:{" "}
+                                {entry.updatedBy?.name || entry.updatedBy}
                               </p>
                             </li>
                           ))}
@@ -497,20 +597,34 @@ export default function ExporterOffers() {
 
                     {offer.counterOffer && (
                       <div className="mt-4 p-3 bg-neutral-50 rounded-lg">
-                        <h4 className="text-sm font-medium text-primary-700 mb-2">Counteroffer Details</h4>
+                        <h4 className="text-sm font-medium text-primary-700 mb-2">
+                          Counteroffer Details
+                        </h4>
                         <div className="flex justify-between text-sm">
                           <span>New Price:</span>
-                          <span className="font-medium">{offer.counterOffer.price} Rs</span>
+                          <span className="font-medium">
+                            {offer.counterOffer.price} Rs
+                          </span>
                         </div>
                         <div className="flex justify-between text-sm">
                           <span>New Quantity:</span>
-                          <span className="font-medium">{offer.counterOffer.quantity}</span>
+                          <span className="font-medium">
+                            {offer.counterOffer.quantity}
+                          </span>
                         </div>
                         {offer.counterOffer.message && (
                           <p className="text-sm text-neutral-600 mt-2">
-                            <span className="font-medium">Message:</span> {offer.counterOffer.message}
+                            <span className="font-medium">Message:</span>{" "}
+                            {offer.counterOffer.message}
                           </p>
                         )}
+                      </div>
+                    )}
+
+                    {renderReminderButton(offer)}
+                    {offer.reminderActive && (
+                      <div className="text-xs text-green-600 mt-2 font-semibold">
+                        Reminders activated for this offer
                       </div>
                     )}
 
@@ -549,24 +663,26 @@ export default function ExporterOffers() {
               {orderIds[offer._id] ? "View Order Details" : "Loading Order..."}
             </button>
           )} */}
-          {offer.status === "accepted" && (
-  <div className="mt-2">
-    {orderIds[offer._id] === undefined ? (
-      <div className="text-sm text-gray-500">Checking order status...</div>
-    ) : orderIds[offer._id] ? (
-      <button
-        onClick={() => handleViewOrder(offer._id)}
-        className="w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium"
-      >
-        View Order Details
-      </button>
-    ) : (
-      <div className="text-sm text-yellow-600">
-        Order processing not completed
-      </div>
-    )}
-  </div>
-)}
+                {offer.status === "accepted" && (
+                  <div className="mt-2">
+                    {orderIds[offer._id] === undefined ? (
+                      <div className="text-sm text-gray-500">
+                        Checking order status...
+                      </div>
+                    ) : orderIds[offer._id] ? (
+                      <button
+                        onClick={() => handleViewOrder(offer._id)}
+                        className="w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium"
+                      >
+                        View Order Details
+                      </button>
+                    ) : (
+                      <div className="text-sm text-yellow-600">
+                        Order processing not completed
+                      </div>
+                    )}
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>

@@ -1,6 +1,15 @@
 const Offer = require("../../models/offer/offerSchema");
 const Order = require("../../models/offer/orderSchema");
 
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+// const User = require("../models/user");
+const User = require("../../models/user");
+
+const crypto = require('crypto');
+
+const nodemailer = require('nodemailer');
+
 const createOffer = async (req, res) => {
     try {
       const { supplierId, productId, price, quantity,message } = req.body;
@@ -214,7 +223,7 @@ const getOffersByExporter = async (req, res) => {
   try {
       const offers = await Offer.find({ exporterId: req.user.id })
           .populate("productId", "name") // Fetch product name
-          .populate("supplierId", "name") // Fetch supplier name
+          .populate("supplierId", "name email") // Fetch supplier name
           .populate("history.updatedBy", "name");
       if (!offers.length) {
           return res.status(404).json({ message: "No offers found for this user." });
@@ -243,6 +252,142 @@ const getOffersBySupplier = async (req, res) => {
 };
 
 
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+
+// const checkAndSendReminders = async () => {
+//   try {
+//     const now = new Date();
+//     const pendingOffers = await Offer.find({
+//       status: "pending",
+//       reminderActive: true,
+//       $or: [{ nextReminderAt: { $lte: now } }, { nextReminderAt: { $exists: false } }],
+//       remindersSent: { $lt: 3 },
+//     }).populate("supplierId").populate("productId").populate("exporterId");
+
+//     for (const offer of pendingOffers) {
+//       await sendReminderEmail(offer);
+
+//       offer.remindersSent += 1;
+//       offer.lastReminderSentAt = new Date();
+//       offer.nextReminderAt = new Date(Date.now() + 8 * 60 * 60 * 1000); // 8 hours later
+//       // offer.nextReminderAt = new Date(Date.now() + 1 * 60 * 1000); // 1 minute from now
+
+
+//       if (offer.remindersSent >= 3) {
+//         offer.reminderActive = false;
+//       }
+
+//       await offer.save();
+//     }
+//   } catch (error) {
+//     console.error("Error in checkAndSendReminders:", error);
+//   }
+// };
+
+const checkAndSendReminders = async () => {
+  try {
+    const now = new Date();
+    console.log(`[Cron] Running at ${now}`); // Debug log
+
+    const pendingOffers = await Offer.find({
+      status: "pending",
+      reminderActive: true,
+      $or: [
+        { nextReminderAt: { $lte: now } },
+        { nextReminderAt: { $exists: false } }
+      ],
+      remindersSent: { $lt: 3 },
+    }).populate("supplierId").populate("productId").populate("exporterId");
+
+    console.log(`Found ${pendingOffers.length} offers to process`); // Debug log
+
+    for (const offer of pendingOffers) {
+      // Validate dates before processing
+      if (offer.nextReminderAt && isNaN(new Date(offer.nextReminderAt).getTime())) {
+        console.error(`Invalid nextReminderAt for offer ${offer._id}`);
+        continue;
+      }
+
+      await sendReminderEmail(offer);
+
+      offer.remindersSent += 1;
+      offer.lastReminderSentAt = new Date();
+      
+      // Ensure the new date is valid
+      const nextReminder = new Date();
+      nextReminder.setHours(nextReminder.getHours() + 8);
+      offer.nextReminderAt = nextReminder;
+
+      if (offer.remindersSent >= 3) {
+        offer.reminderActive = false;
+      }
+
+      await offer.save();
+    }
+  } catch (error) {
+    console.error("Error in checkAndSendReminders:", error);
+  }
+};
+const sendReminderEmail = async (offer) => {
+  try {
+    if (!offer.supplierId?.email) {
+      console.log(`No email for supplier in offer ${offer._id}`);
+      return;
+    }
+
+    const mailOptions = {
+      from: `"TradeConnect Reminder" <${process.env.EMAIL_USER}>`,
+      to: offer.supplierId.email,
+      subject: `Reminder: Pending Offer for ${offer.productId?.name || "Product"}`,
+      text: `Dear Supplier,
+
+This is reminder ${offer.remindersSent + 1} of 3 regarding your pending offer from ${offer.exporterId?.name || "an exporter"}.
+
+Product: ${offer.productId?.name || "N/A"}
+Price: ${offer.price} Rs
+Quantity: ${offer.quantity}
+Total: ${offer.price * offer.quantity} Rs
+
+Please respond at your earliest convenience.
+
+Thank you,
+TradeConnect Team
+`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`Reminder sent for offer ${offer._id} to ${offer.supplierId.email}`);
+  } catch (error) {
+    console.error(`Failed to send reminder for offer ${offer._id}:`, error);
+  }
+};
+
+const activateReminders = async (offerId) => {
+  try {
+    const offer = await Offer.findById(offerId);
+    if (!offer) throw new Error("Offer not found");
+
+    offer.reminderActive = true;
+    offer.nextReminderAt = new Date();
+    offer.remindersSent = 0; // reset reminders count on activation if you want
+    await offer.save();
+
+    return offer;
+  } catch (error) {
+    console.error("Error activating reminders:", error);
+    throw error;
+  }
+};
+
+
+
   
 
   module.exports =  { createOffer,
@@ -253,4 +398,6 @@ const getOffersBySupplier = async (req, res) => {
     getOffersByExporter,
     getOffersBySupplier,
     updateOffer,
+    checkAndSendReminders,
+    activateReminders
   };

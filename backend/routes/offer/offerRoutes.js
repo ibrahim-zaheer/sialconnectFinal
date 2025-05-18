@@ -6,7 +6,7 @@ const {
   rejectOffer,
   counterOffer,
   getOffersBySupplier,
-  acceptCounterOffer,getOffersByExporter,updateOffer
+  acceptCounterOffer,getOffersByExporter,updateOffer,activateReminders,
 } = require("../../controllers/offers/offer_controller.js");
 
 const authenticateMiddleware = require("../../middleware/authMiddleware.js");
@@ -32,5 +32,16 @@ router.put("/counter/:offerId", authenticateMiddleware, counterOffer);
 
 // Route to accept a counteroffer (Exporter accepts supplier's counter offer)
 router.put("/accept-counter/:offerId", authenticateMiddleware, acceptCounterOffer);
+
+
+router.post("/:id/activate-reminders", async (req, res) => {
+  try {
+    const offer = await activateReminders(req.params.id);
+    res.json({ success: true, offer });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 
 module.exports = router;

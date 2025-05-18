@@ -36,9 +36,31 @@ const OfferSchema = new mongoose.Schema(
         updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         timestamp: { type: Date, default: Date.now },
       }
-    ]
+    ],
+     remindersSent: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 3,
+    },
+    // lastReminderSentAt: Date,
+    // nextReminderAt: Date,
+     nextReminderAt: {
+    type: Date,
+    default: null
+  },
+  lastReminderSentAt: {
+    type: Date,
+    default: null
+  },
+    reminderActive: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { timestamps: true }
     
-  }
+  
 );
 
 module.exports = mongoose.model("Offer", OfferSchema);

@@ -140,7 +140,7 @@ const ProfileSidebar = ({ activeTab, setActiveTab, user }) => {
 
   // Additional menu items for non-exporters
   const additionalMenuItems = userRole !== "exporter" ? [
-    { id: "payments", label: t("profile_sidebar.payments"), icon: "credit-card" },
+    { id: "payments", label: t("profile:profile_sidebar.payments"), icon: "credit-card" },
   ] : [];
 
   // Combine menu items based on user role
