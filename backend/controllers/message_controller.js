@@ -10,6 +10,7 @@ const Message = require("../models/message.model");
 
 // import { getReceiverSocketId, io } from "../utils/socket";
 
+const {containsSensitiveData} = require("../utils/messageFilter")
 const express = require("express");
 
 const multer = require('multer');
@@ -138,6 +139,11 @@ const getUsersForSidebar = async (req, res) => {
     if (!text && !voiceMessage && !image) {
       return res.status(400).json({ error: "Message content is required" });
     }
+
+    if (text && containsSensitiveData(text)) {
+  return res.status(400).json({ error: "Sharing phone numbers or emails is not allowed." });
+}
+
 
     // Validate voice message duration if voice message exists
     if (voiceMessage && (!duration || typeof duration !== 'number')) {

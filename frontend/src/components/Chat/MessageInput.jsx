@@ -222,28 +222,79 @@ const MessageInput = () => {
     }
   };
 
+  const containsPhoneNumber = (text) => {
+  const phonePatterns = [
+    /\+92\d{10}\b/,
+    /\b03\d{9}\b/,
+    /\b\d{11,12}\b/,
+    /\+92\d{0,10}/g,   // Matches +92, +923, +92301, ... up to 13 digits
+    /\b03\d{0,9}\b/g   ,
+  ];
+  return phonePatterns.some((pattern) => pattern.test(text));
+};
+
+const containsEmail = (text) => {
+  const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+  return emailPattern.test(text);
+};
+
+
   const removeImage = () => {
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  // const handleSendMessage = async (e) => {
+  //   e.preventDefault();
+  //   if (!text.trim() && !imagePreview) return;
+
+  //   try {
+  //     await sendMessage({
+  //       text: text.trim(),
+  //       image: imagePreview,
+  //     });
+
+  //     setText("");
+  //     setImagePreview(null);
+  //     if (fileInputRef.current) fileInputRef.current.value = "";
+  //   } catch (error) {
+  //     console.error("Failed to send message:", error);
+  //   }
+  // };
+
   const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!text.trim() && !imagePreview) return;
+  e.preventDefault();
+  const trimmedText = text.trim();
 
-    try {
-      await sendMessage({
-        text: text.trim(),
-        image: imagePreview,
-      });
+  if (!trimmedText && !imagePreview) return;
 
-      setText("");
-      setImagePreview(null);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    } catch (error) {
-      console.error("Failed to send message:", error);
-    }
-  };
+  // 🚨 Check for phone number or email
+  if (containsPhoneNumber(trimmedText)) {
+    // toast.error("Please do not share phone numbers in the chat.");
+    alert("❌ Sharing phone numbers is not allowed in chat.");
+    return;
+  }
+
+  if (containsEmail(trimmedText)) {
+    // toast.error("Please do not share email addresses in the chat.");
+    alert("❌ Sharing email addresses is not allowed in chat.");
+    return;
+  }
+
+  try {
+    await sendMessage({
+      text: trimmedText,
+      image: imagePreview,
+    });
+
+    setText("");
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  } catch (error) {
+    console.error("Failed to send message:", error);
+  }
+};
+
 
   return (
     <div className="p-4 w-full bg-surface border-t border-neutral-200">
