@@ -52,6 +52,12 @@ category: {
 
 
   createdAt: { type: Date, default: Date.now },
+   discounts: [
+    {
+      minQuantity: { type: Number, required: true },
+      discountedPrice: { type: Number, required: true },
+    }
+  ],
 });
 
 module.exports = mongoose.model("Product", ProductSchema);

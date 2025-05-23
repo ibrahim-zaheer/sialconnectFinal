@@ -13,7 +13,9 @@ const getNextOrderId = async () => {
   );
   
   // Format the number as needed, e.g., 6 digit zero-padded string
-  return counter.seq.toString().padStart(6, '0');
+  // return counter.seq.toString().padStart(6, '0');
+    const seq = counter.seq || 1; // Fallback to 1 if seq is falsy
+  return seq.toString().padStart(6, '0');
 };
 
 let generateOrderId;
@@ -45,6 +47,8 @@ const OrderSchema = new mongoose.Schema({
     unique: true,  // Ensure the ID is unique
     required: false,
     default: "000000",  // Generate a new ID when creating an order
+    
+  
   },
   offerId: { type: mongoose.Schema.Types.ObjectId, ref: "Offer", required: false },
   auctionId: { 
@@ -176,11 +180,18 @@ const OrderSchema = new mongoose.Schema({
 //   next();
 // });
 
+// OrderSchema.pre("save", async function (next) {
+//   if (!this.orderId) {
+//     this.orderId = await getNextOrderId();
+//   }
+//   next();
+// });
 OrderSchema.pre("save", async function (next) {
-  if (!this.orderId) {
+  if (this.isNew && this.orderId === "000000") {
     this.orderId = await getNextOrderId();
   }
   next();
 });
+
 
 module.exports = mongoose.model("Order", OrderSchema);

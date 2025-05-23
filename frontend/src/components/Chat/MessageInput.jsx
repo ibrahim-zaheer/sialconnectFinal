@@ -182,12 +182,248 @@
 
 // export default MessageInput;
 
+
+// code working on 24th May 2025
+
+// import React from "react";
+// import { useChatStore } from "../../store/useChatStore.js";
+// import { useRef, useState } from "react";
+// import { Image, Send, X, Mic } from "lucide-react";
+// import toast from "react-hot-toast";
+// import VoiceMessageRecorder from "./VoiceMessageRecorder.jsx";
+
+
+// const MessageInput = () => {
+//   const [text, setText] = useState("");
+//   const [imagePreview, setImagePreview] = useState(null);
+//   const fileInputRef = useRef(null);
+//   const { sendMessage, selectedUser } = useChatStore();
+//   const [inputMode, setInputMode] = useState("text");
+
+//   const handleImageChange = (e) => {
+//     const file = e.target.files[0];
+//     if (!file?.type.startsWith("image/")) {
+//       toast.error("Please select an image file");
+//       return;
+//     }
+
+//     const reader = new FileReader();
+//     reader.onloadend = () => {
+//       setImagePreview(reader.result);
+//     };
+//     reader.readAsDataURL(file);
+//   };
+
+//   const handleSendVoiceMessage = async (voiceData) => {
+//     if (!selectedUser) return;
+
+//     try {
+//       await sendMessage(voiceData);
+//       setInputMode("text");
+//     } catch (error) {
+//       console.error("Error sending voice message:", error);
+//       toast.error("Failed to send voice message");
+//     }
+//   };
+
+//   const containsPhoneNumber = (text) => {
+//   const phonePatterns = [
+//     /\+92\d{10}\b/,
+//     /\b03\d{9}\b/,
+//     /\b\d{11,12}\b/,
+//     /\+92\d{0,10}/g,   // Matches +92, +923, +92301, ... up to 13 digits
+//     /\b03\d{0,9}\b/g   ,
+//   ];
+//   return phonePatterns.some((pattern) => pattern.test(text));
+// };
+
+// const containsEmail = (text) => {
+//   const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+//   return emailPattern.test(text);
+// };
+
+
+//   const removeImage = () => {
+//     setImagePreview(null);
+//     if (fileInputRef.current) fileInputRef.current.value = "";
+//   };
+
+//   // const handleSendMessage = async (e) => {
+//   //   e.preventDefault();
+//   //   if (!text.trim() && !imagePreview) return;
+
+//   //   try {
+//   //     await sendMessage({
+//   //       text: text.trim(),
+//   //       image: imagePreview,
+//   //     });
+
+//   //     setText("");
+//   //     setImagePreview(null);
+//   //     if (fileInputRef.current) fileInputRef.current.value = "";
+//   //   } catch (error) {
+//   //     console.error("Failed to send message:", error);
+//   //   }
+//   // };
+
+//   const handleSendMessage = async (e) => {
+//   e.preventDefault();
+//   const trimmedText = text.trim();
+
+//   if (!trimmedText && !imagePreview) return;
+
+//   // 🚨 Check for phone number or email
+//   if (containsPhoneNumber(trimmedText)) {
+//     // toast.error("Please do not share phone numbers in the chat.");
+//     alert("❌ Sharing phone numbers is not allowed in chat.");
+//     return;
+//   }
+
+//   if (containsEmail(trimmedText)) {
+//     // toast.error("Please do not share email addresses in the chat.");
+//     alert("❌ Sharing email addresses is not allowed in chat.");
+//     return;
+//   }
+
+//   try {
+//     await sendMessage({
+//       text: trimmedText,
+//       image: imagePreview,
+//     });
+
+//     setText("");
+//     setImagePreview(null);
+//     if (fileInputRef.current) fileInputRef.current.value = "";
+//   } catch (error) {
+//     console.error("Failed to send message:", error);
+//   }
+// };
+
+
+//   return (
+//     <div className="p-4 w-full bg-surface border-t border-neutral-200">
+//       {imagePreview && (
+//         <div className="mb-3 flex items-center gap-3">
+//           <div className="relative">
+//             <img
+//               src={imagePreview}
+//               alt="Preview"
+//               className="w-24 h-24 object-cover rounded-lg border-2 border-primary-200"
+//             />
+//             <button
+//               onClick={removeImage}
+//               className="absolute -top-2 -right-2 bg-error text-white rounded-full p-1 shadow-md hover:bg-error-600 transition-colors"
+//               type="button"
+//               aria-label="Remove image"
+//             >
+//               <X className="size-4" />
+//             </button>
+//           </div>
+//           <span className="text-sm text-neutral-500">Image ready to send</span>
+//         </div>
+//       )}
+
+//       {/* Input mode toggle */}
+//       <div className="flex justify-center mb-3">
+//         <div className="inline-flex bg-neutral-100 rounded-full p-1">
+//           <button
+//             type="button"
+//             className={`px-4 py-1 rounded-full text-sm font-medium transition-colors ${
+//               inputMode === "text"
+//                 ? "bg-primary-600 text-white shadow-sm"
+//                 : "text-neutral-600 hover:bg-neutral-200"
+//             }`}
+//             onClick={() => setInputMode("text")}
+//           >
+//             Text
+//           </button>
+//           <button
+//             type="button"
+//             className={`p-2 rounded-full transition-colors ${
+//               inputMode === "voice"
+//                 ? "bg-primary-600 text-white shadow-sm"
+//                 : "text-neutral-600 hover:bg-neutral-200"
+//             }`}
+//             onClick={() => setInputMode("voice")}
+//             aria-label="Voice message"
+//           >
+//             <Mic size={18} />
+//           </button>
+//         </div>
+//       </div>
+
+//       {inputMode === "text" ? (
+//         <form onSubmit={handleSendMessage} className="flex items-end gap-2">
+//           <div className="flex-1 flex flex-col">
+//             <div className="relative flex items-center">
+//               <input
+//                 type="text"
+//                 className="w-full pl-4 pr-12 py-3 rounded-full border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:border-transparent bg-surface text-neutral-900 placeholder-neutral-400"
+//                 placeholder="Type your message..."
+//                 value={text}
+//                 onChange={(e) => setText(e.target.value)}
+//                 aria-label="Message input"
+//               />
+//               <input
+//                 type="file"
+//                 accept="image/*"
+//                 className="hidden"
+//                 ref={fileInputRef}
+//                 onChange={handleImageChange}
+//               />
+//               <button
+//                 type="button"
+//                 className={`absolute right-3 p-1 rounded-full transition-colors ${
+//                   imagePreview
+//                     ? "text-primary-600"
+//                     : "text-neutral-400 hover:text-neutral-600"
+//                 }`}
+//                 onClick={() => fileInputRef.current?.click()}
+//                 aria-label="Attach image"
+//               >
+//                 <Image size={20} />
+//               </button>
+//             </div>
+//           </div>
+//           <button
+//             type="submit"
+//             className={`p-3 rounded-full transition-colors ${
+//               text.trim() || imagePreview
+//                 ? "bg-primary-600 text-white hover:bg-primary-700 shadow-md"
+//                 : "bg-neutral-200 text-neutral-400 cursor-not-allowed"
+//             }`}
+//             disabled={!text.trim() && !imagePreview}
+//             aria-label="Send message"
+//           >
+//             <Send size={20} />
+//           </button>
+//         </form>
+//       ) : (
+//         <VoiceMessageRecorder
+//           onSend={handleSendVoiceMessage}
+//           onCancel={() => setInputMode("text")}
+//         />
+//       )}
+//     </div>
+//   );
+// };
+
+// export default MessageInput;
+
+
+
+
+
+
 import React from "react";
 import { useChatStore } from "../../store/useChatStore.js";
 import { useRef, useState } from "react";
 import { Image, Send, X, Mic } from "lucide-react";
 import toast from "react-hot-toast";
 import VoiceMessageRecorder from "./VoiceMessageRecorder.jsx";
+import Tesseract from "tesseract.js";
+
+
 
 const MessageInput = () => {
   const [text, setText] = useState("");
@@ -279,6 +515,28 @@ const containsEmail = (text) => {
     // toast.error("Please do not share email addresses in the chat.");
     alert("❌ Sharing email addresses is not allowed in chat.");
     return;
+  }
+  
+  // If imagePreview exists, run OCR
+  if (imagePreview) {
+    try {
+      // Run OCR on image base64 data
+      const { data: { text: extractedText } } = await Tesseract.recognize(imagePreview, 'eng');
+
+      // Check phone/email in extracted text
+      if (containsPhoneNumber(extractedText)) {
+        alert("❌ Sharing phone numbers in images is not allowed.");
+        return;
+      }
+      if (containsEmail(extractedText)) {
+        alert("❌ Sharing email addresses in images is not allowed.");
+        return;
+      }
+    } catch (error) {
+      console.error("OCR failed:", error);
+      // Optionally allow or block on OCR failure
+      // For safety, you could block sending or just allow
+    }
   }
 
   try {

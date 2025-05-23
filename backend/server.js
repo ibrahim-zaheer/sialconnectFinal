@@ -361,7 +361,7 @@ app.get("*", (req, res) => {
   }
 });
 
-require("./cron");
+// require("./cron");
 // ✅ Start Server
 server.listen(PORT, () => {
   console.log(`Server running on ports ${PORT}`);

@@ -6,6 +6,7 @@ const User = require("../models/user");
 
 const cloudinary = require("../config/cloudinaryConfig");
 const Message = require("../models/message.model");
+const Tesseract = require('tesseract.js');
 
 
 // import { getReceiverSocketId, io } from "../utils/socket";
@@ -128,78 +129,161 @@ const getUsersForSidebar = async (req, res) => {
     }
   };
 
- const sendMessage = async (req, res) => {
-    try {
-      const { text, voiceMessage, duration,image } = req.body;
-      const { id: receiverId } = req.params;
-      const senderId = req.user._id;
+//  const sendMessage = async (req, res) => {
+//     try {
+//       const { text, voiceMessage, duration,image } = req.body;
+//       const { id: receiverId } = req.params;
+//       const senderId = req.user._id;
   
       
-          // Validate that at least one message type exists
-    if (!text && !voiceMessage && !image) {
+//           // Validate that at least one message type exists
+//     if (!text && !voiceMessage && !image) {
+//       return res.status(400).json({ error: "Message content is required" });
+//     }
+
+//     if (text && containsSensitiveData(text)) {
+//   return res.status(400).json({ error: "Sharing phone numbers or emails is not allowed." });
+// }
+
+
+//     // Validate voice message duration if voice message exists
+//     if (voiceMessage && (!duration || typeof duration !== 'number')) {
+//       return res.status(400).json({ error: "Duration is required for voice messages" });
+//     }
+//     let imageUrl = null;
+//     if (image) {
+//       // Upload base64 image to cloudinary
+//       try {
+//         const uploadResponse = await cloudinary.uploader.upload(image);
+//         imageUrl = uploadResponse.secure_url;
+//       } catch (error) {
+//         return res.status(500).json({ error: "Image upload failed" });
+//       }
+//     }
+
+  
+//       // const newMessage = new Message({
+//       //   senderId,
+//       //   receiverId,
+//       //   text,
+       
+//       // });
+//          // Create new message
+//     const newMessage = new Message({
+//       senderId,
+//       receiverId,
+//       text: text || null,
+//       image: imageUrl || null, 
+//       voiceMessage: voiceMessage || null,
+//       duration: voiceMessage ? duration : null
+//     });
+  
+//       await newMessage.save();
+//       const receiverSocketId = getReceiverSocketId(receiverId); // Now works!
+    
+//       if (receiverSocketId) {
+//         io.to(receiverSocketId).emit("newMessage", {
+//           // Match frontend field names
+//           _id: newMessage._id,
+//           sender: newMessage.senderId, // Convert to sender
+//           receiver: newMessage.receiverId, // Convert to receiver
+//           image: newMessage.image,
+//           text: newMessage.text,
+//           voiceMessage: newMessage.voiceMessage,
+//         duration: newMessage.duration,
+//           createdAt: newMessage.createdAt
+//         });
+//       }
+//       console.log("message is sent");
+  
+//       res.status(201).json(newMessage);
+//     } catch (error) {
+//       console.log("Error in sendMessage controller: ", error.message);
+//       res.status(500).json({ error: "Internal server error" });
+//     }
+//   };
+
+
+const sendMessage = async (req, res) => {
+  try {
+    const { text, voiceMessage, duration } = req.body;
+    const { id: receiverId } = req.params;
+    const senderId = req.user._id;
+
+    if (!text && !voiceMessage && !req.body.image && !req.file) {
       return res.status(400).json({ error: "Message content is required" });
     }
 
     if (text && containsSensitiveData(text)) {
-  return res.status(400).json({ error: "Sharing phone numbers or emails is not allowed." });
-}
+      return res.status(400).json({ error: "Sharing phone numbers or emails is not allowed in text." });
+    }
 
-
-    // Validate voice message duration if voice message exists
     if (voiceMessage && (!duration || typeof duration !== 'number')) {
       return res.status(400).json({ error: "Duration is required for voice messages" });
     }
+
     let imageUrl = null;
-    if (image) {
-      // Upload base64 image to cloudinary
-      try {
-        const uploadResponse = await cloudinary.uploader.upload(image);
-        imageUrl = uploadResponse.secure_url;
-      } catch (error) {
-        return res.status(500).json({ error: "Image upload failed" });
-      }
+    let imageBuffer = null;
+
+    if (req.file) {
+      imageBuffer = req.file.buffer;
+    } else if (req.body.image) {
+      const base64Data = req.body.image.replace(/^data:image\/\w+;base64,/, "");
+      imageBuffer = Buffer.from(base64Data, 'base64');
     }
 
-  
-      // const newMessage = new Message({
-      //   senderId,
-      //   receiverId,
-      //   text,
-       
-      // });
-         // Create new message
+    if (imageBuffer) {
+      // OCR check
+      const { data: { text: extractedText } } = await Tesseract.recognize(imageBuffer, 'eng');
+      if (containsSensitiveData(extractedText)) {
+        return res.status(400).json({ error: "Sharing phone numbers or emails in images is not allowed." });
+      }
+
+      // Upload image to Cloudinary
+      imageUrl = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { resource_type: "image" },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result.secure_url);
+          }
+        );
+        stream.end(imageBuffer);
+      });
+    }
+
     const newMessage = new Message({
       senderId,
       receiverId,
       text: text || null,
-      image: imageUrl || null, 
+      image: imageUrl || null,
       voiceMessage: voiceMessage || null,
-      duration: voiceMessage ? duration : null
+      duration: voiceMessage ? duration : null,
     });
-  
-      await newMessage.save();
-      const receiverSocketId = getReceiverSocketId(receiverId); // Now works!
-    
-      if (receiverSocketId) {
-        io.to(receiverSocketId).emit("newMessage", {
-          // Match frontend field names
-          _id: newMessage._id,
-          sender: newMessage.senderId, // Convert to sender
-          receiver: newMessage.receiverId, // Convert to receiver
-          image: newMessage.image,
-          text: newMessage.text,
-          voiceMessage: newMessage.voiceMessage,
+
+    await newMessage.save();
+
+    // --- THIS IS THE PREVIOUS REAL-TIME WAY ---
+    const receiverSocketId = getReceiverSocketId(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("newMessage", {
+        _id: newMessage._id,
+        sender: newMessage.senderId,
+        receiver: newMessage.receiverId,
+        image: newMessage.image,
+        text: newMessage.text,
+        voiceMessage: newMessage.voiceMessage,
         duration: newMessage.duration,
-          createdAt: newMessage.createdAt
-        });
-      }
-      console.log("message is sent");
-  
-      res.status(201).json(newMessage);
-    } catch (error) {
-      console.log("Error in sendMessage controller: ", error.message);
-      res.status(500).json({ error: "Internal server error" });
+        createdAt: newMessage.createdAt,
+      });
     }
-  };
+
+    res.status(201).json(newMessage);
+  } catch (error) {
+    console.error("Error in sendMessage:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 
   module.exports = { initSocket,getUsersForSidebar, getMessages, sendMessage, sendingVoiceMessage };

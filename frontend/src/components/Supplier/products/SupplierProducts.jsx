@@ -677,6 +677,10 @@ const SupplierProducts = () => {
     return activeTab === tabName;
   };
 
+  const isProfileComplete = () => {
+  return user?.cnic && user?.city;
+};
+
   // Add this function inside the SupplierProducts component
 const handleDelete = async (id) => {
   if (!window.confirm("Are you sure you want to delete this product?")) return;
@@ -698,12 +702,25 @@ const handleDelete = async (id) => {
   }
 };
 
+  // const setActiveTab = (tab) => {
+  //   navigate(`?tab=${tab}`, { replace: true });
+  //   if (tab !== 'add-products') {
+  //     fetchSupplierProducts(tab);
+  //   }
+  // };
+
   const setActiveTab = (tab) => {
-    navigate(`?tab=${tab}`, { replace: true });
-    if (tab !== 'add-products') {
-      fetchSupplierProducts(tab);
-    }
-  };
+  if (tab === 'add-products' && !isProfileComplete()) {
+    alert("Please fill all your profile details (CNIC and City) before adding products.");
+    // Don't switch tab to add-products
+    return;
+  }
+  navigate(`?tab=${tab}`, { replace: true });
+  if (tab !== 'add-products') {
+    fetchSupplierProducts(tab);
+  }
+};
+
 
   const handleProductUpdated = (updatedProduct) => {
     setProducts(prevProducts => 
@@ -835,7 +852,7 @@ const handleDelete = async (id) => {
             </svg>
             All Products
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="?tab=add-products"
             className={`flex items-center px-6 py-3 text-sm font-medium ${
               isTabActive('add-products') 
@@ -847,7 +864,27 @@ const handleDelete = async (id) => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
             Add Products
-          </NavLink>
+          </NavLink> */}
+          <NavLink
+  to="?tab=add-products"
+  onClick={(e) => {
+    if (!isProfileComplete()) {
+      e.preventDefault();
+      alert("Please fill all your profile details (CNIC and City) before adding products.");
+    }
+  }}
+  className={`flex items-center px-6 py-3 text-sm font-medium ${
+    isTabActive('add-products') 
+      ? "bg-primary-100 text-primary-800 border-r-4 border-primary-600" 
+      : "text-neutral-600 hover:bg-neutral-100"
+  } ${!isProfileComplete() ? "cursor-not-allowed opacity-50" : ""}`}  // visually disable it
+>
+  <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+  </svg>
+  Add Products
+</NavLink>
+
         </nav>
       </div>
 
