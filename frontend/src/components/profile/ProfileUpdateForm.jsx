@@ -297,14 +297,31 @@ const getMaxDate = () => {
   return date.toISOString().split("T")[0];
 };
 
+const cities = [
+  "Karachi",
+  "Lahore",
+  "Islamabad",
+  "Rawalpindi",
+  "Faisalabad",
+  "Multan",
+  "Peshawar",
+  "Quetta",
+  "Hyderabad",
+  "Gujranwala",
+  "Other"
+];
+
 export default function ProfileUpdateForm({ onClose }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
+   // Set default city to "Other" if user.city is empty or not in our list
+  const initialCity = user.city && cities.includes(user.city) ? user.city : "Other";
+
   const [formData, setFormData] = useState({
-    city: user.city || "",
+    city: user.city  || initialCity || "",
     cnic: user.cnic || "",
     phoneNumber: user.phoneNumber || "",
     businessName: user.businessName || "",
@@ -433,7 +450,7 @@ export default function ProfileUpdateForm({ onClose }) {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* City */}
-              <div className="space-y-1">
+              {/* <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">City</label>
                 <input
                   type="text"
@@ -443,6 +460,23 @@ export default function ProfileUpdateForm({ onClose }) {
                   className={`w-full px-3 py-2 border ${errors.city ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
                   placeholder="Enter your city"
                 />
+                {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
+              </div> */}
+                   {/* City - Now a dropdown */}
+              <div className="space-y-1">
+                <label className="block text-sm font-medium text-gray-700">City</label>
+                <select
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  className={`w-full px-3 py-2 border ${errors.city ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+                >
+                  {cities.map((city) => (
+                    <option key={city} value={city}>
+                      {city}
+                    </option>
+                  ))}
+                </select>
                 {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
               </div>
 
