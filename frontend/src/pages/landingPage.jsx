@@ -712,6 +712,7 @@ import ProductSearch from "../components/ProductSearch";
 import TopProducts from "../components/TopProducts";
 import { useSelector } from "react-redux";
 import TopSuppliers from "../components/TopSuppliers";
+import RecommendedProducts from "../components/Exporter/products/RecommendedProducts";
 
 // Animation variants
 const containerVariants = {
@@ -1074,6 +1075,18 @@ export default function LandingPage() {
         
         <TopSuppliers />
       </motion.section>
+
+      {/* Recommended Products Section */}
+<motion.section 
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true, margin: "-100px" }}
+  variants={containerVariants}
+  className="w-[90vw] md:w-[80vw] mx-auto py-16"
+>
+  <RecommendedProducts maxItems={3} />
+</motion.section>
+
 
       {/* Testimonials */}
       <motion.section

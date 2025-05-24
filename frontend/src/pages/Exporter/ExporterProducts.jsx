@@ -635,22 +635,17 @@ const ExporterProducts = () => {
                 >
                   <div className="p-6">
                     {/* Display "Recommended" tag if applicable */}
-                    <motion.div
-                      key={product._id}
-                      className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden hover:shadow-md transition-shadow duration-300 relative" // Add `relative` class
-                      variants={cardVariants}
-                      whileHover="hover"
-                    >
+                  
                       <div className="p-6">
                         {/* Display "Recommended" tag if applicable */}
-                        {isRecommended && (
+                        {/* {isRecommended && (
                           <span className="absolute top-2 left-2 bg-primary-600 text-black text-xs px-2 py-1 rounded-full">
                             Recommended
                           </span>
-                        )}
+                        )} */}
                         {/* Rest of the product details */}
                       </div>
-                    </motion.div>
+                    
 
                     <div className="flex justify-between items-start">
                       <div>
