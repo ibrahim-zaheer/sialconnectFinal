@@ -619,7 +619,7 @@ const AuctionDetail = () => {
         </div>
 
         {/* Bids Section */}
-        {auctionDetails.bids?.length > 0 && (
+        {/* {auctionDetails.bids?.length > 0 && (
           <div className="border-t border-neutral-200 p-6">
             <h3 className="text-xl font-semibold text-neutral-800 mb-4">
               Bid History
@@ -672,7 +672,69 @@ const AuctionDetail = () => {
               ))}
             </div>
           </div>
-        )}
+        )} */}
+
+        {auctionDetails.bids?.length > 0 && (
+  <div className="border-t border-neutral-200 p-6">
+    <h3 className="text-xl font-semibold text-neutral-800 mb-4">
+      Bid History
+    </h3>
+    <div className="space-y-4">
+      {auctionDetails.bids.map((bid) => (
+        <div key={bid._id} className="bg-neutral-50 p-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <img
+                  src={bid.bidder?.profilePicture || "https://via.placeholder.com/150"}
+                  alt={bid.bidder?.id?.name}
+                  className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://via.placeholder.com/150";
+                  }}
+                />
+              </div>
+              <div className="ml-3">
+                <p className="font-medium text-neutral-800">
+                  {bid.bidder?.id?.name || "Anonymous Bidder"}
+                </p>
+                <p className="text-sm text-neutral-500">{formatDate(bid.createdAt)}</p>
+              </div>
+            </div>
+            <div className="text-right">
+              <p className="text-lg font-bold text-primary-600">
+                Rs {bid.amount.toLocaleString()}
+              </p>
+
+              {/* Only show accept bid button for exporters */}
+              {role === "exporter" && (
+                <BidActionButton
+                  auctionId={id}
+                  bidId={bid._id}
+                  acceptedBidId={auctionDetails.acceptedBid}
+                  onBidAccepted={() => refreshAuctionDetails()}
+                />
+              )}
+
+              {/* Only show chat button for exporters */}
+              {role === "exporter" && (
+                <div className="mt-4">
+                  <Link
+                    to={`/chat?supplierId=${bid.bidder?.id._id}`}
+                    className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
+                  >
+                    Chat
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
       </div>
     </div>
   );

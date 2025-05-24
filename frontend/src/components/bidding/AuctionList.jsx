@@ -454,7 +454,7 @@ const AuctionList = () => {
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
                     <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Starting Bid</p>
-                    <p className="font-bold text-primary-700">${auction.startingBid.toLocaleString()}</p>
+                    <p className="font-bold text-primary-700">Rs {auction.startingBid.toLocaleString()}</p>
                   </div>
                   <div>
                     <p className="text-xs font-medium text-neutral-500 uppercase tracking-wider">Category</p>

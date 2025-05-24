@@ -9,6 +9,17 @@ const admin = require("../../utils/firebaseAdmin")
 const NotificationService = require("../../services/NotificationService")
 
 
+let io;
+let userSocketMap;
+let getReceiverSocketId; // Add this
+
+function initSocket(ioInstance, socketMap, socketIdGetter) {
+  io = ioInstance;
+  userSocketMap = socketMap;
+  getReceiverSocketId = socketIdGetter; // Store the function
+}
+
+
 const getToken = async (req, res) => {
     try {
         const { userId, fcmToken } = req.body;
@@ -123,6 +134,13 @@ async function sendLikeNotification(req, res) {
     try{
        const {title,body, deviceToken} = req.body;
        await NotificationService.sendNotification(deviceToken,title,body);
+
+          // --- NEW: Emit real-time notification over Socket.IO ---
+    const receiverSocketId = userSocketMap[userBId.toString()];
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit('newNotification', notification);
+    }
+
        res.status(200).json({message:"Notification Sent Successfully",success: true});
     }
     catch(error){

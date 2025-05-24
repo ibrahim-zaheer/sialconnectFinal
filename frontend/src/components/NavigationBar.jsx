@@ -575,6 +575,7 @@ import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import Sial from "../assets/images/sial3.png";
+import NotificationBell from "./notifications/NotificationBell";
 
 const Navbar = () => {
   const user = useSelector((state) => state.user);
@@ -724,6 +725,8 @@ const Navbar = () => {
 
           {/* Right-side elements */}
           <div className="flex items-center space-x-4">
+             {/* Conditionally render NotificationBell only if user is logged in */}
+            {user?.role && <NotificationBell userId={user._id || user.id} />}
             {/* Language Selector */}
             <div className="w-fit bg-secondary-100 rounded-lg p-1">
               <div className="flex items-center space-x-1">

@@ -203,7 +203,10 @@ const auctionRoutes = require("./routes/bidding/auctionItemRoutes");
 
 const reviewRoutes = require("./routes/review/reviewRoutes")
 
+// const notificationRoutes = require("./routes/notification/notification");
+// Import notification router and socketIO setter
 const notificationRoutes = require("./routes/notification/notification");
+const { router: notificationRouter, setSocketIO } = notificationRoutes;
 const favouriteRoutes = require("./routes/favourites/favouriteRoutes");
 
 const offerRoutes = require("./routes/offer/offerRoutes");
@@ -234,9 +237,13 @@ const io = new Server(server, {
 
 const PORT = process.env.PORT || 5000;
 
+
+
 // Middleware
 app.use(cors());
 app.use(express.json());
+// ✅ Socket.IO Logic
+const userSocketMap = {}; // { userId: socketId }
 
 
 
@@ -251,7 +258,12 @@ app.use("/api/bidding", auctionRoutes);
 
 app.use("/api/reviews", reviewRoutes);
 
-app.use("/api/notification",notificationRoutes);
+// app.use("/api/notification",notificationRoutes);
+app.use("/api/notification", notificationRouter);
+
+
+// Inject io and userSocketMap into notification router for real-time emitting
+setSocketIO(io, userSocketMap);
 
 app.use("/api/favourites",favouriteRoutes);
 
@@ -276,8 +288,7 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("MongoDB connection error:", error));
 
-// ✅ Socket.IO Logic
-const userSocketMap = {}; // { userId: socketId }
+
 
 function getReceiverSocketId(userId) {
   return userSocketMap[userId];
