@@ -945,6 +945,13 @@ const handleDelete = async (id) => {
                         <div>
                           <h2 className="text-xl font-semibold text-neutral-900">{product.name}</h2>
                           <p className="text-primary-600 font-medium mt-1">Rs {product.price.toLocaleString()} per piece</p>
+         {product.discounts && product.discounts.length > 0 && product.discounts[0].discountedPrice && (
+  <p className="text-primary-600 font-medium mt-1">
+    Rs {product.discounts[0].discountedPrice} per piece
+  </p>
+)}
+
+
                         </div>
                         {activeTab === "your-products" && (
                             <div className="flex gap-2">

@@ -118,38 +118,6 @@ exports.createProduct = async (req, res) => {
   };
 
 
-
-
-// // Update a Product
-// exports.updateProduct = async (req, res) => {
-//     try {
-//         const { id } = req.params; // Product ID
-//         const { name, description, price, category } = req.body;
-
-//         const product = await Product.findById(id);
-
-//         if (!product) {
-//             return res.status(404).json({ message: "Product not found." });
-//         }
-
-//         // Ensure the logged-in supplier owns the product
-//         if (product.supplier.toString() !== req.user.id) {
-//             return res.status(403).json({ message: "You are not authorized to update this product." });
-//         }
-//     // Update fields if provided
-//     product.name = name || product.name;
-//     product.description = description || product.description;
-//     product.price = price || product.price;
-//     product.category = category || product.category;
-
-//         await product.save();
-//         res.status(200).json({ message: "Product updated successfully", product });
-//     } catch (error) {
-//         res.status(500).json({ message: error.message });
-//     }
-// };
-
-
 // Update a Product
 // exports.updateProduct = async (req, res) => {
 //     try {
@@ -308,12 +276,91 @@ exports.createProduct = async (req, res) => {
 //     }
 // };
 
+//24th May 2025 Update code
+
+// exports.updateProduct = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         // Get text fields from req.body (they come through when using multer)
+//         const { name, description, price, category } = req.body;
+//         const files = req.files;
+        
+//         // Get imagesToDelete from req.body (might be string or array)
+//         let imagesToDelete = req.body.imagesToDelete;
+//         // Convert to array if it's a string
+//         if (imagesToDelete && !Array.isArray(imagesToDelete)) {
+//             imagesToDelete = [imagesToDelete];
+//         }
+
+//         const product = await Product.findById(id);
+
+//         if (!product) {
+//             return res.status(404).json({ message: "Product not found." });
+//         }
+
+//         if (product.supplier.toString() !== req.user.id) {
+//             return res.status(403).json({ message: "You are not authorized to update this product." });
+//         }
+
+//         // Update basic fields
+//         product.name = name || product.name;
+//         product.description = description || product.description;
+//         product.price = price || product.price;
+//         product.category = category || product.category;
+
+//         // Handle image deletions if any
+//         if (imagesToDelete && imagesToDelete.length > 0) {
+//             // Delete from Cloudinary
+//             const deletePromises = imagesToDelete.map(imageUrl => {
+//                 const publicId = imageUrl.split('/').pop().split('.')[0];
+//                 return cloudinary.uploader.destroy(`productImages/${publicId}`);
+//             });
+
+//             await Promise.all(deletePromises);
+
+//             // Remove from product's image array
+//             product.image = product.image.filter(img => !imagesToDelete.includes(img));
+//         }
+
+//         // Handle new image uploads
+//         if (files && files.length > 0) {
+//             const uploadPromises = files.map(file => {
+//                 return new Promise((resolve, reject) => {
+//                     cloudinary.uploader.upload_stream(
+//                         { folder: 'productImages' },
+//                         (error, result) => {
+//                             if (error) return reject(error);
+//                             resolve(result.secure_url);
+//                         }
+//                     ).end(file.buffer);
+//                 });
+//             });
+
+//             const newImageUrls = await Promise.all(uploadPromises);
+            
+//             // If we deleted all old images and are adding new ones, replace completely
+//             if (imagesToDelete?.length === product.image.length) {
+//                 product.image = newImageUrls;
+//             } else {
+//                 // Otherwise combine
+//                 product.image = [...product.image, ...newImageUrls];
+//             }
+//         }
+
+//         await product.save();
+//         res.status(200).json({ message: "Product updated successfully", product });
+//     } catch (error) {
+//         console.error("Update product error:", error);
+//         res.status(500).json({ message: error.message });
+//     }
+// };
+
+
 
 exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        // Get text fields from req.body (they come through when using multer)
-        const { name, description, price, category } = req.body;
+       const { name, description, price, category, discounts } = req.body;
         const files = req.files;
         
         // Get imagesToDelete from req.body (might be string or array)
@@ -338,6 +385,31 @@ exports.updateProduct = async (req, res) => {
         product.description = description || product.description;
         product.price = price || product.price;
         product.category = category || product.category;
+
+        // Handle discounts if provided
+        if (discounts) {
+            try {
+                // Parse discounts if it's a string (might come as JSON string)
+                const parsedDiscounts = typeof discounts === 'string' ? JSON.parse(discounts) : discounts;
+                
+                // Validate discounts structure
+                if (Array.isArray(parsedDiscounts)) {
+                    parsedDiscounts.forEach(discount => {
+                        if (typeof discount.minQuantity !== 'number' || 
+                            typeof discount.discountedPrice !== 'number') {
+                            throw new Error('Invalid discount structure');
+                        }
+                    });
+                    product.discounts = parsedDiscounts;
+                } else {
+                    throw new Error('Discounts must be an array');
+                }
+            } catch (error) {
+                return res.status(400).json({ 
+                    message: 'Invalid discounts format: ' + error.message 
+                });
+            }
+        }
 
         // Handle image deletions if any
         if (imagesToDelete && imagesToDelete.length > 0) {

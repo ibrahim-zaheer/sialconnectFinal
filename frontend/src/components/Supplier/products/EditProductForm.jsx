@@ -126,6 +126,9 @@
 
 // export default EditProductForm;
 
+//24th May 2025
+
+
 
 
 import React, { useState } from "react";
@@ -139,11 +142,18 @@ const EditProductForm = ({ product, onClose, onProductUpdated }) => {
     price: product.price,
     category: product.category || "Other", // default fallback
     images: product.image || [],
+       discounts: product.discounts || []
   });
   const [newImages, setNewImages] = useState([]);
   const [imagesToDelete, setImagesToDelete] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [newDiscount, setNewDiscount] = useState({
+    minQuantity: "",
+    discountedPrice: ""
+  });
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -166,67 +176,46 @@ const EditProductForm = ({ product, onClose, onProductUpdated }) => {
     }
   };
 
+    const handleDiscountChange = (e) => {
+    const { name, value } = e.target;
+    setNewDiscount({
+      ...newDiscount,
+      [name]: value
+    });
+  };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   setMessage("");
+  const handleAddDiscount = () => {
+    if (!newDiscount.minQuantity || !newDiscount.discountedPrice) return;
+    
+    const updatedDiscounts = [
+      ...formData.discounts,
+      {
+        minQuantity: parseInt(newDiscount.minQuantity),
+        discountedPrice: parseFloat(newDiscount.discountedPrice)
+      }
+    ].sort((a, b) => a.minQuantity - b.minQuantity);
 
-  //   try {
-  //     const token = localStorage.getItem("token");
-  //     const formDataToSend = new FormData();
+    setFormData({
+      ...formData,
+      discounts: updatedDiscounts
+    });
+    
+    setNewDiscount({
+      minQuantity: "",
+      discountedPrice: ""
+    });
+  };
 
-  //     // Append text fields
-  //     formDataToSend.append("name", formData.name);
-  //     formDataToSend.append("description", formData.description);
-  //     formDataToSend.append("price", formData.price);
-  //     formDataToSend.append("category", formData.category);
+  const handleRemoveDiscount = (index) => {
+    const updatedDiscounts = formData.discounts.filter((_, i) => i !== index);
+    setFormData({
+      ...formData,
+      discounts: updatedDiscounts
+    });
+  };
 
-  //     // // Append images to delete
-  //     // imagesToDelete.forEach(img => {
-  //     //   formDataToSend.append("imagesToDelete", img);
-  //     // });
-  //     if (imagesToDelete.length > 0) {
-  //       imagesToDelete.forEach(img => {
-  //           formDataToSend.append("imagesToDelete", img);
-  //       });
-  //   }
-  //      // Append new images
-  //     //  newImages.forEach(file => {
-  //     //   formDataToSend.append("images", file);
-  //     // });
 
-  //     // Append new images
-  //     if (newImages.length > 0) {
-  //       newImages.forEach(file => {
-  //           formDataToSend.append("images", file);
-  //       });
-  //   }
-  //     const response = await axios.put(
-  //       `/api/supplier/product/update/${product._id}`,
-  //       formDataToSend,
-  //       {
-  //         headers: {
-  //           // "Content-Type": "application/json",
-  //           "Content-Type": "multipart/form-data",
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       }
-  //     );
 
-  //     setMessage("Product updated successfully!");
-  //     onProductUpdated(response.data.product); // Update state in parent
-  //     onClose(); // Close the modal or form
-  //   } catch (error) {
-  //     console.error(
-  //       "Error updating product:",
-  //       error.response?.data || error.message
-  //     );
-  //     setMessage(error.response?.data?.message || "Failed to update product.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -242,6 +231,8 @@ const EditProductForm = ({ product, onClose, onProductUpdated }) => {
         formDataToSend.append("description", formData.description);
         formDataToSend.append("price", formData.price);
         formDataToSend.append("category", formData.category);
+
+        formDataToSend.append("discounts", JSON.stringify(formData.discounts));
 
         // Append images to delete as separate fields
         imagesToDelete.forEach((img, index) => {
@@ -324,6 +315,83 @@ const EditProductForm = ({ product, onClose, onProductUpdated }) => {
               required
             />
           </div>
+
+          
+          {/* Discount Section */}
+          <div className="mt-4">
+            <label className="font-semibold block mb-2">Volume Discounts:</label>
+            
+            <div className="mb-4">
+              <h4 className="text-sm font-medium mb-2">Current Discount Tiers:</h4>
+              {formData.discounts.length === 0 ? (
+                <p className="text-gray-500">No discount tiers added</p>
+              ) : (
+                <ul className="space-y-2">
+                  {formData.discounts.map((discount, index) => (
+                    <li key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded">
+                      <span>
+                        {discount.minQuantity}+ units: Rs{discount.discountedPrice.toFixed(2)} each
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveDiscount(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        × Remove
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+
+            <div className="border-t pt-4">
+              <h4 className="text-sm font-medium mb-2">Add New Discount Tier:</h4>
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Minimum Quantity
+                  </label>
+                  <input
+                    type="number"
+                    name="minQuantity"
+                    value={newDiscount.minQuantity}
+                    onChange={handleDiscountChange}
+                    className="border p-2 rounded-lg w-full"
+                    min="1"
+                    placeholder="e.g., 10"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Discounted Price
+                  </label>
+                  <input
+                    type="number"
+                    name="discountedPrice"
+                    value={newDiscount.discountedPrice}
+                    onChange={handleDiscountChange}
+                    className="border p-2 rounded-lg w-full"
+                    min="0"
+                    step="0.01"
+                    placeholder="e.g., 90.00"
+                  />
+                </div>
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={handleAddDiscount}
+                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg"
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Note: Discount tiers will be automatically sorted by quantity
+              </p>
+            </div>
+          </div>
             {/* Existing form fields (name, description, price, category) */}
           {/* ... keep all the existing form fields as they are ... */}
 
@@ -394,7 +462,7 @@ const EditProductForm = ({ product, onClose, onProductUpdated }) => {
               onClick={onClose}
               className="bg-gray-300 hover:bg-gray-200 transition-all duration-300 py-2 px-5 rounded-lg"
             >
-              Cancel
+              Cancels
             </button>
 
             <button
@@ -413,3 +481,6 @@ const EditProductForm = ({ product, onClose, onProductUpdated }) => {
 };
 
 export default EditProductForm;
+
+
+

@@ -28,10 +28,47 @@ const OAuth = () => {
         googlePhotoUrl: resultsfromGoogle.user.photoURL,
       });
 
-      const { isNewUser, id, name, email, role, profilePicture, token } =
-        res.data;
+      // const { isNewUser, id, name, email, role, profilePicture, token } =
+      //   res.data;
 
-      const userData = { id, name, email, role, profilePicture };
+      // const userData = { id, name, email, role, profilePicture };
+
+      const {
+  isNewUser,
+  _id,
+  name,
+  email,
+  role,
+  profilePicture,
+  city,
+  cnic,
+  phoneNumber,
+  businessName,
+  businessAddress,
+  postalCode,
+  bio,
+  dateOfBirth,
+  subscription,   
+  token,
+} = res.data;
+
+const userData = {
+  id: _id,  // your backend returns _id, so assign accordingly
+  name,
+  email,
+  role,
+  profilePicture,
+  city,
+  cnic,
+  phoneNumber,
+  businessName,
+  businessAddress,
+  postalCode,
+  bio,
+  dateOfBirth,
+    subscription: subscription || { plan: 'free', expiryDate: null, paymentProviderId: null },  // add subscription here with fallback
+};
+
       dispatch(setUser(userData));
 
       localStorage.setItem("user", JSON.stringify(userData));

@@ -9,6 +9,8 @@ import {getStorage,ref, uploadBytes, getDownloadURL} from "firebase/storage";
 import { useDispatch } from 'react-redux';
 import { updateFcmToken } from '../redux/reducers/userSlice';
 
+import axios from 'axios';
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,

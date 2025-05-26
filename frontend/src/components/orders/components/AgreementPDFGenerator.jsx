@@ -8,11 +8,6 @@
 //   const generatePDF = () => {
 //     const doc = new jsPDF();
 
-//     // Add watermark
-//     doc.setFontSize(50);
-//     doc.setTextColor(200, 200, 200);
-//     doc.text("SialConnect", 105, 150, { align: "center", angle: 45 });
-
 //     // Add header for Agreement
 //     doc.setFontSize(22);
 //     doc.setTextColor(40, 103, 248);
@@ -36,12 +31,23 @@
 //     doc.setTextColor(0, 0, 0);
 //     doc.setFont("helvetica", "normal");
 
+//     // const terms = [
+//     //   `I, the undersigned ${userRole === 'exporter' ? 'Exporter' : 'Supplier'}, acknowledge and agree to the following terms and conditions:`,
+//     //   "1. I promise to deal directly with the counterpart for the transaction, without involving the platform.",
+//     //   "2. I understand that the platform only provides contact details and cannot guarantee 100% fraud-free dealings.",
+//     //   "3. I will take full responsibility for ensuring safety and due diligence while conducting business.",
+//     //   "4. I understand that the platform provides a marketplace for connections, but the transaction responsibility lies with me."
+//     // ];
 //     const terms = [
 //       `I, the undersigned ${userRole === 'exporter' ? 'Exporter' : 'Supplier'}, acknowledge and agree to the following terms and conditions:`,
-//       "1. I promise to deal directly with the counterpart for the transaction, without involving the platform.",
-//       "2. I understand that the platform only provides contact details and cannot guarantee 100% fraud-free dealings.",
-//       "3. I will take full responsibility for ensuring safety and due diligence while conducting business.",
-//       "4. I understand that the platform provides a marketplace for connections, but the transaction responsibility lies with me."
+//       "1. I promise to deal directly with the counterpart for the transaction,",
+//       "   without involving the platform.", // Line break here
+//       "2. I understand that the platform only provides contact details",
+//       "   and cannot guarantee 100% fraud-free dealings.",  // Line break here
+//       "3. I will take full responsibility for ensuring safety",
+//       "   and due diligence while conducting business.", // Line break here
+//       "4. I understand that the platform provides a marketplace",
+//       "   for connections, but the transaction responsibility lies with me."  // Line break here
 //     ];
 
 //     terms.forEach((line, index) => {
@@ -54,7 +60,9 @@
 //       : order.exporterId?.name || "Unknown Exporter";
 
 //     const orderData = [
-//       ["Order ID", String(order._id)],
+//       // ["Order ID", String(order._id)],
+//       ["Order ID", String(order.orderId)],
+
 //       ["Product", order.productId?.name || "Unknown Product"],
 //       [userRole === 'exporter' ? "Exporter" : "Supplier", userName || "Unknown"],
 //       [userRole === 'exporter' ? "Supplier" : "Exporter", counterpartName],
@@ -83,11 +91,19 @@
 //       margin: { left: 20 }
 //     });
 
+//     // Add watermark after table generation
+//     doc.setFontSize(50);
+//     doc.setTextColor(200, 200, 200); // Light gray color
+//     doc.text("SialConnect", 105, doc.lastAutoTable.finalY + 20, { align: "center", angle: 45 });
+
 //     // Signature section
-//     const signatureY = doc.lastAutoTable.finalY + 20;
+//     const signatureY = doc.lastAutoTable.finalY + 40;
 //     doc.setFontSize(12);
 //     doc.text("Signature: ___________________________", 20, signatureY);
-//     doc.text("Date: ___________________________", 120, signatureY);
+//     // doc.text("Date: ___________________________", 120, signatureY);
+//      // Use the "Ordered On" date from order.createdAt for the Date line
+//      const orderDate = new Date(order.createdAt).toLocaleString(); // Format the date as desired
+//      doc.text(`Date: ${orderDate}`, 120, signatureY);  // Place the order date here
 
 //     // Footer
 //     const footerY = signatureY + 20;
@@ -96,7 +112,7 @@
 //     doc.text("This agreement is electronically generated and valid without signature.", 105, footerY, { align: "center" });
 //     doc.text("© 2025 SialConnect. All rights reserved.", 105, footerY + 7, { align: "center" });
 
-//     doc.save(`agreement-${order._id}.pdf`);
+//     doc.save(`agreementS-${order._id}.pdf`);
 //   };
 
 //   return (
@@ -114,6 +130,7 @@
 
 // export default AgreementPDFGenerator;
 
+
 import React from "react";
 import { jsPDF } from "jspdf";
 import { autoTable } from "jspdf-autotable";
@@ -122,13 +139,13 @@ const AgreementPDFGenerator = ({ order, userName, userRole }) => {
   const generatePDF = () => {
     const doc = new jsPDF();
 
-    // Add header for Agreement
+    // Header
     doc.setFontSize(22);
     doc.setTextColor(40, 103, 248);
     doc.setFont("helvetica", "bold");
     doc.text("TRANSACTION AGREEMENT", 105, 20, { align: "center" });
 
-    // Add divider line
+    // Divider line
     doc.setDrawColor(200, 200, 200);
     doc.line(20, 25, 190, 25);
 
@@ -139,44 +156,34 @@ const AgreementPDFGenerator = ({ order, userName, userRole }) => {
     doc.text(`${userRole === 'exporter' ? 'Exporter' : 'Supplier'} Name: ${userName || "Unknown"}`, 20, 35);
     doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 42);
 
-    // Add terms and conditions
+    // Terms and conditions
     const termsY = 50;
     doc.setFontSize(12);
     doc.setTextColor(0, 0, 0);
-    doc.setFont("helvetica", "normal");
 
-    // const terms = [
-    //   `I, the undersigned ${userRole === 'exporter' ? 'Exporter' : 'Supplier'}, acknowledge and agree to the following terms and conditions:`,
-    //   "1. I promise to deal directly with the counterpart for the transaction, without involving the platform.",
-    //   "2. I understand that the platform only provides contact details and cannot guarantee 100% fraud-free dealings.",
-    //   "3. I will take full responsibility for ensuring safety and due diligence while conducting business.",
-    //   "4. I understand that the platform provides a marketplace for connections, but the transaction responsibility lies with me."
-    // ];
     const terms = [
       `I, the undersigned ${userRole === 'exporter' ? 'Exporter' : 'Supplier'}, acknowledge and agree to the following terms and conditions:`,
       "1. I promise to deal directly with the counterpart for the transaction,",
-      "   without involving the platform.", // Line break here
+      "   without involving the platform.",
       "2. I understand that the platform only provides contact details",
-      "   and cannot guarantee 100% fraud-free dealings.",  // Line break here
+      "   and cannot guarantee 100% fraud-free dealings.",
       "3. I will take full responsibility for ensuring safety",
-      "   and due diligence while conducting business.", // Line break here
+      "   and due diligence while conducting business.",
       "4. I understand that the platform provides a marketplace",
-      "   for connections, but the transaction responsibility lies with me."  // Line break here
+      "   for connections, but the transaction responsibility lies with me."
     ];
 
-    terms.forEach((line, index) => {
-      doc.text(line, 20, termsY + (index * 8));
+    terms.forEach((line, i) => {
+      doc.text(line, 20, termsY + i * 8);
     });
 
-    // Order details table
+    // Order details data
     const counterpartName = userRole === 'exporter' 
       ? order.supplierId?.name || "Unknown Supplier"
       : order.exporterId?.name || "Unknown Exporter";
 
     const orderData = [
-      // ["Order ID", String(order._id)],
       ["Order ID", String(order.orderId)],
-
       ["Product", order.productId?.name || "Unknown Product"],
       [userRole === 'exporter' ? "Exporter" : "Supplier", userName || "Unknown"],
       [userRole === 'exporter' ? "Supplier" : "Exporter", counterpartName],
@@ -205,19 +212,18 @@ const AgreementPDFGenerator = ({ order, userName, userRole }) => {
       margin: { left: 20 }
     });
 
-    // Add watermark after table generation
+    // Watermark (behind signature and footer)
     doc.setFontSize(50);
-    doc.setTextColor(200, 200, 200); // Light gray color
+    doc.setTextColor(200, 200, 200, 0.3); // light gray + transparent
     doc.text("SialConnect", 105, doc.lastAutoTable.finalY + 20, { align: "center", angle: 45 });
 
     // Signature section
     const signatureY = doc.lastAutoTable.finalY + 40;
     doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0); // reset color to black
     doc.text("Signature: ___________________________", 20, signatureY);
-    // doc.text("Date: ___________________________", 120, signatureY);
-     // Use the "Ordered On" date from order.createdAt for the Date line
-     const orderDate = new Date(order.createdAt).toLocaleString(); // Format the date as desired
-     doc.text(`Date: ${orderDate}`, 120, signatureY);  // Place the order date here
+    const orderDate = new Date(order.createdAt).toLocaleString();
+    doc.text(`Date: ${orderDate}`, 120, signatureY);
 
     // Footer
     const footerY = signatureY + 20;

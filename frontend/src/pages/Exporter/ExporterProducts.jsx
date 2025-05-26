@@ -8,6 +8,7 @@ import FavoriteToggle from "../../components/favourites/FavoriteToggle";
 import ProductSearch from "../../components/ProductSearch";
 import RecommendedProducts from "../../components/Exporter/products/RecommendedProducts";
 import { fetchRecommendedProducts } from "../../components/Exporter/products/hooks/fetchRecommendedProducts";
+import { ProductPrice } from "./components/ProductPrice";
 
 const ExporterProducts = () => {
   const [products, setProducts] = useState([]);
@@ -250,6 +251,8 @@ const ExporterProducts = () => {
     );
   };
 
+  
+
   const applyFilters = (
     search = searchQuery,
     price = priceRange,
@@ -299,6 +302,8 @@ const ExporterProducts = () => {
     setSearchQuery("");
     setFilteredProducts(products);
   };
+
+  
 
   return (
     <div className="flex min-h-screen bg-neutral-100 mt-16">
@@ -652,10 +657,17 @@ const ExporterProducts = () => {
                         <h2 className="text-lg font-semibold text-neutral-900 line-clamp-2">
                           {product.name}
                         </h2>
-                        <p className="text-primary-600 font-medium mt-1">
+                        {/* <p className="text-primary-600 font-medium mt-1">
                           Rs {product.price?.toLocaleString() || "N/A"} per
                           piece
-                        </p>
+                        </p> */}
+                             {/* {product.discounts && product.discounts.length > 0 && product.discounts[0].discountedPrice && (
+  <p className="text-primary-600 font-medium mt-1">
+    Rs {product.discounts[0].discountedPrice} per piece
+  </p>
+)} */}
+
+<ProductPrice product={product} user={user} />
                       </div>
                       {role === "exporter" && (
                         <FavoriteToggle

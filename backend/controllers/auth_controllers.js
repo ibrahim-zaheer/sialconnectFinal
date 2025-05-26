@@ -64,8 +64,10 @@ exports.loginUser = async (req, res) => {
       city: user.city,
       cnic: user.cnic,
       postalCode: user.postalCode,
-      bio: user.bio
+      bio: user.bio,
+      subscription: user.subscription,
     });
+    console.log("User subscription on login:", user.subscription);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -81,6 +83,8 @@ exports.googleSignIn = async (req, res, next) => {
     if (user) {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
       const { password, ...rest } = user._doc;
+      console.log("User found by Google email:", user);
+
 
       return res
         .status(200)

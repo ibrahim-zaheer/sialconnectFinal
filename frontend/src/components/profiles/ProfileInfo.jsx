@@ -88,6 +88,7 @@ const ProfileInfo = () => {
                 >
                   {/* {user.name || "Guest"} */}
                   <span>{user.name || "Guest"}</span>
+
              
                    {user.subscription?.plan === "pro" && (
     <span className="bg-indigo-600 text-white text-xs font-semibold px-2 py-1 rounded-full uppercase">

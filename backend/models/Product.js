@@ -54,8 +54,8 @@ category: {
   createdAt: { type: Date, default: Date.now },
    discounts: [
     {
-      minQuantity: { type: Number, required: true },
-      discountedPrice: { type: Number, required: true },
+      minQuantity: { type: Number, required: false },
+      discountedPrice: { type: Number, required: false },
     }
   ],
 });
