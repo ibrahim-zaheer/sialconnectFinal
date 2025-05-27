@@ -161,7 +161,7 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="max-w-[900px] mx-auto mt-24 p-5 font-sans">
+    <div className="max-w-[900px] mx-auto mt-10 p-5 font-sans">
       <h1 className="text-4xl font-bold text-center mb-16">Choose Your Plan</h1>
       <div className="flex flex-col md:flex-row justify-around gap-6">
         {Object.values(plans).map((plan) => {

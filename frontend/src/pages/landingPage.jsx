@@ -1363,6 +1363,7 @@ import TopProducts from "../components/TopProducts";
 import TopSuppliers from "../components/TopSuppliers";
 import RecommendedProducts from "../components/Exporter/products/RecommendedProducts";
 import { useSelector } from "react-redux";
+import PricingPage from "./pricing/PricingPage";
 
 /* ────────────────────────────────────────────────────────────
    Animation variants
@@ -1705,6 +1706,8 @@ export default function LandingPage() {
       >
         <RecommendedProducts maxItems={3} />
       </motion.section>
+
+      {user?.role === "exporter" && <PricingPage />}
 
       {/* ────────── Testimonials ────────── */}
       {testimonials.length > 0 && (
