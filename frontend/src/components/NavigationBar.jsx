@@ -1,6 +1,3 @@
-
-
-
 // import React, { useState } from "react";
 // import { Link } from "react-router-dom";
 // import { useSelector } from "react-redux";
@@ -28,9 +25,9 @@
 //           {/* Logo */}
 //           <div className="flex-shrink-0">
 //             <Link to="/home" className="flex items-center" onClick={closeMobileMenu}>
-//               <img 
-//                 src={Sial} 
-//                 className="h-10 w-auto" 
+//               <img
+//                 src={Sial}
+//                 className="h-10 w-auto"
 //                 alt="SialConnect Logo"
 //               />
 //               <span className="ml-2 text-white font-bold text-xl hidden sm:inline">
@@ -47,7 +44,7 @@
 //                 {t("Home")}
 //               </Link>
 //               {
-//                 user.role !== "supplier" && user.role !== "exporter" && 
+//                 user.role !== "supplier" && user.role !== "exporter" &&
 //                 <Link to="/ExporterProducts" className="text-white hover:text-accent-500 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200" onClick={closeMobileMenu}>
 //                   {t("Products")}
 //                 </Link>
@@ -102,8 +99,8 @@
 //               )}
 
 //               {user.role && (
-//                 <Link 
-//                   to="/profile" 
+//                 <Link
+//                   to="/profile"
 //                   className="text-white hover:text-accent-500 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
 //                   onClick={closeMobileMenu}
 //                 >
@@ -119,7 +116,7 @@
 //             <div className="w-fit bg-secondary-100 rounded-lg p-1">
 //               {/* LanguageSelector component here */}
 //             </div>
-            
+
 //             <button
 //               type="button"
 //               className="inline-flex items-center justify-center p-2 rounded-md text-primary-100 hover:text-accent-500 focus:outline-none"
@@ -198,10 +195,6 @@
 // };
 
 // export default Navbar;
-
-
-
-
 
 // import React from "react";
 // import { Link } from "react-router-dom";
@@ -290,10 +283,9 @@
 //                     <li>
 //                       <Link to="/admin/user/order/payment">Payments</Link>
 //                     </li>
-                    
+
 //                   </>
 //                 )}
-
 
 // {user.role !== "admin" && (
 //                   <>
@@ -304,12 +296,9 @@
 //                 <li>
 //                   <Link to="/profile">Profiles</Link>
 //                 </li>
-                    
+
 //                   </>
 //                 )}
-              
-
-               
 
 //                 <li className="text-white">
 //                   Welcome, {user.name || "User"} ({user.role})
@@ -324,7 +313,6 @@
 // };
 
 // export default Navbar;
-
 
 // import React, { useState } from "react";
 // import { Link } from "react-router-dom";
@@ -356,9 +344,9 @@
 //           {/* Logo */}
 //           <div className="flex-shrink-0">
 //             <Link to="/home" className="flex items-center" onClick={closeMobileMenu}>
-//               <img 
-//                 src={Sial} 
-//                 className="h-10 w-auto" 
+//               <img
+//                 src={Sial}
+//                 className="h-10 w-auto"
 //                 alt="SialConnect Logo"
 //               />
 //               <span className="ml-2 text-white font-bold text-xl hidden sm:inline">
@@ -547,8 +535,8 @@
 
 // // Reusable NavLink component for desktop
 // const NavLink = ({ to, onClick, children, className = "" }) => (
-//   <Link 
-//     to={to} 
+//   <Link
+//     to={to}
 //     className={`text-primary-100 hover:text-accent-500 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${className}`}
 //     onClick={onClick}
 //   >
@@ -597,22 +585,24 @@ const Navbar = () => {
 
   // Function to check if a path is active
   const isActive = (path) => {
-    return location.pathname === path || 
-           (path !== "/home" && location.pathname.startsWith(path));
+    return (
+      location.pathname === path ||
+      (path !== "/home" && location.pathname.startsWith(path))
+    );
   };
 
   return (
-    <div className="w-full fixed top-0 bg-primary-950 shadow-md z-50">
+    <div className="w-full fixed top-0 bg-primary-900 shadow-md z-50">
       <nav className="w-full mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link to="/home" className="flex items-center" onClick={closeMobileMenu}>
-              <img 
-                src={Sial} 
-                className="h-10 w-auto" 
-                alt="SialConnect Logo"
-              />
+            <Link
+              to="/home"
+              className="flex items-center"
+              onClick={closeMobileMenu}
+            >
+              <img src={Sial} className="h-10 w-auto" alt="SialConnect Logo" />
               <span className="ml-2 text-white font-bold text-xl hidden sm:inline">
                 SialConnect
               </span>
@@ -625,16 +615,32 @@ const Navbar = () => {
               {/* Default links shown when not signed in */}
               {!user.role ? (
                 <>
-                  <NavLink to="/home" onClick={closeMobileMenu} isActive={isActive("/home")}>
+                  <NavLink
+                    to="/home"
+                    onClick={closeMobileMenu}
+                    isActive={isActive("/home")}
+                  >
                     <i className="ri-home-2-line mr-1"></i> {t("Home")}
                   </NavLink>
-                  <NavLink to="/about" onClick={closeMobileMenu} isActive={isActive("/about")}>
+                  <NavLink
+                    to="/about"
+                    onClick={closeMobileMenu}
+                    isActive={isActive("/about")}
+                  >
                     <i className="ri-information-line mr-1"></i> {t("About")}
                   </NavLink>
-                  <NavLink to="/ExporterProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
+                  <NavLink
+                    to="/ExporterProducts"
+                    onClick={closeMobileMenu}
+                    isActive={isActive("/ExporterProducts")}
+                  >
                     <i className="ri-search-line mr-1"></i> {t("Products")}
                   </NavLink>
-                  <NavLink to="/signIn" onClick={closeMobileMenu} isActive={isActive("/signIn")}>
+                  <NavLink
+                    to="/signIn"
+                    onClick={closeMobileMenu}
+                    isActive={isActive("/signIn")}
+                  >
                     <i className="ri-login-box-line mr-1"></i> {t("SignIn")}
                   </NavLink>
                 </>
@@ -642,7 +648,11 @@ const Navbar = () => {
                 <>
                   {/* Show Home link for suppliers and exporters but not admin */}
                   {(user.role === "supplier" || user.role === "exporter") && (
-                    <NavLink to="/home" onClick={closeMobileMenu} isActive={isActive("/home")}>
+                    <NavLink
+                      to="/home"
+                      onClick={closeMobileMenu}
+                      isActive={isActive("/home")}
+                    >
                       <i className="ri-home-2-line mr-1"></i> {t("Home")}
                     </NavLink>
                   )}
@@ -650,17 +660,35 @@ const Navbar = () => {
                   {/* Supplier Links */}
                   {user.role === "supplier" && (
                     <>
-                     <NavLink to="/about" onClick={closeMobileMenu} isActive={isActive("/about")}>
-                    <i className="ri-information-line mr-1"></i> {t("About")}
-                  </NavLink>
-                      <NavLink to="/SupplierProducts" onClick={closeMobileMenu} isActive={isActive("/SupplierProducts")}>
+                      <NavLink
+                        to="/about"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/about")}
+                      >
+                        <i className="ri-information-line mr-1"></i>{" "}
+                        {t("About")}
+                      </NavLink>
+                      <NavLink
+                        to="/SupplierProducts"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/SupplierProducts")}
+                      >
                         <i className="ri-box-3-line mr-1"></i> {t("Products")}
                       </NavLink>
-                      <NavLink to="/getAllAuctions" onClick={closeMobileMenu} isActive={isActive("/getAllAuctions")}>
+                      <NavLink
+                        to="/getAllAuctions"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/getAllAuctions")}
+                      >
                         <i className="ri-auction-line mr-1"></i> {t("Auctions")}
                       </NavLink>
-                      <NavLink to="/mySupplierOrders" onClick={closeMobileMenu} isActive={isActive("/mySupplierOrders")}>
-                        <i className="ri-list-check-2 mr-1"></i> {t("My Orders")}
+                      <NavLink
+                        to="/mySupplierOrders"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/mySupplierOrders")}
+                      >
+                        <i className="ri-list-check-2 mr-1"></i>{" "}
+                        {t("My Orders")}
                       </NavLink>
                     </>
                   )}
@@ -668,26 +696,53 @@ const Navbar = () => {
                   {/* Exporter Links */}
                   {user.role === "exporter" && (
                     <>
-                     <NavLink to="/about" onClick={closeMobileMenu} isActive={isActive("/about")}>
-                    <i className="ri-information-line mr-1"></i> {t("About")}
-                  </NavLink>
-                      <NavLink to="/ExporterProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
+                      <NavLink
+                        to="/about"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/about")}
+                      >
+                        <i className="ri-information-line mr-1"></i>{" "}
+                        {t("About")}
+                      </NavLink>
+                      <NavLink
+                        to="/ExporterProducts"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/ExporterProducts")}
+                      >
                         <i className="ri-search-line mr-1"></i> {t("Products")}
                       </NavLink>
-                       {/* <NavLink to="/ExporterRecommendedProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
+                      {/* <NavLink to="/ExporterRecommendedProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
                         <i className="ri-search-line mr-1"></i> {t("RecommendedProducts")}
                       </NavLink> */}
-                       <NavLink to="/pricing" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
+                      <NavLink
+                        to="/pricing"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/ExporterProducts")}
+                      >
                         <i className="ri-search-line mr-1"></i> {t("Pricing")}
                       </NavLink>
-                      <NavLink to="/exporter" onClick={closeMobileMenu} isActive={isActive("/exporter")}>
+                      <NavLink
+                        to="/exporter"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/exporter")}
+                      >
                         <i className="ri-auction-line mr-1"></i> {t("Auction")}
                       </NavLink>
-                      <NavLink to="/favourites" onClick={closeMobileMenu} isActive={isActive("/favourites")}>
-                        <i className="ri-heart-line mr-1"></i> {t("Your Favourites")}
+                      <NavLink
+                        to="/favourites"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/favourites")}
+                      >
+                        <i className="ri-heart-line mr-1"></i>{" "}
+                        {t("Your Favourites")}
                       </NavLink>
-                      <NavLink to="/myExporterOrders" onClick={closeMobileMenu} isActive={isActive("/myExporterOrders")}>
-                        <i className="ri-list-check-2 mr-1"></i> {t("My Orders")}
+                      <NavLink
+                        to="/myExporterOrders"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/myExporterOrders")}
+                      >
+                        <i className="ri-list-check-2 mr-1"></i>{" "}
+                        {t("My Orders")}
                       </NavLink>
                     </>
                   )}
@@ -699,10 +754,15 @@ const Navbar = () => {
                         <i className="ri-user-line mr-1"></i> {t("Users")}
                       </NavLink>
                       <NavLink to="/admin" onClick={closeMobileMenu}>
-                        <i className="ri-dashboard-line mr-1"></i> {t("Dashboard")}
+                        <i className="ri-dashboard-line mr-1"></i>{" "}
+                        {t("Dashboard")}
                       </NavLink>
-                      <NavLink to="/admin/user/order/payment" onClick={closeMobileMenu}>
-                        <i className="ri-money-dollar-circle-line mr-1"></i> {t("Payments")}
+                      <NavLink
+                        to="/admin/user/order/payment"
+                        onClick={closeMobileMenu}
+                      >
+                        <i className="ri-money-dollar-circle-line mr-1"></i>{" "}
+                        {t("Payments")}
                       </NavLink>
                     </>
                   )}
@@ -710,10 +770,18 @@ const Navbar = () => {
                   {/* Common for non-admin users */}
                   {user.role !== "admin" && (
                     <>
-                      <NavLink to="/chat" onClick={closeMobileMenu} isActive={isActive("/chat")}>
+                      <NavLink
+                        to="/chat"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/chat")}
+                      >
                         <i className="ri-chat-3-line mr-1"></i> {t("Chat")}
                       </NavLink>
-                      <NavLink to="/profile" onClick={closeMobileMenu} isActive={isActive("/profile")}>
+                      <NavLink
+                        to="/profile"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/profile")}
+                      >
                         <i className="ri-user-line mr-1"></i> {t("Profile")}
                       </NavLink>
                     </>
@@ -725,21 +793,29 @@ const Navbar = () => {
 
           {/* Right-side elements */}
           <div className="flex items-center space-x-4">
-             {/* Conditionally render NotificationBell only if user is logged in */}
+            {/* Conditionally render NotificationBell only if user is logged in */}
             {user?.role && <NotificationBell userId={user._id || user.id} />}
             {/* Language Selector */}
             <div className="w-fit bg-secondary-100 rounded-lg p-1">
               <div className="flex items-center space-x-1">
                 <button
-                  onClick={() => changeLanguage('en')}
-                  className={`px-2 py-1 rounded text-xs ${i18n.language === 'en' ? 'bg-primary-600 text-white' : 'text-primary-800 hover:bg-primary-100'}`}
+                  onClick={() => changeLanguage("en")}
+                  className={`px-2 py-1 rounded text-xs ${
+                    i18n.language === "en"
+                      ? "bg-primary-600 text-white"
+                      : "text-primary-800 hover:bg-primary-100"
+                  }`}
                 >
                   EN
                 </button>
                 <span className="text-primary-800">|</span>
                 <button
-                  onClick={() => changeLanguage('ur')}
-                  className={`px-2 py-1 rounded text-xs ${i18n.language === 'ur' ? 'bg-primary-600 text-white' : 'text-primary-800 hover:bg-primary-100'}`}
+                  onClick={() => changeLanguage("ur")}
+                  className={`px-2 py-1 rounded text-xs ${
+                    i18n.language === "ur"
+                      ? "bg-primary-600 text-white"
+                      : "text-primary-800 hover:bg-primary-100"
+                  }`}
                 >
                   UR
                 </button>
@@ -771,13 +847,25 @@ const Navbar = () => {
               {/* Default links shown when not signed in */}
               {!user.role ? (
                 <>
-                  <MobileNavLink to="/home" onClick={closeMobileMenu} isActive={isActive("/home")}>
+                  <MobileNavLink
+                    to="/home"
+                    onClick={closeMobileMenu}
+                    isActive={isActive("/home")}
+                  >
                     <i className="ri-home-2-line mr-2"></i> {t("Home")}
                   </MobileNavLink>
-                  <MobileNavLink to="/ExporterProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
+                  <MobileNavLink
+                    to="/ExporterProducts"
+                    onClick={closeMobileMenu}
+                    isActive={isActive("/ExporterProducts")}
+                  >
                     <i className="ri-search-line mr-2"></i> {t("Products")}
                   </MobileNavLink>
-                  <MobileNavLink to="/signIn" onClick={closeMobileMenu} isActive={isActive("/signIn")}>
+                  <MobileNavLink
+                    to="/signIn"
+                    onClick={closeMobileMenu}
+                    isActive={isActive("/signIn")}
+                  >
                     <i className="ri-login-box-line mr-2"></i> {t("SignIn")}
                   </MobileNavLink>
                 </>
@@ -785,7 +873,11 @@ const Navbar = () => {
                 <>
                   {/* Show Home link for suppliers and exporters but not admin */}
                   {(user.role === "supplier" || user.role === "exporter") && (
-                    <MobileNavLink to="/home" onClick={closeMobileMenu} isActive={isActive("/home")}>
+                    <MobileNavLink
+                      to="/home"
+                      onClick={closeMobileMenu}
+                      isActive={isActive("/home")}
+                    >
                       <i className="ri-home-2-line mr-2"></i> {t("Home")}
                     </MobileNavLink>
                   )}
@@ -793,14 +885,28 @@ const Navbar = () => {
                   {/* Supplier Links */}
                   {user.role === "supplier" && (
                     <>
-                      <MobileNavLink to="/SupplierProducts" onClick={closeMobileMenu} isActive={isActive("/SupplierProducts")}>
-                        <i className="ri-box-3-line mr-2"></i> {t("Your Products")}
+                      <MobileNavLink
+                        to="/SupplierProducts"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/SupplierProducts")}
+                      >
+                        <i className="ri-box-3-line mr-2"></i>{" "}
+                        {t("Your Products")}
                       </MobileNavLink>
-                      <MobileNavLink to="/getAllAuctions" onClick={closeMobileMenu} isActive={isActive("/getAllAuctions")}>
+                      <MobileNavLink
+                        to="/getAllAuctions"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/getAllAuctions")}
+                      >
                         <i className="ri-auction-line mr-2"></i> {t("Auctions")}
                       </MobileNavLink>
-                      <MobileNavLink to="/mySupplierOrders" onClick={closeMobileMenu} isActive={isActive("/mySupplierOrders")}>
-                        <i className="ri-list-check-2 mr-2"></i> {t("My Orders")}
+                      <MobileNavLink
+                        to="/mySupplierOrders"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/mySupplierOrders")}
+                      >
+                        <i className="ri-list-check-2 mr-2"></i>{" "}
+                        {t("My Orders")}
                       </MobileNavLink>
                     </>
                   )}
@@ -808,17 +914,35 @@ const Navbar = () => {
                   {/* Exporter Links */}
                   {user.role === "exporter" && (
                     <>
-                      <MobileNavLink to="/ExporterProducts" onClick={closeMobileMenu} isActive={isActive("/ExporterProducts")}>
+                      <MobileNavLink
+                        to="/ExporterProducts"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/ExporterProducts")}
+                      >
                         <i className="ri-search-line mr-2"></i> {t("Products")}
                       </MobileNavLink>
-                      <MobileNavLink to="/exporter" onClick={closeMobileMenu} isActive={isActive("/exporter")}>
+                      <MobileNavLink
+                        to="/exporter"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/exporter")}
+                      >
                         <i className="ri-auction-line mr-2"></i> {t("Auction")}
                       </MobileNavLink>
-                      <MobileNavLink to="/favourites" onClick={closeMobileMenu} isActive={isActive("/favourites")}>
-                        <i className="ri-heart-line mr-2"></i> {t("Your Favourites")}
+                      <MobileNavLink
+                        to="/favourites"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/favourites")}
+                      >
+                        <i className="ri-heart-line mr-2"></i>{" "}
+                        {t("Your Favourites")}
                       </MobileNavLink>
-                      <MobileNavLink to="/myExporterOrders" onClick={closeMobileMenu} isActive={isActive("/myExporterOrders")}>
-                        <i className="ri-list-check-2 mr-2"></i> {t("My Orders")}
+                      <MobileNavLink
+                        to="/myExporterOrders"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/myExporterOrders")}
+                      >
+                        <i className="ri-list-check-2 mr-2"></i>{" "}
+                        {t("My Orders")}
                       </MobileNavLink>
                     </>
                   )}
@@ -830,10 +954,15 @@ const Navbar = () => {
                         <i className="ri-user-line mr-2"></i> {t("Users")}
                       </MobileNavLink>
                       <MobileNavLink to="/admin" onClick={closeMobileMenu}>
-                        <i className="ri-dashboard-line mr-2"></i> {t("Dashboard")}
+                        <i className="ri-dashboard-line mr-2"></i>{" "}
+                        {t("Dashboard")}
                       </MobileNavLink>
-                      <MobileNavLink to="/admin/user/order/payment" onClick={closeMobileMenu}>
-                        <i className="ri-money-dollar-circle-line mr-2"></i> {t("Payments")}
+                      <MobileNavLink
+                        to="/admin/user/order/payment"
+                        onClick={closeMobileMenu}
+                      >
+                        <i className="ri-money-dollar-circle-line mr-2"></i>{" "}
+                        {t("Payments")}
                       </MobileNavLink>
                     </>
                   )}
@@ -841,10 +970,18 @@ const Navbar = () => {
                   {/* Common for non-admin users */}
                   {user.role !== "admin" && (
                     <>
-                      <MobileNavLink to="/chat" onClick={closeMobileMenu} isActive={isActive("/chat")}>
+                      <MobileNavLink
+                        to="/chat"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/chat")}
+                      >
                         <i className="ri-chat-3-line mr-2"></i> {t("Chat")}
                       </MobileNavLink>
-                      <MobileNavLink to="/profile" onClick={closeMobileMenu} isActive={isActive("/profile")}>
+                      <MobileNavLink
+                        to="/profile"
+                        onClick={closeMobileMenu}
+                        isActive={isActive("/profile")}
+                      >
                         <i className="ri-user-line mr-2"></i> {t("Profile")}
                       </MobileNavLink>
                     </>
@@ -866,9 +1003,11 @@ const Navbar = () => {
 
 // Reusable NavLink component for desktop
 const NavLink = ({ to, onClick, children, isActive, className = "" }) => (
-  <Link 
-    to={to} 
-    className={`${isActive ? 'text-accent-500 font-semibold' : 'text-primary-100'} hover:text-accent-500 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center ${className}`}
+  <Link
+    to={to}
+    className={`${
+      isActive ? "text-accent-500 font-semibold" : "text-primary-100"
+    } hover:text-accent-500 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center ${className}`}
     onClick={onClick}
   >
     {children}
@@ -879,7 +1018,11 @@ const NavLink = ({ to, onClick, children, isActive, className = "" }) => (
 const MobileNavLink = ({ to, onClick, children, isActive }) => (
   <Link
     to={to}
-    className={`block px-3 py-2 rounded-md text-base font-medium ${isActive ? 'text-accent-500 bg-primary-800 font-semibold' : 'text-primary-100 hover:text-accent-500 hover:bg-primary-800'} transition-colors duration-200 flex items-center`}
+    className={`block px-3 py-2 rounded-md text-base font-medium ${
+      isActive
+        ? "text-accent-500 bg-primary-800 font-semibold"
+        : "text-primary-100 hover:text-accent-500 hover:bg-primary-800"
+    } transition-colors duration-200 flex items-center`}
     onClick={onClick}
   >
     {children}
@@ -912,9 +1055,9 @@ export default Navbar;
 //           {/* Logo */}
 //           <div className="flex-shrink-0">
 //             <Link to="/home" className="flex items-center" onClick={closeMobileMenu}>
-//               <img 
-//                 src={Sial} 
-//                 className="h-10 w-auto" 
+//               <img
+//                 src={Sial}
+//                 className="h-10 w-auto"
 //                 alt="Sial Logo"
 //               />
 //             </Link>
@@ -1080,8 +1223,8 @@ export default Navbar;
 
 // // Reusable NavLink component for desktop
 // const NavLink = ({ to, onClick, children, className = "" }) => (
-//   <Link 
-//     to={to} 
+//   <Link
+//     to={to}
 //     className={`text-white hover:bg-blue-700 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${className}`}
 //     onClick={onClick}
 //   >

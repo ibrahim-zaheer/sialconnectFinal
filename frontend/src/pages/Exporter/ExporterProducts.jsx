@@ -251,8 +251,6 @@ const ExporterProducts = () => {
     );
   };
 
-  
-
   const applyFilters = (
     search = searchQuery,
     price = priceRange,
@@ -302,8 +300,6 @@ const ExporterProducts = () => {
     setSearchQuery("");
     setFilteredProducts(products);
   };
-
-  
 
   return (
     <div className="flex min-h-screen bg-neutral-100 mt-16">
@@ -640,17 +636,16 @@ const ExporterProducts = () => {
                 >
                   <div className="p-6">
                     {/* Display "Recommended" tag if applicable */}
-                  
-                      <div className="p-6">
-                        {/* Display "Recommended" tag if applicable */}
-                        {/* {isRecommended && (
+
+                    {/* <div className="p-6"> */}
+                    {/* Display "Recommended" tag if applicable */}
+                    {/* {isRecommended && (
                           <span className="absolute top-2 left-2 bg-primary-600 text-black text-xs px-2 py-1 rounded-full">
                             Recommended
                           </span>
                         )} */}
-                        {/* Rest of the product details */}
-                      </div>
-                    
+                    {/* Rest of the product details */}
+                    {/* </div> */}
 
                     <div className="flex justify-between items-start">
                       <div>
@@ -661,13 +656,13 @@ const ExporterProducts = () => {
                           Rs {product.price?.toLocaleString() || "N/A"} per
                           piece
                         </p> */}
-                             {/* {product.discounts && product.discounts.length > 0 && product.discounts[0].discountedPrice && (
+                        {/* {product.discounts && product.discounts.length > 0 && product.discounts[0].discountedPrice && (
   <p className="text-primary-600 font-medium mt-1">
     Rs {product.discounts[0].discountedPrice} per piece
   </p>
 )} */}
 
-<ProductPrice product={product} user={user} />
+                        <ProductPrice product={product} user={user} />
                       </div>
                       {role === "exporter" && (
                         <FavoriteToggle

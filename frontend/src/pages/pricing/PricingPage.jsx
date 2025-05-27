@@ -9,8 +9,8 @@ import {
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { selectUser, updateSubscription } from "../../redux/reducers/userSlice";
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 function CheckoutForm() {
   const stripe = useStripe();
@@ -24,13 +24,10 @@ function CheckoutForm() {
   const handleUpgradeClick = async (e) => {
     e.preventDefault();
     setErrorMsg("");
-    if (!stripe || !elements) {
-      return; // Stripe.js not loaded yet
-    }
+    if (!stripe || !elements) return;
     setLoading(true);
 
     try {
-      // 1. Create PaymentIntent on backend
       const { clientSecret, paymentIntentId } = await axios
         .post(
           "/api/exporter/create-payment-intent",
@@ -39,9 +36,7 @@ function CheckoutForm() {
         )
         .then((res) => res.data);
 
-      // 2. Confirm card payment with Stripe Elements
       const cardElement = elements.getElement(CardElement);
-
       const paymentResult = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: cardElement,
@@ -64,7 +59,6 @@ function CheckoutForm() {
         return;
       }
 
-      // 3. Call backend API to upgrade subscription after payment success
       await axios.post(
         "/api/exporter/pricing",
         { paymentIntentId },
@@ -76,7 +70,6 @@ function CheckoutForm() {
         }
       );
 
-      // 4. Update Redux store subscription state
       const expiryDate = new Date(
         Date.now() + 30 * 24 * 60 * 60 * 1000
       ).toISOString();
@@ -101,41 +94,36 @@ function CheckoutForm() {
   };
 
   return (
-    <form onSubmit={handleUpgradeClick}>
-      <CardElement
-        options={{
-          style: {
-            base: {
-              fontSize: "16px",
-              color: "#424770",
-              "::placeholder": {
-                color: "#aab7c4",
+    <form onSubmit={handleUpgradeClick} className="mt-4 space-y-4">
+      <div className="mb-4">
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: "16px",
+                color: "#1F2937",
+                "::placeholder": {
+                  color: "#9CA3AF",
+                },
+              },
+              invalid: {
+                color: "#EF4444",
               },
             },
-            invalid: {
-              color: "#9e2146",
-            },
-          },
-        }}
-      />
-      {errorMsg && (
-        <div style={{ color: "red", marginTop: 8, marginBottom: 8 }}>
-          {errorMsg}
-        </div>
-      )}
+          }}
+          className="p-2 border-gray-300 rounded-md"
+        />
+      </div>
+
+      {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
       <button
         type="submit"
         disabled={!stripe || loading}
-        style={{
-          marginTop: 20,
-          padding: "12px 24px",
-          backgroundColor: "#0070f3",
-          color: "white",
-          border: "none",
-          borderRadius: 4,
-          fontWeight: "bold",
-          cursor: loading ? "not-allowed" : "pointer",
-        }}
+        className={`w-full py-3 rounded-md text-white font-semibold transition-colors ${
+          loading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-600 hover:bg-blue-700"
+        }`}
       >
         {loading ? "Processing..." : "Upgrade to Pro"}
       </button>
@@ -173,103 +161,64 @@ export default function PricingPage() {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: 900,
-        margin: "auto",
-        padding: 20,
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <h1 style={{ textAlign: "center" }}>Choose Your Plan</h1>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          gap: 20,
-          marginTop: 30,
-        }}
-      >
+    <div className="max-w-[900px] mx-auto mt-24 p-5 font-sans">
+      <h1 className="text-4xl font-bold text-center mb-16">Choose Your Plan</h1>
+      <div className="flex flex-col md:flex-row justify-around gap-6">
         {Object.values(plans).map((plan) => {
           const isCurrent = plan.name.toLowerCase() === currentPlan;
 
           return (
             <div
               key={plan.name}
-              style={{
-                border: `2px solid ${plan.isPro ? "#0070f3" : "#ccc"}`,
-                borderRadius: 8,
-                width: 300,
-                padding: 20,
-                boxShadow: isCurrent
-                  ? "0 0 15px rgba(0,112,243,0.4)"
-                  : "none",
-                backgroundColor: isCurrent ? "#e6f0ff" : "white",
-              }}
+              className={`flex flex-col justify-between border-2 rounded-xl p-6 w-full max-w-sm shadow-md transition-all duration-300 ${
+                isCurrent
+                  ? "border-blue-500 bg-blue-50 shadow-blue-200"
+                  : plan.isPro
+                  ? "border-blue-500"
+                  : "border-gray-300"
+              }`}
             >
-              <h2
-                style={{
-                  textAlign: "center",
-                  color: plan.isPro ? "#0070f3" : "#333",
-                }}
-              >
-                {plan.name}
-              </h2>
-              <p
-                style={{
-                  fontSize: 24,
-                  fontWeight: "bold",
-                  textAlign: "center",
-                  margin: "10px 0",
-                }}
-              >
-                {plan.price}
-              </p>
-              <ul>
-                {plan.features.map((feature, i) => (
-                  <li key={i} style={{ marginBottom: 8 }}>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              {isCurrent ? (
-                <button
-                  disabled
-                  style={{
-                    width: "100%",
-                    padding: 12,
-                    backgroundColor: "#999",
-                    color: "white",
-                    border: "none",
-                    borderRadius: 4,
-                    cursor: "not-allowed",
-                    marginTop: 20,
-                    fontWeight: "bold",
-                  }}
+              <div>
+                <h2
+                  className={`text-center text-2xl font-semibold ${
+                    plan.isPro ? "text-blue-600" : "text-gray-800"
+                  }`}
                 >
-                  Current Plan
-                </button>
-              ) : plan.isPro ? (
-                <Elements stripe={stripePromise}>
-                  <CheckoutForm />
-                </Elements>
-              ) : (
-                <button
-                  disabled
-                  style={{
-                    width: "100%",
-                    padding: 12,
-                    backgroundColor: "#ccc",
-                    color: "#666",
-                    border: "none",
-                    borderRadius: 4,
-                    marginTop: 20,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Free
-                </button>
-              )}
+                  {plan.name}
+                </h2>
+                <p className="text-center text-3xl font-bold my-4">
+                  {plan.price}
+                </p>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="list-disc list-inside">
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-6">
+                {isCurrent ? (
+                  <button
+                    disabled
+                    className="w-full py-3 bg-gray-400 text-white rounded-md font-semibold cursor-not-allowed"
+                  >
+                    Current Plan
+                  </button>
+                ) : plan.isPro ? (
+                  <Elements stripe={stripePromise}>
+                    <CheckoutForm />
+                  </Elements>
+                ) : (
+                  <button
+                    disabled
+                    className="w-full py-3 bg-gray-300 text-gray-600 rounded-md font-semibold cursor-not-allowed"
+                  >
+                    Free
+                  </button>
+                )}
+              </div>
             </div>
           );
         })}
