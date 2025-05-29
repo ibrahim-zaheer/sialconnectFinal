@@ -55,7 +55,9 @@ category: {
    discounts: [
     {
       minQuantity: { type: Number, required: false },
-      discountedPrice: { type: Number, required: false },
+      discountedPrice: { type: Number, required: false
+        
+       },
     }
   ],
 });

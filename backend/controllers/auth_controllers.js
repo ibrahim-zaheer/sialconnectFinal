@@ -66,6 +66,7 @@ exports.loginUser = async (req, res) => {
       postalCode: user.postalCode,
       bio: user.bio,
       subscription: user.subscription,
+      adminVerified:user.adminVerified,
     });
     console.log("User subscription on login:", user.subscription);
   } catch (error) {

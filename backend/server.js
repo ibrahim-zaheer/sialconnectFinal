@@ -203,6 +203,7 @@ const auctionRoutes = require("./routes/bidding/auctionItemRoutes");
 
 const reviewRoutes = require("./routes/review/reviewRoutes")
 
+const adminVerificationRoutes = require("./routes/adminVerification/adminVerificationRoute");
 // const notificationRoutes = require("./routes/notification/notification");
 // Import notification router and socketIO setter
 const notificationRoutes = require("./routes/notification/notification");
@@ -270,6 +271,9 @@ app.use("/api/favourites",favouriteRoutes);
 app.use("/api/offers",offerRoutes);
 
 app.use("/api/order",orderRoutes);
+
+app.use("/api/adminVerification",adminVerificationRoutes);
+
 
 app.use("/api/admin",adminRoutes);
 

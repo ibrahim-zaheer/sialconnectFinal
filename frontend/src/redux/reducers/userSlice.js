@@ -210,7 +210,8 @@ const initialState = {
     plan: 'free',
     expiryDate: null,
     paymentProviderId: null,
-  }
+  },
+    adminVerified: savedUser.adminVerified || null,
 };
 
 const userSlice = createSlice({
@@ -237,6 +238,8 @@ const userSlice = createSlice({
       state.bio = action.payload.bio || '';
       state.dateOfBirth = action.payload.dateOfBirth || '';
 
+        state.adminVerified = action.payload.adminVerified || null;
+
        // Update subscription info if available
       if (action.payload.subscription) {
         state.subscription.plan = action.payload.subscription.plan || 'free';
@@ -247,6 +250,12 @@ const userSlice = createSlice({
       }
 
       // Save updated user data to localStorage
+      localStorage.setItem("user", JSON.stringify(state));
+    },
+
+       updateVerificationStatus: (state, action) => {
+      state.adminVerified = action.payload.status;
+      
       localStorage.setItem("user", JSON.stringify(state));
     },
     clearUser: (state) => {
@@ -324,6 +333,7 @@ export const {
   updateFcmToken,
   updateProfile,
   verifyEmail, // New action
+  updateVerificationStatus,
   updateSubscription
 } = userSlice.actions;
 

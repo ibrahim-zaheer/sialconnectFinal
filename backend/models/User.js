@@ -65,6 +65,12 @@ const UserSchema = new mongoose.Schema({
   paymentProviderId: { type: String }, // Stripe Subscription ID (not just PaymentIntent)
   status: { type: String, enum: ['active', 'canceled', 'expired'], default: 'active' } // Add subscription status
 },
+
+adminVerified: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: null // null means never requested verification
+  },
   createdAt: {
     type: Date,
     default: Date.now

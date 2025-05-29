@@ -10,6 +10,9 @@ import ProfileUpdateForm from "../profile/ProfileUpdateForm";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import ProfilePictureUpdate from "../Supplier/products/ProfilePictureUpdate";
+import VerificationRequestButton from "../orders/supplier/adminVerification/VerificationRequestButton";
+import { updateVerificationStatus } from "../../redux/reducers/userSlice";
+
 
 const ProfileInfo = () => {
   const user = useSelector((state) => state.user);
@@ -19,9 +22,42 @@ const ProfileInfo = () => {
   const [isUploading, setIsUploading] = useState(false);
   const dispatch = useDispatch();
 
+   const getVerificationStatus = () => {
+    if (!user.adminVerified) {
+      return null;
+    }
+    
+    switch(user.adminVerified) {
+      case "pending":
+        return (
+          <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2 py-1 rounded-full uppercase ml-2">
+            Verification Pending
+          </span>
+        );
+      case "approved":
+        return (
+          <span className="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded-full uppercase ml-2">
+            Verified Supplier
+          </span>
+        );
+      case "rejected":
+        return (
+          <span className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded-full uppercase ml-2">
+            Verification Rejected
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
+
   useEffect(() => {
     connectSocket();
   }, [connectSocket]);
+
+
+
+
 
   // Animation variants
   const containerVariants = {
@@ -88,6 +124,8 @@ const ProfileInfo = () => {
                 >
                   {/* {user.name || "Guest"} */}
                   <span>{user.name || "Guest"}</span>
+                  {/* <span>{user.adminVerified || "Admin Request"}</span> */}
+
 
              
                    {user.subscription?.plan === "pro" && (
@@ -95,6 +133,11 @@ const ProfileInfo = () => {
       Pro
     </span>
   )}
+      {getVerificationStatus()}
+
+              {/* {user.role === "supplier" && !user.adminVerified && (
+  <VerificationRequestButton/>
+  )} */}
                 </motion.h1>
                 <motion.p 
                   variants={itemVariants}
@@ -141,6 +184,16 @@ const ProfileInfo = () => {
                 </svg>
                 Edit Profile
               </motion.button>
+
+                    {user.role === "supplier" && (
+                  <VerificationRequestButton 
+                    className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all shadow-md"
+                    disabled={user.adminVerified === "pending" || user.adminVerified === "approved"}
+                    onVerificationSubmitted={() => {
+                      dispatch(updateVerificationStatus({ status: "pending" }));
+                    }}
+                  />
+                )}
             </div>
 
             {/* Profile Update Form */}

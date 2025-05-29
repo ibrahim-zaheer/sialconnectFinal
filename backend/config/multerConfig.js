@@ -62,8 +62,10 @@ const uploadProfilePicture = multer({ storage: profilePictureStorage });
 // const uploadProductImage = multer({ storage: productImageStorage });
 const uploadProductImage = multer({ storage });
 
+const uploadStoreImage = multer({ storage });
+
 const uploadSampleImage = multer({ storage: sampleImageStorage }); // New upload for samples
 
 const uploadTransactionProof = multer({ storage: localTransactionprof });
 
-module.exports = { uploadProfilePicture, uploadProductImage,uploadSampleImage,uploadTransactionProof };
+module.exports = { uploadProfilePicture, uploadProductImage,uploadSampleImage,uploadTransactionProof, uploadStoreImage };

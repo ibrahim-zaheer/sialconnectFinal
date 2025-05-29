@@ -813,7 +813,9 @@ const Auth = () => {
           cnic: data.cnic,
           postalCode: data.postalCode,
           bio: data.bio,
-            subscription: data.subscription || { plan: 'free', expiryDate: null, paymentProviderId: null }
+            subscription: data.subscription || { plan: 'free', expiryDate: null, paymentProviderId: null },
+          adminVerified:data.adminVerified,  
+            
         };
         dispatch(setUser(userData));
         localStorage.setItem("user", JSON.stringify(userData));

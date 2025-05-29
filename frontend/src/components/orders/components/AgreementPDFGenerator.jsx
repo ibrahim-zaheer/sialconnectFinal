@@ -190,6 +190,8 @@ const AgreementPDFGenerator = ({ order, userName, userRole }) => {
       ["Quantity", String(order.quantity)],
       ["Price", `Rs ${String(order.price)}`],
       ["Status", order.status || "Unknown Status"],
+      ["Supplier Status", order.exporterAgreementStatus || "Unknown Status"],
+      ["Exporter Status", order.supplierAgreementStatus || "Unknown Status"],
       ["Sample Status", order.sampleStatus || "Unknown Sample Status"],
       ["Payment Status", order.paymentStatus || "Unknown Payment Status"],
       ["Ordered On", new Date(order.createdAt).toLocaleString()],
