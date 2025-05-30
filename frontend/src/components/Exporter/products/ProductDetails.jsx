@@ -483,6 +483,14 @@ const ProductDetails = () => {
                     )}
                     <div>
                       <h4 className="font-medium text-gray-900">{product.supplier?.name || "Unknown Supplier"}</h4>
+                      {/* <h4 className="font-medium text-gray-900">{product.supplier?.adminVerified || "Unknown Supplier"}</h4> */}
+                          
+                           {/* Show admin verification status */}
+      {product.supplier?.adminVerified === "approved" && (
+        <span className="inline-block mt-1 px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">
+          Admin Verified ✔
+        </span>
+      )}
                       {product.supplier?._id && (
                         <div className="mt-1">
                           <AverageReviewBySupplier supplierId={product.supplier._id} />

@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import ProfilePictureUpdate from "../Supplier/products/ProfilePictureUpdate";
 import VerificationRequestButton from "../orders/supplier/adminVerification/VerificationRequestButton";
 import { updateVerificationStatus } from "../../redux/reducers/userSlice";
-
+import { fetchUserVerification } from "../orders/supplier/adminVerification/FetchUserVerification";
 
 const ProfileInfo = () => {
   const user = useSelector((state) => state.user);
@@ -21,6 +21,16 @@ const ProfileInfo = () => {
   const [showProfileUpdateForm, setShowProfileUpdateForm] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const dispatch = useDispatch();
+
+   const [loadingVerification, setLoadingVerification] = useState(true);
+  const [verificationError, setVerificationError] = useState(null);
+
+  useEffect(() => {
+  console.log("Current adminVerified status:", user.adminVerified);
+}, [user.adminVerified]);
+  
+  
+
 
    const getVerificationStatus = () => {
     if (!user.adminVerified) {
@@ -42,9 +52,22 @@ const ProfileInfo = () => {
         );
       case "rejected":
         return (
-          <span className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded-full uppercase ml-2">
+          // <span className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded-full uppercase ml-2">
+          //   Verification Rejected
+            
+          // </span>
+           <div className="ml-2">
+          <span className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded-full uppercase">
             Verification Rejected
           </span>
+          {user.rejectionReason && (
+            <div className="mt-1 text-xs text-red-600 bg-red-50 p-2 rounded">
+              <strong>Reason:</strong> {user.rejectionReason}
+            </div>
+          )}
+        </div>
+      
+          
         );
       default:
         return null;
@@ -56,8 +79,74 @@ const ProfileInfo = () => {
   }, [connectSocket]);
 
 
+// useEffect(() => {
+//     const loadVerificationStatus = async () => {
+//       const token = localStorage.getItem("token");
+//       if (!token) {
+//         setVerificationError("User not authenticated");
+//         setLoadingVerification(false);
+//         return;
+//       }
+
+//       try {
+//         const data = await fetchUserVerification(token);
+//         console.log("Received verification data:", data);
+//         if (data.adminVerified) {
+//           dispatch(updateVerificationStatus({ status: data.adminVerified }));
+//           console.log("admin verified"+data.adminVerified);
+//         }
+//         // Optionally you can keep verification requests in state if needed
+//       } catch (err) {
+//           console.error("Verification error:", err);
+//         setVerificationError(err.message);
+//       } finally {
+//         setLoadingVerification(false);
+//       }
+//     };
+
+//     loadVerificationStatus();
+//   }, [dispatch]);
 
 
+useEffect(() => {
+  const loadVerificationStatus = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setVerificationError("User not authenticated");
+      setLoadingVerification(false);
+      return;
+    }
+
+    try {
+      const response = await fetchUserVerification(token);
+      console.log("Received verification data:", response);
+      
+      // Handle array response - take first item's user data
+      if (Array.isArray(response) && response.length > 0) {
+        const verificationData = response[0];
+        if (verificationData.user?.adminVerified) {
+          dispatch(updateVerificationStatus({ 
+            status: verificationData.user.adminVerified ,
+            rejectionReason: response.rejectionReason || null
+          }));
+          console.log("admin verified:", verificationData.user.adminVerified);
+        }
+      }
+      // Handle if it's not an array (direct object response)
+      else if (response?.adminVerified) {
+        dispatch(updateVerificationStatus({ status: response.adminVerified }));
+        console.log("admin verified:", response.adminVerified);
+      }
+    } catch (err) {
+      console.error("Verification error:", err);
+      setVerificationError(err.message);
+    } finally {
+      setLoadingVerification(false);
+    }
+  };
+
+  loadVerificationStatus();
+}, [dispatch]);
 
   // Animation variants
   const containerVariants = {
@@ -81,6 +170,14 @@ const ProfileInfo = () => {
       }
     }
   };
+
+  if (loadingVerification) {
+  return <div>Loading verification status...</div>;
+}
+
+if (verificationError) {
+  return <div>Error: {verificationError}</div>;
+}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-12 px-4">
@@ -125,6 +222,7 @@ const ProfileInfo = () => {
                   {/* {user.name || "Guest"} */}
                   <span>{user.name || "Guest"}</span>
                   {/* <span>{user.adminVerified || "Admin Request"}</span> */}
+                  {/* <span>{user.adminVerified ? `Status: ${user.adminVerified}` : "Admin Request"}</span> */}
 
 
              
