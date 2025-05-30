@@ -107,12 +107,42 @@ const getUserVerificationStatus = async (req, res) => {
 };
 
 
+// const getAllAdminVerifications = async (req, res) => {
+//   try {
+//     const verifications = await AdminVerification.find().populate('user');
+//     res.status(200).json(verifications);
+//   } catch (error) {
+//     res.status(500).json({ message: 'Failed to fetch admin verifications', error: error.message });
+//   }
+// };
+
+
 const getAllAdminVerifications = async (req, res) => {
   try {
-    const verifications = await AdminVerification.find().populate('user');
-    res.status(200).json(verifications);
+    const verifications = await AdminVerification.find()
+      .populate({
+        path: 'user',
+        select: 'name email role businessName businessAddress phoneNumber cnic profilePicture adminVerified', // Only pull needed fields
+      });
+
+    // Transform data to include business info (optional)
+    const formattedVerifications = verifications.map(verification => ({
+      ...verification.toObject(),
+      businessInfo: {
+        name: verification.user.businessName,
+        address: verification.user.businessAddress,
+        phone: verification.user.phoneNumber,
+        cnic: verification.user.cnic, // For identity verification
+        profilePicture: verification.user.profilePicture, // Optional: Show user's profile
+      },
+    }));
+
+    res.status(200).json(formattedVerifications);
   } catch (error) {
-    res.status(500).json({ message: 'Failed to fetch admin verifications', error: error.message });
+    res.status(500).json({ 
+      message: 'Failed to fetch admin verifications', 
+      error: error.message 
+    });
   }
 };
 
