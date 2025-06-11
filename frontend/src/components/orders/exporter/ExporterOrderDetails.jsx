@@ -779,6 +779,7 @@ import AgreementComponent from "../components/AgreementComponent";
 import AgreementPDFGenerator from "../components/AgreementPDFGenerator";
 import LocalPaymentForm from "../components/payment/LocalPaymentForm";
 import WriteReview from "../../reviews/WriteReviews"
+import { OrderReceived } from "../supplier/order/OrderRecieved";
 
 const ExporterOrderDetails = () => {
   const { orderId } = useParams();
@@ -793,6 +794,8 @@ const ExporterOrderDetails = () => {
   const [description, setDescription] = useState("");
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
   const [showLocalPaymentPopup, setShowLocalPaymentPopup] = useState(false);
+
+    const [isImageVisible, setIsImageVisible] = useState(false);
 
   const user = useSelector((state) => state.user);
   const userName = user?.name;
@@ -817,6 +820,10 @@ const ExporterOrderDetails = () => {
   useEffect(() => {
     fetchOrderDetails();
   }, [orderId]);
+
+  const toggleImageVisibility = () => {
+    setIsImageVisible(!isImageVisible);
+  };
 
   const handleImageSample = async (e) => {
     e.preventDefault();
@@ -866,6 +873,12 @@ const ExporterOrderDetails = () => {
     setShowLocalPaymentPopup(!showLocalPaymentPopup);
     if (showLocalPaymentPopup) setLocalActivePaymentOrder(null);
   };
+ const handleOrderRecievedSuccess = () => {
+    // Callback function when the order is sent successfully
+    setMessage("Order has been successfully marked as shipped.");
+    fetchOrderDetails(); // Refresh order details after success
+  };
+
 
   if (loading) {
     return (
@@ -972,19 +985,55 @@ const ExporterOrderDetails = () => {
         )}
 
         {/* Sample Proof Sections */}
-        {order.sampleProof && (
+        {/* {order.sampleProof && (
           <ImageCard 
             title="Sample Proof" 
             imageUrl={order.sampleProof} 
             description={order.sampleDescription}
           />
+        )} */}
+
+          {order.sampleProof && (
+          <div>
+            <button onClick={toggleImageVisibility}>
+              {isImageVisible ? "Hide Sample Image" : "Show Sample Image"}
+            </button>
+
+            {isImageVisible && (
+              <ImageCard
+                title="Sample Proof"
+                imageUrl={order.sampleProof}
+                description={order.sampleDescription}
+              />
+            )}
+          </div>
         )}
 
-        {order.sampleRecievedProof && (
+        {/* {order.sampleRecievedProof && (
           <ImageCard 
             title="Sample Received Proof" 
             imageUrl={order.sampleRecievedProof}
           />
+        )}
+        
+        */}
+
+            {order.sampleRecievedProof && (
+          
+
+           <div>
+            {/* <button onClick={toggleImageVisibility}>
+              {isImageVisible ? "Hide Sample Image" : "Show Sample Image"}
+            </button> */}
+
+            {isImageVisible && (
+              <ImageCard
+                title="Sample Received Proof"
+            imageUrl={order.sampleRecievedProof}
+                description={order.sampleDescription}
+              />
+            )}
+          </div>
         )}
 
         {/* Sample Approval */}
@@ -1038,6 +1087,13 @@ const ExporterOrderDetails = () => {
         {/* Write Review Section (only show when agreement is "Accepted") */}
        
 
+               {order.Agreement === "Accepted" && order.status ==="order_shipped" && (
+                        <OrderReceived
+                          orderId={order._id}
+                          onSuccess={handleOrderRecievedSuccess}
+                        />
+                      )}
+              
         
         {/* Write Review Section */}
         {order.Agreement === "Accepted" && !hasReviewed && (

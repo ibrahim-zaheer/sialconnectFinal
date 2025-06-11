@@ -533,6 +533,8 @@ const acceptAgreement = async (req, res) => {
       order.exporterAgreementStatus = "Accepted";
       if (order.supplierAgreementStatus === "Accepted") {
         order.Agreement = "Accepted"; // Both sides accepted
+        //chatgpt 9 june 2025
+          order.status = "agreement_accepted"; // Update the status to agreement accepted
       } else {
         order.Agreement = "waiting_for_supplier"; // Waiting for supplier
       }
@@ -540,6 +542,7 @@ const acceptAgreement = async (req, res) => {
       order.supplierAgreementStatus = "Accepted";
       if (order.exporterAgreementStatus === "Accepted") {
         order.Agreement = "Accepted"; // Both sides accepted
+        order.status = "agreement_accepted"; 
       } else {
         order.Agreement = "waiting_for_exporter"; // Waiting for exporter
       }
@@ -769,6 +772,57 @@ const getAllPaymentsForSupplier = async (req, res) => {
   }
 };
 
+// Supplier confirms order shipment
+const markOrderShipped = async (req, res) => {
+  try {
+    const { orderId } = req.body; // Order ID passed in request body
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (order.status !== "agreement_accepted") {
+      return res.status(400).json({ message: "Agreement must be accepted first" });
+    }
+
+    order.isOrderShipped = true;
+    order.orderShippedDate = new Date();
+    order.status = "order_shipped"; // Set status to shipped
+
+    await order.save();
+    res.status(200).json({ message: "Order marked as shipped", order });
+  } catch (error) {
+    res.status(500).json({ message: "Error marking order as shipped", error });
+  }
+};
+
+// Exporter confirms order receipt
+const confirmOrderReceipt = async (req, res) => {
+  try {
+    const { orderId } = req.body; // Order ID passed in request body
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (!order.isOrderShipped) {
+      return res.status(400).json({ message: "Order not yet shipped by supplier" });
+    }
+
+    order.isOrderReceived = true;
+    order.orderReceivedDate = new Date();
+    order.status = "order_received"; // Set status to received
+
+    await order.save();
+    res.status(200).json({ message: "Order confirmed as received", order });
+  } catch (error) {
+    res.status(500).json({ message: "Error confirming order receipt", error });
+  }
+};
+
+
 module.exports = {
-    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment,confirmLocalPaymentByAdmin,getOrderDetailsById,getAllOrders,getTopProducts,getTopSuppliers,getOrderByOfferId
+    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment,confirmLocalPaymentByAdmin,getOrderDetailsById,getAllOrders,getTopProducts,getTopSuppliers,getOrderByOfferId, markOrderShipped, confirmOrderReceipt
 };

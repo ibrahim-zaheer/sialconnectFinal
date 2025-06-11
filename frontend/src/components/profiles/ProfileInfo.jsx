@@ -14,6 +14,7 @@ import VerificationRequestButton from "../orders/supplier/adminVerification/Veri
 import { updateVerificationStatus } from "../../redux/reducers/userSlice";
 import { fetchUserVerification } from "../orders/supplier/adminVerification/FetchUserVerification";
 
+
 const ProfileInfo = () => {
   const user = useSelector((state) => state.user);
   const averageRating = useSelector((state) => state.averageRating.value);
