@@ -596,6 +596,7 @@ const toggleImageVisibility = () => {
             onSuccess={handleOrderSentSuccess}
           />
         )}
+       
 
         {/* Order Summary Card */}
         <div className="bg-white rounded-xl shadow-xs border border-neutral-200 overflow-hidden">
