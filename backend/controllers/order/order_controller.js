@@ -540,6 +540,7 @@ const acceptAgreement = async (req, res) => {
       }
     } else if (role === "supplier") {
       order.supplierAgreementStatus = "Accepted";
+        order.agreementAcceptedDate = new Date();
       if (order.exporterAgreementStatus === "Accepted") {
         order.Agreement = "Accepted"; // Both sides accepted
         order.status = "agreement_accepted"; 

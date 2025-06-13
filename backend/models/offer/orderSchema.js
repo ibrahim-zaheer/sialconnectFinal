@@ -261,6 +261,7 @@ const OrderSchema = new mongoose.Schema({
   productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: false },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
+   deliveryDays: { type: Number, required: false, min: 1, max: 100, default:1 },
   message: { type: String, maxlength: 500 },
   status: {
     type: String,
@@ -320,6 +321,7 @@ const OrderSchema = new mongoose.Schema({
     ],
     default: "waiting_for_approval",
   },
+  agreementAcceptedDate: { type: Date, required: false },
 
   // New Fields for Order Shipment
   orderShippedDate: { type: Date, required: false },
@@ -381,11 +383,13 @@ const OrderSchema = new mongoose.Schema({
       enum: ["pending", "completed", "failed","detailsGiven"],
       default: "pending",
     },
+     
     localPaymentProof: { 
       type: String, // URL to uploaded proof image
       required: false 
     },
     paymentAmount: { type: Number, required: false },
+
   },
 
   createdAt: { type: Date, default: Date.now },
