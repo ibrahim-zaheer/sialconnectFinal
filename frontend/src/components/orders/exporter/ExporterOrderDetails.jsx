@@ -776,7 +776,7 @@ import AgreementPDFGenerator from "../components/AgreementPDFGenerator";
 import LocalPaymentForm from "../components/payment/LocalPaymentForm";
 import WriteReview from "../../reviews/WriteReviews";
 import { OrderReceived } from "../supplier/order/OrderRecieved";
-
+import DateDisplay from "../../DateDisplay";
 const ExporterOrderDetails = () => {
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
@@ -929,6 +929,16 @@ const ExporterOrderDetails = () => {
               )}
               <DetailItem label="Supplier" value={order.supplierId?.name} />
               <DetailItem label="Exporter" value={userName} />
+              {/* <DetailItem label="Day to Deliever" value={} /> */}
+                 {/* {order?.deliveryDays ? (
+  <DetailItem label="Days to deliver" value={order.deliveryDays} />
+) : null} */}
+ {order?.deliveryDays ? (
+          <DateDisplay date={order.deliveryDays} />
+        ) : (
+          <span>No delivery date set</span>
+        )}
+
             </div>
             <div className="space-y-2">
               <DetailItem label="Quantity" value={order.quantity} />

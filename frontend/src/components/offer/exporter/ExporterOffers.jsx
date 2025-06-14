@@ -210,6 +210,7 @@ import CounterOffer from "../CounterOffer";
 import UpdateOffer from "../UpdateOffer";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import DateDisplay from "../../DateDisplay";
 
 export default function ExporterOffers() {
   const user = useSelector(selectUser);
@@ -539,6 +540,18 @@ export default function ExporterOffers() {
                       <span>Quantity:</span>
                       <span className="font-medium">{offer.quantity}</span>
                     </div>
+                      {/* <div className="flex justify-between">
+                      <span>Delivery Days:</span>
+                      <span className="font-medium">{offer.deliveryDays}</span>
+                    </div> */}
+                        {offer?.deliveryDays ? (
+                                              <>
+                                               <span>Days for Delivery:</span>
+                                                     <DateDisplay date={offer.deliveryDays} />
+                                                     </>
+                                                   ) : (
+                                                     <span>No delivery date set</span>
+                                                   )}
                     <div className="flex justify-between border-b border-neutral-100 pb-3">
                       <span>Total Value:</span>
                       <span className="font-medium text-primary-700">
@@ -610,6 +623,12 @@ export default function ExporterOffers() {
                           <span>New Quantity:</span>
                           <span className="font-medium">
                             {offer.counterOffer.quantity}
+                          </span>
+                        </div>
+                          <div className="flex justify-between text-sm">
+                          <span>Delievery Days:</span>
+                          <span className="font-medium">
+                            {offer.counterOffer.deliveryDays}
                           </span>
                         </div>
                         {offer.counterOffer.message && (

@@ -261,7 +261,8 @@ const OrderSchema = new mongoose.Schema({
   productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: false },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
-   deliveryDays: { type: Number, required: false, min: 1, max: 100, default:1 },
+  //  deliveryDays: { type: Number, required: false, min: 1, max: 100, default:1 },
+  deliveryDays: { type: Date, required: false },
   message: { type: String, maxlength: 500 },
   status: {
     type: String,

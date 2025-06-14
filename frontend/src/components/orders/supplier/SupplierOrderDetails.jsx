@@ -435,6 +435,7 @@ import AgreementPDFGenerator from "../components/AgreementPDFGenerator";
 import PaymentForm from "../components/payment/PaymentForm";
 import WriteReview from "../../reviews/WriteReviews";
 import { OrderSent } from "./order/OrderSent";
+import DateDisplay from "../../DateDisplay";
 
 const SupplierOrderDetails = () => {
   const { orderId } = useParams();
@@ -616,6 +617,23 @@ const toggleImageVisibility = () => {
               )}
               <DetailItem label="Exporter" value={order.exporterId?.name} />
               <DetailItem label="Supplier" value={order.supplierId?.name} />
+              {/* <DetailItem label="Days to deliever" value={order?.deliveryDays} /> */}
+              {/* {order?.deliveryDays ? (
+  <DetailItem label="Days to deliver" value={order.deliveryDays} />
+) : null} */}
+{/* {order?.deliveryDays ? (
+  <DetailItem 
+    label="Days to deliver" 
+    value={new Date(order.deliveryDays).toISOString().split('T')[0]} 
+  />
+) : null} */}
+
+ {order?.deliveryDays ? (
+          <DateDisplay date={order.deliveryDays} />
+        ) : (
+          <span>No delivery date set</span>
+        )}
+
             </div>
             <div className="space-y-4">
               <DetailItem label="Quantity" value={order.quantity} />

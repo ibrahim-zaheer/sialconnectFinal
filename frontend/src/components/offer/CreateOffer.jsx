@@ -524,6 +524,7 @@ export default function CreateOffer({ supplierId, productId, price, onClose, isO
     price: price || "",
     quantity: "",
     message: "",
+    deliveryDays: "",
   });
 
   const [responseMessage, setResponseMessage] = useState("");
@@ -560,6 +561,29 @@ export default function CreateOffer({ supplierId, productId, price, onClose, isO
         message: "No message provided",
       }));
     }
+       // Validate deliveryDays
+    // if (offerData.deliveryDays < 1 || offerData.deliveryDays > 100) {
+    //   setResponseMessage("Delivery days must be between 1 and 100.");
+    //   return;
+    // }
+
+        // Validate deliveryDate
+    // const deliveryDays = new Date(offerData.deliveryDays);
+    // if (isNaN(deliveryDays.getTime())) {
+    //   setResponseMessage("Please enter a valid delivery date.");
+    //   return;
+    // }
+
+     // Validate deliveryDate
+    const deliveryDays = new Date(offerData.deliveryDays);
+    const currentDate = new Date();
+    const minDeliveryDate = new Date(currentDate);
+    minDeliveryDate.setHours(currentDate.getHours() + 72); // 72 hours from now
+
+    if (deliveryDays < minDeliveryDate) {
+      setResponseMessage("Delivery date must be at least 72 hours from now.");
+      return;
+    }
     try {
       const response = await createOffer(offerData, token);
       const successMsg = response.message || 
@@ -570,6 +594,12 @@ export default function CreateOffer({ supplierId, productId, price, onClose, isO
     } catch (error) {
       setResponseMessage(`Failed to send ${isOrder ? 'order' : 'offer'}. Try again.`);
     }
+  };
+
+   const formatDate = (date) => {
+     if (!date) return ""; 
+    const d = new Date(date);
+    return d.toISOString().split('T')[0]; // Returns only the date part
   };
 
   return (
@@ -604,6 +634,27 @@ export default function CreateOffer({ supplierId, productId, price, onClose, isO
           className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
+           {/* <input
+          type="number"
+          name="deliveryDays"
+          placeholder="Delivery Days (1-100)"
+          value={offerData.deliveryDays}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        /> */}
+
+         {/* Changed from number input to date input for deliveryDate */}
+        <input
+          type="date" // Using a date input
+          name="deliveryDays"
+          placeholder="Delivery Date"
+          // value={offerData.deliveryDays}
+            value={formatDate(offerData.deliveryDays)}
+          onChange={handleChange}
+          required
+          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
         <textarea
           name="message"
           placeholder="Message"

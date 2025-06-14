@@ -61,10 +61,12 @@ const createOffer = async (req, res) => {
    
   
           // ✅ Ensure deliveryDays is within the range
-    if (deliveryDays && (deliveryDays < 1 || deliveryDays > 100)) {
-      return res.status(400).json({ message: "Delivery days must be between 1 and 100." });
+    // if (deliveryDays && (deliveryDays < 1 || deliveryDays > 100)) {
+    //   return res.status(400).json({ message: "Delivery days must be between 1 and 100." });
+    // }
+   if (deliveryDays && isNaN(new Date(deliveryDays).getTime())) {
+      return res.status(400).json({ message: "Invalid delivery date." });
     }
-
 
       offer.history.push({
         price: offer.price,

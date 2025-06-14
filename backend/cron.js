@@ -17,11 +17,20 @@
 const cron = require("node-cron");
 const { checkAndSendReminders } = require("./controllers/offers/offer_controller");
 
+const { checkDeliveryDateNotification } = require("./controllers/order/order_controller");
+
+
+
+
+
+
 cron.schedule(
   "*/15 * * * *",
+  // '* * * * *',
   () => {
     console.log("Running reminder check...");
     checkAndSendReminders();
+    checkDeliveryDateNotification();
   },
   {
     timezone: "Asia/Karachi"
