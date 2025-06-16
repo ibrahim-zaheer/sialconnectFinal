@@ -394,6 +394,11 @@ const OrderSchema = new mongoose.Schema({
   },
 
   createdAt: { type: Date, default: Date.now },
+   trackingId: { 
+    type: String, 
+    required: false, // Tracking ID may not be available initially
+    maxlength: 50,   // Max length for tracking ID, depending on courier service
+  },
 });
 
 // OrderSchema.pre("save", async function(next) {

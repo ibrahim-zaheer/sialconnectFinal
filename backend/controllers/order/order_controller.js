@@ -777,10 +777,35 @@ const getAllPaymentsForSupplier = async (req, res) => {
   }
 };
 
-// Supplier confirms order shipment
+// // Supplier confirms order shipment
+// const markOrderShipped = async (req, res) => {
+//   try {
+//     const { orderId } = req.body; // Order ID passed in request body
+//     const order = await Order.findById(orderId);
+
+//     if (!order) {
+//       return res.status(404).json({ message: "Order not found" });
+//     }
+
+//     if (order.status !== "agreement_accepted") {
+//       return res.status(400).json({ message: "Agreement must be accepted first" });
+//     }
+
+//     order.isOrderShipped = true;
+//     order.orderShippedDate = new Date();
+//     order.status = "order_shipped"; // Set status to shipped
+
+//     await order.save();
+//     res.status(200).json({ message: "Order marked as shipped", order });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error marking order as shipped", error });
+//   }
+// };
+
+// Supplier confirms order shipment and provides tracking ID
 const markOrderShipped = async (req, res) => {
   try {
-    const { orderId } = req.body; // Order ID passed in request body
+    const { orderId, trackingId } = req.body; // Order ID and Tracking ID passed in request body
     const order = await Order.findById(orderId);
 
     if (!order) {
@@ -795,12 +820,18 @@ const markOrderShipped = async (req, res) => {
     order.orderShippedDate = new Date();
     order.status = "order_shipped"; // Set status to shipped
 
+    // Update the tracking ID if provided
+    if (trackingId) {
+      order.trackingId = trackingId; // Assign the provided tracking ID to the order
+    }
+
     await order.save();
     res.status(200).json({ message: "Order marked as shipped", order });
   } catch (error) {
     res.status(500).json({ message: "Error marking order as shipped", error });
   }
 };
+
 
 // Exporter confirms order receipt
 const confirmOrderReceipt = async (req, res) => {

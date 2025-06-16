@@ -765,7 +765,7 @@
 // export default ExporterOrderDetails;
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import PaymentPage from "../../../pages/payments/PaymentPage";
 import SampleApproval from "../components/SampleApproval";
@@ -930,15 +930,14 @@ const ExporterOrderDetails = () => {
               <DetailItem label="Supplier" value={order.supplierId?.name} />
               <DetailItem label="Exporter" value={userName} />
               {/* <DetailItem label="Day to Deliever" value={} /> */}
-                 {/* {order?.deliveryDays ? (
+              {/* {order?.deliveryDays ? (
   <DetailItem label="Days to deliver" value={order.deliveryDays} />
 ) : null} */}
- {order?.deliveryDays ? (
-          <DateDisplay date={order.deliveryDays} />
-        ) : (
-          <span>No delivery date set</span>
-        )}
-
+              {order?.deliveryDays ? (
+                <DateDisplay date={order.deliveryDays} />
+              ) : (
+                <span>No delivery date set</span>
+              )}
             </div>
             <div className="space-y-2">
               <DetailItem label="Quantity" value={order.quantity} />
@@ -952,7 +951,28 @@ const ExporterOrderDetails = () => {
             </div>
           </div>
         </div>
-
+        {/* <div>Hello world</div> */}
+        {userRole === "exporter" && (
+          <Link
+            to={`/chat?supplierId=${order.supplierId?._id}`}
+            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <svg
+              className="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+              />
+            </svg>
+            Chat with Supplier
+          </Link>
+        )}
         {/* Status Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatusCard
@@ -1019,7 +1039,16 @@ const ExporterOrderDetails = () => {
 
         {order.sampleProof && (
           <div>
-            <button onClick={toggleImageVisibility}>
+            {/* <button onClick={toggleImageVisibility}>
+              {isImageVisible ? "Hide Sample Image" : "Show Sample Image"}
+            </button> */}
+            {/* <button className="toggle-button" onClick={toggleImageVisibility}>
+              {isImageVisible ? "Hide Sample Image" : "Show Sample Image"}
+            </button> */}
+            <button
+              onClick={toggleImageVisibility}
+              className="px-6 py-3 text-lg font-semibold text-white bg-blue-500 border-2 border-blue-500 rounded-lg transition-all duration-300 hover:bg-blue-700 hover:border-blue-700 hover:transform hover:translate-y-1 active:bg-blue-800 focus:outline-none"
+            >
               {isImageVisible ? "Hide Sample Image" : "Show Sample Image"}
             </button>
 
@@ -1112,14 +1141,22 @@ const ExporterOrderDetails = () => {
 
         {/* Write Review Section (only show when agreement is "Accepted") */}
 
-        {order.Agreement === "Accepted" && order.status === "order_shipped" && (
+        {/* {order.Agreement === "Accepted" && order.status === "order_shipped" && (
           <OrderReceived
             orderId={order._id}
             onSuccess={handleOrderRecievedSuccess}
           />
+        )} */}
+        {order.Agreement === "Accepted" && order.status === "order_shipped" && (
+          <>
+            {order.trackingId && <div>Tracking ID: {order.trackingId}</div>}{" "}
+            {/* Conditionally render if trackingId exists */}
+            <OrderReceived
+              orderId={order._id}
+              onSuccess={handleOrderRecievedSuccess}
+            />
+          </>
         )}
-
-       
 
         {/* Write Review Section */}
         {order.Agreement === "Accepted" && !hasReviewed && (

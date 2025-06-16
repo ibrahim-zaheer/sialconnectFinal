@@ -548,7 +548,7 @@ const ProductDetails = () => {
                 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap gap-4 pt-4">
-                  {role === "exporter" && (
+                  {/* {role === "exporter" && (
                     <Link
                       to={`/chat?supplierId=${product.supplier?._id}`}
                       className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -558,7 +558,7 @@ const ProductDetails = () => {
                       </svg>
                       Chat with Supplier
                     </Link>
-                  )}
+                  )} */}
                   
                   {role === "exporter" && (
                     <button
