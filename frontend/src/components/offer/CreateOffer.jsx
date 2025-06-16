@@ -512,6 +512,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../redux/reducers/userSlice";
 import axios from "axios";
+import MessageSelector from "../MessageSelector";
 
 
 export default function CreateOffer({ supplierId, productId, price, onClose, isOrder = false }) {
@@ -528,6 +529,14 @@ export default function CreateOffer({ supplierId, productId, price, onClose, isO
   });
 
   const [responseMessage, setResponseMessage] = useState("");
+
+    const predefinedMessages = [
+    "I want to buy this.",
+    "Please provide the details of the product.",
+    "Looking forward to your offer.",
+    "Can you provide a discount on this?",
+    "Is this product available for immediate delivery?",
+  ];
 
   const createOffer = async (offerData, token) => {
     try {
@@ -654,6 +663,11 @@ export default function CreateOffer({ supplierId, productId, price, onClose, isO
           onChange={handleChange}
           required
           className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+             {/* Reusable MessageSelector Component */}
+        <MessageSelector 
+          predefinedMessages={predefinedMessages} 
+          setMessage={(msg) => setOfferData({ ...offerData, message: msg })}
         />
         <textarea
           name="message"

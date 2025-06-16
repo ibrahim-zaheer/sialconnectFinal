@@ -320,6 +320,7 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import MessageSelector from "../MessageSelector";
 
 const WriteReview = ({ supplierId, productName, reviewerRole, orderId }) => {
   const [rating, setRating] = useState(1);
@@ -328,6 +329,8 @@ const WriteReview = ({ supplierId, productName, reviewerRole, orderId }) => {
   const [message, setMessage] = useState("");
   const [reviewExists, setReviewExists] = useState(false); // State to track if the review exists
 
+
+  
   useEffect(() => {
     const checkIfReviewExists = async () => {
       try {
@@ -385,6 +388,25 @@ const WriteReview = ({ supplierId, productName, reviewerRole, orderId }) => {
     return <p className="text-green-600">You have already reviewed this order.</p>;
   }
 
+
+  // Predefined messages based on the role (Exporter or Supplier)
+  const predefinedMessages = reviewerRole === "exporter" 
+    ? [
+        "The product quality met my expectations. Looking forward to working together again.",
+        "The delivery was prompt, and the product was as described. Thank you for the smooth transaction.",
+        "Good experience overall. I appreciate the timely response and the quality of the product.",
+        "The transaction was seamless, and the product was exactly what I needed. Will definitely consider for future orders.",
+        "Great business interaction. The product was delivered on time, and I am satisfied with the purchase."
+      ]
+    : [
+        "The order has been successfully processed and shipped. Looking forward to your feedback.",
+        "Your order has been dispatched. Please let us know if you need any further details.",
+        "The product has been shipped as per the order. We hope it meets your expectations.",
+        "Order dispatched and on the way. We appreciate your business and look forward to future orders.",
+        "Your order has been shipped. Kindly confirm once it has been received in good condition."
+      ];
+
+
   return (
     <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-bold mb-4">Write a Review</h2>
@@ -422,6 +444,11 @@ const WriteReview = ({ supplierId, productName, reviewerRole, orderId }) => {
         {/* Review Text */}
         <div>
           <label className="block font-medium">Review:</label>
+               {/* Reusable MessageSelector Component */}
+        <MessageSelector 
+          predefinedMessages={predefinedMessages} 
+           setMessage={(msg) => setReviewText(msg)}
+        />
           <textarea
             value={reviewText}
             onChange={(e) => setReviewText(e.target.value)}
