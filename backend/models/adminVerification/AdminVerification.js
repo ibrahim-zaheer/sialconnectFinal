@@ -1,3 +1,4 @@
+const { required } = require("joi");
 const mongoose = require("mongoose");
 
 const AdminVerificationSchema = new mongoose.Schema({
@@ -22,6 +23,7 @@ const AdminVerificationSchema = new mongoose.Schema({
   },
  image: {
   type: [String],
+  required: false,
   default: [
     "https://media.istockphoto.com/id/1409329028/vector/no-picture-available-placeholder-thumbnail-icon-illustration-design.jpg?s=612x612&w=0&k=20&c=_zOuJu755g2eEUioiOUdz_mHKJQJn-tDgIAhQzyeKUQ=",
   ],

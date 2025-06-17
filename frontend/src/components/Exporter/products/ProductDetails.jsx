@@ -262,6 +262,7 @@ import AverageReviewBySupplier from "../../reviews/averageReviewBySuppliers";
 import CreateOffer from "../../offer/createOffer";
 import BackButton from "../../BackButton";
 import RelatedProducts from "./RelatedProducts";
+import { ProductPrice } from "../../../pages/Exporter/components/ProductPrice";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -279,6 +280,7 @@ const ProductDetails = () => {
   const user = useSelector((state) => state.user);
   const userId = user?.id;
   const role = user?.role;
+  const subscription = user?.subscription.plan;
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -441,12 +443,21 @@ const ProductDetails = () => {
               <div className="space-y-6">
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-                  <div className="flex items-center mt-2">
+                  {/* <h1 className="text-3xl font-bold text-gray-900">{subscription}</h1> */}
+
+                  {/* <div className="flex items-center mt-2">
                     <span className="text-2xl font-semibold text-blue-600">
                       Rs {product.price.toLocaleString()}
                     </span>
+                   
                     <span className="ml-2 text-gray-500">per piece</span>
-                  </div>
+                  </div> */}
+                  <div className="flex items-center mt-2">
+  <div className="text-2xl font-semibold text-blue-600">
+    <ProductPrice product={product} user={user} />
+  </div>
+  <span className="ml-2 text-gray-500">per piece</span>
+</div>
                   
                   <div className="mt-4 flex items-center">
               
@@ -483,6 +494,30 @@ const ProductDetails = () => {
                     )}
                     <div>
                       <h4 className="font-medium text-gray-900">{product.supplier?.name || "Unknown Supplier"}</h4>
+                      {/* <h4 className="font-medium text-gray-900">{product.supplier?.adminVerified || "Unknown Supplier"}</h4> */}
+                          
+                           {/* Show admin verification status */}
+      {/* {product.supplier?.adminVerified === "approved" && (
+        <span className="inline-block mt-1 px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">
+          Admin Verified ✔
+        </span>
+      )} */}
+
+      {product.supplier?.adminVerified === "approved" && (
+  <span 
+    className="inline-block mt-1 px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold relative group"
+    title="This supplier has been verified by our admin team"
+  >
+    Admin Verified ✔
+    {/* Tooltip */}
+    <span className="absolute invisible group-hover:visible bg-gray-800 text-white text-xs rounded py-1 px-2 bottom-full mb-2 left-1/2 transform -translate-x-1/2 whitespace-nowrap z-10">
+      The supplier business details has been provided and verified by our admin team but we do not take responsibility of the supplier
+      <svg className="absolute text-gray-800 h-2 w-full left-0 top-full" x="0px" y="0px" viewBox="0 0 255 255">
+        <polygon className="fill-current" points="0,0 127.5,127.5 255,0"/>
+      </svg>
+    </span>
+  </span>
+)}
                       {product.supplier?._id && (
                         <div className="mt-1">
                           <AverageReviewBySupplier supplierId={product.supplier._id} />
@@ -513,7 +548,7 @@ const ProductDetails = () => {
                 
                 {/* Action Buttons */}
                 <div className="flex flex-wrap gap-4 pt-4">
-                  {role === "exporter" && (
+                  {/* {role === "exporter" && (
                     <Link
                       to={`/chat?supplierId=${product.supplier?._id}`}
                       className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -523,7 +558,7 @@ const ProductDetails = () => {
                       </svg>
                       Chat with Supplier
                     </Link>
-                  )}
+                  )} */}
                   
                   {role === "exporter" && (
                     <button
@@ -582,14 +617,28 @@ const ProductDetails = () => {
                 </svg>
               </button>
             </div>
-            <div className="p-6">
+            {/* <div className="p-6">
               <CreateOffer 
                 supplierId={product.supplier?._id}
                 productId={product._id}
                 price={product.price}
                 onClose={() => setShowOfferPopup(false)}
               />
-            </div>
+            </div> */}
+            <div className="p-6">
+  <CreateOffer 
+    supplierId={product.supplier?._id}
+    productId={product._id}
+    price={
+      user?.subscription?.plan === 'pro' && 
+      product.discounts?.length > 0 
+        ? product.discounts[0].discountedPrice 
+        : product.price
+    }
+    onClose={() => setShowOfferPopup(false)}
+    // isOrder={true}
+  />
+</div>
           </div>
         </div>
       )}
@@ -609,7 +658,7 @@ const ProductDetails = () => {
           </svg>
         </button>
       </div>
-      <div className="p-6">
+      {/* <div className="p-6">
         <CreateOffer 
           supplierId={product.supplier?._id}
           productId={product._id}
@@ -617,7 +666,21 @@ const ProductDetails = () => {
           onClose={() => setShowOrderPopup(false)}
           isOrder={true} // This prop will make price uneditable
         />
-      </div>
+      </div> */}
+      <div className="p-6">
+  <CreateOffer 
+    supplierId={product.supplier?._id}
+    productId={product._id}
+    price={
+      user?.subscription?.plan === 'pro' && 
+      product.discounts?.length > 0 
+        ? product.discounts[0].discountedPrice 
+        : product.price
+    }
+    onClose={() => setShowOrderPopup(false)}
+    isOrder={true}
+  />
+</div>
     </div>
   </div>
   

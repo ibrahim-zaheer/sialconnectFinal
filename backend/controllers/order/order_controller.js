@@ -4,7 +4,11 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const multer = require("multer");
 const path = require("path");
 // const cloudinary = require("../../utils/cloudinaryConfig"); 
+const Notification = require("../../models/notification/notificationSchema")
 
+const admin = require("../../utils/firebaseAdmin")
+
+const User = require("../../models/User");
 
 const initiateTokenPayment = async (req, res) => {
   try {
@@ -533,13 +537,17 @@ const acceptAgreement = async (req, res) => {
       order.exporterAgreementStatus = "Accepted";
       if (order.supplierAgreementStatus === "Accepted") {
         order.Agreement = "Accepted"; // Both sides accepted
+        //chatgpt 9 june 2025
+          order.status = "agreement_accepted"; // Update the status to agreement accepted
       } else {
         order.Agreement = "waiting_for_supplier"; // Waiting for supplier
       }
     } else if (role === "supplier") {
       order.supplierAgreementStatus = "Accepted";
+        order.agreementAcceptedDate = new Date();
       if (order.exporterAgreementStatus === "Accepted") {
         order.Agreement = "Accepted"; // Both sides accepted
+        order.status = "agreement_accepted"; 
       } else {
         order.Agreement = "waiting_for_exporter"; // Waiting for exporter
       }
@@ -769,6 +777,384 @@ const getAllPaymentsForSupplier = async (req, res) => {
   }
 };
 
+// // Supplier confirms order shipment
+// const markOrderShipped = async (req, res) => {
+//   try {
+//     const { orderId } = req.body; // Order ID passed in request body
+//     const order = await Order.findById(orderId);
+
+//     if (!order) {
+//       return res.status(404).json({ message: "Order not found" });
+//     }
+
+//     if (order.status !== "agreement_accepted") {
+//       return res.status(400).json({ message: "Agreement must be accepted first" });
+//     }
+
+//     order.isOrderShipped = true;
+//     order.orderShippedDate = new Date();
+//     order.status = "order_shipped"; // Set status to shipped
+
+//     await order.save();
+//     res.status(200).json({ message: "Order marked as shipped", order });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error marking order as shipped", error });
+//   }
+// };
+
+// Supplier confirms order shipment and provides tracking ID
+const markOrderShipped = async (req, res) => {
+  try {
+    const { orderId, trackingId } = req.body; // Order ID and Tracking ID passed in request body
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (order.status !== "agreement_accepted") {
+      return res.status(400).json({ message: "Agreement must be accepted first" });
+    }
+
+    order.isOrderShipped = true;
+    order.orderShippedDate = new Date();
+    order.status = "order_shipped"; // Set status to shipped
+
+    // Update the tracking ID if provided
+    if (trackingId) {
+      order.trackingId = trackingId; // Assign the provided tracking ID to the order
+    }
+
+    await order.save();
+    res.status(200).json({ message: "Order marked as shipped", order });
+  } catch (error) {
+    res.status(500).json({ message: "Error marking order as shipped", error });
+  }
+};
+
+
+// Exporter confirms order receipt
+const confirmOrderReceipt = async (req, res) => {
+  try {
+    const { orderId } = req.body; // Order ID passed in request body
+    const order = await Order.findById(orderId);
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (!order.isOrderShipped) {
+      return res.status(400).json({ message: "Order not yet shipped by supplier" });
+    }
+
+    order.isOrderReceived = true;
+    order.orderReceivedDate = new Date();
+    order.status = "order_received"; // Set status to received
+
+    await order.save();
+    res.status(200).json({ message: "Order confirmed as received", order });
+  } catch (error) {
+    res.status(500).json({ message: "Error confirming order receipt", error });
+  }
+};
+
+
+
+// // Function to check for orders with delivery date tomorrow and send notifications to the supplier
+// const checkDeliveryDateNotification = async () => {
+//   try {
+//     // Get today's date and tomorrow's date
+//     const today = new Date();
+//     today.setHours(0, 0, 0, 0); // Normalize to start of the day
+//     const tomorrow = new Date(today);
+//     tomorrow.setDate(today.getDate() + 1); // Set to tomorrow's date
+
+//     // Find orders with deliveryDays set to tomorrow
+//     const orders = await Order.find({
+//       deliveryDays: { $gte: tomorrow, $lt: new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000) }, // Between today and tomorrow
+//       status: { $ne: "completed" }, // Ensure the order is not completed
+//     }).populate('supplierId'); // Populate supplier details
+
+//     // Loop through the orders and send notifications to suppliers
+//     for (let order of orders) {
+//       const supplier = order.supplierId;
+
+//       // Send notification to supplier if they have an FCM token
+//       if (supplier && supplier.fcmToken) {
+//         // Create the notification in the database
+//         const notification = new Notification({
+//           userId: supplier._id,
+//           message: `Reminder: Your order with orderId ${order.orderId} is due for delivery tomorrow. Please confirm the delivery status.`,
+//         });
+//         await notification.save();
+
+//         // Prepare the notification message
+//         const message = {
+//           notification: {
+//             title: "Order Delivery Reminder",
+//             body: `Your order with orderId ${order.orderId} is due for delivery tomorrow. Please confirm the delivery status.`,
+//           },
+//           token: supplier.fcmToken, // Send the notification to the supplier's FCM token
+//         };
+
+//         // Send the notification via Firebase
+//         await admin.messaging().send(message);
+//         console.log("Notification sent to supplier:", supplier.name);
+//       }
+//     }
+//   } catch (error) {
+//     console.error("Error in checking delivery date and sending notification:", error);
+//   }
+// };
+
+
+const checkDeliveryDateNotification = async () => {
+  try {
+    // Get today's date and tomorrow's date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to start of the day
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1); // Set to tomorrow's date
+
+    // Find orders with deliveryDays set to tomorrow
+    const orders = await Order.find({
+      deliveryDays: { $gte: tomorrow, $lt: new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000) }, // Between today and tomorrow
+      status: { $ne: "order_shipped" }, // Ensure the order is not completed
+    }).populate('supplierId'); // Populate supplier details
+
+    // Loop through the orders and send notifications to suppliers
+    for (let order of orders) {
+      const supplier = order.supplierId;
+
+      // Check if a notification already exists for this order and supplier, and if it's unread
+      const existingNotification = await Notification.findOne({
+        userId: supplier._id,
+        message: { $regex: `Your order with orderId ${order.orderId}`, $options: "i" }, // Match orderId in message
+        isRead: false, // Check for unread notifications
+         actionUrl: `/supplier/order/${order._id}`,
+      });
+
+      // If an unread notification already exists, skip creating a new one
+      if (existingNotification) {
+        console.log(`Notification already sent to supplier for order ${order.orderId}. Skipping.`);
+        continue; // Skip to the next order
+      }
+
+      // Send notification to supplier if they have an FCM token
+      if (supplier && supplier.fcmToken) {
+        // Create the notification in the database
+        const notification = new Notification({
+          userId: supplier._id,
+          message: `Reminder: Your order with orderId ${order.orderId} is due for delivery tomorrow. Please confirm the delivery status.`,
+           actionUrl: `/supplier/order/${order._id}`,
+        });
+        await notification.save();
+
+        // Prepare the notification message
+        const message = {
+          notification: {
+            title: "Order Delivery Reminder",
+            body: `Your order with orderId ${order.orderId} is due for delivery tomorrow. Please confirm the delivery status.`,
+          },
+          token: supplier.fcmToken, // Send the notification to the supplier's FCM token
+        };
+
+        // Send the notification via Firebase
+        await admin.messaging().send(message);
+        console.log("Notification sent to supplier:", supplier.name);
+      }
+    }
+  } catch (error) {
+    console.error("Error in checking delivery date and sending notification:", error);
+  }
+};
+
+
+const checkDeliveryDateNotificationExporter = async () => {
+  try {
+    // Get today's date and tomorrow's date
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize to start of the day
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1); // Set to tomorrow's date
+
+    // Find orders with deliveryDays set to tomorrow
+    const orders = await Order.find({
+      deliveryDays: { $gte: tomorrow, $lt: new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000) }, // Between today and tomorrow
+      status: { $eq: "order_shipped" }, // Ensure the order is not completed
+    }).populate('exporterId'); // Populate supplier details
+
+    // Loop through the orders and send notifications to suppliers
+    for (let order of orders) {
+      const supplier = order.exporterId;
+
+      // Check if a notification already exists for this order and supplier, and if it's unread
+      const existingNotification = await Notification.findOne({
+        userId: supplier._id,
+        message: { $regex: `Your order with orderId ${order.orderId}`, $options: "i" }, // Match orderId in message
+        isRead: false, // Check for unread notifications
+       actionUrl: `/exporter/order/${order._id}`,
+      });
+
+      // If an unread notification already exists, skip creating a new one
+      if (existingNotification) {
+        console.log(`Notification already sent to supplier for order ${order.orderId}. Skipping.`);
+        continue; // Skip to the next order
+      }
+
+      // Send notification to supplier if they have an FCM token
+      if (supplier && supplier.fcmToken) {
+        // Create the notification in the database
+        const notification = new Notification({
+          userId: supplier._id,
+          message: `Reminder: Your order with orderId ${order.orderId} is has might been delievered according to the selected date. Please confirm the delivery status.`,
+           actionUrl: `/exporter/order/${order._id}`,
+        });
+        await notification.save();
+
+        // Prepare the notification message
+        const message = {
+          notification: {
+            title: "Order Delivery Reminder",
+            body: `Your order with orderId ${order.orderId} is due for delivery tomorrow. Please confirm the delivery status.`,
+          },
+          token: supplier.fcmToken, // Send the notification to the supplier's FCM token
+        };
+
+        // Send the notification via Firebase
+        await admin.messaging().send(message);
+        console.log("Notification sent to supplier:", supplier.name);
+      }
+    }
+  } catch (error) {
+    console.error("Error in checking delivery date and sending notification:", error);
+  }
+};
+
+//Testing
+
+
+
+
+// const checkDeliveryDateNotification = async () => {
+//   try {
+//     // Get today's date (for testing purposes, we use the current date)
+//     const today = new Date();
+//     today.setHours(0, 0, 0, 0); // Normalize to start of the day
+
+//     // Find orders with deliveryDays (we will send notifications for all orders here for testing)
+//     const orders = await Order.find({
+//       status: { $eq: "processing" }, // Ensure the order is not completed
+//     }).populate("supplierId"); // Populate supplier details
+
+//     // Loop through the orders and send notifications to suppliers
+//     for (let order of orders) {
+//       const supplier = order.supplierId;
+
+//       // Check if a notification already exists for this supplier and order and is unread
+//       const existingNotification = await Notification.findOne({
+//         userId: supplier._id,
+//         message: { $regex: `Your order with orderId ${order.orderId}`, $options: "i" }, // Match orderId in message
+//         isRead: false, // Check for unread notifications
+        // actionUrl: `/supplier/order/${order._id}`
+//       });
+
+//       // If a notification already exists and is unread, skip creating a new one
+//       if (existingNotification) {
+//         console.log(`Notification already sent to supplier for order ${order.orderId}. Skipping.`);
+//         continue; // Skip to the next order
+//       }
+
+//       // Send notification to supplier if they have an FCM token
+//       if (supplier && supplier.fcmToken) {
+//         // Create the notification in the database
+//         const notification = new Notification({
+//           userId: supplier._id,
+//           message: `Reminder: Your order with orderId ${order.orderId} is due for delivery soon. Please confirm the delivery status.`,
+//           actionUrl: `/supplier/order/${order._id}`
+//         });
+//         await notification.save();
+
+//         // Prepare the notification message
+//         const message = {
+//           notification: {
+//             title: "Order Delivery Reminder",
+//             body: `Your order with orderId ${order.orderId} is due for delivery soon. Please confirm the delivery status.`,
+//           },
+//           token: supplier.fcmToken, // Send the notification to the supplier's FCM token
+//         };
+
+//         // Send the notification via Firebase
+//         await admin.messaging().send(message);
+//         console.log("Notification sent to supplier:", supplier.name);
+//       }
+//     }
+//   } catch (error) {
+//     console.error("Error in checking delivery date and sending notification:", error);
+//   }
+// };
+
+
+
+// const checkDeliveryDateNotificationExporter = async () => {
+//   try {
+//     // Get today's date (for testing purposes, we use the current date)
+//     const today = new Date();
+//     today.setHours(0, 0, 0, 0); // Normalize to start of the day
+
+//     // Find orders with deliveryDays (we will send notifications for all orders here for testing)
+//     const orders = await Order.find({
+//       status: { $eq: "processing" }, // Ensure the order is not completed
+//     }).populate("exporterId"); // Populate supplier details
+
+//     // Loop through the orders and send notifications to suppliers
+//     for (let order of orders) {
+//       const supplier = order.exporterId;
+
+//       // Check if a notification already exists for this supplier and order and is unread
+//       const existingNotification = await Notification.findOne({
+//         userId: supplier._id,
+//         message: { $regex: `Your order with orderId ${order.orderId}`, $options: "i" }, // Match orderId in message
+//         isRead: false, // Check for unread notifications
+        // actionUrl: `/exporter/order/${order._id}`
+//       });
+
+//       // If a notification already exists and is unread, skip creating a new one
+//       if (existingNotification) {
+//         console.log(`Notification already sent to exporter for order ${order.orderId}. Skipping.`);
+//         continue; // Skip to the next order
+//       }
+
+//       // Send notification to supplier if they have an FCM token
+//       if (supplier && supplier.fcmToken) {
+//         // Create the notification in the database
+//         const notification = new Notification({
+//           userId: supplier._id,
+//           message: `Reminder: Your order with orderId ${order.orderId} is done for exporter. Please confirm the delivery status.`,
+//           actionUrl: `/exporter/order/${order._id}`
+//         });
+//         await notification.save();
+
+//         // Prepare the notification message
+//         const message = {
+//           notification: {
+//             title: "Order Delivery Reminder",
+//             body: `Your order with orderId ${order.orderId} is due for delivery soon. Please confirm the delivery status.`,
+//           },
+//           token: supplier.fcmToken, // Send the notification to the supplier's FCM token
+//         };
+
+//         // Send the notification via Firebase
+//         await admin.messaging().send(message);
+//         console.log("Notification sent to supplier:", supplier.name);
+//       }
+//     }
+//   } catch (error) {
+//     console.error("Error in checking delivery date and sending notification:", error);
+//   }
+// };
+
+
 module.exports = {
-    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment,confirmLocalPaymentByAdmin,getOrderDetailsById,getAllOrders,getTopProducts,getTopSuppliers,getOrderByOfferId
+    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment,confirmLocalPaymentByAdmin,getOrderDetailsById,getAllOrders,getTopProducts,getTopSuppliers,getOrderByOfferId, markOrderShipped, confirmOrderReceipt,checkDeliveryDateNotification,checkDeliveryDateNotificationExporter
 };

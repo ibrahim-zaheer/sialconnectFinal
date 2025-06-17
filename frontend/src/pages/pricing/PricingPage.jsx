@@ -135,30 +135,54 @@ export default function PricingPage() {
   const user = useSelector(selectUser);
   const currentPlan = user.subscription?.plan || "free";
 
-  const plans = {
-    free: {
-      name: "Free",
-      price: "$0",
-      features: [
-        "1000 API calls/month",
-        "Basic reports",
-        "1 User seat",
-        "Community support",
-      ],
-      isPro: false,
-    },
-    pro: {
-      name: "Pro",
-      price: "$29/month",
-      features: [
-        "Unlimited API calls",
-        "Advanced reports + export",
-        "Up to 5 user seats",
-        "Priority support",
-      ],
-      isPro: true,
-    },
-  };
+  // const plans = {
+  //   free: {
+  //     name: "Free",
+  //     price: "$0",
+  //     features: [
+  //       "1000 API calls/month",
+  //       "Basic reports",
+  //       "1 User seat",
+  //       "Community support",
+  //     ],
+  //     isPro: false,
+  //   },
+  //   pro: {
+  //     name: "Pro",
+  //     price: "$29/month",
+  //     features: [
+  //       "Unlimited API calls",
+  //       "Advanced reports + export",
+  //       "Up to 5 user seats",
+  //       "Priority support",
+  //     ],
+  //     isPro: true,
+  //   },
+  // };
+const plans = {
+  free: {
+    name: "Free",
+    price: "$0",
+    features: [
+      "3 Bidding requests/month",
+      "Discounted prices for products",
+      "Basic bidding options",
+      "Community support",
+    ],
+    isPro: false,
+  },
+  pro: {
+    name: "Pro",
+    price: "$29/month",
+    features: [
+      "Unlimited Bidding requests",
+      "Discounted prices for products",
+      "Token-based payment discount",
+      "Priority support",
+    ],
+    isPro: true,
+  },
+};
 
   return (
     <div className="max-w-[900px] mx-auto mt-10 p-5 font-sans">

@@ -772,6 +772,13 @@ const Navbar = () => {
                         <i className="ri-dashboard-line mr-1"></i>{" "}
                         {t("Dashboard")}
                       </NavLink>
+
+                    
+
+                       <NavLink to="/admin/user/supplier/verification" onClick={closeMobileMenu}>
+                        <i className="ri-dashboard-line mr-1"></i>{" "}
+                        {t("Verification")}
+                      </NavLink>
                       <NavLink
                         to="/admin/user/order/payment"
                         onClick={closeMobileMenu}

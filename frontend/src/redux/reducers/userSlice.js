@@ -212,6 +212,7 @@ const initialState = {
     paymentProviderId: null,
   },
     adminVerified: savedUser.adminVerified || null,
+    rejectionReason: savedUser.rejectionReason || null,
 };
 
 const userSlice = createSlice({
@@ -227,6 +228,7 @@ const userSlice = createSlice({
       state.profilePicture = action.payload.profilePicture;
       state.fcmToken = action.payload.fcmToken || '';
       state.emailVerified = action.payload.emailVerified || false; // New field
+       state.rejectionReason = action.payload.rejectionReason || null; // Add this line
 
       // New fields
       state.city = action.payload.city || '';
@@ -255,6 +257,11 @@ const userSlice = createSlice({
 
        updateVerificationStatus: (state, action) => {
       state.adminVerified = action.payload.status;
+      state.rejectionReason = action.payload.rejectionReason || null;
+        if (action.payload.status !== 'rejected') {
+        state.rejectionReason = null;
+      }
+      
       
       localStorage.setItem("user", JSON.stringify(state));
     },

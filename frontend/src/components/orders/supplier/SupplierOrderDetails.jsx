@@ -426,7 +426,7 @@
 // export default SupplierOrderDetails;
 
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,Link } from "react-router-dom";
 import axios from "axios";
 import PDFGenerator from "../components/PDFGenerator";
 import { useSelector } from "react-redux";
@@ -434,6 +434,8 @@ import AgreementComponent from "../components/AgreementComponent";
 import AgreementPDFGenerator from "../components/AgreementPDFGenerator";
 import PaymentForm from "../components/payment/PaymentForm";
 import WriteReview from "../../reviews/WriteReviews";
+import { OrderSent } from "./order/OrderSent";
+import DateDisplay from "../../DateDisplay";
 
 const SupplierOrderDetails = () => {
   const { orderId } = useParams();
@@ -455,6 +457,8 @@ const SupplierOrderDetails = () => {
   const [paymentSubmitted, setPaymentSubmitted] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(true);
 
+  const [isImageVisible, setIsImageVisible] = useState(false);
+
   const fetchOrderDetails = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -474,6 +478,10 @@ const SupplierOrderDetails = () => {
   useEffect(() => {
     fetchOrderDetails();
   }, [orderId]);
+
+const toggleImageVisibility = () => {
+    setIsImageVisible(!isImageVisible);
+  };
 
   const handleSubmitSample = async (e) => {
     e.preventDefault();
@@ -529,6 +537,13 @@ const SupplierOrderDetails = () => {
     fetchOrderDetails();
   };
 
+
+  const handleOrderSentSuccess = () => {
+    // Callback function when the order is sent successfully
+    setMessage("Order has been successfully marked as shipped.");
+    fetchOrderDetails(); // Refresh order details after success
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -551,91 +566,207 @@ const SupplierOrderDetails = () => {
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header Section */}
         <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
-          <h1 className="text-2xl font-bold text-neutral-800 mb-2">Order Details</h1>
+          <h1 className="text-2xl font-bold text-neutral-800 mb-2">
+            Order Details
+          </h1>
           <div className="flex flex-wrap items-center gap-2 text-sm text-neutral-600">
             {/* <span>Order ID: {orderId}</span> */}
-            {order.orderId && <p className="text-neutral-600">Order ID: {order.orderId}</p>}
+            {order.orderId && (
+              <p className="text-neutral-600">Order ID: {order.orderId}</p>
+            )}
             <span className="px-1">•</span>
-            <span>Status: 
-              <span className={`ml-1 px-2 py-0.5 rounded-full text-xs font-medium ${
-                order.status === 'completed' 
-                  ? 'bg-success-100 text-success-800' 
-                  : 'bg-warning-100 text-warning-800'
-              }`}>
+            <span>
+              Status:
+              <span
+                className={`ml-1 px-2 py-0.5 rounded-full text-xs font-medium ${
+                  order.status === "completed"
+                    ? "bg-success-100 text-success-800"
+                    : "bg-warning-100 text-warning-800"
+                }`}
+              >
                 {order.status}
               </span>
             </span>
           </div>
         </div>
 
+          {/* Conditionally Render the OrderSent Component */}
+        {order.Agreement === "Accepted" && order.status == "agreement_accepted" && (
+          <OrderSent
+            orderId={order._id}
+            onSuccess={handleOrderSentSuccess}
+          />
+        )}
+       
+
         {/* Order Summary Card */}
         <div className="bg-white rounded-xl shadow-xs border border-neutral-200 overflow-hidden">
           <div className="p-6 border-b border-neutral-200">
-            <h2 className="text-xl font-semibold text-neutral-800">Order Summary</h2>
+            <h2 className="text-xl font-semibold text-neutral-800">
+              Order Summary
+            </h2>
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               {/* <DetailItem label="Auction" value={order.auctionId?.title} />
               <DetailItem label="Product" value={order.productId?.name} /> */}
-                {order.auctionId ? (
-    <DetailItem label="Auction" value={order.auctionId?.title} />
-  ) : (
-    <DetailItem label="Product" value={order.productId?.name} />
-  )}
+              {order.auctionId ? (
+                <DetailItem label="Auction" value={order.auctionId?.title} />
+              ) : (
+                <DetailItem label="Product" value={order.productId?.name} />
+              )}
               <DetailItem label="Exporter" value={order.exporterId?.name} />
               <DetailItem label="Supplier" value={order.supplierId?.name} />
+              {/* <DetailItem label="Days to deliever" value={order?.deliveryDays} /> */}
+              {/* {order?.deliveryDays ? (
+  <DetailItem label="Days to deliver" value={order.deliveryDays} />
+) : null} */}
+{/* {order?.deliveryDays ? (
+  <DetailItem 
+    label="Days to deliver" 
+    value={new Date(order.deliveryDays).toISOString().split('T')[0]} 
+  />
+) : null} */}
+
+ {order?.deliveryDays ? (
+          <DateDisplay date={order.deliveryDays} />
+        ) : (
+          <span>No delivery date set</span>
+        )}
+
             </div>
             <div className="space-y-4">
               <DetailItem label="Quantity" value={order.quantity} />
-              <DetailItem label="Price" value={`Rs ${order.price?.toLocaleString()}`} />
-              <DetailItem label="Order Date" value={new Date(order.createdAt).toLocaleString()} />
+              <DetailItem
+                label="Price"
+                value={`Rs ${order.price?.toLocaleString()}`}
+              />
+              <DetailItem
+                label="Order Date"
+                value={new Date(order.createdAt).toLocaleString()}
+              />
             </div>
           </div>
         </div>
 
+             {userRole === "supplier" && (
+                  <Link
+                    to={`/chat?supplierId=${order.exporterId?._id}`}
+                    className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    <svg
+                      className="w-5 h-5 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
+                    Chat with Exporter
+                  </Link>
+                )}
+
+                 <Link
+                    to={`/chat?supplierId=${"673b05acd7ab61f6819baa08"}`}
+                    className="inline-flex items-center px-6 py-3 bg-red-700 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    <svg
+                      className="w-5 h-5 mr-2"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
+                    Complain to Admin
+                  </Link>
+
+        {/* <OrderSent/> */}
+
+            {/* Conditionally Render the OrderSent Component */}
+        {order.Agreement === "Accepted" && order.status == "agreement_accepted" && (
+          <OrderSent
+            orderId={order._id}
+            onSuccess={handleOrderSentSuccess}
+          />
+        )}
+
         {/* Status Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <StatusCard 
-            title="Sample Status" 
-            value={order.sampleStatus} 
-            variant={order.sampleStatus === "approved" ? "success" : 
-                    order.sampleStatus === "sample_rejected" ? "error" : "warning"}
+          <StatusCard
+            title="Sample Status"
+            value={order.sampleStatus}
+            variant={
+              order.sampleStatus === "approved"
+                ? "success"
+                : order.sampleStatus === "sample_rejected"
+                ? "error"
+                : "warning"
+            }
           />
-          <StatusCard 
-            title="Payment Status" 
-            value={order.paymentStatus} 
-            variant={order.paymentStatus === "completed" ? "success" : "warning"}
+          <StatusCard
+            title="Payment Status"
+            value={order.paymentStatus}
+            variant={
+              order.paymentStatus === "completed" ? "success" : "warning"
+            }
           />
-          <StatusCard 
-            title="Agreement" 
-            value={order.Agreement} 
-            variant={order.Agreement === "Accepted" ? "success" : 
-                    order.Agreement === "Rejected" ? "error" : "warning"}
+          <StatusCard
+            title="Agreement"
+            value={order.Agreement}
+            variant={
+              order.Agreement === "Accepted"
+                ? "success"
+                : order.Agreement === "Rejected"
+                ? "error"
+                : "warning"
+            }
           />
         </div>
 
         {/* Documents Section */}
         {order.status === "completed" && (
           <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
-            <h2 className="text-xl font-semibold text-neutral-800 mb-4">Documents</h2>
+            <h2 className="text-xl font-semibold text-neutral-800 mb-4">
+              Documents
+            </h2>
             <div className="flex flex-wrap gap-4">
-              <PDFGenerator order={order} userName={userName} userRole={userRole} />
-              <AgreementPDFGenerator order={order} userName={userName} userRole={userRole} />
+              <PDFGenerator
+                order={order}
+                userName={userName}
+                userRole={userRole}
+              />
+              <AgreementPDFGenerator
+                order={order}
+                userName={userName}
+                userRole={userRole}
+              />
             </div>
           </div>
         )}
 
         {/* Agreement Section */}
-        {order.status === "completed" && order.Agreement === "waiting_for_supplier" && (
-          <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
-            <AgreementComponent
-              orderId={order._id}
-              onAcceptSuccess={handleAcceptSuccess}
-              onRejectSuccess={handleRejectSuccess}
-              role={userRole}
-            />
-          </div>
-        )}
+        {order.status === "completed" &&
+          order.Agreement === "waiting_for_supplier" && (
+            <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
+              <AgreementComponent
+                orderId={order._id}
+                onAcceptSuccess={handleAcceptSuccess}
+                onRejectSuccess={handleRejectSuccess}
+                role={userRole}
+              />
+            </div>
+          )}
 
         {/* Payment Form */}
         {/* {order.Agreement === "Accepted" && order.paymentDetails?.paymentStatus === "pending" && (
@@ -644,17 +775,20 @@ const SupplierOrderDetails = () => {
             <PaymentForm orderId={order._id} onPaymentSubmitted={handlePaymentSubmitted} />
           </div>
         )} */}
-        {(order.Agreement === "Accepted" && order.paymentDetails?.paymentStatus === "pending") && (
-  <div className="bg-white rounded-xl shadow-xs border border-gray-200 p-6">
-    <h2 className="text-xl font-semibold text-gray-800 mb-4">Payment Details</h2>
-    <PaymentForm 
-      orderId={order._id} 
-      onPaymentSubmitted={handlePaymentSubmitted}
-      orderPrice={order.price} // Pass the order price here
-    />
-  </div>
-)}
-{/* 
+        {order.Agreement === "Accepted" &&
+          order.paymentDetails?.paymentStatus === "pending" && (
+            <div className="bg-white rounded-xl shadow-xs border border-gray-200 p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                Payment Details
+              </h2>
+              <PaymentForm
+                orderId={order._id}
+                onPaymentSubmitted={handlePaymentSubmitted}
+                orderPrice={order.price} // Pass the order price here
+              />
+            </div>
+          )}
+        {/* 
 {(order.sampleStatus === "sample_rejected") && (
   <div className="bg-white rounded-xl shadow-xs border border-gray-200 p-6">
     <h2 className="text-xl font-semibold text-gray-800 mb-4">Payment Details</h2>
@@ -665,31 +799,39 @@ const SupplierOrderDetails = () => {
     />
   </div>
 )} */}
-{/* Payment Form for Rejected Sample */}
-{((order.sampleStatus === "sample_rejected") && order.paymentStatus !== "completed")&& 
- showPaymentForm &&  (
-  <div className="bg-white rounded-xl shadow-xs border border-gray-200 p-6">
-    <h2 className="text-xl font-semibold text-gray-800 mb-4">Payment Details</h2>
-    <PaymentForm 
-      orderId={order._id} 
-      onPaymentSubmitted={handlePaymentSubmitted}
-      orderPrice={order.price/2}
-    />
-  </div>
-)}
+        {/* Payment Form for Rejected Sample */}
+        {order.sampleStatus === "sample_rejected" &&
+          order.paymentStatus !== "completed" &&
+          showPaymentForm && (
+            <div className="bg-white rounded-xl shadow-xs border border-gray-200 p-6">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                Payment Details
+              </h2>
+              <PaymentForm
+                orderId={order._id}
+                onPaymentSubmitted={handlePaymentSubmitted}
+                orderPrice={order.price / 2}
+              />
+            </div>
+          )}
 
         {/* Payment Status */}
-        {order.Agreement === "Accepted" && order.paymentDetails?.paymentStatus === "detailsGiven" && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-blue-800">Your payment details are submitted, awaiting approval.</p>
-          </div>
-        )}
+        {order.Agreement === "Accepted" &&
+          order.paymentDetails?.paymentStatus === "detailsGiven" && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <p className="text-blue-800">
+                Your payment details are submitted, awaiting approval.
+              </p>
+            </div>
+          )}
 
         {/* Sample Submission */}
         {order.sampleStatus === "waiting_for_sample" && (
           <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold text-neutral-800">Send Sample</h2>
+              <h2 className="text-xl font-semibold text-neutral-800">
+                Send Sample
+              </h2>
               {!order.sampleProof && (
                 <button
                   className="px-4 py-2 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition"
@@ -705,87 +847,146 @@ const SupplierOrderDetails = () => {
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                 <p className="text-green-800">Sample already submitted</p>
               </div>
-            ) : showForm && (
-              <form onSubmit={handleSubmitSample} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">Sample Description</label>
-                  <textarea
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    rows="4"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Describe the sample..."
-                    disabled={isSubmitting}
-                  />
-                </div>
+            ) : (
+              showForm && (
+                <form onSubmit={handleSubmitSample} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1">
+                      Sample Description
+                    </label>
+                    <textarea
+                      className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      rows="4"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Describe the sample..."
+                      disabled={isSubmitting}
+                    />
+                  </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">Sample Image</label>
-                  <input
-                    type="file"
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                    accept="image/jpeg, image/png"
-                    onChange={(e) => setSampleImage(e.target.files[0])}
-                    required
-                    disabled={isSubmitting}
-                  />
-                  <p className="text-xs text-neutral-500 mt-1">JPEG or PNG, max 5MB</p>
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1">
+                      Sample Image
+                    </label>
+                    <input
+                      type="file"
+                      className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      accept="image/jpeg, image/png"
+                      onChange={(e) => setSampleImage(e.target.files[0])}
+                      required
+                      disabled={isSubmitting}
+                    />
+                    <p className="text-xs text-neutral-500 mt-1">
+                      JPEG or PNG, max 5MB
+                    </p>
+                  </div>
 
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-primary-300 transition"
-                  disabled={isSubmitting || !sampleImage}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Submitting...
-                    </>
-                  ) : "Submit Sample"}
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-primary-300 transition"
+                    disabled={isSubmitting || !sampleImage}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <svg
+                          className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        Submitting...
+                      </>
+                    ) : (
+                      "Submit Sample"
+                    )}
+                  </button>
+                </form>
+              )
             )}
           </div>
         )}
 
         {/* Sample Proof Display */}
-        {order.sampleProof && (
-          <ImageCard 
-            title="Sample Proof" 
-            imageUrl={order.sampleProof} 
+        {/* {order.sampleProof && (
+          <ImageCard
+            title="Sample Proof"
+            imageUrl={order.sampleProof}
             description={order.sampleDescription}
           />
+        )} */}
+
+        {order.sampleProof && (
+          <div>
+            <button onClick={toggleImageVisibility}>
+              {isImageVisible ? "Hide Sample Image" : "Show Sample Image"}
+            </button>
+
+            {isImageVisible && (
+              <ImageCard
+                title="Sample Proof"
+                imageUrl={order.sampleProof}
+                description={order.sampleDescription}
+              />
+            )}
+          </div>
         )}
 
         {/* Sample Received Proof */}
         {order.sampleRecievedProof && (
-          <ImageCard 
-            title="Sample Received Proof" 
+          
+
+           <div>
+            {/* <button onClick={toggleImageVisibility}>
+              {isImageVisible ? "Hide Sample Image" : "Show Sample Image"}
+            </button> */}
+
+            {isImageVisible && (
+              <ImageCard
+                title="Sample Received Proof"
             imageUrl={order.sampleRecievedProof}
-          />
+                description={order.sampleDescription}
+              />
+            )}
+          </div>
         )}
 
         {/* Rejection Reason */}
-        {order.sampleStatus === 'sample_rejected' && (
+        {order.sampleStatus === "sample_rejected" && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <h3 className="text-lg font-medium text-red-800 mb-2">Order Rejected</h3>
-            <p className="text-red-700"><strong>Reason:</strong> {order.rejectionReason}</p>
+            <h3 className="text-lg font-medium text-red-800 mb-2">
+              Order Rejected
+            </h3>
+            <p className="text-red-700">
+              <strong>Reason:</strong> {order.rejectionReason}
+            </p>
           </div>
         )}
-{order.Agreement === "Accepted" && !hasReviewed && (
+        {order.Agreement === "Accepted" && !hasReviewed && (
           <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
-            <h2 className="text-xl font-semibold text-neutral-800 mb-4">Write a Review</h2>
+            <h2 className="text-xl font-semibold text-neutral-800 mb-4">
+              Write a Review
+            </h2>
             <p>Exporter ID : {order.exporterId?._id} </p>
             <p>UserID : {userID} </p>
             <p>UserRole : {userRole} </p>
 
-            <WriteReview 
-              supplierId={order.exporterId?._id} 
-              productName={order.productId?.name} 
+            <WriteReview
+              supplierId={order.exporterId?._id}
+              productName={order.productId?.name}
               reviewerRole={userRole} // pass the userRole (exporter/supplier)
               orderId={order._id} // pass the orderId to associate the review
             />
@@ -793,9 +994,13 @@ const SupplierOrderDetails = () => {
         )}
         {/* Message Display */}
         {message && (
-          <div className={`p-4 rounded-lg ${
-            message.includes("success") ? "bg-green-50 border border-green-200 text-green-800" : "bg-red-50 border border-red-200 text-red-800"
-          }`}>
+          <div
+            className={`p-4 rounded-lg ${
+              message.includes("success")
+                ? "bg-green-50 border border-green-200 text-green-800"
+                : "bg-red-50 border border-red-200 text-red-800"
+            }`}
+          >
             {message}
           </div>
         )}

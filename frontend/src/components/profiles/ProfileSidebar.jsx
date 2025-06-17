@@ -125,6 +125,8 @@ import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next"; // Import the hook for translation
+import LogoutButton from "../LogoutButton";
+
 
 const ProfileSidebar = ({ activeTab, setActiveTab, user }) => {
   const { t } = useTranslation();  // Initialize the useTranslation hook
@@ -163,6 +165,7 @@ const ProfileSidebar = ({ activeTab, setActiveTab, user }) => {
                 alt={`${user.name}'s profile`}
                 className="w-14 h-14 rounded-full object-cover border-4 border-primary-100 shadow-md"
               />
+              <LogoutButton/>
             </div>
             <div>
               <h3 className="font-semibold text-text-primary">{user.name || t("profile_sidebar.guest")}</h3>

@@ -554,7 +554,7 @@ exports.getAllProducts = async (req, res) => {
 exports.getProductDetails = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id)
-            .populate("supplier", "name email profilePicture");  // Adding profilePicture to the fields to populate
+            .populate("supplier", "name email profilePicture adminVerified");  // Adding profilePicture to the fields to populate
 
         if (!product) {
             return res.status(404).json({ message: "Product not found." });

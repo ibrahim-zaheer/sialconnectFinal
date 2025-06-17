@@ -7,6 +7,8 @@ const OfferSchema = new mongoose.Schema(
     productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
+    //  deliveryDays: { type: Number, required: false, min: 1, max: 100, default:1 },
+      deliveryDays: { type: Date, required: false },
     message: {
         type: String,
         required: false,
@@ -21,6 +23,9 @@ const OfferSchema = new mongoose.Schema(
       price: { type: Number },
       quantity: { type: Number },
       message:{type:String},
+      // deliveryDays:{type:Number},
+      deliveryDays:{type:Date,require:false},
+
     },
     counterOfferCount: { type: Number, default: 0 },
     updateCount: { type: Number, default: 0 },

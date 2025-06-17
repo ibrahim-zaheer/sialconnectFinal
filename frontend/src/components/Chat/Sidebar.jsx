@@ -104,6 +104,12 @@ const Sidebar = () => {
               <div className="flex justify-between items-center">
                 <div className="font-medium text-neutral-900 truncate">
                   {user.fullName || user.name}
+
+                   {user.role === "admin" && (
+              <span className="ml-2 bg-primary-500 text-surface text-xs py-1 px-2 rounded-full">
+                Admin
+              </span>
+            )}
                 </div>
                 <span className="text-xs text-neutral-500">
                   {user.lastMessageTime || ''}

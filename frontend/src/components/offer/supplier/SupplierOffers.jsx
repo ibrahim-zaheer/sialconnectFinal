@@ -497,6 +497,7 @@ import AcceptOffer from "../AcceptOffer";
 import RejectOffer from "../RejectOffer";
 import CounterOffer from "../CounterOffer";
 import { useNavigate } from "react-router-dom";
+import DateDisplay from "../../DateDisplay";
 
 export default function SupplierOffers() {
   const user = useSelector(selectUser);
@@ -701,6 +702,20 @@ export default function SupplierOffers() {
                       <span>Quantity:</span>
                       <span className="font-medium">{offer.quantity}</span>
                     </div>
+                     {/* <div className="flex justify-between">
+                      <span>Days for Delivery</span>
+                      <span className="font-medium">{offer.deliveryDays}</span>
+                    </div>
+                      */}
+                        {offer?.deliveryDays ? (
+                          <>
+                           <span>Days for Delivery:</span>
+                                 <DateDisplay date={offer.deliveryDays} />
+                                 </>
+                               ) : (
+                                 <span>No delivery date set</span>
+                               )}
+
                     <div className="flex justify-between border-b border-neutral-100 pb-3">
                       <span>Total Value:</span>
                       <span className="font-medium text-primary-700">

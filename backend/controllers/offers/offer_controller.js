@@ -12,11 +12,16 @@ const nodemailer = require('nodemailer');
 
 const createOffer = async (req, res) => {
     try {
-      const { supplierId, productId, price, quantity,message } = req.body;
+      const { supplierId, productId, price, quantity,message,deliveryDays } = req.body;
   
-      if (!supplierId || !productId || !price || !quantity) {
+      if (!supplierId || !productId || !price || !quantity || !deliveryDays) {
         return res.status(400).json({ message: "All fields are required." });
       }
+
+      
+    if (deliveryDays < 1 || deliveryDays > 100) {
+      return res.status(400).json({ message: "Delivery days must be between 1 and 100." });
+    }
   
       const newOffer = new Offer({
         exporterId: req.user.id, // Extracted from authentication token
@@ -25,6 +30,7 @@ const createOffer = async (req, res) => {
         price,
         quantity,
         message,
+        deliveryDays,
         status: "pending",
       });
   
@@ -38,7 +44,7 @@ const createOffer = async (req, res) => {
   const updateOffer = async (req, res) => {
     try {
       const { offerId } = req.params; // Extract Offer ID from URL
-      const { price, quantity, message } = req.body;
+      const { price, quantity, message, deliveryDays } = req.body;
   
       // ✅ Find offer by ID
       const offer = await Offer.findById(offerId);
@@ -54,11 +60,19 @@ const createOffer = async (req, res) => {
          // ✅ Check if counter offer limit is reached
    
   
+          // ✅ Ensure deliveryDays is within the range
+    // if (deliveryDays && (deliveryDays < 1 || deliveryDays > 100)) {
+    //   return res.status(400).json({ message: "Delivery days must be between 1 and 100." });
+    // }
+   if (deliveryDays && isNaN(new Date(deliveryDays).getTime())) {
+      return res.status(400).json({ message: "Invalid delivery date." });
+    }
 
       offer.history.push({
         price: offer.price,
         quantity: offer.quantity,
         message: offer.message,
+         deliveryDays: offer.deliveryDays,
         updatedBy: req.user.id,
         timestamp: new Date()
       });
@@ -73,6 +87,7 @@ const createOffer = async (req, res) => {
       if (price !== undefined) offer.price = price;
       if (quantity !== undefined) offer.quantity = quantity;
       if (message !== undefined) offer.message = message;
+       if (deliveryDays !== undefined) offer.deliveryDays = deliveryDays;
       offer.isUpdated = true;
       offer.counterOfferCount += 1; 
       await offer.save();
@@ -109,6 +124,7 @@ const acceptOffer = async (req, res) => {
       price: offer.price,
       quantity: offer.quantity,
       message: offer.message,
+       deliveryDays: offer.deliveryDays, 
     });
 
     await newOrder.save();
@@ -145,7 +161,7 @@ const acceptOffer = async (req, res) => {
 
   const counterOffer = async (req, res) => {
     try {
-      const { price, quantity, message } = req.body;
+      const { price, quantity, message, deliveryDays } = req.body;
       const offer = await Offer.findById(req.params.offerId);
       
       if (!offer) {
@@ -166,11 +182,12 @@ const acceptOffer = async (req, res) => {
       price: offer.price,
       quantity: offer.quantity,
       message: offer.message,
+      deliveryDays: offer.deliveryDays,
       updatedBy: req.user.id,
       timestamp: new Date()
     });
       offer.status = "counter";
-      offer.counterOffer = { price, quantity, message };
+      offer.counterOffer = { price, quantity, message , deliveryDays};
       offer.counterOfferCount += 1; 
       await offer.save();
   
@@ -197,6 +214,7 @@ const acceptOffer = async (req, res) => {
       offer.quantity = offer.counterOffer.quantity;
       offer.status = "accepted";
       offer.acceptedBy = req.user.id;
+       offer.deliveryDays = offer.counterOffer.deliveryDays;
       await offer.save();
   
       res.json({ message: "Counter offer accepted. Order created!", offer });
@@ -358,7 +376,7 @@ Total: ${offer.price * offer.quantity} Rs
 Please respond at your earliest convenience.
 
 Thank you,
-TradeConnect Team
+Sialconnect Team
 `,
     };
 

@@ -165,6 +165,8 @@ import ExporterLayout from "./components/bidding/ExporterLayout";
 import PricingPage from "./pages/pricing/PricingPage";
 import About from "./pages/About";
 
+import SupplierVerificationRequestPage from "./pages/admin/functions/supplierVerificationrequestpage";
+
 const App = () => {
   return (
     <>
@@ -378,6 +380,15 @@ const Main = () => {
           element={
             <AdminRoute>
               <SupplierOrderPageByAdmin />
+            </AdminRoute>
+          }
+        />
+
+          <Route
+          path="/admin/user/supplier/verification"
+          element={
+            <AdminRoute>
+              <SupplierVerificationRequestPage/>
             </AdminRoute>
           }
         />

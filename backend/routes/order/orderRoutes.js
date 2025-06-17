@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllPaymentsForSupplier,initiateLocalPayment,getAllOrders,getTopProducts,getTopSuppliers,getOrderByOfferId
+  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllPaymentsForSupplier,initiateLocalPayment,getAllOrders,getTopProducts,getTopSuppliers,getOrderByOfferId, markOrderShipped, confirmOrderReceipt
   
 } = require("../../controllers/order/order_controller");
 
@@ -56,5 +56,12 @@ router.get("/orders/top-products", getTopProducts);
 router.get("/orders/top-suppliers", getTopSuppliers);
 
 router.get("/orders/offer/:offerId",getOrderByOfferId);
+
+
+// Route to mark order as shipped (Supplier's action)
+router.post("/order/shipped", markOrderShipped);
+
+// Route to confirm order receipt (Exporter’s action)
+router.post("/order/received", confirmOrderReceipt);
 
 module.exports = router;
