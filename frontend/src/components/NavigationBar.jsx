@@ -602,7 +602,22 @@ const Navbar = () => {
               className="flex items-center"
               onClick={closeMobileMenu}
             >
-              <img src={Sial} className="h-10 w-auto" alt="SialConnect Logo" />
+              <div
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  overflow: "hidden",
+                  borderRadius: "50%",
+                }}
+              >
+                <img
+                  src={Sial}
+                  className="w-full h-full object-cover"
+                  alt="SialConnect Logo"
+                  style={{ transform: "scale(1.5)", objectPosition: "center" }}
+                />
+              </div>
+
               <span className="ml-2 text-white font-bold text-xl hidden sm:inline">
                 SialConnect
               </span>

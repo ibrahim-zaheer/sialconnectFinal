@@ -1628,7 +1628,15 @@ export default function LandingPage() {
           </h2>
           <p className="text-gray-500">{t("bestSelling.description")}</p>
         </motion.div>
-        <TopProducts />
+
+        {/* Grid for Top Products */}
+        <motion.div
+          variants={itemVariants}
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+        >
+          <TopProducts />
+        </motion.div>
+
         <motion.div variants={itemVariants} className="text-center mt-12">
           <button
             className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all shadow-md"
@@ -1680,7 +1688,7 @@ export default function LandingPage() {
       </motion.section>
 
       {/* ────────── Suppliers ────────── */}
-      <motion.section
+      {/* <motion.section
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
@@ -1694,7 +1702,7 @@ export default function LandingPage() {
           <p className="text-gray-500">{t("suppliers.description")}</p>
         </motion.div>
         <TopSuppliers />
-      </motion.section>
+      </motion.section> */}
 
       {/* ────────── Recommended Products ────────── */}
       <motion.section
