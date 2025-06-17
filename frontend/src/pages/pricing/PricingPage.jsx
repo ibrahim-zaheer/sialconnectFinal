@@ -162,7 +162,7 @@ export default function PricingPage() {
 const plans = {
   free: {
     name: "Free",
-    price: "$0",
+    price: "Rs 0",
     features: [
       "3 Bidding requests/month",
       "Discounted prices for products",
@@ -173,7 +173,7 @@ const plans = {
   },
   pro: {
     name: "Pro",
-    price: "$29/month",
+    price: "Rs 3000",
     features: [
       "Unlimited Bidding requests",
       "Discounted prices for products",
