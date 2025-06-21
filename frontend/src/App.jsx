@@ -167,6 +167,10 @@ import About from "./pages/About";
 
 import SupplierVerificationRequestPage from "./pages/admin/functions/supplierVerificationrequestpage";
 
+import ComplaintsListPage from "./pages/admin/functions/ComplaintsListPage";
+
+
+
 const App = () => {
   return (
     <>
@@ -238,7 +242,7 @@ const Main = () => {
   useEffect(() => {
     const unsubscribe = onMessage(messaging, (payload) => {
       console.log("🚀 Foreground Notification Received:", payload);
-
+      
       if (payload?.notification) {
         toast(
           <div>
@@ -355,6 +359,14 @@ const Main = () => {
           element={
             <AdminRoute>
               <AdminDashboardPage />
+            </AdminRoute>
+          }
+        />
+          <Route
+          path="/admin/complaint"
+          element={
+            <AdminRoute>
+              <ComplaintsListPage />
             </AdminRoute>
           }
         />

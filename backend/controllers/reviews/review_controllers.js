@@ -3,6 +3,9 @@ const Review = require("../../models/reviewAndRating/Review");
 const User = require("../../models/User"); // Import User model
 const Notification = require("../../models/notification/notificationSchema")
 const admin = require("../../utils/firebaseAdmin")
+// const io = require("../../server")
+// const {getReceiverSocketId} = require("../../utils/socketHelper")
+
 // Write a Reviewconst admin = require("../../utils/firebaseAdmin")
 
 // const submitReviewAndNotify = async (req, res) => {
@@ -176,79 +179,213 @@ const admin = require("../../utils/firebaseAdmin")
 // };
 
 
+//21 june 2025
+
+
+let io;
+let userSocketMap;
+let getReceiverSocketId; // Add this
+
+function initSocket(ioInstance, socketMap, socketIdGetter) {
+  io = ioInstance;
+  userSocketMap = socketMap;
+  getReceiverSocketId = socketIdGetter; // Store the function
+}
+
+// const submitReviewAndNotify = async (req, res) => {
+//   try {
+//       const { supplierId, productName, rating, reviewText, orderId, reviewerRole } = req.body;
+
+//       // Validate required fields
+//       if (!supplierId || !productName || !rating || !reviewText || !orderId || !reviewerRole) {
+//           return res.status(400).json({ message: "All fields are required" });
+//       }
+
+//       // Check if the user has already reviewed this order
+//       const existingReview = await Review.findOne({ user: req.user._id, orderId });
+//       if (existingReview) {
+//           return res.status(400).json({ message: "You have already reviewed this order." });
+//       }
+
+//       // Determine who is being reviewed
+//       // const reviewedUserId = reviewerRole === "exporter" ? req.user._id : supplierId;  // If reviewer is the exporter, supplier is the reviewed user.
+//     //   const reviewedUserId = reviewerRole === "exporter" ? supplierId : req.user._id;
+//        const reviewedUserId = supplierId;
+
+//       if (reviewerRole ==="exporter"){
+//       console.log("supplier id is: "+supplierId);
+//       console.log("exporter id is: "+req.user._id);}
+//       else if(reviewerRole === "supplier"){
+//         console.log("exporter id is: "+supplierId);
+//       console.log("supplier(user id) id is: "+req.user._id);
+//       }
+
+
+//       // Step 1: Save the review
+//       const review = new Review({
+//           user: req.user._id, // The user who is writing the review
+//           reviewerRole, // The role of the reviewer (supplier/exporter)
+//           reviewedUser: reviewedUserId, // The user being reviewed (exporter or supplier)
+//           orderId, // Reference to the order
+//           productName,
+//           rating: Number(rating),
+//           reviewText,
+//       });
+
+//       await review.save();
+
+//       // Step 2: Find the FCM token of the reviewed user (either supplier or exporter)
+//       const reviewedUser = await User.findById(reviewedUserId);
+//       const reviewer = await User.findById(req.user._id);
+
+//       // Step 3: If the reviewed user has an FCM token, send a notification
+//       if (reviewedUser && reviewedUser.fcmToken) {
+//           const notification = new Notification({
+//               userId: reviewedUserId,
+//               message: `${reviewer.name} has reviewed your product: ${reviewText}`,
+//           });
+
+//           await notification.save();
+
+//              const receiverSocketId = getReceiverSocketId(reviewedUser);
+//     if (receiverSocketId) {
+//       io.to(receiverSocketId).emit("newNotification", notification);
+//     }
+
+//           const message = {
+//               notification: {
+//                   title: "New Product Review",
+//                   body: `${reviewer.name} has reviewed your product: ${reviewText}`,
+//               },
+//               token: reviewedUser.fcmToken, // Send the notification to the reviewed user's FCM token
+//           };
+
+//           await admin.messaging().send(message); // Send the notification to FCM
+//       }
+    
+
+
+//       // Respond with success
+//       res.status(200).json({ message: "Review submitted successfully" });
+//   } catch (error) {
+//       console.error("Error submitting review or sending notification:", error);
+//       res.status(500).json({ message: "Error submitting review or sending notification", error: error.message });
+//   }
+// };
+
+
+// const createReview = async (req, res) => {
+//   const { user, reviewerRole, reviewedUser, orderId, productName, rating, reviewText } = req.body;
+  
+//   try {
+//     // Create a new review document
+//     const review = new Review({
+//       user,
+//       reviewerRole,
+//       reviewedUser,
+//       orderId,
+//       productName,
+//       rating,
+//       reviewText,
+//     });
+    
+//     // Save the review to the database
+//     await review.save();
+
+//     // Create a notification for the reviewed user
+//     const notificationMessage = `${reviewerRole} has written a review for your product ${productName}.`;
+//     const notification = new Notification({
+//       userId: reviewedUser,
+//       message: notificationMessage,
+//       actionUrl: `/reviews/${review._id}`, // Optional: link to review details
+//     });
+//     await notification.save();
+
+//     // Send real-time notification using Socket.IO
+//     const receiverSocketId = getReceiverSocketId(reviewedUser);
+//     if (receiverSocketId) {
+//       io.to(receiverSocketId).emit("newNotification", notification);
+//     }
+
+//     // Respond with the created review and notification
+//     res.status(201).json({ review, notification });
+//   } catch (error) {
+//     console.error("Error creating review:", error);
+//     res.status(500).json({ message: "Error creating review", error: error.message });
+//   }
+// };
+
+
 const submitReviewAndNotify = async (req, res) => {
   try {
-      const { supplierId, productName, rating, reviewText, orderId, reviewerRole } = req.body;
+    const { supplierId, productName, rating, reviewText, orderId, reviewerRole } = req.body;
 
-      // Validate required fields
-      if (!supplierId || !productName || !rating || !reviewText || !orderId || !reviewerRole) {
-          return res.status(400).json({ message: "All fields are required" });
-      }
+    // Validate required fields
+    if (!supplierId || !productName || !rating || !reviewText || !orderId || !reviewerRole) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
-      // Check if the user has already reviewed this order
-      const existingReview = await Review.findOne({ user: req.user._id, orderId });
-      if (existingReview) {
-          return res.status(400).json({ message: "You have already reviewed this order." });
-      }
+    // Check if the user has already reviewed this order
+    const existingReview = await Review.findOne({ user: req.user._id, orderId });
+    if (existingReview) {
+      return res.status(400).json({ message: "You have already reviewed this order." });
+    }
 
-      // Determine who is being reviewed
-      // const reviewedUserId = reviewerRole === "exporter" ? req.user._id : supplierId;  // If reviewer is the exporter, supplier is the reviewed user.
-    //   const reviewedUserId = reviewerRole === "exporter" ? supplierId : req.user._id;
-       const reviewedUserId = supplierId;
+    // Determine who is being reviewed
+    const reviewedUserId = supplierId;  // Supplier is always the one being reviewed in this case
 
-      if (reviewerRole ==="exporter"){
-      console.log("supplier id is: "+supplierId);
-      console.log("exporter id is: "+req.user._id);}
-      else if(reviewerRole === "supplier"){
-        console.log("exporter id is: "+supplierId);
-      console.log("supplier(user id) id is: "+req.user._id);
-      }
+    // Step 1: Save the review
+    const review = new Review({
+      user: req.user._id, // The user who is writing the review
+      reviewerRole, // The role of the reviewer (supplier/exporter)
+      reviewedUser: reviewedUserId, // The user being reviewed (supplier)
+      orderId, // Reference to the order
+      productName,
+      rating: Number(rating),
+      reviewText,
+    });
 
+    await review.save();
 
-      // Step 1: Save the review
-      const review = new Review({
-          user: req.user._id, // The user who is writing the review
-          reviewerRole, // The role of the reviewer (supplier/exporter)
-          reviewedUser: reviewedUserId, // The user being reviewed (exporter or supplier)
-          orderId, // Reference to the order
-          productName,
-          rating: Number(rating),
-          reviewText,
+    // Step 2: Find the FCM token of the reviewed user (supplier)
+    const reviewedUser = await User.findById(reviewedUserId);
+    const reviewer = await User.findById(req.user._id);
+
+    // Step 3: If the reviewed user has an FCM token, send a notification
+    if (reviewedUser && reviewedUser.fcmToken) {
+      const notification = new Notification({
+        userId: reviewedUserId,
+        message: `${reviewer.name} has reviewed your product: ${reviewText}`,
       });
 
-      await review.save();
+      await notification.save();
 
-      // Step 2: Find the FCM token of the reviewed user (either supplier or exporter)
-      const reviewedUser = await User.findById(reviewedUserId);
-      const reviewer = await User.findById(req.user._id);
-
-      // Step 3: If the reviewed user has an FCM token, send a notification
-      if (reviewedUser && reviewedUser.fcmToken) {
-          const notification = new Notification({
-              userId: reviewedUserId,
-              message: `${reviewer.name} has reviewed your product: ${reviewText}`,
-          });
-
-          await notification.save();
-
-          const message = {
-              notification: {
-                  title: "New Product Review",
-                  body: `${reviewer.name} has reviewed your product: ${reviewText}`,
-              },
-              token: reviewedUser.fcmToken, // Send the notification to the reviewed user's FCM token
-          };
-
-          await admin.messaging().send(message); // Send the notification to FCM
+      // Real-time notification via Socket.IO
+      const receiverSocketId = getReceiverSocketId(reviewedUserId);  // Get socket ID of the reviewed user
+      if (receiverSocketId) {
+        io.to(receiverSocketId).emit("newNotification", notification);  // Emit new notification event
       }
 
-      // Respond with success
-      res.status(200).json({ message: "Review submitted successfully" });
+      // Send push notification via FCM
+      const message = {
+        notification: {
+          title: "New Product Review",
+          body: `${reviewer.name} has reviewed your product: ${reviewText}`,
+        },
+        token: reviewedUser.fcmToken, // Send the notification to the reviewed user's FCM token
+      };
+
+      await admin.messaging().send(message); // Send the notification to FCM
+    }
+
+    // Respond with success
+    res.status(200).json({ message: "Review submitted successfully" });
   } catch (error) {
-      console.error("Error submitting review or sending notification:", error);
-      res.status(500).json({ message: "Error submitting review or sending notification", error: error.message });
+    console.error("Error submitting review or sending notification:", error);
+    res.status(500).json({ message: "Error submitting review or sending notification", error: error.message });
   }
 };
+
 
 
 const WriteReview = async (req, res) => {
@@ -425,4 +562,4 @@ const checkReviewExists = async (req, res) => {
 };
 
 // Export the functions for routes
-module.exports =  { WriteReview, getAllReviews, getReviewsBySupplier, getReviewsByExporter,submitReviewAndNotify,checkReviewExists };
+module.exports =  { WriteReview, getAllReviews, getReviewsBySupplier, getReviewsByExporter,submitReviewAndNotify,checkReviewExists,initSocket };

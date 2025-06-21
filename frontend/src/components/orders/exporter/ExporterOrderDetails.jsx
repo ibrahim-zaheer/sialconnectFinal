@@ -778,6 +778,7 @@ import WriteReview from "../../reviews/WriteReviews";
 import { OrderReceived } from "../supplier/order/OrderRecieved";
 import DateDisplay from "../../DateDisplay";
 import MessageSelector from "../../MessageSelector";
+import CreateComplaint from "../../complaint/CreateComplaint";
 
 const ExporterOrderDetails = () => {
   const { orderId } = useParams();
@@ -794,6 +795,12 @@ const ExporterOrderDetails = () => {
   const [showLocalPaymentPopup, setShowLocalPaymentPopup] = useState(false);
 
   const [isImageVisible, setIsImageVisible] = useState(false);
+
+   const [showComplaintModal, setShowComplaintModal] = useState(false);
+
+    const toggleComplaintModal = () => {
+    setShowComplaintModal(!showComplaintModal);
+  };
 
   const user = useSelector((state) => state.user);
   const userName = user?.name;
@@ -976,7 +983,7 @@ const ExporterOrderDetails = () => {
           </Link>
         )}
 
-            <Link
+        {/* <Link
                             to={`/chat?supplierId=${"673b05acd7ab61f6819baa08"}`}
                             className="inline-flex items-center px-6 py-3 bg-red-700 text-white rounded-lg hover:bg-blue-700 transition-colors"
                           >
@@ -994,8 +1001,40 @@ const ExporterOrderDetails = () => {
                               />
                             </svg>
                             Complain to Admin
-                          </Link>
+                          </Link> */}
         {/* Status Cards */}
+{/* 
+           <button
+          onClick={toggleComplaintModal}
+          className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+        >
+          Create Complaint
+        </button> */}
+        {order.status === "agreement_accepted" && (
+  // <button
+  //   onClick={toggleComplaintModal}
+  //   className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+  // >
+  //   Create Complaint
+  // </button>
+  <></>
+)}
+  <button
+    onClick={toggleComplaintModal}
+    className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+  >
+    Create Complaint
+  </button>
+
+
+        <div>
+            {showComplaintModal && (
+        <CreateComplaint
+          orderId={orderId}
+          closeModal={toggleComplaintModal}
+        />
+      )}
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatusCard
             title="Sample Status"

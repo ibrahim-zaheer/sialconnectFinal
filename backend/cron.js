@@ -39,8 +39,8 @@ const { checkDeliveryDateNotification, checkDeliveryDateNotificationExporter } =
 // );
 
 cron.schedule(
-  // "*/15 * * * *",
-    '* * * * *',
+  "*/15 * * * *",
+    // '* * * * *',
   async () => {
     try {
       console.log("Running reminder check...");

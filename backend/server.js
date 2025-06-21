@@ -216,7 +216,16 @@ const orderRoutes = require("./routes/order/orderRoutes");
 
 const messageController =  require("./controllers/message_controller");
 
+const reviewController =  require("./controllers/reviews/review_controllers");
+const orderController =  require("./controllers/order/order_controller");
+
+
+
 const adminRoutes = require("./routes/admin/adminRoutes");
+
+const complaintRoutes = require("./routes/complaint/complaintRoutes");
+
+const { setUserSocketMapping } = require("./utils/socketHelper");
 
 
 
@@ -236,6 +245,8 @@ const io = new Server(server, {
   methods: ["GET", "POST"]
 });
 
+module.exports = io; 
+
 const PORT = process.env.PORT || 5000;
 
 
@@ -247,7 +258,8 @@ app.use(express.json());
 const userSocketMap = {}; // { userId: socketId }
 
 
-
+// Inject io and userSocketMap into notification router for real-time emitting
+setSocketIO(io, userSocketMap);
 // ✅ Prefix all API routes with `/api` to avoid conflicts with frontend routes
 app.use("/api/auth", authRoutes);
 app.use("/api/supplier", supplierRoutes);
@@ -263,8 +275,7 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/notification", notificationRouter);
 
 
-// Inject io and userSocketMap into notification router for real-time emitting
-setSocketIO(io, userSocketMap);
+
 
 app.use("/api/favourites",favouriteRoutes);
 
@@ -273,6 +284,8 @@ app.use("/api/offers",offerRoutes);
 app.use("/api/order",orderRoutes);
 
 app.use("/api/adminVerification",adminVerificationRoutes);
+
+app.use("/api/complaint",complaintRoutes);
 
 
 app.use("/api/admin",adminRoutes);
@@ -300,13 +313,42 @@ function getReceiverSocketId(userId) {
 // Modify the socket controller initialization
 messageController.initSocket(io, userSocketMap, getReceiverSocketId);
 
+reviewController.initSocket(io, userSocketMap, getReceiverSocketId);
+orderController.initSocket(io, userSocketMap, getReceiverSocketId);
+
+
 io.on("connect", (socket) => {
-  console.log(`User connected: ${socket.id}`);
+  console.log(`User is connected: ${socket.id}`);
   const userId = socket.handshake.query.userId;
   if (userId) userSocketMap[userId] = socket.id;
 
+  //21st june 2025
+  if (userId) {
+    setUserSocketMapping(userId, socket.id);
+  }
+
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
+    // Simulating a new notification every 5 seconds for testing
+  // setInterval(() => {
+  //   const randomNotification = {
+  //     message: `Random notification at ${new Date().toLocaleTimeString()}`,
+  //     actionUrl: `/some-action-url/${Math.floor(Math.random() * 1000)}`, // Generate random action URL
+  //   };
+
+  //   // Emitting the new_notification event to the client
+  //   socket.emit("new_notification", randomNotification);
+  //   console.log("Emitting new_notification:", randomNotification);
+  // }, 5000); // Emit every 5 seconds
+
+  // socket.on("new_notification", (notification) => {
+  //   console.log("New notification event received:", notification);
+  //   const receiverSocketId = getReceiverSocketId(notification.userId); // Get receiver's socketId
+  //   if (receiverSocketId) {
+  //     io.to(receiverSocketId).emit("newNotification", notification); // Emit notification to user
+  //     console.log(notification);
+  //   }
+  // });
 
 
   // socket.on("sendMessage", async ({ sender, receiver, message }) => {
@@ -327,6 +369,11 @@ io.on("connect", (socket) => {
   // });
 
   // messageController.initSocket(io, userSocketMap);
+
+    socket.on("join", (userId) => {
+    socket.join(userId);
+    console.log(`User ${userId} joined the room.`);
+  });
   socket.on("sendMessage", async ({ sender, receiver, text }) => {
     try {
       const newMessage = new Message({
@@ -360,6 +407,7 @@ io.on("connect", (socket) => {
     delete userSocketMap[userId];
     io.emit("getOnlineUsers", Object.keys(userSocketMap));
   });
+ 
 });
 
 // ✅ API Health Check Route
@@ -376,7 +424,7 @@ app.get("*", (req, res) => {
   }
 });
 
-// require("./cron");
+require("./cron");
 // ✅ Start Server
 server.listen(PORT, () => {
   console.log(`Server running on ports ${PORT}`);

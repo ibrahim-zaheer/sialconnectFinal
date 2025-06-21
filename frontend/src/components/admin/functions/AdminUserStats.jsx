@@ -88,11 +88,11 @@ const AdminUserStats = () => {
         <div className="flex items-center space-x-2 text-sm">
           <span className="flex items-center">
             <span className="w-3 h-3 rounded-full bg-primary-500 mr-2"></span>
-            <span>Total Users</span>
+            <span>Exporters</span>
           </span>
           <span className="flex items-center">
             <span className="w-3 h-3 rounded-full bg-secondary-500 mr-2"></span>
-            <span>Active</span>
+            <span>Suppliers</span>
           </span>
         </div>
       </div>
