@@ -1,6 +1,6 @@
 // import User from "../models/user.js";
 
-const User = require("../models/user");
+const User = require("../models/User");
 // import Message from "../models/message.model";
 
 
