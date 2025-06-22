@@ -143,11 +143,7 @@
 // if (process.env.NODE_ENV === "production") {
 //   app.get("*", (req, res) => {
 //     if (
-//       !req.originalUrl.startsWith("/api") &&
-//       !req.originalUrl.startsWith("/supplier") &&
-//       !req.originalUrl.startsWith("/message") &&
-//       !req.originalUrl.startsWith("/bidding") &&
-//       !req.originalUrl.startsWith("/socket.io")
+
 //     ) {
 //       res.sendFile(path.resolve(__dirname, "../frontend/dist", "index.html"));
 //     } else {
