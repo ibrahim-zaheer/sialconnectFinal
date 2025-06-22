@@ -1,6 +1,6 @@
 const { getUsersForSidebar, getMessages, sendMessage,sendingVoiceMessage } = require("../controllers/message_controller.js");
 const authenticateMiddleware = require("../middleware/authMiddleware.js");
-const User = require("../models/user");
+const User = require("../models/User.js");
 const express = require("express");
 const multer = require('multer');
 
