@@ -22,6 +22,7 @@ import UserCount from './functions/UserCount';
 import UserRolePieChart from './functions/UserRolePieChart';
 import AdminUserStats from './functions/AdminUserStats';
 import LogoutButton from '../LogoutButton';
+import AdminOrderStats from './functions/AdminOrderStats';
 
 export default function AdminDashboard() {
   return (
@@ -35,6 +36,7 @@ export default function AdminDashboard() {
         <div className="bg-surface rounded-xl shadow-sm p-6">
           <h2 className="text-xl font-semibold text-neutral-800 mb-6">User Statistics</h2>
           <AdminUserStats />
+          <AdminOrderStats/>
         </div>
       </div>
     </div>

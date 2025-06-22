@@ -786,6 +786,14 @@ const Navbar = () => {
                         <i className="ri-money-dollar-circle-line mr-1"></i>{" "}
                         {t("Payments")}
                       </NavLink>
+
+                       <NavLink
+                        to="/admin/complaint"
+                        onClick={closeMobileMenu}
+                      >
+                        <i className="ri-money-dollar-circle-line mr-1"></i>{" "}
+                        {t("Complaints")}
+                      </NavLink>
                     </>
                   )}
 

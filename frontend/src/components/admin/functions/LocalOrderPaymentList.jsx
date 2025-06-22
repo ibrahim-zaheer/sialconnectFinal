@@ -624,7 +624,7 @@ const OrderDetailsModal = ({ order, closeModal, refreshOrders }) => {
         <p><strong>Account Name:</strong> {order.LocalPaymentDetails?.accountName || "N/A"}</p>
         <p><strong>Payment Method:</strong> {order.LocalPaymentDetails?.paymentMethod || "N/A"}</p>
         <p><strong>Payment Status:</strong> {order.LocalPaymentDetails?.paymentStatus || "N/A"}</p>
-        <p><strong>Payment Amount:</strong> ${order.LocalPaymentDetails?.paymentAmount || "0.00"}</p>
+        <p><strong>Payment Amount:</strong> Rs {order.LocalPaymentDetails?.paymentAmount || "0.00"}</p>
         
         <p><strong>Payment Proof:</strong> 
           {order.LocalPaymentDetails?.localPaymentProof ? (
