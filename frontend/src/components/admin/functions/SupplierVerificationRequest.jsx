@@ -451,7 +451,7 @@
 
 
 import React, { useEffect, useState } from 'react';
-import { SupplierVerificationService } from '../hooks/supplierVerificationService';
+import { SupplierVerificationService } from '../hooks/SupplierVerificationService';
 
 export default function SupplierVerificationRequest({ onSuccess }) {
   const [verifications, setVerifications] = useState([]);
