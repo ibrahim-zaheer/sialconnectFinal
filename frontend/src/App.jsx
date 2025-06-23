@@ -112,7 +112,7 @@ import VerifyOTP from "./components/otp/verify-otp";
 
 import SupplierProductsPage from "./pages/Supplier/SupplierProductsPage";
 
-import CreateAuction from "./pages/bidding/createAuction";
+import CreateAuction from "./pages/bidding/CreateAuction";
 
 import GetAllAuctionsPage from "./pages/bidding/GetAllAuctionsPage";
 
