@@ -10,9 +10,10 @@
 
 import axios from "axios";
 
+// Use the .env values to set the baseURL for Axios
 axios.defaults.baseURL =
-  process.env.NODE_ENV === "production"
-    ? "https://sialconnectfinal.onrender.com" // Use relative URLs in production
-    : "https://sialconnectfinal.onrender.com"; // Use full URL in development
+  import.meta.env.MODE === "production"
+    ? import.meta.env.VITE_API_URL // Use the production API URL
+    : import.meta.env.VITE_API_URL_LOCAL; // Use the local development API URL
 
 export default axios;
