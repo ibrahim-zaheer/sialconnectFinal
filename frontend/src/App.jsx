@@ -165,7 +165,7 @@ import ExporterLayout from "./components/bidding/ExporterLayout";
 import PricingPage from "./pages/pricing/PricingPage";
 import About from "./pages/About";
 
-import SupplierVerificationRequestPage from "./pages/admin/functions/supplierVerificationrequestpage";
+import SupplierVerificationRequestPage from "./pages/admin/functions/SupplierVerificationRequestPage";
 
 import ComplaintsListPage from "./pages/admin/functions/ComplaintsListPage";
 
