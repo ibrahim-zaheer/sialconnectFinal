@@ -133,8 +133,9 @@ const ExporterProducts = () => {
           },
         }
       );
-      setProducts(response.data);
-      setFilteredProducts(response.data);
+      const visibleProducts = response.data.filter((product) => product.enable_view);
+      setProducts(visibleProducts);
+      setFilteredProducts(visibleProducts);
     } catch (error) {
       console.error(
         "Error fetching products:",

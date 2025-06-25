@@ -12,7 +12,7 @@ const nodemailer = require('nodemailer');
 
 const createOffer = async (req, res) => {
     try {
-      const { supplierId, productId, price, quantity,message,deliveryDays } = req.body;
+      const { supplierId, productId, price, quantity,message,deliveryDays, sample_needed } = req.body;
   
       if (!supplierId || !productId || !price || !quantity || !deliveryDays) {
         return res.status(400).json({ message: "All fields are required." });
@@ -31,6 +31,7 @@ const createOffer = async (req, res) => {
         quantity,
         message,
         deliveryDays,
+        sample_needed: sample_needed || false,
         status: "pending",
       });
   
@@ -44,7 +45,7 @@ const createOffer = async (req, res) => {
   const updateOffer = async (req, res) => {
     try {
       const { offerId } = req.params; // Extract Offer ID from URL
-      const { price, quantity, message, deliveryDays } = req.body;
+      const { price, quantity, message, deliveryDays ,sample_needed} = req.body;
   
       // ✅ Find offer by ID
       const offer = await Offer.findById(offerId);
@@ -88,6 +89,7 @@ const createOffer = async (req, res) => {
       if (quantity !== undefined) offer.quantity = quantity;
       if (message !== undefined) offer.message = message;
        if (deliveryDays !== undefined) offer.deliveryDays = deliveryDays;
+       if (sample_needed !== undefined) offer.sample_needed = sample_needed;
       offer.isUpdated = true;
       offer.counterOfferCount += 1; 
       await offer.save();
@@ -125,6 +127,7 @@ const acceptOffer = async (req, res) => {
       quantity: offer.quantity,
       message: offer.message,
        deliveryDays: offer.deliveryDays, 
+       sample_needed: offer.sample_needed,
     });
 
     await newOrder.save();
@@ -161,7 +164,7 @@ const acceptOffer = async (req, res) => {
 
   const counterOffer = async (req, res) => {
     try {
-      const { price, quantity, message, deliveryDays } = req.body;
+      const { price, quantity, message, deliveryDays, sample_needed } = req.body;
       const offer = await Offer.findById(req.params.offerId);
       
       if (!offer) {
@@ -187,7 +190,10 @@ const acceptOffer = async (req, res) => {
       timestamp: new Date()
     });
       offer.status = "counter";
-      offer.counterOffer = { price, quantity, message , deliveryDays};
+      offer.counterOffer = { price, quantity, message , deliveryDays, sample_needed };
+       if (sample_needed !== undefined) {
+      offer.sample_needed = sample_needed;
+    }
       offer.counterOfferCount += 1; 
       await offer.save();
   
@@ -215,6 +221,7 @@ const acceptOffer = async (req, res) => {
       offer.status = "accepted";
       offer.acceptedBy = req.user.id;
        offer.deliveryDays = offer.counterOffer.deliveryDays;
+       offer.sample_needed = offer.counterOffer.sample_needed;
       await offer.save();
   
       res.json({ message: "Counter offer accepted. Order created!", offer });

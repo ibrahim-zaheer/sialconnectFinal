@@ -1035,6 +1035,7 @@ const ExporterOrderDetails = () => {
         />
       )}
         </div>
+        {order.sample_needed &&(
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatusCard
             title="Sample Status"
@@ -1055,8 +1056,10 @@ const ExporterOrderDetails = () => {
           />
         </div>
 
+        )}
+
         {/* Documents Section */}
-        {order.status === "completed" && (
+        {order.status === "completed" || !order.sample_needed && (
           <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
             <h2 className="text-xl font-semibold text-neutral-800 mb-4">
               Documents
@@ -1208,7 +1211,7 @@ const ExporterOrderDetails = () => {
             onSuccess={handleOrderRecievedSuccess}
           />
         )} */}
-        {order.Agreement === "Accepted" && order.status === "order_shipped" && (
+        {(order.Agreement === "Accepted" && order.status === "order_shipped") ||(!order.sample_needed) && (
           <>
             {order.trackingId && <div>Tracking ID: {order.trackingId}</div>}{" "}
             {/* Conditionally render if trackingId exists */}
@@ -1218,6 +1221,8 @@ const ExporterOrderDetails = () => {
             />
           </>
         )}
+
+        {order.sample_needed ? <>sample is here</>:<>sample not here</> }
 
         {/* Write Review Section */}
         {order.Agreement === "Accepted" && !hasReviewed && (
@@ -1237,7 +1242,7 @@ const ExporterOrderDetails = () => {
         )}
 
         {/* Payment Sections */}
-        {order.sampleStatus === "waiting_for_payment" &&
+        {order.sampleStatus === "waiting_for_payment" && order.sample_needed  &&
           order.paymentStatus === "pending" && (
             <div className="space-y-6">
               <PaymentSection

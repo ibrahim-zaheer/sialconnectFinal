@@ -591,7 +591,7 @@ const toggleImageVisibility = () => {
         </div>
 
           {/* Conditionally Render the OrderSent Component */}
-        {order.Agreement === "Accepted" && order.status == "agreement_accepted" && (
+        {(order.Agreement === "Accepted" && order.status == "agreement_accepted") || (!order.sample_needed) && (
           <OrderSent
             orderId={order._id}
             onSuccess={handleOrderSentSuccess}
@@ -702,6 +702,7 @@ const toggleImageVisibility = () => {
         )}
 
         {/* Status Cards */}
+        {order.sample_needed &&(
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatusCard
             title="Sample Status"
@@ -733,7 +734,9 @@ const toggleImageVisibility = () => {
             }
           />
         </div>
+        )}
 
+         {order.sample_needed ? <>sample is here</>:<>sample not here</> }
         {/* Documents Section */}
         {order.status === "completed" && (
           <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">

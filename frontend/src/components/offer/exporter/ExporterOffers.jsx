@@ -559,6 +559,18 @@ export default function ExporterOffers() {
                       </span>
                     </div>
 
+                       {offer?.sample_needed ? (
+                      <div className="flex justify-between">
+                        <span>Sample Needed:</span>
+                        <span className="font-medium text-green-600">Yes</span>
+                      </div>
+                    ) : (
+                      <div className="flex justify-between">
+                        <span>Sample Needed:</span>
+                        <span className="font-medium text-red-600">No</span>
+                      </div>
+                    )}
+
                     {offer.message && (
                       <div className="pt-3">
                         <p className="text-sm text-neutral-600">
@@ -631,6 +643,24 @@ export default function ExporterOffers() {
                             {offer.counterOffer.deliveryDays}
                           </span>
                         </div>
+                         {/* <div className="flex justify-between text-sm">
+                          <span>Sample Needed:</span>
+                          <span className="font-medium">
+                            {offer.counterOffer.sample_needed}
+                          </span>
+                        </div> */}
+
+                         {offer?.counterOffer.sample_needed ? (
+                      <div className="flex justify-between">
+                        <span>Sample Needed:</span>
+                        <span className="font-medium text-green-600">Yes</span>
+                      </div>
+                    ) : (
+                      <div className="flex justify-between">
+                        <span>Sample Needed:</span>
+                        <span className="font-medium text-red-600">No</span>
+                      </div>
+                    )}
                         {offer.counterOffer.message && (
                           <p className="text-sm text-neutral-600 mt-2">
                             <span className="font-medium">Message:</span>{" "}

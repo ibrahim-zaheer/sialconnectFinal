@@ -526,6 +526,7 @@ export default function CreateOffer({ supplierId, productId, price, onClose, isO
     quantity: "",
     message: "",
     deliveryDays: "",
+    sample_needed: false,
   });
 
   const [responseMessage, setResponseMessage] = useState("");
@@ -556,6 +557,9 @@ export default function CreateOffer({ supplierId, productId, price, onClose, isO
 
   const handleChange = (e) => {
     setOfferData({ ...offerData, [e.target.name]: e.target.value });
+  };
+   const handleCheckboxChange = (e) => {
+    setOfferData({ ...offerData, sample_needed: e.target.checked }); // Update sample_needed value based on checkbox state
   };
 
   const handleSubmit = async (e) => {
@@ -664,6 +668,23 @@ export default function CreateOffer({ supplierId, productId, price, onClose, isO
           required
           className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+
+        {/* Sample Needed checkbox */}
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            name="sample_needed"
+            checked={offerData.sample_needed}
+            onChange={handleCheckboxChange}
+            className="mr-2"
+          />
+          <label htmlFor="sample_needed" className="text-sm text-gray-700">
+            Sample Needed
+          </label>
+        </div>
+
+
+
              {/* Reusable MessageSelector Component */}
         <MessageSelector 
           predefinedMessages={predefinedMessages} 
@@ -674,6 +695,7 @@ export default function CreateOffer({ supplierId, productId, price, onClose, isO
           placeholder="Message"
           value={offerData.message}
           onChange={handleChange}
+          maxLength="50"
           className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         ></textarea>
 

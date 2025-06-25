@@ -127,6 +127,7 @@ export default function UpdateOffer({ offerId, currentOffer, onClose, onUpdate }
     quantity: "",
     message: "",
     deliveryDays: "", // Added deliveryDays
+    sample_needed: false,
   });
 
   const [responseMessage, setResponseMessage] = useState("");
@@ -138,6 +139,7 @@ export default function UpdateOffer({ offerId, currentOffer, onClose, onUpdate }
         quantity: currentOffer.quantity || "",
         message: currentOffer.message || "",
         deliveryDays: currentOffer.deliveryDays || "", // Initialize deliveryDays
+          sample_needed: currentOffer.sample_needed || false,
       });
     }
   }, [currentOffer]);
@@ -146,6 +148,9 @@ export default function UpdateOffer({ offerId, currentOffer, onClose, onUpdate }
     setOfferData({ ...offerData, [e.target.name]: e.target.value });
   };
 
+  const handleCheckboxChange = (e) => {
+    setOfferData({ ...offerData, sample_needed: e.target.checked });
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
@@ -156,10 +161,17 @@ export default function UpdateOffer({ offerId, currentOffer, onClose, onUpdate }
     }
 
     // Validate deliveryDays
-    if (offerData.deliveryDays < 1 || offerData.deliveryDays > 100) {
-      setResponseMessage("Delivery days must be between 1 and 100.");
+    // if (offerData.deliveryDays < 1 || offerData.deliveryDays > 100) {
+    //   setResponseMessage("Delivery days must be between 1 and 100.");
+    //   return;
+    // }
+
+        const deliveryDays = new Date(offerData.deliveryDays);
+    if (isNaN(deliveryDays.getTime())) {
+      setResponseMessage("Please enter a valid delivery date.");
       return;
     }
+
 
     try {
       const response = await axios.put(
@@ -212,7 +224,7 @@ export default function UpdateOffer({ offerId, currentOffer, onClose, onUpdate }
             className="p-2 border rounded"
           />
 
-          <input
+          {/* <input
             type="number"
             name="deliveryDays"
             placeholder="Delivery Days (1-100)"
@@ -220,7 +232,16 @@ export default function UpdateOffer({ offerId, currentOffer, onClose, onUpdate }
             onChange={handleChange}
             required
             className="p-2 border rounded"
-          />
+          /> */}
+             <input
+                type="date" // Changed from number to date input for deliveryDate
+                name="deliveryDays"
+                placeholder="Delivery Date"
+                value={offerData.deliveryDays}
+                onChange={handleChange}
+                required
+                className="p-2 border rounded"
+              />
 
           <input
             type="text"
@@ -228,8 +249,24 @@ export default function UpdateOffer({ offerId, currentOffer, onClose, onUpdate }
             placeholder="Message (optional)"
             value={offerData.message}
             onChange={handleChange}
+            maxLength="50"
             className="p-2 border rounded"
           />
+
+           {/* Sample Needed Checkbox */}
+          <div className="flex items-center mt-3">
+            <input
+              type="checkbox"
+              name="sample_needed"
+              checked={offerData.sample_needed}
+              onChange={handleCheckboxChange}
+              className="mr-2"
+            />
+            <label htmlFor="sample_needed" className="text-sm text-gray-700">
+              Sample Needed
+            </label>
+          </div>
+
 
           <div className="flex justify-between mt-3">
             <button
