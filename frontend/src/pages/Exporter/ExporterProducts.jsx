@@ -9,6 +9,8 @@ import ProductSearch from "../../components/ProductSearch";
 import RecommendedProducts from "../../components/Exporter/products/RecommendedProducts";
 import { fetchRecommendedProducts } from "../../components/Exporter/products/hooks/fetchRecommendedProducts";
 import { ProductPrice } from "./components/ProductPrice";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
 const ExporterProducts = () => {
   const [products, setProducts] = useState([]);
@@ -124,14 +126,16 @@ const ExporterProducts = () => {
       const token = localStorage.getItem("token");
       const response = await axios.get(
         "/api/supplier/product/readAllProducts",
+        
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setProducts(response.data);
-      setFilteredProducts(response.data);
+      const visibleProducts = response.data.filter((product) => product.enable_view);
+      setProducts(visibleProducts);
+      setFilteredProducts(visibleProducts);
     } catch (error) {
       console.error(
         "Error fetching products:",

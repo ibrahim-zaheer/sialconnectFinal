@@ -112,7 +112,7 @@ import VerifyOTP from "./components/otp/verify-otp";
 
 import SupplierProductsPage from "./pages/Supplier/SupplierProductsPage";
 
-import CreateAuction from "./pages/bidding/createAuction";
+import CreateAuction from "./pages/bidding/CreateAuction";
 
 import GetAllAuctionsPage from "./pages/bidding/GetAllAuctionsPage";
 
@@ -165,7 +165,7 @@ import ExporterLayout from "./components/bidding/ExporterLayout";
 import PricingPage from "./pages/pricing/PricingPage";
 import About from "./pages/About";
 
-import SupplierVerificationRequestPage from "./pages/admin/functions/supplierVerificationrequestpage";
+import SupplierVerificationRequestPage from "./pages/admin/functions/SupplierVerificationRequestPage";
 
 import ComplaintsListPage from "./pages/admin/functions/ComplaintsListPage";
 

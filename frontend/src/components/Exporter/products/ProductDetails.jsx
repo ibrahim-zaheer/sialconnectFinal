@@ -259,7 +259,7 @@ import { useSelector } from "react-redux";
 import Chat from "../../Chat/Chat";
 // import WriteReview from "../../reviews/WriteReview";
 import AverageReviewBySupplier from "../../reviews/averageReviewBySuppliers";
-import CreateOffer from "../../offer/createOffer";
+import CreateOffer from "../../offer/CreateOffer";
 import BackButton from "../../BackButton";
 import RelatedProducts from "./RelatedProducts";
 import { ProductPrice } from "../../../pages/Exporter/components/ProductPrice";

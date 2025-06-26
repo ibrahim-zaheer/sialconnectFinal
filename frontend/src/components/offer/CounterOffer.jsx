@@ -163,6 +163,10 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
     setCounterData({ ...counterData, [e.target.name]: e.target.value });
   };
 
+    const handleCheckboxChange = (e) => {
+    setCounterData({ ...counterData, sample_needed: e.target.checked }); // Update sample_needed value based on checkbox state
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -206,7 +210,7 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
         updateStatus(offerId, "counter", counterData.price, counterData.quantity, counterData.deliveryDays);
         setShowForm(false);
         // Clear form fields for next use
-        setCounterData({ price: "", quantity: "", message: "", deliveryDays: "" });
+        setCounterData({ price: "", quantity: "", message: "", deliveryDays: "",sample_needed: false });
 
         // Show success message temporarily
         setResponseMessage("Counteroffer sent successfully!");
@@ -282,9 +286,24 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
                 name="message"
                 placeholder="Message (optional)"
                 value={counterData.message}
+                maxLength="50"
                 onChange={handleChange}
                 className="p-2 border rounded"
               />
+               
+                {/* Sample Needed Checkbox */}
+              <div className="flex items-center mt-3">
+                <input
+                  type="checkbox"
+                  name="sample_needed"
+                  checked={counterData.sample_needed}
+                  onChange={handleCheckboxChange}
+                  className="mr-2"
+                />
+                <label htmlFor="sample_needed" className="text-sm text-gray-700">
+                  Sample Needed
+                </label>
+              </div>
 
               <div className="flex justify-between mt-3">
                 <button

@@ -1,5 +1,5 @@
 import React from 'react'
-import CreateOffer from '../../components/offer/createOffer'
+import CreateOffer from '../../components/offer/CreateOffer'
 import RejectOffer from '../../components/offer/RejectOffer'
 import CounterOffer from '../../components/offer/CounterOffer'
 import AcceptOffer from '../../components/offer/AcceptOffer'

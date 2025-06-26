@@ -27,10 +27,13 @@ router.post(
 router.put("/update/:id", authenticateMiddleware,  uploadProductImage.array("images", 5),productController.updateProduct);
 router.delete("/delete/:id", authenticateMiddleware, productController.deleteProduct);
 
-
+router.get("/check-product/:id",authenticateMiddleware,productController.checkProductForActiveOrders);
 
 //for reading all the products
 router.get("/readAllProducts",productController.getAllProducts)
+
+// Route to toggle enable_view of a product
+router.put("/toggle-view/:id", authenticateMiddleware, productController.toggleProductView);
 
 
 // for viewing all the details of the suppliers
