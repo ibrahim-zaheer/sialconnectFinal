@@ -604,8 +604,8 @@ const Navbar = () => {
             >
               <div
                 style={{
-                  width: "50px",
-                  height: "50px",
+                  width: "40px",
+                  height: "40px",
                   overflow: "hidden",
                   borderRadius: "50%",
                 }}
@@ -614,7 +614,7 @@ const Navbar = () => {
                   src={Sial}
                   className="w-full h-full object-cover"
                   alt="SialConnect Logo"
-                  style={{ transform: "scale(1.5)", objectPosition: "center" }}
+                  style={{ transform: "scale(1.1)", objectPosition: "center" }}
                 />
               </div>
 
@@ -773,9 +773,10 @@ const Navbar = () => {
                         {t("Dashboard")}
                       </NavLink>
 
-                    
-
-                       <NavLink to="/admin/user/supplier/verification" onClick={closeMobileMenu}>
+                      <NavLink
+                        to="/admin/user/supplier/verification"
+                        onClick={closeMobileMenu}
+                      >
                         <i className="ri-dashboard-line mr-1"></i>{" "}
                         {t("Verification")}
                       </NavLink>
@@ -787,10 +788,7 @@ const Navbar = () => {
                         {t("Payments")}
                       </NavLink>
 
-                       <NavLink
-                        to="/admin/complaint"
-                        onClick={closeMobileMenu}
-                      >
+                      <NavLink to="/admin/complaint" onClick={closeMobileMenu}>
                         <i className="ri-money-dollar-circle-line mr-1"></i>{" "}
                         {t("Complaints")}
                       </NavLink>

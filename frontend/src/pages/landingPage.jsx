@@ -1357,6 +1357,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useTranslation, Trans } from "react-i18next";
 import "../assets/css/landingPage.css";
+import heroImage from "../assets/images/sial.jpg";
 import Footer from "./footer";
 import ProductSearch from "../components/ProductSearch";
 import TopProducts from "../components/TopProducts";
@@ -1513,14 +1514,14 @@ export default function LandingPage() {
     setTimeout(() => setAuto(true), 10000);
   };
 
-  const heroImage =
-    "https://www.just-style.com/wp-content/uploads/sites/27/2024/08/pak.jpg";
+  // const heroImage =
+  //   "https://www.just-style.com/wp-content/uploads/sites/27/2024/08/pak.jpg";
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 mt-16 font-sans">
+    <div className="min-h-screen bg-white text-gray-900 mt-10 font-sans">
       {/* ────────── Hero ────────── */}
       <section className="relative w-full h-screen flex items-center px-4 sm:px-8 lg:px-16 xl:px-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 z-0" />
+        <div className="absolute inset-0 z-0" />
         <NeuralBackground />
 
         <motion.div
@@ -1533,16 +1534,16 @@ export default function LandingPage() {
           <div className="lg:w-1/2 space-y-6 text-center lg:text-left">
             <motion.h1
               variants={itemVariants}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight drop-shadow-xl"
+              className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight drop-shadow-xl"
             >
               <Trans
                 i18nKey="hero.title"
-                components={{ 1: <span className="text-indigo-400" /> }}
+                components={{ 1: <span className="text-indigo-600" /> }}
               />
             </motion.h1>
             <motion.p
               variants={itemVariants}
-              className="text-lg md:text-xl text-indigo-100 max-w-2xl mx-auto lg:mx-0"
+              className="text-lg md:text-xl max-w-2xl mx-auto lg:mx-0"
             >
               {t("hero.description")}
             </motion.p>
@@ -1565,13 +1566,13 @@ export default function LandingPage() {
           </div>
 
           {/* image */}
-          <motion.div variants={scaleUp} className="lg:w-1/2 mt-12 lg:mt-0">
+          <motion.div variants={scaleUp} className="lg:w-1/2 lg:mt-0">
             <div className="relative">
               <div className="absolute -inset-4 bg-indigo-500/20 rounded-2xl rotate-3" />
               <img
                 src={heroImage}
                 alt="Industry"
-                className="relative rounded-2xl shadow-xl object-cover w-full h-[400px] lg:h-[500px] border border-indigo-400/40"
+                className="relative rounded-2xl shadow-xl object-cover w-full border border-indigo-400/40"
                 onError={(e) =>
                   (e.target.src =
                     "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&auto=format&fit=crop")
@@ -1581,7 +1582,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
-                className="absolute -bottom-6 -right-6 bg-gray-900/90 p-4 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm"
+                className="absolute -bottom-6 -right-6 bg-indigo-900/90 p-4 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm"
               >
                 <div className="flex items-center">
                   <div className="bg-indigo-500/20 p-3 rounded-lg mr-3 border border-indigo-400/30">

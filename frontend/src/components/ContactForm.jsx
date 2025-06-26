@@ -1,19 +1,25 @@
-import React from 'react';
-import { useForm, ValidationError } from '@formspree/react';
+import React from "react";
+import { useForm, ValidationError } from "@formspree/react";
 
 export function ContactForm() {
-    const formspreeId = import.meta.env.VITE_FORMSPREE_ID;
-  
-    const [state, handleSubmit] = useForm(formspreeId);
+  const formspreeId = import.meta.env.VITE_FORMSPREE_ID;
+
+  const [state, handleSubmit] = useForm(formspreeId);
 
   if (state.succeeded) {
-    return <p className="text-center text-lg font-semibold text-green-600">Thanks for joining!</p>;
+    return (
+      <p className="text-center text-lg font-semibold text-green-600">
+        Thanks for joining!
+      </p>
+    );
   }
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="email" className="sr-only">Email Address</label>
+        <label htmlFor="email" className="sr-only">
+          Email Address
+        </label>
         <input
           type="email"
           id="email"
@@ -30,13 +36,15 @@ export function ContactForm() {
       </div>
 
       <div>
-        <label htmlFor="message" className="sr-only">Message</label>
+        <label htmlFor="message" className="sr-only">
+          Message
+        </label>
         <textarea
           id="message"
           name="message"
           placeholder="Your message"
           rows="3"
-          className="w-full px-4 py-2 text-neutral-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="w-full px-4 py-2 text-neutral-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
         />
         <ValidationError
           prefix="Message"
