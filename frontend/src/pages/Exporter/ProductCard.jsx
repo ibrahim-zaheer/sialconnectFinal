@@ -30,32 +30,6 @@ const ProductCard = ({ product, role, favorites, setFavorites, userId }) => {
     >
       <div className="p-6">
         <div className="flex justify-between items-start">
-<<<<<<< HEAD
-          {product.image && (
-            <div className="mt-4 flex justify-center overflow-hidden">
-              <img
-                src={
-                  product.image?.[0] ||
-                  "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600"
-                }
-                alt={product.name}
-                className="w-40 h-40 object-cover rounded-md"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src =
-                    "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600";
-                }}
-              />
-            </div>
-          )}
-          <div>
-            <h2 className="text-lg font-semibold text-neutral-900 line-clamp-2">
-              {product.name}
-            </h2>
-            <p className="text-primary-600 font-medium mt-1">
-              Rs {product.price?.toLocaleString() || "N/A"} per piece
-            </p>
-=======
           <div className="flex flex-col gap-4 ">
             <div className="flex justify-center items-center">
               {product.image && (
@@ -85,7 +59,6 @@ const ProductCard = ({ product, role, favorites, setFavorites, userId }) => {
                 Rs {product.price?.toLocaleString() || "N/A"} per piece
               </p>
             </div>
->>>>>>> 7ff1a146b5ea5bf62271d02abfab837e6ef1a990
           </div>
         </div>
 
