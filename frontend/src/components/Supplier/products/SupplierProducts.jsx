@@ -1090,7 +1090,7 @@ const SupplierProducts = () => {
                             )}
                         </div>
                         {activeTab === "your-products" && (
-                          <div className="flex gap-2">
+                          <div className="flex justify-center items-center gap-3">
                             <button
                               onClick={() => setEditingProduct(product)}
                               className="text-gray-600 hover:text-gray-800"
@@ -1131,26 +1131,27 @@ const SupplierProducts = () => {
                               </svg>
                             </button>
 
-                               {/* Toggle Visibility with Eye Icon */}
+                            {/* Toggle Visibility with Eye Icon */}
                             <button
                               onClick={() => toggleProductView(product._id)}
-                              className={`text-${product.enable_view ? "green" : "gray"}-600 hover:text-${product.enable_view ? "green" : "gray"}-800`}
-                              title={product.enable_view ? "Hide Product" : "Show Product"}
+                              className={`text-${
+                                product.enable_view ? "green" : "gray"
+                              }-600 hover:text-${
+                                product.enable_view ? "green" : "gray"
+                              }-800 text-lg`}
+                              title={
+                                product.enable_view
+                                  ? "Hide Product"
+                                  : "Show Product"
+                              }
                             >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                className="w-5 h-5"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d={`M${product.enable_view ? "15 12" : "21 12"}m-4.5 4.5A7.5 7.5 0 1112 12a7.5 7.5 0 014.5 4.5z`}
-                                />
-                              </svg>
+                              <i
+                                className={`ri-${
+                                  product.enable_view
+                                    ? "eye-line"
+                                    : "eye-off-line"
+                                } w-5 h-5`}
+                              ></i>
                             </button>
                           </div>
                         )}

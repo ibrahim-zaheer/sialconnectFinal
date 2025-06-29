@@ -146,7 +146,6 @@
 
 // export default TopProducts;
 
-
 // import React, { useState, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
 // import {
@@ -379,25 +378,33 @@ const TopProducts = () => {
   }
 
   if (error) {
-    return (
-      <p className="text-red-500 text-center mt-4">{error}</p>
-    );
+    return <p className="text-red-500 text-center mt-4">{error}</p>;
   }
 
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-4xl font-bold text-center mb-8">Top Selling Products</h2>
+      <h2 className="text-4xl font-bold text-center mb-8">
+        Top Selling Products
+      </h2>
 
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {topProducts.map((product, index) => (
-          <div key={product._id} className="group relative bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-2xl cursor-pointer">
+          <div
+            key={product._id}
+            className="group relative bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-2xl cursor-pointer"
+          >
             {/* Product Image */}
             <div className="w-full flex justify-center items-center">
-              <img 
-              src={Array.isArray(product.productDetails.image) ? product.productDetails.image[0] : product.productDetails.image || '/default-product-image.jpg'} 
-              alt={product.productDetails.name} 
-              className="h-48 w-48" 
-            />
+              <img
+                src={
+                  Array.isArray(product.productDetails.image)
+                    ? product.productDetails.image[0]
+                    : product.productDetails.image ||
+                      "/default-product-image.jpg"
+                }
+                alt={product.productDetails.name}
+                className="h-48 w-48"
+              />
             </div>
 
             {/* Badge for ranking */}
@@ -407,29 +414,41 @@ const TopProducts = () => {
 
             <div className="p-4">
               {/* Product Name */}
-              <h3 className="text-xl font-semibold">{product.productDetails.name}</h3>
+              <h3 className="text-xl font-semibold">
+                {product.productDetails.name}
+              </h3>
 
               {/* Product Price */}
               {product.productDetails.price && (
-                <p className="text-lg text-gray-800 mt-2">Rs {product.productDetails.price.toFixed(0)} per piece</p>
+                <p className="text-lg text-gray-800 mt-2">
+                  Rs {product.productDetails.price.toFixed(0)} per piece
+                </p>
               )}
 
               {/* Product Description */}
               {product.productDetails.description && (
                 <p className="text-sm text-gray-600 mt-2">
-                  {product.productDetails.description.split(" ").slice(0, 10).join(" ")}{product.productDetails.description.split(" ").length > 10 ? "..." : ""}
+                  {product.productDetails.description
+                    .split(" ")
+                    .slice(0, 10)
+                    .join(" ")}
+                  {product.productDetails.description.split(" ").length > 10
+                    ? "..."
+                    : ""}
                 </p>
               )}
 
               {/* Product Category */}
               {product.productDetails.category && (
                 <div className="mt-3">
-                  <span className="inline-block bg-gray-200 text-gray-800 text-xs py-1 px-2 rounded-full">{product.productDetails.category}</span>
+                  <span className="inline-block bg-gray-200 text-gray-800 text-xs py-1 px-2 rounded-full">
+                    {product.productDetails.category}
+                  </span>
                 </div>
               )}
 
               {/* View Details Button */}
-              <button 
+              <button
                 className="w-full mt-4 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
                 onClick={() => handleProductClick(product._id)}
               >
