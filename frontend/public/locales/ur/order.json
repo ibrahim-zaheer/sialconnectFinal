@@ -1,0 +1,15 @@
+{
+  "orderSummary": "آرڈر کا خلاصہ",
+  "totalOrders": "کل احکامات",
+  "roleSupplier": "فراہم کنندہ",
+  "roleExporter": "برآمد کنندہ",
+  "orderSummarys": "سب سے زیادہ قیمت کا آرڈر",
+  "noOrdersFound": "کوئی آرڈر نہیں ملا",
+  "product": "مصنوعات",
+  "unknownProduct": "نامعلوم مصنوعات",
+  "price": "قیمت",
+  "quantity": "مقدار",
+  "totalValue": "کل قیمت",
+  "TopOrderedProduct": "ٹاپ آرڈرڈ پروڈکٹ",
+  "EstimatedOrder": "تخمینہ شدہ کل آرڈر کی قیمت"
+}

@@ -25,7 +25,7 @@ i18n
     debug: true,           // Enable debug logging
     returnObjects: true,   // Return objects instead of strings for complex translations
     fallbackLng: 'en',     // Default language if no translation is found
-    ns: ['translation', 'profile','about'], // Specify the namespaces you're using
+    ns: ['translation', 'profile','about','order'], // Specify the namespaces you're using
     defaultNS: 'translation', // Default namespace to use if none is specified
     backend: {
       loadPath: '/locales/{{lng}}/{{ns}}.json', // Path to translation files

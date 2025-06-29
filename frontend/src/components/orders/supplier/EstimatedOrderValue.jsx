@@ -70,6 +70,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../redux/reducers/userSlice";
+import { useTranslation } from "react-i18next";
 
 const EstimatedOrderValue = () => {
   const user = useSelector(selectUser);
@@ -78,6 +79,7 @@ const EstimatedOrderValue = () => {
   const [totalValue, setTotalValue] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+    const { t } = useTranslation();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -121,7 +123,7 @@ const EstimatedOrderValue = () => {
   return (
     <div className="mt-6 bg-white shadow-md rounded-lg p-5">
       <h3 className="text-xl font-semibold text-center mb-3">
-        Estimated Total Order Value
+        {t('order:EstimatedOrder')}
       </h3>
 
       {loading ? (

@@ -51,10 +51,13 @@ import useOrders from "../hook/useOrders";
 import EstimatedOrderValue from "./EstimatedOrderValue";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const SupplierOrderCount = () => {
   const { orders, loading } = useOrders();
   const user = useSelector((state) => state.user);
+
+  const { t } = useTranslation();
 
   return (
     <motion.div 
@@ -62,7 +65,10 @@ const SupplierOrderCount = () => {
       animate={{ y: 0 }}
       className="bg-surface rounded-xl shadow-sm p-6 border border-neutral-100"
     >
-      <h3 className="text-xl font-semibold text-primary-800 mb-4">Order Summary</h3>
+      <h3 className="text-xl font-semibold text-primary-800 mb-4">{t('order:orderSummary')}</h3>
+
+         
+      
       
       {loading ? (
         <div className="animate-pulse space-y-2">
@@ -71,7 +77,7 @@ const SupplierOrderCount = () => {
       ) : (
         <div className="space-y-4">
           <p className="text-lg text-neutral-700">
-            Total Orders: <span className="font-bold text-primary-600">{orders.length}</span>
+            {t('order:totalOrders')}: <span className="font-bold text-primary-600">{orders.length}</span>
           </p>
           
           {user?.role === "supplier" && (

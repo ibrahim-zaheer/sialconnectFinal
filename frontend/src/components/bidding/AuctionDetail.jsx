@@ -359,6 +359,10 @@
 //   );
 // };
 
+
+
+
+
 // export default AuctionDetail;
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
@@ -720,12 +724,12 @@ const AuctionDetail = () => {
               {/* Only show chat button for exporters */}
               {role === "exporter" && (
                 <div className="mt-4">
-                  <Link
+                  {/* <Link
                     to={`/chat?supplierId=${bid.bidder?.id._id}`}
                     className="inline-block bg-blue-500 text-white py-1.5 px-3 rounded-lg hover:bg-blue-600 transition duration-300"
                   >
                     Chat
-                  </Link>
+                  </Link> */}
                 </div>
               )}
             </div>

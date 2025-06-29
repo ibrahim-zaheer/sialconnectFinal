@@ -1,0 +1,15 @@
+{
+  "orderSummary": "Order Summary",
+  "totalOrders": "Total Orders",
+  "roleSupplier": "Supplier",
+  "roleExporter": "Exporter",
+    "orderSummarys": "Highest Value Order",
+  "noOrdersFound": "No orders found",
+  "product": "Product",
+  "unknownProduct": "Unknown Product",
+  "price": "Price",
+  "quantity": "Quantity",
+  "totalValue": "Total Value",
+  "TopOrderedProduct": "Top Ordered Product",
+  "EstimatedOrder": "Estimated Total Order Value"
+}
