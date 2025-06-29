@@ -38,7 +38,7 @@ const ProductCard = ({ product, role, favorites, setFavorites, userId }) => {
                   "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600"
                 }
                 alt={product.name}
-                className="w-80 h-80 object-cover rounded-md"
+                className="w-40 h-40 object-cover rounded-md"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src =
@@ -47,7 +47,6 @@ const ProductCard = ({ product, role, favorites, setFavorites, userId }) => {
               />
             </div>
           )}
-
           <div>
             <h2 className="text-lg font-semibold text-neutral-900 line-clamp-2">
               {product.name}
