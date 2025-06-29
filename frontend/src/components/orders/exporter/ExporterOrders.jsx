@@ -363,12 +363,12 @@ const ExporterOrders = () => {
                       {order.supplierId?.name || "Unknown"}
                     </span>
                   </div>
-                  <div className="flex justify-between">
+                  {/* <div className="flex justify-between">
                     <span>Email:</span>
                     <span className="font-medium">
                       {order.supplierId?.email || "N/A"}
                     </span>
-                  </div>
+                  </div> */}
                   <div className="flex justify-between">
                     <span>Quantity:</span>
                     <span className="font-medium">{order.quantity}</span>

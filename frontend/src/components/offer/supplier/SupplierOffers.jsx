@@ -715,10 +715,10 @@ export default function SupplierOffers() {
                   </div>
 
                   <div className="space-y-3 text-neutral-700">
-                    <div className="flex justify-between">
+                    {/* <div className="flex justify-between">
                       <span>Offer ID:</span>
                       <span className="font-medium">{offer._id}</span>
-                    </div>
+                    </div> */}
                     <div className="flex justify-between">
                       <span>Price:</span>
                       <span className="font-medium">{offer.price} Rs</span>

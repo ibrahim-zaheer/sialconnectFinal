@@ -10,6 +10,25 @@ const crypto = require('crypto');
 
 const nodemailer = require('nodemailer');
 
+const containsPhoneNumber = (text) => {
+  const phonePatterns = [
+    /\+92\d{10}\b/,      // Pakistani numbers with country code (+923001234567)
+    /\b03\d{9}\b/,       // Standard Pakistani mobile numbers (03001234567)
+    /\b\d{11,12}\b/,     // General 11-12 digit numbers
+    /\+92\d{0,10}/g,     // Partial matches for +92 numbers
+    /\b03\d{0,9}\b/g,    // Partial matches for 03 numbers
+    /\+\d{1,3}\s?\d{1,14}/, // International phone numbers
+    /\(\d{3}\)\s?\d{3}-\d{4}/, // US format (123) 456-7890
+    /\d{3}-\d{3}-\d{4}/ // US format 123-456-7890
+  ];
+  return phonePatterns.some((pattern) => pattern.test(text));
+};
+
+const containsEmail = (text) => {
+  const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+  return emailPattern.test(text);
+};
+
 const createOffer = async (req, res) => {
     try {
       const { supplierId, productId, price, quantity,message,deliveryDays, sample_needed } = req.body;
@@ -23,6 +42,16 @@ const createOffer = async (req, res) => {
       return res.status(400).json({ message: "Delivery days must be between 1 and 100." });
     }
   
+     if (message) {
+      if (containsPhoneNumber(message)) {
+        return res.status(400).json({ message: "Messages cannot contain phone numbers." });
+      }
+      if (containsEmail(message)) {
+        return res.status(400).json({ message: "Messages cannot contain email addresses." });
+      }
+    }
+
+
       const newOffer = new Offer({
         exporterId: req.user.id, // Extracted from authentication token
         supplierId,

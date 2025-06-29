@@ -796,9 +796,9 @@ const ExporterOrderDetails = () => {
 
   const [isImageVisible, setIsImageVisible] = useState(false);
 
-   const [showComplaintModal, setShowComplaintModal] = useState(false);
+  const [showComplaintModal, setShowComplaintModal] = useState(false);
 
-    const toggleComplaintModal = () => {
+  const toggleComplaintModal = () => {
     setShowComplaintModal(!showComplaintModal);
   };
 
@@ -1003,7 +1003,7 @@ const ExporterOrderDetails = () => {
                             Complain to Admin
                           </Link> */}
         {/* Status Cards */}
-{/* 
+        {/* 
            <button
           onClick={toggleComplaintModal}
           className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
@@ -1011,80 +1011,82 @@ const ExporterOrderDetails = () => {
           Create Complaint
         </button> */}
         {order.status === "agreement_accepted" && (
-  // <button
-  //   onClick={toggleComplaintModal}
-  //   className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-  // >
-  //   Create Complaint
-  // </button>
-  <></>
-)}
-  <button
-    onClick={toggleComplaintModal}
-    className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-  >
-    Create Complaint
-  </button>
-
+          // <button
+          //   onClick={toggleComplaintModal}
+          //   className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          // >
+          //   Create Complaint
+          // </button>
+          <></>
+        )}
+        <button
+          onClick={toggleComplaintModal}
+          className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Create Complaint
+        </button>
 
         <div>
-            {showComplaintModal && (
-        <CreateComplaint
-          orderId={orderId}
-          closeModal={toggleComplaintModal}
-        />
-      )}
+          {showComplaintModal && (
+            <CreateComplaint
+              orderId={orderId}
+              closeModal={toggleComplaintModal}
+            />
+          )}
         </div>
-        {order.sample_needed &&(
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <StatusCard
-            title="Sample Status"
-            value={order.sampleStatus}
-            variant={order.sampleStatus === "approved" ? "success" : "warning"}
-          />
-          <StatusCard
-            title="Payment Status"
-            value={order.paymentStatus}
-            variant={
-              order.paymentStatus === "completed" ? "success" : "warning"
-            }
-          />
-          <StatusCard
-            title="Agreement"
-            value={order.Agreement}
-            variant={order.Agreement === "Accepted" ? "success" : "warning"}
-          />
-        </div>
-
+        {order.sample_needed && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <StatusCard
+              title="Sample Status"
+              value={order.sampleStatus}
+              variant={
+                order.sampleStatus === "approved" ? "success" : "warning"
+              }
+            />
+            <StatusCard
+              title="Payment Status"
+              value={order.paymentStatus}
+              variant={
+                order.paymentStatus === "completed" ? "success" : "warning"
+              }
+            />
+            <StatusCard
+              title="Agreement"
+              value={order.Agreement}
+              variant={order.Agreement === "Accepted" ? "success" : "warning"}
+            />
+          </div>
         )}
 
         {/* Documents Section */}
-        {order.status === "completed" || !order.sample_needed && (
-          <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
-            <h2 className="text-xl font-semibold text-neutral-800 mb-4">
-              Documents
-            </h2>
-            <div className="flex flex-wrap gap-4">
-              <PDFGenerator
-                order={order}
-                userName={userName}
-                userRole={userRole}
-              />
-              <AgreementPDFGenerator
-                order={order}
-                userName={userName}
-                userRole={userRole}
-              />
+        {order.status === "completed" ||
+          (!order.sample_needed && (
+            <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
+              <h2 className="text-xl font-semibold text-neutral-800 mb-4">
+                Documents
+              </h2>
+              <div className="flex flex-wrap gap-4">
+                <PDFGenerator
+                  order={order}
+                  userName={userName}
+                  userRole={userRole}
+                />
+                <AgreementPDFGenerator
+                  order={order}
+                  userName={userName}
+                  userRole={userRole}
+                />
+              </div>
             </div>
-          </div>
-        )}
+          ))}
 
         {/* Agreement Section */}
         {order.status === "completed" &&
           order.Agreement === "waiting_for_approval" && (
             <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6">
               <AgreementComponent
-                orderId={order._id}
+                // orderId={order._id}
+                orderId={order.orderId}
                 onAcceptSuccess={handleAcceptSuccess}
                 onRejectSuccess={handleRejectSuccess}
                 role={userRole}
@@ -1211,18 +1213,19 @@ const ExporterOrderDetails = () => {
             onSuccess={handleOrderRecievedSuccess}
           />
         )} */}
-        {(order.Agreement === "Accepted" && order.status === "order_shipped") ||(!order.sample_needed) && (
-          <>
-            {order.trackingId && <div>Tracking ID: {order.trackingId}</div>}{" "}
-            {/* Conditionally render if trackingId exists */}
-            <OrderReceived
-              orderId={order._id}
-              onSuccess={handleOrderRecievedSuccess}
-            />
-          </>
-        )}
+        {(order.Agreement === "Accepted" && order.status === "order_shipped") ||
+          (!order.sample_needed && (
+            <>
+              {order.trackingId && <div>Tracking ID: {order.trackingId}</div>}{" "}
+              {/* Conditionally render if trackingId exists */}
+              <OrderReceived
+                orderId={order._id}
+                onSuccess={handleOrderRecievedSuccess}
+              />
+            </>
+          ))}
 
-        {order.sample_needed ? <>sample is here</>:<>sample not here</> }
+        {order.sample_needed ? <>sample is here</> : <>sample not here</>}
 
         {/* Write Review Section */}
         {order.Agreement === "Accepted" && !hasReviewed && (
@@ -1230,8 +1233,10 @@ const ExporterOrderDetails = () => {
             <h2 className="text-xl font-semibold text-neutral-800 mb-4">
               Write a Review
             </h2>
-            <p>Supplier ID : {order.supplierId?._id} </p>
-            <p>UserID : {userID} </p>
+            {/* <p>Supplier ID : {order.supplierId?._id} </p>
+            <p>UserID : {userID} </p> */}
+            <p>Supplier Name : {order.supplierId?.name} </p>
+            {/* <p>UserID : {userID} </p> */}
             <WriteReview
               supplierId={order.supplierId?._id}
               productName={order.productId?.name}
@@ -1242,7 +1247,8 @@ const ExporterOrderDetails = () => {
         )}
 
         {/* Payment Sections */}
-        {order.sampleStatus === "waiting_for_payment" && order.sample_needed  &&
+        {order.sampleStatus === "waiting_for_payment" &&
+          order.sample_needed &&
           order.paymentStatus === "pending" && (
             <div className="space-y-6">
               <PaymentSection

@@ -1623,17 +1623,17 @@ export default function LandingPage() {
         variants={containerVariants}
         className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto py-16"
       >
-        <motion.div variants={itemVariants} className="text-center mb-12">
+        {/* <motion.div variants={itemVariants} className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
             {t("bestSelling.title")}
           </h2>
           <p className="text-gray-500">{t("bestSelling.description")}</p>
-        </motion.div>
+        </motion.div> */}
 
         {/* Grid for Top Products */}
         <motion.div
           variants={itemVariants}
-          className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          className="w-full bg-red-500 mx-auto px-4 sm:px-6 lg:px-8"
         >
           <TopProducts />
         </motion.div>

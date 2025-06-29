@@ -71,9 +71,15 @@ const Sidebar = () => {
             />
             <span className="text-xs text-neutral-700">Online only</span>
           </label>
-          <span className="text-xs text-neutral-500 bg-primary-100 px-2 py-1 rounded-full">
+          {/* <span className="text-xs text-neutral-500 bg-primary-100 px-2 py-1 rounded-full">
             {onlineUsers.length - 1} online
-          </span>
+          </span> */}
+          {onlineUsers.length - 1 >= 0 && (
+  <span className="text-xs text-neutral-500 bg-primary-100 px-2 py-1 rounded-full">
+    {onlineUsers.length - 1} online
+  </span>
+)}
+
         </div>
       </div>
 
