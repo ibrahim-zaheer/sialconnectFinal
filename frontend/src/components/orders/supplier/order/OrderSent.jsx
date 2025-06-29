@@ -197,7 +197,7 @@ export const OrderSent = ({ status, orderId, onSuccess, label }) => {
       <button
         onClick={handleStatusUpdate}
         disabled={isLoading || status === "order_shipped"} // Disable if already shipped
-        className={`px-6 py-3 rounded-lg transition-all duration-300 text-white font-semibold ${
+        className={`ml-3 px-6 py-2 rounded-lg transition-all duration-300 text-white font-semibold ${
           isLoading
             ? "bg-gray-500 cursor-not-allowed"
             : "bg-blue-600 hover:bg-blue-700 active:bg-blue-800"

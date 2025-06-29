@@ -156,9 +156,9 @@ const ExporterLayout = () => {
       <div className="flex-1 ml-64 p-8 overflow-y-auto">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-800 capitalize">
-            {activeTab === "auctions" || activeTab === "exporter" 
+            {/* {activeTab === "auctions" || activeTab === "exporter" 
               ? "Your Auctions" 
-              : "Create New Auction"}
+              : "Create New Auction"} */}
           </h1>
           <div className="border-b border-gray-200 mt-2"></div>
         </div>

@@ -7,7 +7,7 @@ import ExporterLayout from "../../components/bidding/ExporterLayout";
 const ExporterAuctionsPage = () => {
     return (
       <>
-        <div className="w-[80vw] mx-auto mt-24">
+        <div className="w-[80vw] mx-auto mt-24 z-50">
           <ExporterLayout/>
           <ExporterAuctions/>
           {/* <getMyAuctions/> */}

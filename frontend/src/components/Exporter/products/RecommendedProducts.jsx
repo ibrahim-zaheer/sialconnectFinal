@@ -86,10 +86,10 @@ const RecommendedProducts = ({ maxItems = 3 }) => {
 
   return (
     <div>
-      <h2 className="text-4xl text-center font-bold text-neutral-900 mb-6">
+      <h2 className="text-4xl text-center font-bold text-neutral-900 mb-12">
         Recommended Products
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
         {displayedProducts.map((product) => (
           <ProductCard
             key={product._id}

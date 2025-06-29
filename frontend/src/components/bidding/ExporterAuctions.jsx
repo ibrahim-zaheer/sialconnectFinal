@@ -229,7 +229,7 @@ const ExporterAuctions = () => {
                       to={`/bidding/${auction._id}`}
                       className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-md text-sm font-medium transition-colors"
                     >
-                      View Details
+                      View
                     </Link>
                     <button
                       onClick={() => handleDeleteAuction(auction._id)}

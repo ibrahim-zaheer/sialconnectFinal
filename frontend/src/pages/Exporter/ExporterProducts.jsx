@@ -37,9 +37,9 @@ const ExporterProducts = () => {
     "Faisalabad",
     "Karachi",
     "Lahore",
-    "Daska",
-    "Wazirabad",
-    "KPK",
+    // "Daska",
+    // "Wazirabad",
+    // "KPK",
   ];
 
   const user = useSelector((state) => state.user);
@@ -315,7 +315,7 @@ const ExporterProducts = () => {
         variants={sidebarVariants}
       >
         <motion.div
-          className="p-4 border-b border-neutral-200"
+          className="p-4 py-3 border-b border-neutral-200"
           variants={itemVariants}
         >
           <h2 className="text-xl font-semibold text-primary-800">Filters</h2>
@@ -323,7 +323,7 @@ const ExporterProducts = () => {
 
         {/* Price Filter */}
         <motion.div
-          className="p-4 pt-3 border-b border-neutral-200"
+          className="p-4 py-3 border-b border-neutral-200"
           variants={itemVariants}
         >
           <h3 className="text-md font-medium text-neutral-700 mb-2">
@@ -392,7 +392,7 @@ const ExporterProducts = () => {
 
         {/* Category Filter */}
         <motion.div
-          className="p-4 pt-3 border-b border-neutral-200"
+          className="p-4 pt-3 border-b border-neutral-100 text-sm"
           variants={itemVariants}
         >
           <CategoryDropdown
@@ -406,7 +406,7 @@ const ExporterProducts = () => {
         <motion.div className="p-4" variants={itemVariants}>
           <button
             onClick={resetFilters}
-            className="w-full bg-neutral-200 hover:bg-neutral-300 text-neutral-800 py-2 px-4 rounded-md text-sm font-medium transition-colors"
+            className="w-full bg-primary-600 hover:bg-primary-800 text-white py-2 px-4 rounded-md text-sm font-medium transition-colors"
           >
             Reset All Filters
           </button>

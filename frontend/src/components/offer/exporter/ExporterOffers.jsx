@@ -670,6 +670,27 @@ export default function ExporterOffers() {
                       </div>
                     )}
 
+                    {offer.status === "accepted" && (
+                  <div className="mt-2">
+                    {orderIds[offer._id] === undefined ? (
+                      <div className="text-sm text-gray-500">
+                        Checking order status...
+                      </div>
+                    ) : orderIds[offer._id] ? (
+                      <button
+                        onClick={() => handleViewOrder(offer._id)}
+                        className="w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium"
+                      >
+                        View Order Details
+                      </button>
+                    ) : (
+                      <div className="text-sm text-yellow-600">
+                        Order processing not completed
+                      </div>
+                    )}
+                  </div>
+                )}
+
                     {renderReminderButton(offer)}
                     {offer.reminderActive && (
                       <div className="text-xs text-green-600 mt-2 font-semibold">
@@ -712,26 +733,7 @@ export default function ExporterOffers() {
               {orderIds[offer._id] ? "View Order Details" : "Loading Order..."}
             </button>
           )} */}
-                {offer.status === "accepted" && (
-                  <div className="mt-2">
-                    {orderIds[offer._id] === undefined ? (
-                      <div className="text-sm text-gray-500">
-                        Checking order status...
-                      </div>
-                    ) : orderIds[offer._id] ? (
-                      <button
-                        onClick={() => handleViewOrder(offer._id)}
-                        className="w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium"
-                      >
-                        View Order Details
-                      </button>
-                    ) : (
-                      <div className="text-sm text-yellow-600">
-                        Order processing not completed
-                      </div>
-                    )}
-                  </div>
-                )}
+                
               </motion.div>
             ))}
           </div>
