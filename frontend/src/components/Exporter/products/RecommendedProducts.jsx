@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import ProductCard from '../../../pages/Exporter/ProductCard';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import ProductCard from "../../../pages/Exporter/ProductCard";
 
 // const RecommendedProducts = () => {
 //   const [products, setProducts] = useState([]);
@@ -36,7 +36,7 @@ import ProductCard from '../../../pages/Exporter/ProductCard';
 //       <h2 className="text-2xl font-bold text-neutral-900 mb-6">Recommended Products</h2>
 //       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 //         {products.map((product) => (
-//           <ProductCard 
+//           <ProductCard
 //             key={product._id}
 //             product={product}
 //             role="exporter" // or whatever role is appropriate
@@ -54,19 +54,22 @@ const RecommendedProducts = ({ maxItems = 3 }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {
-        const response = await axios.get('/api/supplier/product/recommendations', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          "/api/supplier/product/recommendations",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setProducts(response.data);
       } catch (error) {
-        console.error('Failed to fetch recommendations:', error);
+        console.error("Failed to fetch recommendations:", error);
       } finally {
         setLoading(false);
       }
@@ -83,22 +86,23 @@ const RecommendedProducts = ({ maxItems = 3 }) => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-neutral-900 mb-6">Recommended Products</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <h2 className="text-2xl text-center font-bold text-neutral-900 mb-6">
+        Recommended Products
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-12">
         {displayedProducts.map((product) => (
-          <ProductCard 
+          <ProductCard
             key={product._id}
             product={product}
             role="exporter"
-            favorites={[]} 
-            setFavorites={() => {}} 
-            userId={null} 
+            favorites={[]}
+            setFavorites={() => {}}
+            userId={null}
           />
         ))}
       </div>
     </div>
   );
 };
-
 
 export default RecommendedProducts;

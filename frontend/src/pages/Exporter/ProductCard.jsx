@@ -1,7 +1,7 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import FavoriteToggle from '../../components/favourites/FavoriteToggle';
+import React from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import FavoriteToggle from "../../components/favourites/FavoriteToggle";
 
 const ProductCard = ({ product, role, favorites, setFavorites, userId }) => {
   const cardVariants = {
@@ -30,6 +30,24 @@ const ProductCard = ({ product, role, favorites, setFavorites, userId }) => {
     >
       <div className="p-6">
         <div className="flex justify-between items-start">
+          {product.image && (
+            <div className="mt-4 flex justify-center overflow-hidden">
+              <img
+                src={
+                  product.image?.[0] ||
+                  "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600"
+                }
+                alt={product.name}
+                className="w-80 h-80 object-cover rounded-md"
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src =
+                    "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600";
+                }}
+              />
+            </div>
+          )}
+
           <div>
             <h2 className="text-lg font-semibold text-neutral-900 line-clamp-2">
               {product.name}
@@ -38,22 +56,24 @@ const ProductCard = ({ product, role, favorites, setFavorites, userId }) => {
               Rs {product.price?.toLocaleString() || "N/A"} per piece
             </p>
           </div>
-        
         </div>
 
         {product.supplierName && (
           <p className="text-sm text-neutral-600 mt-1">
-            <span className="font-medium">Supplier:</span> {product.supplierName}
+            <span className="font-medium">Supplier:</span>{" "}
+            {product.supplierName}
           </p>
         )}
         {product.supplier?.name && (
           <p className="text-sm text-neutral-600 mt-1">
-            <span className="font-medium">Supplier:</span> {product.supplier.name}
+            <span className="font-medium">Supplier:</span>{" "}
+            {product.supplier.name}
           </p>
         )}
         {product.supplier?.city && (
           <p className="text-sm text-neutral-600">
-            <span className="font-medium">Location:</span> {product.supplier.city}
+            <span className="font-medium">Location:</span>{" "}
+            {product.supplier.city}
           </p>
         )}
         {product.city && (
@@ -74,24 +94,6 @@ const ProductCard = ({ product, role, favorites, setFavorites, userId }) => {
             </span>
           )}
         </div>
-
-        {product.image && (
-          <div className="mt-4 flex justify-center overflow-hidden">
-            <img
-              src={
-                product.image?.[0] ||
-                "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600"
-              }
-              alt={product.name}
-              className="w-40 h-40 object-cover rounded-md"
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src =
-                  "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600";
-              }}
-            />
-          </div>
-        )}
 
         <Link
           to={`/supplier/product/${product._id}`}

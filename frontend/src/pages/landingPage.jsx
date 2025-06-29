@@ -1633,7 +1633,7 @@ export default function LandingPage() {
         {/* Grid for Top Products */}
         <motion.div
           variants={itemVariants}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+          className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
         >
           <TopProducts />
         </motion.div>
