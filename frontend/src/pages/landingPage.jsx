@@ -1480,7 +1480,7 @@ const NeuralBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 w-full h-full pointer-events-none opacity-60 z-10"
+      className="absolute inset-0 w-full h-full max-h-screen pointer-events-none opacity-60 z-10"
     />
   );
 };
@@ -1525,7 +1525,7 @@ export default function LandingPage() {
         <NeuralBackground />
 
         <motion.div
-          className="container mx-auto flex flex-col lg:flex-row items-center gap-8 lg:gap-16 xl:gap-24 relative z-20"
+          className="container mx-auto flex flex-col-reverse lg:flex-row items-center justify-between gap-16 px-4 sm:px-8 lg:px-0 relative z-20"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
@@ -1621,7 +1621,7 @@ export default function LandingPage() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={containerVariants}
-        className="w-[90vw] md:w-[80vw] mx-auto py-16"
+        className="w-full max-w-7xl px-4 sm:px-6 lg:px-8 mx-auto py-16"
       >
         <motion.div variants={itemVariants} className="text-center mb-12">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
@@ -1654,7 +1654,7 @@ export default function LandingPage() {
         whileInView="visible"
         viewport={{ once: true }}
         variants={fadeIn}
-        className="w-[90vw] md:w-[80vw] mx-auto my-20 bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-xl p-12 text-white"
+        className="w-full max-w-5xl px-4 sm:px-6 lg:px-8 mx-auto my-20 bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-xl py-12 text-white"
       >
         <div className="max-w-2xl mx-auto text-center">
           <motion.h2
@@ -1725,7 +1725,7 @@ export default function LandingPage() {
           whileInView="visible"
           viewport={{ once: true }}
           variants={containerVariants}
-          className="w-[90vw] md:w-[80vw] mx-auto py-20 relative"
+          className="w-full max-w-5xl px-4 sm:px-6 lg:px-8 mx-auto py-20 relative"
         >
           <motion.div variants={itemVariants} className="text-center mb-12">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
@@ -1758,13 +1758,13 @@ export default function LandingPage() {
           {/* carousel */}
           <div className="overflow-hidden">
             <div
-              className="flex transition-transform duration-500"
+              className="flex transition-transform duration-500 w-full"
               style={{ transform: `translateX(-${idx * 100}%)` }}
             >
               {testimonials.map((tst, i) => (
                 <motion.div
                   key={i}
-                  className="w-full flex-shrink-0 px-4"
+                  className="min-w-full sm:min-w-[100%] flex-shrink-0 px-2 sm:px-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
