@@ -460,6 +460,26 @@ const About = () => {
       question: t("about:faq_question_4"),
       answer: t("about:faq_answer_4"),
     },
+    {
+      question: t("about:faq_question_5"),
+      answer: t("about:faq_answer_5"),
+    },
+      {
+      question: t("about:faq_question_6"),
+      answer: t("about:faq_answer_6"),
+    },
+      {
+      question: t("about:faq_question_7"),
+      answer: t("about:faq_answer_7"),
+    },
+      {
+      question: t("about:faq_question_8"),
+      answer: t("about:faq_answer_8"),
+    },
+     {
+      question: t("about:faq_question_9"),
+      answer: t("about:faq_answer_9"),
+    },
   ];
 
   return (
