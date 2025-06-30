@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const SupplierProductsList = ({ supplierId, apiEndpoint, title = "Supplier Products" }) => {
+const SupplierProductsList = ({
+  supplierId,
+  apiEndpoint,
+  title = "Supplier Products",
+}) => {
   const [products, setProducts] = useState([]);
   const [error, setError] = useState("");
 
@@ -10,11 +14,11 @@ const SupplierProductsList = ({ supplierId, apiEndpoint, title = "Supplier Produ
 
     const fetchProducts = async () => {
       try {
-        const token = localStorage.getItem("token"); 
-        const res = await axios.get(`${apiEndpoint}/${supplierId}`,{
-            headers: {
-                Authorization: `Bearer ${token}`,
-              },
+        const token = localStorage.getItem("token");
+        const res = await axios.get(`${apiEndpoint}/${supplierId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         setProducts(res.data.products);
       } catch (err) {
@@ -26,7 +30,7 @@ const SupplierProductsList = ({ supplierId, apiEndpoint, title = "Supplier Produ
   }, [supplierId, apiEndpoint]);
 
   return (
-    <div className="p-6">
+    <div>
       <h2 className="text-2xl font-bold mb-4">{title}</h2>
       {error && <p className="text-red-600">{error}</p>}
 
@@ -37,9 +41,15 @@ const SupplierProductsList = ({ supplierId, apiEndpoint, title = "Supplier Produ
           {products.map((product) => (
             <div key={product._id} className="border p-4 rounded-lg shadow">
               <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
-              <p><strong>Category:</strong> {product.category}</p>
-              <p><strong>Price:</strong> ${product.price}</p>
-              <p><strong>Description:</strong> {product.description}</p>
+              <p>
+                <strong>Category:</strong> {product.category}
+              </p>
+              <p>
+                <strong>Price:</strong> ${product.price}
+              </p>
+              <p>
+                <strong>Description:</strong> {product.description}
+              </p>
             </div>
           ))}
         </div>

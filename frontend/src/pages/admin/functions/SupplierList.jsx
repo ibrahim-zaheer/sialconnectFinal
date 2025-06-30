@@ -308,10 +308,9 @@ export default function SupplierList() {
   }, [supplierId]);
 
   return (
-    <div className="space-y-6 p-6 pt-20">
+    <div className="space-y-6 p-10 pt-20">
       {/* Header Section */}
-      <div className="flex items-center gap-4">
-        <BackButton />
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-semibold text-neutral-800">
             Supplier Details
@@ -322,6 +321,7 @@ export default function SupplierList() {
               : "View and manage supplier details"}
           </p>
         </div>
+        <BackButton className="bg-primary-800 text-white hover:bg-primary-600" />
       </div>
 
       {loading ? (

@@ -3,7 +3,7 @@
 
 // const PaymentDetailsModal = ({ isOpen, paymentDetails, onClose }) => {
 //     if (!isOpen) return null;
-  
+
 //     return (
 //       <div className="fixed inset-0 flex justify-center items-center bg-gray-700 bg-opacity-50 z-50">
 //         <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
@@ -34,7 +34,6 @@
 //       </div>
 //     );
 //   };
-  
 
 // const SupplierOrdersList = ({ supplierId, apiEndpoint, title = "Supplier Orders" }) => {
 //   const [orders, setOrders] = useState([]);
@@ -67,7 +66,7 @@
 //         setSelectedPaymentDetails(paymentDetails);
 //         setIsModalOpen(true);
 //       };
-    
+
 //       // Handle closing of the modal
 //       const handleCloseModal = () => {
 //         setIsModalOpen(false);
@@ -138,12 +137,16 @@
 
 // export default SupplierOrdersList;
 
-
-
-import React, { useEffect, useState,useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
-const PaymentDetailsModal = ({ isOpen, orderID,paymentDetails, onClose, onPayClick }) => {
+const PaymentDetailsModal = ({
+  isOpen,
+  orderID,
+  paymentDetails,
+  onClose,
+  onPayClick,
+}) => {
   if (!isOpen) return null;
 
   return (
@@ -151,37 +154,45 @@ const PaymentDetailsModal = ({ isOpen, orderID,paymentDetails, onClose, onPayCli
       <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
         <h2 className="text-2xl font-bold mb-4">Payment Details</h2>
         <div>
-        <div className="mb-4">
-            <strong>Order ID:</strong> {orderID|| "N/A"}
+          <div className="mb-4">
+            <strong>Order ID:</strong> {orderID || "N/A"}
           </div>
           <div className="mb-4">
-            <strong>Payment Method:</strong> {paymentDetails?.paymentMethod || "N/A"}
+            <strong>Payment Method:</strong>{" "}
+            {paymentDetails?.paymentMethod || "N/A"}
           </div>
           <div className="mb-4">
-            <strong>Mobile Number:</strong> {paymentDetails?.mobileNumber || "N/A"}
+            <strong>Mobile Number:</strong>{" "}
+            {paymentDetails?.mobileNumber || "N/A"}
           </div>
           <div className="mb-4">
-            <strong>Account Name:</strong> {paymentDetails?.accountName || "N/A"}
+            <strong>Account Name:</strong>{" "}
+            {paymentDetails?.accountName || "N/A"}
           </div>
           <div className="mb-4">
-            <strong>Payment Status:</strong> {paymentDetails?.paymentStatus || "N/A"}
+            <strong>Payment Status:</strong>{" "}
+            {paymentDetails?.paymentStatus || "N/A"}
           </div>
           <div className="mb-4">
-            <strong>Payment Amount:</strong> ${paymentDetails?.paymentAmount || "0.00"}
+            <strong>Payment Amount:</strong> $
+            {paymentDetails?.paymentAmount || "0.00"}
           </div>
         </div>
         {/* Pay Button */}
         <div className="flex justify-end">
-        {paymentDetails?.paymentStatus  === 'detailsGiven' && (
-  <button
-    onClick={onPayClick}
-    className="bg-green-500 text-white px-4 py-2 rounded mr-2"
-  >
-    Pay
-  </button>
-)}
+          {paymentDetails?.paymentStatus === "detailsGiven" && (
+            <button
+              onClick={onPayClick}
+              className="bg-green-500 text-white px-4 py-2 rounded mr-2"
+            >
+              Pay
+            </button>
+          )}
 
-          <button onClick={onClose} className="bg-red-500 text-white px-4 py-2 rounded">
+          <button
+            onClick={onClose}
+            className="bg-red-500 text-white px-4 py-2 rounded"
+          >
             Close
           </button>
         </div>
@@ -190,9 +201,11 @@ const PaymentDetailsModal = ({ isOpen, orderID,paymentDetails, onClose, onPayCli
   );
 };
 
-
-
-const SupplierOrdersList = ({ supplierId, apiEndpoint, title = "Supplier Orders" }) => {
+const SupplierOrdersList = ({
+  supplierId,
+  apiEndpoint,
+  title = "Supplier Orders",
+}) => {
   const [orders, setOrders] = useState([]);
   const [error, setError] = useState("");
   const [selectedPaymentDetails, setSelectedPaymentDetails] = useState(null);
@@ -219,7 +232,7 @@ const SupplierOrdersList = ({ supplierId, apiEndpoint, title = "Supplier Orders"
   }, [supplierId, apiEndpoint]); // Effect will run when either `supplierId` or `apiEndpoint` changes
   const fetchOrders = useCallback(async () => {
     if (!supplierId || !apiEndpoint) return;
-    
+
     try {
       const token = localStorage.getItem("token");
       const res = await axios.get(`${apiEndpoint}/${supplierId}`, {
@@ -231,11 +244,11 @@ const SupplierOrdersList = ({ supplierId, apiEndpoint, title = "Supplier Orders"
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch orders");
     }
-  }, [supplierId, apiEndpoint]);  // Add dependencies here
+  }, [supplierId, apiEndpoint]); // Add dependencies here
 
   useEffect(() => {
     fetchOrders();
-  }, [fetchOrders]);  // Now depends on the memoized fetchOrders
+  }, [fetchOrders]); // Now depends on the memoized fetchOrders
 
   // Handle opening of the modal when payment method is clicked
   // const handlePaymentClick = (paymentDetails) => {
@@ -251,7 +264,7 @@ const SupplierOrdersList = ({ supplierId, apiEndpoint, title = "Supplier Orders"
   const handlePayClick = async () => {
     try {
       const token = localStorage.getItem("token"); // Get the token from localStorage
-    
+
       // Call the API to mark payment as completed
       const res = await axios.post(
         `${apiEndpoint}/mark-payment-completed`,
@@ -269,7 +282,7 @@ const SupplierOrdersList = ({ supplierId, apiEndpoint, title = "Supplier Orders"
       alert(res.data.message); // Show success message
 
       // Optionally, you can refresh the orders list or trigger other UI updates here
-      fetchOrders();  // Fetch orders again if needed
+      fetchOrders(); // Fetch orders again if needed
     } catch (error) {
       console.error("Error completing payment:", error);
       alert("Failed to complete the payment. Please try again.");
@@ -283,7 +296,7 @@ const SupplierOrdersList = ({ supplierId, apiEndpoint, title = "Supplier Orders"
   };
 
   return (
-    <div className="p-6">
+    <div className="">
       <h2 className="text-2xl font-bold mb-4">{title}</h2>
       {error && <p className="text-red-600">{error}</p>}
 
@@ -309,10 +322,17 @@ const SupplierOrdersList = ({ supplierId, apiEndpoint, title = "Supplier Orders"
             <tbody>
               {orders.map((order) => (
                 <tr key={order._id} className="border-b">
-                  <td className="py-2 px-4">{order.productId?.name || order.auctionId?.title +"(Auction)" || "N/A"}</td>
                   <td className="py-2 px-4">
-                    {order.exporterId?.name}<br />
-                    <span className="text-sm text-gray-500">{order.exporterId?.email}</span>
+                    {order.productId?.name ||
+                      order.auctionId?.title + "(Auction)" ||
+                      "N/A"}
+                  </td>
+                  <td className="py-2 px-4">
+                    {order.exporterId?.name}
+                    <br />
+                    <span className="text-sm text-gray-500">
+                      {order.exporterId?.email}
+                    </span>
                   </td>
                   <td className="py-2 px-4">Rs {order.price}</td>
                   <td className="py-2 px-4">{order.quantity}</td>
@@ -321,11 +341,15 @@ const SupplierOrdersList = ({ supplierId, apiEndpoint, title = "Supplier Orders"
                   <td className="py-2 px-4 capitalize">{order.status}</td>
                   <td
                     className="py-2 px-4 text-blue-600 hover:underline cursor-pointer"
-                    onClick={() => handlePaymentClick(order.paymentDetails, order._id)}
+                    onClick={() =>
+                      handlePaymentClick(order.paymentDetails, order._id)
+                    }
                   >
                     {order.paymentDetails?.paymentMethod || "N/A"}
                   </td>
-                  <td className="py-2 px-4">{new Date(order.createdAt).toLocaleDateString()}</td>
+                  <td className="py-2 px-4">
+                    {new Date(order.createdAt).toLocaleDateString()}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -340,14 +364,13 @@ const SupplierOrdersList = ({ supplierId, apiEndpoint, title = "Supplier Orders"
         onClose={handleCloseModal}
         onPayClick={handlePayClick} // Pass the handlePayClick function
       /> */}
-            <PaymentDetailsModal
+      <PaymentDetailsModal
         isOpen={isModalOpen}
         orderID={selectedPaymentDetails?.orderId}
         paymentDetails={selectedPaymentDetails}
         onClose={handleCloseModal}
         onPayClick={handlePayClick}
       />
-
     </div>
   );
 };

@@ -1,18 +1,21 @@
-import React from 'react'
+import React from "react";
 import { useParams } from "react-router-dom";
 import BackButton from "../../../components/BackButton";
-import SupplierOrdersList from '../../../components/admin/functions/SupplierOrdersList';
+import SupplierOrdersList from "../../../components/admin/functions/SupplierOrdersList";
 
 export default function SupplierOrderPageByAdmin() {
-    const { supplierId } = useParams();
+  const { supplierId } = useParams();
   return (
     <>
-    <SupplierOrdersList
-      supplierId={supplierId}
-      apiEndpoint="/api/admin/orders/supplier"
-      title="Supplier Orders (Admin View)"
-    />
-    <BackButton label="← Back to User List" className="mb-4" />
-  </>
-  )
+      <div className="p-10">
+        <BackButton label="Back to User List" className="mb-4 mt-16" />
+
+        <SupplierOrdersList
+          supplierId={supplierId}
+          apiEndpoint="/api/admin/orders/supplier"
+          title="Supplier Orders (Admin View)"
+        />
+      </div>
+    </>
+  );
 }
