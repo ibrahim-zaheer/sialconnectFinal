@@ -60,6 +60,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import BackButton from "../BackButton";
 
 const SendOTP = () => {
   const navigate = useNavigate();
@@ -89,7 +90,7 @@ const SendOTP = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-neutral-100 p-4">
-      <div className="w-full max-w-md bg-surface rounded-xl shadow-lg p-8 space-y-6">
+      <div className="w-full max-w-md bg-surface rounded-xl shadow-lg p-8 space-y-4">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-primary-800">
             Verify Your Email
@@ -184,6 +185,7 @@ const SendOTP = () => {
             </button>
           </p>
         </div>
+        <BackButton className="w-full bg-primary-600 hover:bg-primary-700 text-white" />
       </div>
     </div>
   );

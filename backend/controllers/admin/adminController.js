@@ -10,6 +10,27 @@ const getAllUsers = async (req, res) => {
   res.json(users);
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Fetch the user excluding the password and other sensitive info
+    const user = await User.findById(id).select(
+      "name email profilePicture role phoneNumber businessName city"
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ message: "Server error." });
+  }
+};
+
+
 // const getAllProducts = async (req, res) => {
 //   const product = await Product.find();
 //   res.json(product);
@@ -147,4 +168,4 @@ const getOrdersBySupplierId = async (req, res) => {
   }
 };
   // Export the functions for routes
-  module.exports =  { getAllUsers,suspendUser,reactivateUser,toggleUserStatus, getProductsBySupplierId, getOrdersByExporterId,getOrdersBySupplierId };
+  module.exports =  { getAllUsers,suspendUser,reactivateUser,toggleUserStatus, getProductsBySupplierId, getOrdersByExporterId,getOrdersBySupplierId,getUserById };

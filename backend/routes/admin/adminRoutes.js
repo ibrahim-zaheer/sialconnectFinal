@@ -7,13 +7,15 @@ const verifyToken = require("../../middleware/verifyToken")
 
 const authMiddleware = require("../../middleware/authMiddleware");
 
-const {getAllUsers,suspendUser,reactivateUser,toggleUserStatus,getProductsBySupplierId,getOrdersByExporterId,getOrdersBySupplierId} = require("../../controllers/admin/adminController");
+const {getAllUsers,suspendUser,reactivateUser,toggleUserStatus,getProductsBySupplierId,getOrdersByExporterId,getOrdersBySupplierId,getUserById} = require("../../controllers/admin/adminController");
 
 const {markPaymentAsCompleted,getAllOrdersWithPaymentDetails,confirmLocalPaymentByAdmin,getOrderDetailsById} = require("../../controllers/order/order_controller");
 
 
 // Admin-only route example
 router.get("/users",verifyToken, isAdmin,getAllUsers);
+
+router.get("/users/:id", verifyToken,isAdmin,getUserById);
 
 router.put("/suspend/:id", verifyToken, isAdmin, suspendUser);
 router.put("/reactivate/:id", verifyToken, isAdmin, reactivateUser);
