@@ -765,12 +765,13 @@ const Navbar = () => {
                   {/* Admin Links */}
                   {user.role === "admin" && (
                     <>
-                      <NavLink to="/admin/user" onClick={closeMobileMenu}>
-                        <i className="ri-user-line mr-1"></i> {t("Users")}
-                      </NavLink>
                       <NavLink to="/admin" onClick={closeMobileMenu}>
                         <i className="ri-dashboard-line mr-1"></i>{" "}
                         {t("Dashboard")}
+                      </NavLink>
+
+                      <NavLink to="/admin/user" onClick={closeMobileMenu}>
+                        <i className="ri-user-line mr-1"></i> {t("Users")}
                       </NavLink>
 
                       <NavLink
