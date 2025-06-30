@@ -1,7 +1,6 @@
 // import React, { useState } from "react";
 // import axios from "axios";
 
-
 // import { useNavigate } from "react-router-dom";
 
 // const SendOTP = () => {
@@ -58,7 +57,6 @@
 
 // export default SendOTP;
 
-
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -74,10 +72,10 @@ const SendOTP = () => {
       setMessage("Please enter your email");
       return;
     }
-    
+
     setIsLoading(true);
     setMessage("");
-    
+
     try {
       const res = await axios.post("/api/auth/send-otp", { email });
       setMessage(res.data.message);
@@ -93,7 +91,9 @@ const SendOTP = () => {
     <div className="min-h-screen flex items-center justify-center bg-neutral-100 p-4">
       <div className="w-full max-w-md bg-surface rounded-xl shadow-lg p-8 space-y-6">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-primary-800">Verify Your Email</h2>
+          <h2 className="text-2xl font-bold text-primary-800">
+            Verify Your Email
+          </h2>
           <p className="text-neutral-600 mt-2">
             We'll send a verification code to your email
           </p>
@@ -101,7 +101,10 @@ const SendOTP = () => {
 
         <div className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-neutral-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-neutral-700"
+            >
               Email address <span className="text-error">*</span>
             </label>
             <input
@@ -118,11 +121,13 @@ const SendOTP = () => {
           </div>
 
           {message && (
-            <div className={`p-3 rounded-lg text-sm ${
-              message.includes("Failed") || message.includes("Please enter") 
-                ? "bg-error/10 text-error" 
-                : "bg-success/10 text-success"
-            }`}>
+            <div
+              className={`p-3 rounded-lg text-sm ${
+                message.includes("Failed") || message.includes("Please enter")
+                  ? "bg-error/10 text-error"
+                  : "bg-success/10 text-success"
+              }`}
+            >
               {message}
             </div>
           )}
@@ -132,31 +137,52 @@ const SendOTP = () => {
             onClick={handleSendOTP}
             disabled={isLoading}
             className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white ${
-              isLoading 
-                ? "bg-primary-400 cursor-not-allowed" 
+              isLoading
+                ? "bg-primary-400 cursor-not-allowed"
                 : "bg-primary-600 hover:bg-primary-700"
             } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors duration-200`}
           >
             {isLoading ? (
               <>
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Sending...
               </>
-            ) : "Send Verification Code"}
+            ) : (
+              "Send Verification Code"
+            )}
           </button>
         </div>
 
         <div className="text-center text-sm text-neutral-500">
-          <p>Didn't receive a code? <button 
-            onClick={handleSendOTP} 
-            className="font-medium text-primary-600 hover:text-primary-500"
-            disabled={isLoading}
-          >
-            Resend
-          </button></p>
+          <p>
+            Didn't receive a code?{" "}
+            <button
+              onClick={handleSendOTP}
+              className="font-medium text-primary-600 hover:text-primary-500"
+              disabled={isLoading}
+            >
+              Resend
+            </button>
+          </p>
         </div>
       </div>
     </div>
