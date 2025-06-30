@@ -165,7 +165,8 @@ const ProfileSidebar = ({ activeTab, setActiveTab, user }) => {
                 alt={`${user.name}'s profile`}
                 className="w-14 h-14 rounded-full object-cover border-4 border-primary-100 shadow-md"
               />
-              <LogoutButton/>
+              {/* <LogoutButton/> */}
+              {!localStorage.getItem("token") && <LogoutButton />}
             </div>
             <div>
               <h3 className="font-semibold text-text-primary">{user.name || t("profile_sidebar.guest")}</h3>
