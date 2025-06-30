@@ -129,7 +129,7 @@
 //     const files = Array.from(e.target.files);
 //     setFormData({ ...formData, images: files });
 //   };
-  
+
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
 //     setLoading(true);
@@ -145,7 +145,6 @@
 //     formData.images.forEach((image) => {
 //       form.append("images", image); // 'images' must match multer field name
 //     });
-    
 
 //     // Log the data before sending to check what is being sent
 //     console.log("Form data being sent:");
@@ -173,7 +172,7 @@
 
 //       setMessage("Product created successfully!");
 //       // setFormData({ name: "", description: "", price: "", image: null });
-//       setFormData({ name: "", description: "", price: "", category:"",images: [] }); 
+//       setFormData({ name: "", description: "", price: "", category:"",images: [] });
 
 //       if (onProductCreated) {
 //         onProductCreated(response.data.product);
@@ -192,10 +191,10 @@
 //   return (
 //     <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-8">
 //       <h2 className="text-2xl font-bold text-neutral-900 mb-6">Add New Product</h2>
-      
+
 //       {message && (
 //         <div className={`mb-6 p-4 rounded ${
-//           message.includes("success") ? "bg-secondary-100 text-secondary-800" 
+//           message.includes("success") ? "bg-secondary-100 text-secondary-800"
 //                                     : "bg-red-100 text-red-800"
 //         }`}>
 //           {message}
@@ -334,7 +333,7 @@ const AddProduct = ({ onProductCreated }) => {
     const files = Array.from(e.target.files);
     setFormData({ ...formData, images: files });
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -352,25 +351,30 @@ const AddProduct = ({ onProductCreated }) => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "/api/supplier/product/create",
-        form,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.post("/api/supplier/product/create", form, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setMessage("Product created successfully!");
-      setFormData({ name: "", description: "", price: "", category:"", images: [] }); 
+      setFormData({
+        name: "",
+        description: "",
+        price: "",
+        category: "",
+        images: [],
+      });
 
       if (onProductCreated) {
         onProductCreated(response.data.product);
       }
     } catch (error) {
-      console.error("Error creating product:", error.response?.data || error.message);
+      console.error(
+        "Error creating product:",
+        error.response?.data || error.message
+      );
       setMessage(
         error.response?.data?.message ||
           "Failed to create product. Please try again."
@@ -394,12 +398,15 @@ const AddProduct = ({ onProductCreated }) => {
           Back
         </button> */}
       </div>
-      
+
       {message && (
-        <div className={`mb-6 p-4 rounded ${
-          message.includes("success") ? "bg-green-100 text-green-800 border border-green-200" 
-                                    : "bg-red-100 text-red-800 border border-red-200"
-        }`}>
+        <div
+          className={`mb-6 p-4 rounded ${
+            message.includes("success")
+              ? "bg-green-100 text-green-800 border border-green-200"
+              : "bg-red-100 text-red-800 border border-red-200"
+          }`}
+        >
           {message}
         </div>
       )}
@@ -407,8 +414,8 @@ const AddProduct = ({ onProductCreated }) => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Product Name
+            <label className="w-fit text-sm font-medium text-neutral-700 mb-1 flex justify-center gap-1 items-center">
+              Product Name <span className="text-red-500 text-2xl">*</span>
             </label>
             <input
               type="text"
@@ -421,8 +428,8 @@ const AddProduct = ({ onProductCreated }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
-              Price (Rs)
+            <label className="text-sm font-medium text-neutral-700 mb-1 w-fit flex justify-center items-center gap-1">
+              Price (Rs) <span className="text-red-500 text-2xl">*</span>
             </label>
             <input
               type="number"
@@ -437,18 +444,15 @@ const AddProduct = ({ onProductCreated }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
-            Category
+          <label className="text-sm font-medium text-neutral-700 mb-1 w-fit flex justify-center items-center gap-1">
+            Category <span className="text-red-500 text-2xl">*</span>
           </label>
-          <CategoryDropdown
-            value={formData.category}
-            onChange={handleChange}
-          />
+          <CategoryDropdown value={formData.category} onChange={handleChange} />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
-            Description
+          <label className="text-sm font-medium text-neutral-700 mb-1 w-fit flex justify-center items-center gap-1">
+            Description <span className="text-red-500 text-2xl">*</span>
           </label>
           <textarea
             name="description"
@@ -461,8 +465,9 @@ const AddProduct = ({ onProductCreated }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
-            Product Images (Multiple allowed up to 5)
+          <label className="text-sm font-medium text-neutral-700 mb-1 w-fit flex justify-center items-center gap-1">
+            Product Images (Multiple allowed up to 5){" "}
+            <span className="text-red-500 text-2xl">*</span>
           </label>
           <div className="mt-1 flex items-center">
             <label className="cursor-pointer">
@@ -479,8 +484,8 @@ const AddProduct = ({ onProductCreated }) => {
               />
             </label>
             <span className="ml-4 text-sm text-neutral-600">
-              {formData.images.length > 0 
-                ? `${formData.images.length} file(s) selected` 
+              {formData.images.length > 0
+                ? `${formData.images.length} file(s) selected`
                 : "No files chosen"}
             </span>
           </div>
@@ -502,8 +507,18 @@ const AddProduct = ({ onProductCreated }) => {
             onClick={() => navigate(-1)}
             className="flex items-center px-6 py-3 border border-neutral-300 rounded-lg bg-white text-neutral-700 hover:bg-neutral-50 hover:border-neutral-400 transition-colors duration-200"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <svg
+              className="w-5 h-5 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
             </svg>
             Back
           </button>
@@ -514,9 +529,25 @@ const AddProduct = ({ onProductCreated }) => {
           >
             {loading ? (
               <>
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Processing...
               </>

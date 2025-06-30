@@ -5,16 +5,16 @@ const BackButton = ({ label = "Back", className = "" }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-gray-50 w-full p-1">
+    <div className="w-full p-1">
       <button
-      onClick={() => navigate(-1)}
-      className={`bg-gray-200 lg:ml-24 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded ${className}`}
-    >
-      <span>
-      <i className="ri-arrow-left-line pr-2"></i>
-      </span>
-      {label}
-    </button>
+        onClick={() => navigate(-1)}
+        className={`bg-gray-200 lg:ml-24 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded ${className}`}
+      >
+        <span>
+          <i className="ri-arrow-left-line pr-2"></i>
+        </span>
+        {label}
+      </button>
     </div>
   );
 };

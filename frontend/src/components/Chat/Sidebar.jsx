@@ -6,7 +6,8 @@ import { useAuthStore } from "../../store/useAuthStore";
 import { Users, Search, MoreVertical } from "lucide-react";
 
 const Sidebar = () => {
-  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+  const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } =
+    useChatStore();
   const { authUser, onlineUsers } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -15,13 +16,19 @@ const Sidebar = () => {
     getUsers();
   }, [getUsers]);
 
-  const filteredUsers = (showOnlineOnly
-    ? (Array.isArray(users) ? users.filter((user) => onlineUsers.includes(user._id)) : [])
-    : (Array.isArray(users) ? users : []))
-    .filter(user => 
-      user.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+  const filteredUsers = (
+    showOnlineOnly
+      ? Array.isArray(users)
+        ? users.filter((user) => onlineUsers.includes(user._id))
+        : []
+      : Array.isArray(users)
+      ? users
+      : []
+  ).filter(
+    (user) =>
+      user.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.name?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  );
 
   if (isUsersLoading) return <SidebarSkeleton />;
 
@@ -32,20 +39,20 @@ const Sidebar = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 text-primary-800">
             <div className="size-10 rounded-full overflow-hidden bg-primary-100 border border-primary-200">
-              <img 
-                src={authUser?.profilePicture || "/default-avatar.png"} 
-                alt="Profile" 
+              <img
+                src={authUser?.profilePicture || "/default-avatar.png"}
+                alt="Profile"
                 className="size-full object-cover"
               />
             </div>
             <span className="font-semibold hidden md:block">Chats</span>
           </div>
-          
-          <button className="text-primary-600 hover:text-primary-800">
+
+          {/* <button className="text-primary-600 hover:text-primary-800">
             <MoreVertical className="size-5" />
-          </button>
+          </button> */}
         </div>
-        
+
         {/* Search */}
         <div className="mt-3 relative">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -75,11 +82,10 @@ const Sidebar = () => {
             {onlineUsers.length - 1} online
           </span> */}
           {onlineUsers.length - 1 >= 0 && (
-  <span className="text-xs text-neutral-500 bg-primary-100 px-2 py-1 rounded-full">
-    {onlineUsers.length - 1} online
-  </span>
-)}
-
+            <span className="text-xs text-neutral-500 bg-primary-100 px-2 py-1 rounded-full">
+              {onlineUsers.length - 1} online
+            </span>
+          )}
         </div>
       </div>
 
@@ -90,8 +96,8 @@ const Sidebar = () => {
             key={user._id}
             onClick={() => setSelectedUser(user)}
             className={`w-full px-3 py-3 flex items-center gap-3 transition-colors ${
-              selectedUser?._id === user._id 
-                ? "bg-primary-100" 
+              selectedUser?._id === user._id
+                ? "bg-primary-100"
                 : "hover:bg-neutral-50"
             } border-b border-neutral-100`}
           >
@@ -111,23 +117,26 @@ const Sidebar = () => {
                 <div className="font-medium text-neutral-900 truncate">
                   {user.fullName || user.name}
 
-                   {user.role === "admin" && (
-              <span className="ml-2 bg-primary-500 text-surface text-xs py-1 px-2 rounded-full">
-                Admin
-              </span>
-            )}
+                  {user.role === "admin" && (
+                    <span className="ml-2 bg-primary-500 text-surface text-xs py-1 px-2 rounded-full">
+                      Admin
+                    </span>
+                  )}
                 </div>
                 <span className="text-xs text-neutral-500">
-                  {user.lastMessageTime || ''}
+                  {user.lastMessageTime || ""}
                 </span>
               </div>
               <div className="flex justify-between items-center mt-1">
-                <div className={`text-sm ${
-                  onlineUsers.includes(user._id) 
-                    ? "text-success" 
-                    : "text-neutral-500"
-                } truncate`}>
-                  {user.lastMessage || (onlineUsers.includes(user._id) ? "Online" : "Offline")}
+                <div
+                  className={`text-sm ${
+                    onlineUsers.includes(user._id)
+                      ? "text-success"
+                      : "text-neutral-500"
+                  } truncate`}
+                >
+                  {user.lastMessage ||
+                    (onlineUsers.includes(user._id) ? "Online" : "Offline")}
                 </div>
                 {user.unreadCount > 0 && (
                   <span className="bg-primary-500 text-surface rounded-full size-5 flex items-center justify-center text-xs">
@@ -145,7 +154,9 @@ const Sidebar = () => {
               {showOnlineOnly ? "No online contacts" : "No contacts available"}
             </div>
             <div className="text-xs mt-1 text-neutral-400">
-              {showOnlineOnly ? "Try disabling online filter" : "Your contacts will appear here"}
+              {showOnlineOnly
+                ? "Try disabling online filter"
+                : "Your contacts will appear here"}
             </div>
           </div>
         )}
