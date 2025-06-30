@@ -54,7 +54,7 @@ const ExporterOrdersList = ({ exporterId, apiEndpoint, title = "Exporter Orders"
                     {order.supplierId?.name}<br />
                     <span className="text-sm text-gray-500">{order.supplierId?.email}</span>
                   </td>
-                  <td className="py-2 px-4">${order.price}</td>
+                  <td className="py-2 px-4">Rs {order.price}</td>
                   <td className="py-2 px-4">{order.quantity}</td>
                   <td className="py-2 px-4">{order.message || "—"}</td>
                   <td className="py-2 px-4 capitalize">{order.status}</td>

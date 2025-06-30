@@ -8,7 +8,7 @@ const BackButton = ({ label = "Back", className = "" }) => {
     <div className="w-full p-1">
       <button
         onClick={() => navigate(-1)}
-        className={`bg-gray-200 lg:ml-24 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded ${className}`}
+        className={`bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded ${className}`}
       >
         <span>
           <i className="ri-arrow-left-line pr-2"></i>

@@ -384,7 +384,7 @@ const ProductDetails = () => {
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           {/* Product Details Section */}
           <div className="w-full flex items-center -ml-20 pt-5 -mb-4 pl-1 bg-white">
-            <BackButton className="mb-4 bg-primary-800 text-white hover:bg-primary-600" />
+            <BackButton className="mb-4 ml-24 bg-primary-800 text-white hover:bg-primary-600" />
           </div>
           <div className="flex flex-col lg:flex-row gap-8 p-6">
             {/* Image Gallery Section */}
