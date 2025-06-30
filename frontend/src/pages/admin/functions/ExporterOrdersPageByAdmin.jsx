@@ -1,5 +1,3 @@
-
-
 // import React from "react";
 // import { useParams, Link } from "react-router-dom";
 // import ExporterOrdersList from "../../../components/admin/functions/ExporterOrdersList";
@@ -7,8 +5,6 @@
 
 // const ExporterOrdersPageByAdmin = () => {
 //   const { exporterId } = useParams();
-  
-
 
 //   return (
 //     <div className="pt-20 px-6">
@@ -53,10 +49,6 @@
 
 // export default ExporterOrdersPageByAdmin;
 
-
-
-
-
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
@@ -93,9 +85,11 @@ const ExporterOrdersPageByAdmin = () => {
   }, [exporterId]);
 
   return (
-    <div className="pt-20 px-6">
+    <div className="pt-20 px-10">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-gray-800">Exporter Orders (Admin View)</h2>
+        <h2 className="text-2xl font-semibold text-gray-800">
+          Exporter Orders (Admin View)
+        </h2>
         <BackButton className="mb-4 bg-primary-800 text-white hover:bg-primary-600 px-4 py-2 rounded-lg shadow-md" />
       </div>
 
@@ -107,13 +101,27 @@ const ExporterOrdersPageByAdmin = () => {
         <>
           {/* Exporter Info Section */}
           <div className="mb-6 bg-white p-4 rounded-lg shadow border border-gray-200">
-            <h3 className="text-xl font-medium text-gray-700 mb-2">Exporter Info</h3>
-            <p><strong>Name:</strong> {exporter.name}</p>
-            <p><strong>Email:</strong> {exporter.email}</p>
-            <p><strong>Phone:</strong> {exporter.phoneNumber || "N/A"}</p>
-            <p><strong>Business:</strong> {exporter.businessName || "N/A"}</p>
-            <p><strong>City:</strong> {exporter.city || "N/A"}</p>
-            <p><strong>Role:</strong> {exporter.role}</p>
+            <h3 className="text-xl font-medium text-gray-700 mb-2">
+              Exporter Info
+            </h3>
+            <p>
+              <strong>Name:</strong> {exporter.name}
+            </p>
+            <p>
+              <strong>Email:</strong> {exporter.email}
+            </p>
+            <p>
+              <strong>Phone:</strong> {exporter.phoneNumber || "N/A"}
+            </p>
+            <p>
+              <strong>Business:</strong> {exporter.businessName || "N/A"}
+            </p>
+            <p>
+              <strong>City:</strong> {exporter.city || "N/A"}
+            </p>
+            <p>
+              <strong>Role:</strong> {exporter.role}
+            </p>
           </div>
 
           {/* Exporter Orders List */}
@@ -129,7 +137,12 @@ const ExporterOrdersPageByAdmin = () => {
               to={`/chat?supplierId=${exporterId}`}
               className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-md"
             >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

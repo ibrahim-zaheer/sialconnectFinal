@@ -5,7 +5,7 @@ const BackButton = ({ label = "Back", className = "" }) => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full p-1">
+    <div className="p-1">
       <button
         onClick={() => navigate(-1)}
         className={`bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded ${className}`}

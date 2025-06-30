@@ -1,5 +1,3 @@
-
-
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 // import OrderLineChart from "./OrderLineChart";
@@ -49,10 +47,9 @@
 //   );
 // }
 
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import OrderLineChart from "./OrderLineChart";  // Import the chart component
+import OrderLineChart from "./OrderLineChart"; // Import the chart component
 import CategoryPieChart from "./CategoryPieChart";
 export default function AdminOrderStats() {
   const [orders, setOrders] = useState([]);
@@ -69,7 +66,7 @@ export default function AdminOrderStats() {
           },
         });
         // setOrders(res.data.orders); // Set the orders from the response
-            const orders = res.data.orders;
+        const orders = res.data.orders;
         setOrders(orders); // Set the orders from the response
 
         // Group orders by category
@@ -83,13 +80,15 @@ export default function AdminOrderStats() {
           }
           return acc;
         }, {});
-         // Convert grouped data into an array for charting
-        const categoryArray = Object.keys(groupedByCategory).map((category) => ({
-          category,
-          count: groupedByCategory[category],
-        }));
+        // Convert grouped data into an array for charting
+        const categoryArray = Object.keys(groupedByCategory).map(
+          (category) => ({
+            category,
+            count: groupedByCategory[category],
+          })
+        );
 
-        setCategoryData(categoryArray); 
+        setCategoryData(categoryArray);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -109,11 +108,12 @@ export default function AdminOrderStats() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 w-1/2 inline-block">
       <h2 className="text-2xl font-bold text-gray-800">Admin Order Stats</h2>
       <p className="text-gray-600">View the orders in a line chart by month</p>
-      <OrderLineChart orders={orders} /> {/* Pass orders to the LineChart component */}
-       {/* <CategoryPieChart categoryData={categoryData} /> */}
+      <OrderLineChart orders={orders} />{" "}
+      {/* Pass orders to the LineChart component */}
+      {/* <CategoryPieChart categoryData={categoryData} /> */}
     </div>
   );
 }
