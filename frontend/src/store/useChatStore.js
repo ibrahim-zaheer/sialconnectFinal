@@ -213,6 +213,8 @@ export const useChatStore = create((set, get) => ({
   isUsersLoading: false,
   isMessagesLoading: false,
 
+  unreadMessages: {},
+
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
@@ -254,6 +256,16 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
+
+    // Add this method to mark messages as read
+  markMessagesAsRead: (userId) => {
+    set((state) => ({
+      unreadMessages: {
+        ...state.unreadMessages,
+        [userId]: 0
+      }
+    }));
+  },
   sendMessage: async (messageData) => {
     const { selectedUser, messages } = get();
     try {
@@ -370,6 +382,25 @@ subscribeToMessages: () => {
       newMessage.receiver === selectedUser._id ||
       newMessage.receiverId === selectedUser._id;
 
+      
+  const isChatOpen = selectedUser && (
+    selectedUser._id === newMessage.sender ||
+    selectedUser._id === newMessage.senderId ||
+    selectedUser._id === newMessage.receiver ||
+    selectedUser._id === newMessage.receiverId
+  );
+
+   // If the chat is not open, count it as unread
+  if (!isChatOpen) {
+    const fromUser = newMessage.senderId || newMessage.sender;
+    set((state) => ({
+      unreadMessages: {
+        ...state.unreadMessages,
+        [fromUser]: (state.unreadMessages[fromUser] || 0) + 1,
+      },
+    }));
+  }
+
     if (!isSenderOrReceiver) return;
 
     console.log("📩 Real-time message received:", newMessage);
@@ -390,5 +421,15 @@ subscribeToMessages: () => {
 
   
 
-  setSelectedUser: (selectedUser) => set({ selectedUser }),
+  // setSelectedUser: (selectedUser) => set({ selectedUser }),
+  setSelectedUser: (user) => {
+  set((state) => ({
+    selectedUser: user,
+    unreadMessages: {
+      ...state.unreadMessages,
+      [user._id]: 0, // Clear unread count when chat is opened
+    },
+  }));
+},
+
 }));

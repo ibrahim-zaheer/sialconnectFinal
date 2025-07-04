@@ -191,7 +191,7 @@ export const OrderSent = ({ status, orderId, onSuccess, label }) => {
         type="text" 
         value={trackingId} 
         onChange={(e) => setTrackingId(e.target.value)} // Update trackingId on input change
-        placeholder="Enter Tracking ID" 
+        placeholder="Enter Tracking Link" 
         className="px-4 py-2 mb-4 border rounded-lg" 
       />
       <button

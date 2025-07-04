@@ -1091,6 +1091,7 @@ const ExporterOrderDetails = () => {
     setShowComplaintModal(!showComplaintModal);
   };
 
+
   const handleImageSample = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -1213,7 +1214,10 @@ const ExporterOrderDetails = () => {
               <DetailItem label="Supplier" value={order.supplierId?.name} />
               <DetailItem label="Exporter" value={userName} />
               {order?.deliveryDays ? (
+                <>
+                Delievery Date:   
                 <DateDisplay date={order.deliveryDays} />
+                </>
               ) : (
                 <DetailItem label="Delivery Date" value="Not set" />
               )}

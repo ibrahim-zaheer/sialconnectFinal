@@ -1,5 +1,3 @@
-
-
 // ======================================
 
 // import React, { useEffect, useState } from "react";
@@ -20,9 +18,7 @@
 //   const userName = user?.name;
 //   const userRole = user?.role;
 
-
 //     const userID = user?.id;
-   
 
 //   const [order, setOrder] = useState(null);
 //   const [loading, setLoading] = useState(true);
@@ -73,7 +69,7 @@
 //       formData.append("sampleImage", sampleImage);
 
 //       const response = await axios.post(
-//         "/api/order/orders/mark-sample-sent", 
+//         "/api/order/orders/mark-sample-sent",
 //         formData,
 //         {
 //           headers: {
@@ -113,7 +109,6 @@
 //   const handleRejectSuccess = () => {
 //     fetchOrderDetails();
 //   };
-
 
 //   const handleOrderSentSuccess = () => {
 //     // Callback function when the order is sent successfully
@@ -174,7 +169,6 @@
 //             onSuccess={handleOrderSentSuccess}
 //           />
 //         )}
-       
 
 //         {/* Order Summary Card */}
 //         <div className="bg-white rounded-xl shadow-xs border border-neutral-200 overflow-hidden">
@@ -199,9 +193,9 @@
 //   <DetailItem label="Days to deliver" value={order.deliveryDays} />
 // ) : null} */}
 // {/* {order?.deliveryDays ? (
-//   <DetailItem 
-//     label="Days to deliver" 
-//     value={new Date(order.deliveryDays).toISOString().split('T')[0]} 
+//   <DetailItem
+//     label="Days to deliver"
+//     value={new Date(order.deliveryDays).toISOString().split('T')[0]}
 //   />
 // ) : null} */}
 
@@ -368,12 +362,12 @@
 //               />
 //             </div>
 //           )}
-//         {/* 
+//         {/*
 // {(order.sampleStatus === "sample_rejected") && (
 //   <div className="bg-white rounded-xl shadow-xs border border-gray-200 p-6">
 //     <h2 className="text-xl font-semibold text-gray-800 mb-4">Payment Details</h2>
-//     <PaymentForm 
-//       orderId={order._id} 
+//     <PaymentForm
+//       orderId={order._id}
 //       onPaymentSubmitted={handlePaymentSubmitted}
 //       orderPrice={order.price} // Pass the order price here
 //     />
@@ -527,7 +521,6 @@
 
 //         {/* Sample Received Proof */}
 //         {order.sampleRecievedProof && (
-          
 
 //            <div>
 //             {/* <button onClick={toggleImageVisibility}>
@@ -672,14 +665,19 @@ const SupplierOrderDetails = () => {
   const fetchOrderDetails = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(`/api/order/orders/supplier/${orderId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        `/api/order/orders/supplier/${orderId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setOrder(response.data.order);
     } catch (error) {
-      setMessage(error.response?.data?.message || "Failed to load order details.");
+      setMessage(
+        error.response?.data?.message || "Failed to load order details."
+      );
     } finally {
       setLoading(false);
     }
@@ -706,7 +704,7 @@ const SupplierOrderDetails = () => {
       formData.append("sampleImage", sampleImage);
 
       const response = await axios.post(
-        "/api/order/orders/mark-sample-sent", 
+        "/api/order/orders/mark-sample-sent",
         formData,
         {
           headers: {
@@ -768,7 +766,8 @@ const SupplierOrderDetails = () => {
     );
   }
 
-  const hasReviewed = order.reviews?.some((review) => review.user._id === user._id) || false;
+  const hasReviewed =
+    order.reviews?.some((review) => review.user._id === user._id) || false;
 
   return (
     <div className="bg-gray-50 min-h-screen p-4 sm:p-6">
@@ -777,7 +776,9 @@ const SupplierOrderDetails = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Order Details</h1>
+              <h1 className="text-2xl font-bold text-gray-900">
+                Order Details
+              </h1>
               {order.orderId && (
                 <p className="text-gray-600 mt-1">Order ID: {order.orderId}</p>
               )}
@@ -798,17 +799,18 @@ const SupplierOrderDetails = () => {
         </div>
 
         {/* Order Sent Component */}
-        {(order.Agreement === "Accepted" && order.status === "agreement_accepted") || !order.sample_needed ? (
-          <OrderSent
-            orderId={order._id}
-            onSuccess={handleOrderSentSuccess}
-          />
+        {(order.Agreement === "Accepted" &&
+          order.status === "agreement_accepted") ||
+        !order.sample_needed ? (
+          <OrderSent orderId={order._id} onSuccess={handleOrderSentSuccess} />
         ) : null}
 
         {/* Order Summary Card */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <h2 className="text-lg font-semibold text-gray-900">Order Summary</h2>
+            <h2 className="text-lg font-semibold text-gray-900">
+              Order Summary
+            </h2>
           </div>
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
@@ -820,10 +822,17 @@ const SupplierOrderDetails = () => {
               <DetailItem label="Exporter" value={order.exporterId?.name} />
               <DetailItem label="Supplier" value={order.supplierId?.name} />
               {order?.deliveryDays ? (
+                <>
+                Delievery Date: 
                 <DateDisplay date={order.deliveryDays} />
+                </>
               ) : (
                 <DetailItem label="Delivery Date" value="Not set" />
+                // <></>
               )}
+
+   
+
             </div>
             <div className="space-y-4">
               <DetailItem label="Quantity" value={order.quantity} />
@@ -925,7 +934,7 @@ const SupplierOrderDetails = () => {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Documents
             </h2>
-              <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4">
               <PDFGenerator
                 order={order}
                 userName={userName}
@@ -1203,7 +1212,8 @@ const SupplierOrderDetails = () => {
               Order Rejected
             </h3>
             <p className="text-red-700">
-              <span className="font-medium">Reason:</span> {order.rejectionReason}
+              <span className="font-medium">Reason:</span>{" "}
+              {order.rejectionReason}
             </p>
           </div>
         )}
@@ -1259,10 +1269,12 @@ const StatusCard = ({ title, value, variant = "neutral" }) => {
   };
 
   return (
-    <div className={`${variantClasses[variant]} p-4 rounded-lg border border-transparent`}>
+    <div
+      className={`${variantClasses[variant]} p-4 rounded-lg border border-transparent`}
+    >
       <h3 className="text-sm font-medium">{title}</h3>
       <p className="text-base font-semibold mt-1 capitalize">
-        {value ? value.replace(/_/g, ' ') : "—"}
+        {value ? value.replace(/_/g, " ") : "—"}
       </p>
     </div>
   );

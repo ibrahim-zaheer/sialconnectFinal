@@ -211,7 +211,7 @@ const getTopProducts = async (req, res) => {
         }
       },
       { $sort: { count: -1 } }, // Sort by count descending
-      { $limit: 3 }, // Limit to top 3
+      { $limit: 7 }, // Limit to top 3
       {
         $lookup: { // Join with Product collection to get product details
           from: "products",

@@ -150,12 +150,18 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { getPaymentsForSupplier } from '../components/payment/getPaymentsForSupplier';
 import { useNavigate } from 'react-router-dom';
+import PaymentStatusFilter from './PaymentStatusFilter';
 
 const PaymentDetails = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+
+  const [statusFilter, setStatusFilter] = useState('all');
+
+
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -196,9 +202,15 @@ const PaymentDetails = () => {
     const amount = payment?.paymentDetails?.paymentAmount;
     return typeof amount === 'number' ? amount : 0;
   };
+const filteredPayments = payments.filter(p => 
+  statusFilter === 'all' || 
+  (p.paymentDetails?.paymentStatus || '').toLowerCase() === statusFilter
+);
 
   return (
     <div className="min-h-screen">
+      <PaymentStatusFilter value={statusFilter} onChange={setStatusFilter} />
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -252,7 +264,7 @@ const PaymentDetails = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-surface divide-y divide-neutral-200">
-                  {payments.map((payment) => (
+                  {filteredPayments.map((payment) => (
                     <motion.tr 
                       key={payment._id || Math.random().toString(36).substr(2, 9)}
                       whileHover={{ backgroundColor: 'rgba(244, 245, 247, 1)' }}

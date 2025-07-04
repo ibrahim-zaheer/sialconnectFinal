@@ -262,6 +262,7 @@ import CreateOffer from "../../offer/CreateOffer";
 import BackButton from "../../BackButton";
 import RelatedProducts from "./RelatedProducts";
 import { ProductPrice } from "../../../pages/Exporter/components/ProductPrice";
+import BackButtonNewTab from "../../BackButtonNewTab";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -295,7 +296,9 @@ const ProductDetails = () => {
   }, [id]);
 
   const handleBackClick = () => {
-    navigate(`/SupplierProducts?tab=${activeTab}`);
+    // navigate(`/SupplierProducts?tab=${activeTab}`);
+      // navigate(-1); 
+       navigate(`/ExporterProducts?tab=${activeTab}`);
   };
   // Handle delete functionality
   const handleDelete = async () => {
@@ -384,7 +387,12 @@ const ProductDetails = () => {
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           {/* Product Details Section */}
           <div className="w-full flex items-center -ml-20 pt-5 -mb-4 pl-1 bg-white">
-            <BackButton className="mb-4 ml-24 bg-primary-800 text-white hover:bg-primary-600" />
+            {/* <BackButton className="mb-4 ml-24 bg-primary-800 text-white hover:bg-primary-600" 
+            onClick={handleBackClick}
+            /> */}
+            <BackButtonNewTab className="mb-4 ml-24 bg-primary-800 text-white hover:bg-primary-600" 
+            onClick={handleBackClick}
+            />
           </div>
           <div className="flex flex-col lg:flex-row gap-8 p-6">
             {/* Image Gallery Section */}

@@ -53,16 +53,16 @@ const Footer = () => {
   // Company information links
   const companyLinks = [
     { to: "/about", text: "About Us" },
-    { to: "/careers", text: "Careers" },
-    { to: "/blog", text: "Blog" },
-    { to: "/faq", text: "FAQ" },
+    // { to: "/careers", text: "Careers" },
+    // { to: "/blog", text: "Blog" },
+    // { to: "/faq", text: "FAQ" },
   ];
 
   // Legal links
   const legalLinks = [
-    { to: "/privacy", text: "Privacy Policy" },
-    { to: "/terms", text: "Terms of Service" },
-    { to: "/cookies", text: "Cookies Policy" },
+    // { to: "/privacy", text: "Privacy Policy" },
+    // { to: "/terms", text: "Terms of Service" },
+    // { to: "/cookies", text: "Cookies Policy" },
   ];
 
   // Determine which links to show based on user role
@@ -86,7 +86,7 @@ const Footer = () => {
         <div className="space-y-4">
           <h2 className="text-2xl font-bold text-primary-50">SialConnect</h2>
           <p className="text-neutral-300 text-sm">
-            {t("Connecting businesses with quality suppliers since 2023")}
+            {t("Connecting businesses with quality suppliers since 2025")}
           </p>
           <div className="flex space-x-4 pt-2">
             <a

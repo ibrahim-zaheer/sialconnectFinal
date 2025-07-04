@@ -80,7 +80,7 @@ const RecommendedProducts = ({ maxItems = 3 }) => {
 
   if (loading) return <p>Loading recommendations...</p>;
 
-  if (products.length === 0) return <p>No recommendations available.</p>;
+  if (products.length === 0) return <></>;
 
   const displayedProducts = products.slice(0, maxItems);
 

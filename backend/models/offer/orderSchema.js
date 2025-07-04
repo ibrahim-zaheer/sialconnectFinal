@@ -263,7 +263,7 @@ const OrderSchema = new mongoose.Schema({
   quantity: { type: Number, required: true },
   sample_needed:{type: Boolean,required: false, default:false },
   //  deliveryDays: { type: Number, required: false, min: 1, max: 100, default:1 },
-  deliveryDays: { type: Date, required: false },
+  deliveryDays: { type: Date, required: false,default:Date.now },
   message: { type: String, maxlength: 500 },
   status: {
     type: String,

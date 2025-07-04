@@ -227,13 +227,23 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
   return (
     <div>
       {/* Counteroffer Button */}
-      <button
+      {/* <button
         onClick={() => setShowForm(true)}
         disabled={disabled}
         className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
       >
         {disabled ? "Limit Reached" : "Counter Offer"}
-      </button>
+      </button> */}
+   {disabled ? (
+  <p className="text-red-600 font-semibold mb-2">Limit Reached</p>
+) : (
+  <button
+    onClick={() => setShowForm(true)}
+    className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+  >
+    Counter Offer
+  </button>
+)}
 
       {/* Popup Form */}
       {showForm && (

@@ -8,7 +8,12 @@ import FavoriteToggle from "../../components/favourites/FavoriteToggle";
 import ProductSearch from "../../components/ProductSearch";
 import RecommendedProducts from "../../components/Exporter/products/RecommendedProducts";
 import { fetchRecommendedProducts } from "../../components/Exporter/products/hooks/fetchRecommendedProducts";
+
 import { ProductPrice } from "./components/ProductPrice";
+import Pagination from "../../components/Pagination";
+import ProductCount from "./components/ProductCount";
+//  import InfiniteScroll from 'react-infinite-scroll-component';
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 
@@ -31,6 +36,19 @@ const ExporterProducts = () => {
 
   const [recommendedProducts, setRecommendedProducts] = useState([]);
 
+
+  const [currentPage, setCurrentPage] = useState(1);
+const itemsPerPage = 9;
+
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
+const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+
+
+const totalCount = filteredProducts.length;
+const currentCount = currentProducts.length;
   // Available options for filters
   const cities = [
     "Sialkot",
@@ -171,6 +189,10 @@ const ExporterProducts = () => {
   }, []);
 
   useEffect(() => {
+  setCurrentPage(1);
+}, [filteredProducts]);
+
+  useEffect(() => {
     const fetchData = async () => {
       const recommendations = await fetchRecommendedProducts();
       console.log(recommendations);
@@ -204,6 +226,8 @@ const ExporterProducts = () => {
       selectedCategory
     );
   };
+
+  
 
   const handlePriceChange = (e) => {
     const price = parseInt(e.target.value);
@@ -447,6 +471,8 @@ const ExporterProducts = () => {
             </svg>
           </div>
         </motion.div>
+        <ProductCount currentCount={currentCount} totalCount={totalCount} />
+
 
         {/* Status Messages */}
         <AnimatePresence>
@@ -615,7 +641,7 @@ const ExporterProducts = () => {
             initial="hidden"
             animate="visible"
           >
-            {filteredProducts.map((product) => {
+            {currentProducts.map((product) => {
               const isRecommended = recommendedProducts.some(
                 (recommendedProduct) => {
                   console.log(
@@ -638,6 +664,7 @@ const ExporterProducts = () => {
                   key={product._id}
                   className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden hover:shadow-md transition-shadow duration-300"
                 >
+                  
                   <div className="p-6">
                     {/* Display "Recommended" tag if applicable */}
 
@@ -704,6 +731,8 @@ const ExporterProducts = () => {
                       </div>
                     )}
 
+                     
+
                     <Link
                       to={`/supplier/product/${product._id}`}
                       className="text-primary-600 hover:text-white hover:bg-primary-800 duration-300 transition-all font-medium text-sm border-2 rounded-lg border-primary-600 p-2 mt-5 flex justify-center items-center"
@@ -727,6 +756,12 @@ const ExporterProducts = () => {
                 </motion.div>
               );
             })}
+            <Pagination
+  currentPage={currentPage}
+  totalPages={totalPages}
+  onPageChange={setCurrentPage}
+/>
+
           </motion.div>
         ) : (
           <motion.div

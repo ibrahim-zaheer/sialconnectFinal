@@ -1,14 +1,15 @@
+
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
-const BackButton = ({ label = "Back", className = "" }) => {
-  const navigate = useNavigate();
-
+const BackButtonNewTab = ({ 
+  label = "Back", 
+  className = "", 
+  onClick 
+}) => {
   return (
     <div className="p-1">
       <button
-        // onClick={() => navigate(-1)}
-        onClick={() => navigate(-1, { replace: true })}
+        onClick={onClick}
         className={`bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded ${className}`}
       >
         <span>
@@ -20,5 +21,4 @@ const BackButton = ({ label = "Back", className = "" }) => {
   );
 };
 
-export default BackButton;
-
+export default BackButtonNewTab;

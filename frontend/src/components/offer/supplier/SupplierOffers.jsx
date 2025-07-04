@@ -492,6 +492,7 @@ import RejectOffer from "../RejectOffer";
 import CounterOffer from "../CounterOffer";
 import { useNavigate } from "react-router-dom";
 import DateDisplay from "../../DateDisplay";
+import OfferStatusFilter from "../components/OfferStatusFilter";
 
 export default function SupplierOffers() {
   const user = useSelector(selectUser);
@@ -501,6 +502,10 @@ export default function SupplierOffers() {
   const [error, setError] = useState("");
   const [orderIds, setOrderIds] = useState({});
   const navigate = useNavigate();
+
+  const [sortOrder, setSortOrder] = useState("desc"); 
+  const [statusFilter, setStatusFilter] = useState("all");
+
 
   useEffect(() => {
     const fetchOffers = async () => {
@@ -637,6 +642,24 @@ export default function SupplierOffers() {
         <h2 className="text-2xl font-bold text-primary-800 mb-6">
           Your Offers
         </h2>
+        <OfferStatusFilter
+  selectedStatus={statusFilter}
+  onChange={(status) => setStatusFilter(status)}
+/>
+
+<div className="mb-4 flex items-center gap-4">
+  <label className="font-medium text-sm">Sort By:</label>
+  <select
+    value={sortOrder}
+    onChange={(e) => setSortOrder(e.target.value)}
+    className="border border-gray-300 rounded px-3 py-1 text-sm"
+  >
+    <option value="desc">Newest First</option>
+    <option value="asc">Oldest First</option>
+  </select>
+</div>
+
+
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
@@ -690,7 +713,22 @@ export default function SupplierOffers() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {offers.map((offer) => (
+            {
+            
+            // offers.map((offer) => 
+              [...offers]
+  // .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .filter((offer) => statusFilter === "all" || offer.status === statusFilter)
+  // .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  .sort((a, b) =>
+  sortOrder === "asc"
+    ? new Date(a.createdAt) - new Date(b.createdAt)
+    : new Date(b.createdAt) - new Date(a.createdAt)
+)
+
+  .map((offer) =>
+              
+              (
               <motion.div
                 key={offer._id}
                 whileHover={{ y: -5 }}

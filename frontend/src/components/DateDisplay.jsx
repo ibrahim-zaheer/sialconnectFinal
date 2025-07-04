@@ -13,9 +13,40 @@ const getOrdinalSuffix = (n) => {
   }
 };
 
-// Reusable DateDisplay component
+// // Reusable DateDisplay component
+// const DateDisplay = ({ date }) => {
+//   const formatDate = (date) => {
+//     const d = new Date(date);
+
+//     // Format the date without the ordinal suffix using Intl.DateTimeFormat
+//     const formattedDate = new Intl.DateTimeFormat("en-GB", {
+//       day: "numeric",   // "numeric" will display the day as a number
+//       month: "long",    // "long" will display the full month name
+//       year: "numeric",  // "numeric" will display the full year
+//     }).format(d);
+
+//     // Get the day and apply the ordinal suffix
+//     const day = d.getDate();
+//     const dayWithSuffix = getOrdinalSuffix(day);
+
+//     // Return the final formatted date with the ordinal suffix
+//     return formattedDate.replace(day, dayWithSuffix);
+//   };
+
+//   return (
+//     <span> Delivery Date: {formatDate(date)}</span>
+//   );
+// };
+
 const DateDisplay = ({ date }) => {
   const formatDate = (date) => {
+    // if (!date || isNaN(new Date(date).getTime())) {
+    //   return "Not set"; // Return "Not set" if the date is invalid or empty
+    // }
+  if (!date || isNaN(new Date(date).getTime()) || new Date(date).getFullYear() === 1970) {
+      return "Not set"; // Return "Not set" if the date is invalid, empty, or the default "1st January 1970"
+    }
+
     const d = new Date(date);
 
     // Format the date without the ordinal suffix using Intl.DateTimeFormat
@@ -33,9 +64,8 @@ const DateDisplay = ({ date }) => {
     return formattedDate.replace(day, dayWithSuffix);
   };
 
-  return (
-    <span>{formatDate(date)}</span>
-  );
+  return <span>{formatDate(date)}</span>;
 };
+
 
 export default DateDisplay;
