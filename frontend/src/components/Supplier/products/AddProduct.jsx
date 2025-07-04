@@ -320,6 +320,8 @@ const AddProduct = ({ onProductCreated }) => {
     images: [],
   });
 
+  const [isDragging, setIsDragging] = useState(false);
+
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -333,6 +335,33 @@ const AddProduct = ({ onProductCreated }) => {
     const files = Array.from(e.target.files);
     setFormData({ ...formData, images: files });
   };
+  const handleDragOver = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  setIsDragging(true);
+};
+
+const handleDragLeave = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  setIsDragging(false);
+};
+
+const handleDrop = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  setIsDragging(false);
+
+  if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+    const files = Array.from(e.dataTransfer.files);
+    setFormData((prevData) => ({
+      ...prevData,
+      images: files,
+    }));
+    e.dataTransfer.clearData();
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -464,7 +493,7 @@ const AddProduct = ({ onProductCreated }) => {
           />
         </div>
 
-        <div>
+        {/* <div>
           <label className="text-sm font-medium text-neutral-700 mb-1 w-fit flex justify-center items-center gap-1">
             Product Images (Multiple allowed up to 5){" "}
             <span className="text-red-500 text-2xl">*</span>
@@ -500,6 +529,53 @@ const AddProduct = ({ onProductCreated }) => {
             </div>
           )}
         </div>
+        
+        */}
+
+        <div>
+  <label className="text-sm font-medium text-neutral-700 mb-1 w-fit flex justify-center items-center gap-1">
+    Product Images (Multiple allowed up to 5) <span className="text-red-500 text-2xl">*</span>
+  </label>
+
+  <div
+    onDragOver={handleDragOver}
+    onDragLeave={handleDragLeave}
+    onDrop={handleDrop}
+    className={`mt-2 flex items-center justify-center h-32 border-2 border-dashed rounded-lg cursor-pointer transition-colors duration-200 ${
+      isDragging ? "bg-blue-50 border-blue-400" : "bg-white border-neutral-300 hover:bg-neutral-50"
+    }`}
+  >
+    <label className="flex flex-col items-center justify-center w-full h-full cursor-pointer">
+      <svg className="w-8 h-8 mb-2 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4a1 1 0 011-1h8a1 1 0 011 1v12M7 16l-4 4m0 0l4 4m-4-4h18" />
+      </svg>
+      <p className="text-sm text-neutral-600">Click to upload or drag and drop</p>
+      <input
+        type="file"
+        name="images"
+        multiple
+        accept="image/*"
+        onChange={handleImageChange}
+        className="hidden"
+      />
+    </label>
+  </div>
+
+  <div className="mt-2 text-sm text-neutral-600">
+    {formData.images.length > 0
+      ? `${formData.images.length} file(s) selected`
+      : "No files selected"}
+  </div>
+
+  {formData.images.length > 0 && (
+    <ul className="mt-1 text-xs text-neutral-600 space-y-1">
+      {formData.images.map((image, idx) => (
+        <li key={idx}>{image.name}</li>
+      ))}
+    </ul>
+  )}
+</div>
+
 
         <div className="pt-4 flex justify-between items-center">
           <button
