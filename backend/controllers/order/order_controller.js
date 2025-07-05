@@ -269,6 +269,31 @@ const getOrderByOfferId = async (req, res) => {
   }
 };
 
+const getOrdersByOfferIds = async (req, res) => {
+  try {
+    const { offerIds } = req.body; // Array of offer IDs
+
+    if (!Array.isArray(offerIds) || offerIds.length === 0) {
+      return res.status(400).json({ message: "No offerIds provided" });
+    }
+
+    const orders = await Order.find({ offerId: { $in: offerIds } })
+      .select("_id offerId") // Only return needed fields for speed
+      .lean(); // lean makes the query faster when you don't need full mongoose objects
+
+    const orderMap = {};
+    offerIds.forEach((id) => {
+      const found = orders.find((o) => o.offerId.toString() === id);
+      orderMap[id] = found ? found._id : null;
+    });
+
+    res.status(200).json({ orderMap });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching orders", error: error.message });
+  }
+};
+
+
 const getTopSuppliers = async (req, res) => {
   try {
     const topSuppliers = await Order.aggregate([
@@ -1266,5 +1291,5 @@ const checkDeliveryDateNotificationExporter = async () => {
 
 
 module.exports = {
-    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment,confirmLocalPaymentByAdmin,getOrderDetailsById,getAllOrders,getTopProducts,getTopSuppliers,getOrderByOfferId, markOrderShipped, confirmOrderReceipt,checkDeliveryDateNotification,checkDeliveryDateNotificationExporter,initSocket
+    getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,initiateTokenPayment,markSampleSent,confirmSampleReceipt,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement, addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllOrdersWithPaymentDetails,getAllPaymentsForSupplier,initiateLocalPayment,confirmLocalPaymentByAdmin,getOrderDetailsById,getAllOrders,getTopProducts,getTopSuppliers,getOrderByOfferId, markOrderShipped, confirmOrderReceipt,checkDeliveryDateNotification,checkDeliveryDateNotificationExporter,initSocket,getOrdersByOfferIds
 };

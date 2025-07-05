@@ -536,31 +536,48 @@ export default function SupplierOffers() {
       }
     };
 
+    // const fetchOrderIds = async (acceptedOffers) => {
+    //   const ids = {};
+
+    //   for (const offer of acceptedOffers) {
+    //     try {
+    //       const orderResponse = await axios.get(
+    //         `/api/order/orders/offer/${offer._id}`,
+    //         {
+    //           headers: { Authorization: `Bearer ${token}` },
+    //         }
+    //       );
+
+    //       if (orderResponse.data?.order?._id) {
+    //         ids[offer._id] = orderResponse.data.order._id;
+    //       } else {
+    //         ids[offer._id] = null;
+    //       }
+    //     } catch (err) {
+    //       console.error(`Failed to fetch order for offer ${offer._id}:`, err);
+    //       ids[offer._id] = null;
+    //     }
+    //   }
+
+    //   setOrderIds(ids);
+    // };
+
     const fetchOrderIds = async (acceptedOffers) => {
-      const ids = {};
+  try {
+    const offerIds = acceptedOffers.map((offer) => offer._id);
 
-      for (const offer of acceptedOffers) {
-        try {
-          const orderResponse = await axios.get(
-            `/api/order/orders/offer/${offer._id}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
+    const response = await axios.post(
+      "/api/order/orders/by-offer-ids",
+      { offerIds },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-          if (orderResponse.data?.order?._id) {
-            ids[offer._id] = orderResponse.data.order._id;
-          } else {
-            ids[offer._id] = null;
-          }
-        } catch (err) {
-          console.error(`Failed to fetch order for offer ${offer._id}:`, err);
-          ids[offer._id] = null;
-        }
-      }
+    setOrderIds(response.data.orderMap || {});
+  } catch (error) {
+    console.error("Bulk fetch failed:", error);
+  }
+};
 
-      setOrderIds(ids);
-    };
 
     fetchOffers();
   }, [token]);

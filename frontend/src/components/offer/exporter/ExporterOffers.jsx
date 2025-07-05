@@ -292,61 +292,61 @@ export default function ExporterOffers() {
       }
     };
 
+    
     // const fetchOrderIds = async (acceptedOffers) => {
     //   const ids = {};
+    //   console.log(
+    //     "Fetching orders for",
+    //     acceptedOffers.length,
+    //     "accepted offers"
+    //   );
+
     //   for (const offer of acceptedOffers) {
     //     try {
-    //       const orderResponse = await axios.get(`/api/order/orders/offer/${offer._id}`, {
-    //         headers: {
-    //           Authorization: `Bearer ${token}`,
-    //         },
-    //       });
-    //       ids[offer._id] = orderResponse.data.order._id;
-    //       console.log("orderResponse.data.order._id");
+    //       console.log("Fetching order for offer:", offer._id);
+    //       const orderResponse = await axios.get(
+    //         `/api/order/orders/offer/${offer._id}`,
+    //         {
+    //           headers: { Authorization: `Bearer ${token}` },
+    //         }
+    //       );
+
+    //       if (orderResponse.data?.order?._id) {
+    //         console.log("Found order:", orderResponse.data.order._id);
+    //         ids[offer._id] = orderResponse.data.order._id;
+    //       } else {
+    //         console.warn("No order ID in response for offer:", offer._id);
+    //         ids[offer._id] = null;
+    //       }
     //     } catch (err) {
-    //       console.error(`Failed to fetch order for offer ${offer._id}:`, err);
+    //       console.error(
+    //         `Failed to fetch order for offer ${offer._id}:`,
+    //         err.response?.data || err.message
+    //       );
     //       ids[offer._id] = null;
     //     }
     //   }
+
+    //   console.log("Final order IDs:", ids);
     //   setOrderIds(ids);
     // };
     const fetchOrderIds = async (acceptedOffers) => {
-      const ids = {};
-      console.log(
-        "Fetching orders for",
-        acceptedOffers.length,
-        "accepted offers"
-      );
+  try {
+    const offerIds = acceptedOffers.map((offer) => offer._id);
 
-      for (const offer of acceptedOffers) {
-        try {
-          console.log("Fetching order for offer:", offer._id);
-          const orderResponse = await axios.get(
-            `/api/order/orders/offer/${offer._id}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
+    const response = await axios.post(
+      "/api/order/orders/by-offer-ids",
+      { offerIds },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-          if (orderResponse.data?.order?._id) {
-            console.log("Found order:", orderResponse.data.order._id);
-            ids[offer._id] = orderResponse.data.order._id;
-          } else {
-            console.warn("No order ID in response for offer:", offer._id);
-            ids[offer._id] = null;
-          }
-        } catch (err) {
-          console.error(
-            `Failed to fetch order for offer ${offer._id}:`,
-            err.response?.data || err.message
-          );
-          ids[offer._id] = null;
-        }
-      }
+    setOrderIds(response.data.orderMap || {});
+    console.log(response.data.orderMap || {});
+  } catch (error) {
+    console.error("Bulk fetch failed:", error);
+  }
+};
 
-      console.log("Final order IDs:", ids);
-      setOrderIds(ids);
-    };
     fetchOffers();
   }, [token]);
 

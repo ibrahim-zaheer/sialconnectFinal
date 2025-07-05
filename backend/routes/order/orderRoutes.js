@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllPaymentsForSupplier,initiateLocalPayment,getAllOrders,getTopProducts,getTopSuppliers,getOrderByOfferId, markOrderShipped, confirmOrderReceipt
+  getOrdersBySupplier,getOrdersByExporter,approveSample,rejectSample,confirmSampleReceipt,initiateTokenPayment,markSampleSent,getOrderDetailsForSupplier,getOrderDetailsForExporter,acceptAgreement,rejectAgreement,addPaymentDetailsForSupplier,markPaymentAsCompleted,getAllPaymentsForSupplier,initiateLocalPayment,getAllOrders,getTopProducts,getTopSuppliers,getOrderByOfferId, markOrderShipped, confirmOrderReceipt, getOrdersByOfferIds
   
 } = require("../../controllers/order/order_controller");
 
@@ -55,7 +55,10 @@ router.get("/orders/top-products", getTopProducts);
 
 router.get("/orders/top-suppliers", getTopSuppliers);
 
-router.get("/orders/offer/:offerId",getOrderByOfferId);
+// router.get("/orders/offer/:offerId",getOrderByOfferId);
+// Route: /api/order/orders/by-offer-ids
+router.post("/orders/by-offer-ids", getOrdersByOfferIds);
+
 
 
 // Route to mark order as shipped (Supplier's action)

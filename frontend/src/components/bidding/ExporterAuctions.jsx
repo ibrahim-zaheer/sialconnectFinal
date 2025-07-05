@@ -1,12 +1,17 @@
 import { useState, useEffect } from "react";
 import axios from "../../lib/axios";
 import { Link } from "react-router-dom";
+import StatusFilter from "./components/StatusFilter";
+
 
 const ExporterAuctions = () => {
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [statusFilter, setStatusFilter] = useState("all");
+
 
   const fetchExporterAuctions = async () => {
     setLoading(true);
@@ -67,14 +72,32 @@ const ExporterAuctions = () => {
     return auctionEndDate < currentDate;
   };
 
+  // const filteredAuctions = auctions.filter((auction) => {
+  //   const searchLower = searchQuery.toLowerCase();
+  //   return (
+  //     auction.title.toLowerCase().includes(searchLower) ||
+  //     auction.description.toLowerCase().includes(searchLower) ||
+  //     auction.category.toLowerCase().includes(searchLower)
+  //   );
+  // });
+
   const filteredAuctions = auctions.filter((auction) => {
-    const searchLower = searchQuery.toLowerCase();
-    return (
-      auction.title.toLowerCase().includes(searchLower) ||
-      auction.description.toLowerCase().includes(searchLower) ||
-      auction.category.toLowerCase().includes(searchLower)
-    );
-  });
+  const searchLower = searchQuery.toLowerCase();
+
+  const matchesSearch =
+    auction.title.toLowerCase().includes(searchLower) ||
+    auction.description.toLowerCase().includes(searchLower) ||
+    auction.category.toLowerCase().includes(searchLower);
+
+  const isExpired = isAuctionExpired(auction.endTime);
+
+  const matchesStatus =
+    statusFilter === "all" ||
+    (statusFilter === "active" && !isExpired) ||
+    (statusFilter === "expired" && isExpired);
+
+  return matchesSearch && matchesStatus;
+});
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString("en-US", {
@@ -90,6 +113,8 @@ const ExporterAuctions = () => {
     <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+          <StatusFilter selected={statusFilter} onChange={setStatusFilter} />
+
           <h1 className="text-2xl font-bold text-gray-800">My Auctions</h1>
           
           <div className="relative w-full sm:w-96">
