@@ -523,8 +523,6 @@ export default function CreateOffer({
   const predefinedMessages = [
     "I want to buy this.",
     "Please provide the details of the product.",
-    "Looking forward to your offer.",
-    "Can you provide a discount on this?",
     "Is this product available for immediate delivery?",
   ];
 
@@ -732,7 +730,7 @@ export default function CreateOffer({
           // onChange={handleChange}
           onChange={handleMessageChange}
           maxLength="50"
-          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-2 border resize-none border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         ></textarea>
 
         {validationWarning && (

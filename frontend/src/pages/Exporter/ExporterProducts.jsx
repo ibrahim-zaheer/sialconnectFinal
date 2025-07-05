@@ -16,7 +16,6 @@ import ProductCount from "./components/ProductCount";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-
 const ExporterProducts = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -36,19 +35,19 @@ const ExporterProducts = () => {
 
   const [recommendedProducts, setRecommendedProducts] = useState([]);
 
-
   const [currentPage, setCurrentPage] = useState(1);
-const itemsPerPage = 9;
+  const itemsPerPage = 9;
 
-const indexOfLastItem = currentPage * itemsPerPage;
-const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-const currentProducts = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
-const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentProducts = filteredProducts.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
-
-
-const totalCount = filteredProducts.length;
-const currentCount = currentProducts.length;
+  const totalCount = filteredProducts.length;
+  const currentCount = currentProducts.length;
   // Available options for filters
   const cities = [
     "Sialkot",
@@ -144,14 +143,16 @@ const currentCount = currentProducts.length;
       const token = localStorage.getItem("token");
       const response = await axios.get(
         "/api/supplier/product/readAllProducts",
-        
+
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      const visibleProducts = response.data.filter((product) => product.enable_view);
+      const visibleProducts = response.data.filter(
+        (product) => product.enable_view
+      );
       setProducts(visibleProducts);
       setFilteredProducts(visibleProducts);
     } catch (error) {
@@ -189,8 +190,8 @@ const currentCount = currentProducts.length;
   }, []);
 
   useEffect(() => {
-  setCurrentPage(1);
-}, [filteredProducts]);
+    setCurrentPage(1);
+  }, [filteredProducts]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -226,8 +227,6 @@ const currentCount = currentProducts.length;
       selectedCategory
     );
   };
-
-  
 
   const handlePriceChange = (e) => {
     const price = parseInt(e.target.value);
@@ -473,7 +472,6 @@ const currentCount = currentProducts.length;
         </motion.div>
         <ProductCount currentCount={currentCount} totalCount={totalCount} />
 
-
         {/* Status Messages */}
         <AnimatePresence>
           {message && (
@@ -664,7 +662,6 @@ const currentCount = currentProducts.length;
                   key={product._id}
                   className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden hover:shadow-md transition-shadow duration-300"
                 >
-                  
                   <div className="p-6">
                     {/* Display "Recommended" tag if applicable */}
 
@@ -684,10 +681,13 @@ const currentCount = currentProducts.length;
                           {product.name}
                         </h2>
                         {product?.supplier?.name && (
-  <p className="text-sm text-neutral-600 mt-1">
-    by <span className="font-medium text-primary-700">{product.supplier.name}</span>
-  </p>
-)}
+                          <p className="text-sm text-neutral-600 mt-1">
+                            by{" "}
+                            <span className="font-medium text-primary-700">
+                              {product.supplier.name}
+                            </span>
+                          </p>
+                        )}
                         {/* <p className="text-primary-600 font-medium mt-1">
                           Rs {product.price?.toLocaleString() || "N/A"} per
                           piece
@@ -736,8 +736,6 @@ const currentCount = currentProducts.length;
                       </div>
                     )}
 
-                     
-
                     <Link
                       to={`/supplier/product/${product._id}`}
                       className="text-primary-600 hover:text-white hover:bg-primary-800 duration-300 transition-all font-medium text-sm border-2 rounded-lg border-primary-600 p-2 mt-5 flex justify-center items-center"
@@ -762,11 +760,10 @@ const currentCount = currentProducts.length;
               );
             })}
             <Pagination
-  currentPage={currentPage}
-  totalPages={totalPages}
-  onPageChange={setCurrentPage}
-/>
-
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </motion.div>
         ) : (
           <motion.div
