@@ -506,35 +506,76 @@ export default function SupplierOffers() {
   const [sortOrder, setSortOrder] = useState("desc"); 
   const [statusFilter, setStatusFilter] = useState("all");
 
+  const fetchOffers = async () => {
+  if (!token) {
+    setError("Please log in to view your offers");
+    setLoading(false);
+    return;
+  }
+
+  try {
+    setLoading(true);
+    const response = await axios.get("/api/offers/supplier", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    setOffers(response.data.offers);
+
+    const acceptedOffers = response.data.offers.filter(
+      (offer) => offer.status === "accepted"
+    );
+    await fetchOrderIds(acceptedOffers);
+  } catch (err) {
+    setError("We couldn't load your offers. Please try again later.");
+  } finally {
+    setLoading(false);
+  }
+};
+    const fetchOrderIds = async (acceptedOffers) => {
+  try {
+    const offerIds = acceptedOffers.map((offer) => offer._id);
+
+    const response = await axios.post(
+      "/api/order/orders/by-offer-ids",
+      { offerIds },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    setOrderIds(response.data.orderMap || {});
+  } catch (error) {
+    console.error("Bulk fetch failed:", error);
+  }
+};
 
   useEffect(() => {
-    const fetchOffers = async () => {
-      if (!token) {
-        setError("Please log in to view your offers");
-        setLoading(false);
-        return;
-      }
+    // const fetchOffers = async () => {
+    //   if (!token) {
+    //     setError("Please log in to view your offers");
+    //     setLoading(false);
+    //     return;
+    //   }
 
-      try {
-        const response = await axios.get("/api/offers/supplier", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setOffers(response.data.offers);
+    //   try {
+    //     const response = await axios.get("/api/offers/supplier", {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //     });
+    //     setOffers(response.data.offers);
 
-        // Fetch order IDs for accepted offers
-        const acceptedOffers = response.data.offers.filter(
-          (offer) => offer.status === "accepted"
-        );
-        await fetchOrderIds(acceptedOffers);
+    //     // Fetch order IDs for accepted offers
+    //     const acceptedOffers = response.data.offers.filter(
+    //       (offer) => offer.status === "accepted"
+    //     );
+    //     await fetchOrderIds(acceptedOffers);
 
-        setLoading(false);
-      } catch (err) {
-        setError("We couldn't load your offers. Please try again later.");
-        setLoading(false);
-      }
-    };
+    //     setLoading(false);
+    //   } catch (err) {
+    //     setError("We couldn't load your offers. Please try again later.");
+    //     setLoading(false);
+    //   }
+    // };
 
     // const fetchOrderIds = async (acceptedOffers) => {
     //   const ids = {};
@@ -562,23 +603,23 @@ export default function SupplierOffers() {
     //   setOrderIds(ids);
     // };
 
-    const fetchOrderIds = async (acceptedOffers) => {
-  try {
-    const offerIds = acceptedOffers.map((offer) => offer._id);
+//     const fetchOrderIds = async (acceptedOffers) => {
+//   try {
+//     const offerIds = acceptedOffers.map((offer) => offer._id);
 
-    const response = await axios.post(
-      "/api/order/orders/by-offer-ids",
-      { offerIds },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+//     const response = await axios.post(
+//       "/api/order/orders/by-offer-ids",
+//       { offerIds },
+//       { headers: { Authorization: `Bearer ${token}` } }
+//     );
 
-    setOrderIds(response.data.orderMap || {});
-  } catch (error) {
-    console.error("Bulk fetch failed:", error);
-  }
-};
+//     setOrderIds(response.data.orderMap || {});
+//   } catch (error) {
+//     console.error("Bulk fetch failed:", error);
+//   }
+// };
 
-
+// fetchOrderIds();
     fetchOffers();
   }, [token]);
 
@@ -859,6 +900,7 @@ export default function SupplierOffers() {
                       <AcceptOffer
                         offerId={offer._id}
                         updateStatus={updateOfferStatus}
+                        onSuccess={fetchOffers}
                         className="flex-1 px-4 py-2 bg-success-500 hover:bg-success-600 text-white rounded-lg text-sm font-medium transition-colors"
                       />
                       <RejectOffer

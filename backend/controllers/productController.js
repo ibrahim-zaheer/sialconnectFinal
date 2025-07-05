@@ -591,34 +591,48 @@ exports.getProductsBySupplier = async (req, res) => {
 //     }
 // };
 
-// controllers/productController.js
+// Example: controller function
 exports.getAllProducts = async (req, res) => {
   try {
-    const { category, limit, exclude } = req.query;
-    let query = {};
+    const products = await Product.find()
+      .populate("supplier", "name city profilePicture");
 
-    if (category) {
-      query.category = category;
-    }
-    if (exclude) {
-      query._id = { $ne: exclude };
-    }
-
-    let productsQuery = Product.find(query).populate(
-      "supplier",
-      "name profilePicture city"
-    );
-
-    if (limit) {
-      productsQuery = productsQuery.limit(parseInt(limit));
-    }
-
-    const products = await productsQuery.exec();
     res.status(200).json(products);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error fetching products:", error.message);
+    res.status(500).json({ message: "Failed to load products" });
   }
 };
+
+
+// controllers/productController.js
+// exports.getAllProducts = async (req, res) => {
+//   try {
+//     const { category, limit, exclude } = req.query;
+//     let query = {};
+
+//     if (category) {
+//       query.category = category;
+//     }
+//     if (exclude) {
+//       query._id = { $ne: exclude };
+//     }
+
+//     let productsQuery = Product.find(query).populate(
+//       "supplier",
+//       "name profilePicture city"
+//     );
+
+//     if (limit) {
+//       productsQuery = productsQuery.limit(parseInt(limit));
+//     }
+
+//     const products = await productsQuery.exec();
+//     res.status(200).json(products);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 exports.getProductDetails = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate(

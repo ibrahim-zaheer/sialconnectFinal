@@ -683,6 +683,11 @@ const currentCount = currentProducts.length;
                         <h2 className="text-lg font-semibold text-neutral-900 line-clamp-2">
                           {product.name}
                         </h2>
+                        {product?.supplier?.name && (
+  <p className="text-sm text-neutral-600 mt-1">
+    by <span className="font-medium text-primary-700">{product.supplier.name}</span>
+  </p>
+)}
                         {/* <p className="text-primary-600 font-medium mt-1">
                           Rs {product.price?.toLocaleString() || "N/A"} per
                           piece

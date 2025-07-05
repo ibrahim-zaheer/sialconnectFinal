@@ -13,6 +13,7 @@ const PaymentStatusFilter = ({ value, onChange }) => {
         <option value="all">All</option>
         <option value="completed">Completed</option>
         <option value="pending">Pending</option>
+        <option value="detailsGiven">Detail Given</option>
       </select>
     </div>
   );

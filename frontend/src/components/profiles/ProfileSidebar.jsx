@@ -202,7 +202,7 @@ const ProfileSidebar = ({ activeTab, setActiveTab, user }) => {
 
         {/* Footer (optional) */}
         <div className="p-4 border-t border-neutral-200">
-          <p className="text-xs text-neutral-500">{t("profile_sidebar.footer_text")} {new Date().getFullYear()}</p>
+          {/* <p className="text-xs text-neutral-500">{t("profile_sidebar.footer_text")} {new Date().getFullYear()}</p> */}
         </div>
       </div>
     </motion.div>

@@ -190,6 +190,8 @@ const PaymentDetails = () => {
         return 'bg-success-100 text-success-800';
       case 'pending':
         return 'bg-accent-100 text-accent-800';
+      case 'detailsGiven':
+        return 'bg-accent-100 text-accent-800';  
       case 'failed':
         return 'bg-error-100 text-error-800';
       default:
@@ -204,7 +206,9 @@ const PaymentDetails = () => {
   };
 const filteredPayments = payments.filter(p => 
   statusFilter === 'all' || 
-  (p.paymentDetails?.paymentStatus || '').toLowerCase() === statusFilter
+  // (p.paymentDetails?.paymentStatus || '').toLowerCase() === statusFilter
+  (p.paymentDetails?.paymentStatus || '').toLowerCase() === statusFilter.toLowerCase()
+
 );
 
   return (
@@ -274,7 +278,7 @@ const filteredPayments = payments.filter(p =>
                         #{payment._id ? payment._id.slice(-6).toUpperCase() : 'N/A'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-700 capitalize">
-                        {payment?.paymentDetails?.paymentMethod || 'Unknown'}
+                        {payment?.paymentDetails?.paymentMethod || 'Payment Method not given yet'}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-primary-800">
                         Rs {getPaymentAmount(payment).toLocaleString()}
