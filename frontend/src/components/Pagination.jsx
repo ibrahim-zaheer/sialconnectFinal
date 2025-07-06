@@ -1,10 +1,10 @@
 // import React from 'react';
 // import PropTypes from 'prop-types';
 
-// const Pagination = ({ 
-//   currentPage, 
-//   totalPages, 
-//   onPageChange, 
+// const Pagination = ({
+//   currentPage,
+//   totalPages,
+//   onPageChange,
 //   maxVisiblePages = 5,
 //   className = ''
 // }) => {
@@ -50,8 +50,8 @@
 //           key={page}
 //           onClick={() => onPageChange(page)}
 //           className={`px-3 py-1 rounded border ${
-//             currentPage === page 
-//               ? 'bg-blue-500 text-white border-blue-500' 
+//             currentPage === page
+//               ? 'bg-blue-500 text-white border-blue-500'
 //               : 'hover:bg-gray-100'
 //           }`}
 //         >
@@ -99,10 +99,13 @@ import React from "react";
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   if (totalPages <= 1) return null;
 
-  const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
+  const pageNumbers = Array.from(
+    { length: totalPages },
+    (_, index) => index + 1
+  );
 
   return (
-    <div className="flex justify-center mt-8 space-x-2">
+    <div className="w-full flex justify-center mt-8 space-x-2">
       <button
         onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
         disabled={currentPage === 1}

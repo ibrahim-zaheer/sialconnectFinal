@@ -185,7 +185,7 @@ const SendOTP = () => {
             </button>
           </p>
         </div>
-        <BackButton className="w-full bg-primary-600 hover:bg-primary-700 text-white" />
+        <BackButton className="w-full bg-primary-500 hover:bg-primary-400 text-white" />
       </div>
     </div>
   );

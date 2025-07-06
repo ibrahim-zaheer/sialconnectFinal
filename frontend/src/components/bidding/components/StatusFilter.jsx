@@ -2,7 +2,7 @@ import React from "react";
 
 const StatusFilter = ({ selected, onChange }) => {
   return (
-    <div className="flex gap-2 mb-6">
+    <div className="flex gap-2">
       <button
         onClick={() => onChange("all")}
         className={`px-4 py-2 rounded-md text-sm font-medium border ${

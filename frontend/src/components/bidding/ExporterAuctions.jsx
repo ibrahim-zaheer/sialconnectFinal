@@ -3,7 +3,6 @@ import axios from "../../lib/axios";
 import { Link } from "react-router-dom";
 import StatusFilter from "./components/StatusFilter";
 
-
 const ExporterAuctions = () => {
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -11,7 +10,6 @@ const ExporterAuctions = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const [statusFilter, setStatusFilter] = useState("all");
-
 
   const fetchExporterAuctions = async () => {
     setLoading(true);
@@ -82,22 +80,22 @@ const ExporterAuctions = () => {
   // });
 
   const filteredAuctions = auctions.filter((auction) => {
-  const searchLower = searchQuery.toLowerCase();
+    const searchLower = searchQuery.toLowerCase();
 
-  const matchesSearch =
-    auction.title.toLowerCase().includes(searchLower) ||
-    auction.description.toLowerCase().includes(searchLower) ||
-    auction.category.toLowerCase().includes(searchLower);
+    const matchesSearch =
+      auction.title.toLowerCase().includes(searchLower) ||
+      auction.description.toLowerCase().includes(searchLower) ||
+      auction.category.toLowerCase().includes(searchLower);
 
-  const isExpired = isAuctionExpired(auction.endTime);
+    const isExpired = isAuctionExpired(auction.endTime);
 
-  const matchesStatus =
-    statusFilter === "all" ||
-    (statusFilter === "active" && !isExpired) ||
-    (statusFilter === "expired" && isExpired);
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "active" && !isExpired) ||
+      (statusFilter === "expired" && isExpired);
 
-  return matchesSearch && matchesStatus;
-});
+    return matchesSearch && matchesStatus;
+  });
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleString("en-US", {
@@ -110,13 +108,11 @@ const ExporterAuctions = () => {
   };
 
   return (
-    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
+    <div className="p-4 sm:p-6 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-          <StatusFilter selected={statusFilter} onChange={setStatusFilter} />
-
+        <div className="flex flex-row justify-between items-center mb-8">
           <h1 className="text-2xl font-bold text-gray-800">My Auctions</h1>
-          
+
           <div className="relative w-full sm:w-96">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg
@@ -139,6 +135,10 @@ const ExporterAuctions = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="block w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
+          </div>
+
+          <div>
+            <StatusFilter selected={statusFilter} onChange={setStatusFilter} />
           </div>
         </div>
 
@@ -178,7 +178,8 @@ const ExporterAuctions = () => {
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = "https://via.placeholder.com/400x200?text=No+Image";
+                        e.target.src =
+                          "https://via.placeholder.com/400x200?text=No+Image";
                       }}
                     />
                   ) : (

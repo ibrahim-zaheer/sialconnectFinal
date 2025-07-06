@@ -17,8 +17,6 @@
 
 // //   const { connectSocket } = useAuthStore();
 
-  
-
 // //   // State to control the visibility of the ProfileUpdateForm
 // //   const [showProfileUpdateForm, setShowProfileUpdateForm] = useState(false);
 // //   useEffect(() => {
@@ -30,7 +28,7 @@
 // //       <div className="mt-24">
 // //         {user.role === "supplier" ? (
 // //           <>
-          
+
 // //             <div className="mt-4">
 // //               <h3 className="text-lg font-semibold">
 // //                 Average Rating: {averageRating} ⭐
@@ -64,7 +62,7 @@
 // //         </div>
 // //           {/* Conditionally show the form */}
 // //       {/* {showProfileUpdateForm && (
-// //         <ProfileUpdateForm 
+// //         <ProfileUpdateForm
 // //           onClose={() => setShowProfileUpdateForm(false)}
 // //         />
 // //       )} */}
@@ -101,8 +99,8 @@
 // //   <span className="font-semibold">
 // //     Age:
 // //     <span className="ms-14 font-normal">
-// //       {user.dateOfBirth 
-// //         ? new Date().getFullYear() - new Date(user.dateOfBirth).getFullYear() 
+// //       {user.dateOfBirth
+// //         ? new Date().getFullYear() - new Date(user.dateOfBirth).getFullYear()
 // //         : "No date of Birth"}
 // //     </span>
 // //   </span>
@@ -149,10 +147,6 @@
 // // };
 
 // // export default UserProfile;
-
-
-
-
 
 // // import React, { useState, useEffect } from "react";
 // // import { useSelector,useDispatch } from "react-redux";
@@ -285,7 +279,6 @@
 // import { toast } from "react-toastify";
 // import ProfilePictureUpdate from "./Supplier/products/ProfilePictureUpdate";
 
-
 // const UserProfile = () => {
 //   const user = useSelector((state) => state.user);
 //   const averageRating = useSelector((state) => state.averageRating.value);
@@ -323,14 +316,14 @@
 
 //   return (
 //     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-24 pb-12 px-4">
-//       <motion.div 
+//       <motion.div
 //         initial="hidden"
 //         animate="visible"
 //         variants={containerVariants}
 //         className="max-w-5xl mx-auto"
 //       >
 //         {/* Profile Card */}
-//         <motion.div 
+//         <motion.div
 //           variants={itemVariants}
 //           className="bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all hover:shadow-2xl"
 //         >
@@ -357,20 +350,20 @@
 //           <div className="pt-20 px-8 pb-8">
 //             <div className="flex justify-between items-start mb-6">
 //               <div>
-//                 <motion.h1 
+//                 <motion.h1
 //                   variants={itemVariants}
 //                   className="text-3xl font-bold text-gray-800"
 //                 >
 //                   {user.name || "Guest"}
 //                 </motion.h1>
-//                 <motion.p 
+//                 <motion.p
 //                   variants={itemVariants}
 //                   className="text-indigo-600 font-medium"
 //                 >
 //                   {user.role || "No Role Available"}
 //                 </motion.p>
 //                 {user.role === "supplier" && (
-//                   <motion.div 
+//                   <motion.div
 //                     variants={itemVariants}
 //                     className="flex items-center mt-2"
 //                   >
@@ -416,12 +409,12 @@
 //             )}
 
 //             {/* Profile Details */}
-//             <motion.div 
+//             <motion.div
 //               variants={containerVariants}
 //               className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8"
 //             >
 //               {/* Personal Info Card */}
-//               <motion.div 
+//               <motion.div
 //                 variants={itemVariants}
 //                 className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
 //               >
@@ -451,8 +444,8 @@
 //                       Age:
 //                     </span>
 //                     <span className="font-medium text-gray-800">
-//                       {user.dateOfBirth 
-//                         ? new Date().getFullYear() - new Date(user.dateOfBirth).getFullYear() 
+//                       {user.dateOfBirth
+//                         ? new Date().getFullYear() - new Date(user.dateOfBirth).getFullYear()
 //                         : "Not specified"}
 //                     </span>
 //                   </div>
@@ -460,7 +453,7 @@
 //               </motion.div>
 
 //               {/* Business Info Card */}
-//               <motion.div 
+//               <motion.div
 //                 variants={itemVariants}
 //                 className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow"
 //               >
@@ -499,7 +492,7 @@
 //             </motion.div>
 
 //             {/* Action Buttons */}
-//             <motion.div 
+//             <motion.div
 //               variants={itemVariants}
 //               className="mt-10 flex flex-wrap justify-center gap-4"
 //             >
@@ -514,7 +507,6 @@
 // };
 
 // export default UserProfile;
-
 
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -533,18 +525,18 @@ const UserProfile = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
+        delayChildren: 0.2,
+      },
+    },
   };
 
   return (
-    <div className="min-h-screen bg-neutral-100 pt-16">
+    <div className="min-h-screen bg-neutral-100 pt-16 pb-5">
       {/* Main Container */}
       <div className="flex">
         {/* Fixed Sidebar */}
         <div className="hidden lg:block fixed left-0 top-16 bottom-0 w-64 border-r border-neutral-200 bg-surface z-10">
-          <ProfileSidebar 
+          <ProfileSidebar
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             user={user}
@@ -552,13 +544,13 @@ const UserProfile = () => {
         </div>
 
         {/* Scrollable Content Area */}
-        <motion.div 
+        <motion.div
           initial="hidden"
           animate="visible"
           variants={containerVariants}
           className="flex-1 lg:ml-64"
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="bg-surface rounded-xl shadow-sm overflow-hidden">
               <ProfileContent activeTab={activeTab} user={user} />
             </div>

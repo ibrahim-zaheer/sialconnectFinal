@@ -678,16 +678,10 @@ const ExporterProducts = () => {
                     <div className="flex justify-between items-start">
                       <div>
                         <h2 className="text-lg font-semibold text-neutral-900 line-clamp-2">
-                          {product.name}
+                          {product.name.charAt(0).toUpperCase() +
+                            product.name.slice(1).toLowerCase()}
                         </h2>
-                        {product?.supplier?.name && (
-                          <p className="text-sm text-neutral-600 mt-1">
-                            by{" "}
-                            <span className="font-medium text-primary-700">
-                              {product.supplier.name}
-                            </span>
-                          </p>
-                        )}
+
                         {/* <p className="text-primary-600 font-medium mt-1">
                           Rs {product.price?.toLocaleString() || "N/A"} per
                           piece
@@ -699,6 +693,17 @@ const ExporterProducts = () => {
 )} */}
 
                         <ProductPrice product={product} user={user} />
+
+                        {product?.supplier?.name && (
+                          <p className="text-sm text-neutral-600 mt-1">
+                            Supplier ({" "}
+                            <span className="font-medium text-primary-700">
+                              {product.supplier.name.charAt(0).toUpperCase() +
+                                product.supplier.name.slice(1).toLowerCase()}
+                            </span>{" "}
+                            )
+                          </p>
+                        )}
                       </div>
                       {role === "exporter" && (
                         <FavoriteToggle
@@ -716,11 +721,12 @@ const ExporterProducts = () => {
                           ? `${product.description.substring(0, 100)}...`
                           : product.description}
                       </p>
-                      {product.category && (
+
+                      {/* {product.category && (
                         <span className="inline-block mt-2 bg-neutral-100 text-neutral-800 text-xs px-2 py-1 rounded">
                           {product.category}
                         </span>
-                      )}
+                      )} */}
                     </div>
 
                     {product.image && (
@@ -759,11 +765,13 @@ const ExporterProducts = () => {
                 </motion.div>
               );
             })}
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
+            <div className="col-span-3">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </div>
           </motion.div>
         ) : (
           <motion.div

@@ -771,7 +771,7 @@ const SupplierOrderDetails = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen p-4 sm:p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="mx-auto space-y-6">
         {/* Header Section */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -822,17 +822,16 @@ const SupplierOrderDetails = () => {
               <DetailItem label="Exporter" value={order.exporterId?.name} />
               <DetailItem label="Supplier" value={order.supplierId?.name} />
               {order?.deliveryDays ? (
-                <>
-                Delievery Date: 
-                <DateDisplay date={order.deliveryDays} />
-                </>
+                <div className="my-3">
+                  Delievery Date:
+                  <DateDisplay date={order.deliveryDays} />
+                </div>
               ) : (
-                <DetailItem label="Delivery Date" value="Not set" />
+                <div>
+                  <DetailItem label="Delivery Date" value="Not set" />
+                </div>
                 // <></>
               )}
-
-   
-
             </div>
             <div className="space-y-4">
               <DetailItem label="Quantity" value={order.quantity} />
@@ -1207,7 +1206,7 @@ const SupplierOrderDetails = () => {
 
         {/* Rejection Reason */}
         {order.sampleStatus === "sample_rejected" && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="border border-red-200 rounded-lg p-4">
             <h3 className="text-base font-medium text-red-800 mb-1">
               Order Rejected
             </h3>

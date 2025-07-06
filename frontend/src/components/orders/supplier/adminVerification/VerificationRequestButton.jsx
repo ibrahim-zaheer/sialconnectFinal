@@ -160,7 +160,7 @@ function VerificationRequestModal({ isOpen, onClose, onSuccess }) {
                   <polyline points="17 8 12 3 7 8"></polyline>
                   <line x1="12" y1="3" x2="12" y2="15"></line>
                 </svg>
-                <p>Click to upload images or drag and drop</p>
+                <p>Click to upload images</p>
                 <p className="upload-hint">PNG, JPG up to 5MB</p>
               </div>
             </div>

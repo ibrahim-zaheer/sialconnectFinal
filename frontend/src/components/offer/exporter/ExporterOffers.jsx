@@ -224,10 +224,8 @@ export default function ExporterOffers() {
   const [orderIds, setOrderIds] = useState({});
   const navigate = useNavigate();
 
-
-  const [sortOrder, setSortOrder] = useState("desc"); 
+  const [sortOrder, setSortOrder] = useState("desc");
   const [statusFilter, setStatusFilter] = useState("all");
-
 
   const acceptedCount = offers.filter(
     (offer) => offer.status === "accepted"
@@ -292,7 +290,6 @@ export default function ExporterOffers() {
       }
     };
 
-    
     // const fetchOrderIds = async (acceptedOffers) => {
     //   const ids = {};
     //   console.log(
@@ -331,21 +328,21 @@ export default function ExporterOffers() {
     //   setOrderIds(ids);
     // };
     const fetchOrderIds = async (acceptedOffers) => {
-  try {
-    const offerIds = acceptedOffers.map((offer) => offer._id);
+      try {
+        const offerIds = acceptedOffers.map((offer) => offer._id);
 
-    const response = await axios.post(
-      "/api/order/orders/by-offer-ids",
-      { offerIds },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+        const response = await axios.post(
+          "/api/order/orders/by-offer-ids",
+          { offerIds },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
-    setOrderIds(response.data.orderMap || {});
-    console.log(response.data.orderMap || {});
-  } catch (error) {
-    console.error("Bulk fetch failed:", error);
-  }
-};
+        setOrderIds(response.data.orderMap || {});
+        console.log(response.data.orderMap || {});
+      } catch (error) {
+        console.error("Bulk fetch failed:", error);
+      }
+    };
 
     fetchOffers();
   }, [token]);
@@ -447,23 +444,24 @@ export default function ExporterOffers() {
         <h2 className="text-2xl font-bold text-primary-800 mb-6">
           Your Offers
         </h2>
-        <OfferStatusFilter
-  selectedStatus={statusFilter}
-  onChange={(status) => setStatusFilter(status)}
-/>
-<div className="mb-4 flex items-center gap-4">
-  <label className="font-medium text-sm">Sort By:</label>
-  <select
-    value={sortOrder}
-    onChange={(e) => setSortOrder(e.target.value)}
-    className="border border-gray-300 rounded px-3 py-1 text-sm"
-  >
-    <option value="desc">Newest First</option>
-    <option value="asc">Oldest First</option>
-  </select>
-</div>
 
-
+        <div className="flex justify-between items-center mb-5">
+          <OfferStatusFilter
+            selectedStatus={statusFilter}
+            onChange={(status) => setStatusFilter(status)}
+          />
+          <div className="flex items-center gap-4">
+            <label className="font-medium text-sm">Sort By:</label>
+            <select
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+              className="border border-gray-300 rounded px-3 py-1 text-sm"
+            >
+              <option value="desc">New</option>
+              <option value="asc">Old</option>
+            </select>
+          </div>
+        </div>
 
         <div className="flex justify-center gap-4 mb-6">
           <div className="bg-success-50 text-success-800 px-4 py-2 rounded-lg shadow-sm">
@@ -527,242 +525,250 @@ export default function ExporterOffers() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {
-            
-            // offers.map((offer) =>
+              // offers.map((offer) =>
               [...offers]
-  // .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .filter((offer) => statusFilter === "all" || offer.status === statusFilter)
-  // .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-  .sort((a, b) =>
-  sortOrder === "asc"
-    ? new Date(a.createdAt) - new Date(b.createdAt)
-    : new Date(b.createdAt) - new Date(a.createdAt)
-)
+                // .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .filter(
+                  (offer) =>
+                    statusFilter === "all" || offer.status === statusFilter
+                )
+                // .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .sort((a, b) =>
+                  sortOrder === "asc"
+                    ? new Date(a.createdAt) - new Date(b.createdAt)
+                    : new Date(b.createdAt) - new Date(a.createdAt)
+                )
 
-  .map((offer) =>
-            
-            (
-              <motion.div
-                key={offer._id}
-                whileHover={{ y: -5 }}
-                className="bg-surface rounded-xl shadow-sm border border-neutral-100 overflow-hidden"
-              >
-                <div className="p-6">
-                  <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-lg font-semibold text-primary-800">
-                      {offer.productId?.name || "Unnamed Product"}
-                    </h3>
-                    <span
-                      className={`px-2 py-1 text-xs rounded-full ${
-                        offer.status === "pending"
-                          ? "bg-accent-100 text-accent-800"
-                          : offer.status === "accepted"
-                          ? "bg-success-100 text-success-800"
-                          : "bg-error-100 text-error-800"
-                      }`}
-                    >
-                      {offer.status}
-                    </span>
-                  </div>
+                .map((offer) => (
+                  <motion.div
+                    key={offer._id}
+                    whileHover={{ y: -5 }}
+                    className="bg-surface rounded-xl shadow-sm border border-neutral-100 overflow-hidden"
+                  >
+                    <div className="p-6">
+                      <div className="flex justify-between items-start mb-4">
+                        <h3 className="text-lg font-semibold text-primary-800">
+                          {offer.productId?.name || "Unnamed Product"}
+                        </h3>
+                        <span
+                          className={`px-2 py-1 text-xs rounded-full ${
+                            offer.status === "pending"
+                              ? "bg-accent-100 text-accent-800"
+                              : offer.status === "accepted"
+                              ? "bg-success-100 text-success-800"
+                              : "bg-error-100 text-error-800"
+                          }`}
+                        >
+                          {offer.status}
+                        </span>
+                      </div>
 
-                  <div className="text-sm text-neutral-600 mb-2">
-                    Supplier: {offer.supplierId?.name || "Unknown Supplier"}
-                  </div>
+                      <div className="text-sm text-neutral-600 mb-2">
+                        Supplier: {offer.supplierId?.name || "Unknown Supplier"}
+                      </div>
 
-                  <div className="space-y-3 text-neutral-700">
-                    <div className="flex justify-between">
-                      <span>Price:</span>
-                      <span className="font-medium">{offer.price} Rs</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Quantity:</span>
-                      <span className="font-medium">{offer.quantity}</span>
-                    </div>
-                      {/* <div className="flex justify-between">
+                      <div className="space-y-3 text-neutral-700">
+                        <div className="flex justify-between">
+                          <span>Price:</span>
+                          <span className="font-medium">{offer.price} Rs</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Quantity:</span>
+                          <span className="font-medium">{offer.quantity}</span>
+                        </div>
+                        {/* <div className="flex justify-between">
                       <span>Delivery Days:</span>
                       <span className="font-medium">{offer.deliveryDays}</span>
                     </div> */}
                         {offer?.deliveryDays ? (
-                                              <>
-                                               <span>Days for Delivery:</span>
-                                                     <DateDisplay date={offer.deliveryDays} />
-                                                     </>
-                                                   ) : (
-                                                     <span>No delivery date set</span>
-                                                   )}
-                    <div className="flex justify-between border-b border-neutral-100 pb-3">
-                      <span>Total Value:</span>
-                      <span className="font-medium text-primary-700">
-                        {offer.quantity * offer.price} Rs
-                      </span>
-                    </div>
-
-                       {offer?.sample_needed ? (
-                      <div className="flex justify-between">
-                        <span>Sample Needed:</span>
-                        <span className="font-medium text-green-600">Yes</span>
-                      </div>
-                    ) : (
-                      <div className="flex justify-between">
-                        <span>Sample Needed:</span>
-                        <span className="font-medium text-red-600">No</span>
-                      </div>
-                    )}
-
-                    {offer.message && (
-                      <div className="pt-3">
-                        <p className="text-sm text-neutral-600">
-                          <span className="font-medium">Message:</span>{" "}
-                          {offer.message}
-                        </p>
-                      </div>
-                    )}
-
-                    {offer.history?.length > 0 && (
-                      <details className="mt-3">
-                        <summary className="text-sm font-medium text-primary-600 cursor-pointer">
-                          Offer History
-                        </summary>
-                        <ul className="mt-2 space-y-2 text-sm">
-                          {offer.history.map((entry, index) => (
-                            <li
-                              key={index}
-                              className="border-l-2 border-primary-200 pl-3"
-                            >
-                              <div className="flex justify-between">
-                                <span>Price:</span>
-                                <span>{entry.price} Rs</span>
-                              </div>
-                              <div className="flex justify-between">
-                                <span>Quantity:</span>
-                                <span>{entry.quantity}</span>
-                              </div>
-                              {entry.message && (
-                                <p className="text-neutral-600">
-                                  <span className="font-medium">Message:</span>{" "}
-                                  {entry.message}
-                                </p>
-                              )}
-                              <p className="text-xs text-neutral-500 mt-1">
-                                {new Date(entry.timestamp).toLocaleString()} •
-                                Updated by:{" "}
-                                {entry.updatedBy?.name || entry.updatedBy}
-                              </p>
-                            </li>
-                          ))}
-                        </ul>
-                      </details>
-                    )}
-
-                    <div className="text-xs text-neutral-500 mt-3">
-                      Created: {formatDate(offer.createdAt)}
-                    </div>
-
-                    {offer.counterOffer && (
-                      <div className="mt-4 p-3 bg-neutral-50 rounded-lg">
-                        <h4 className="text-sm font-medium text-primary-700 mb-2">
-                          Counteroffer Details
-                        </h4>
-                        <div className="flex justify-between text-sm">
-                          <span>New Price:</span>
-                          <span className="font-medium">
-                            {offer.counterOffer.price} Rs
+                          <>
+                            <span>Days for Delivery:</span>
+                            <DateDisplay date={offer.deliveryDays} />
+                          </>
+                        ) : (
+                          <span>No delivery date set</span>
+                        )}
+                        <div className="flex justify-between border-b border-neutral-100 pb-3">
+                          <span>Total Value:</span>
+                          <span className="font-medium text-primary-700">
+                            {offer.quantity * offer.price} Rs
                           </span>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span>New Quantity:</span>
-                          <span className="font-medium">
-                            {offer.counterOffer.quantity}
-                          </span>
+
+                        {offer?.sample_needed ? (
+                          <div className="flex justify-between">
+                            <span>Sample Needed:</span>
+                            <span className="font-medium text-green-600">
+                              Yes
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex justify-between">
+                            <span>Sample Needed:</span>
+                            <span className="font-medium text-red-600">No</span>
+                          </div>
+                        )}
+
+                        {offer.message && (
+                          <div className="pt-3">
+                            <p className="text-sm text-neutral-600">
+                              <span className="font-medium">Message:</span>{" "}
+                              {offer.message}
+                            </p>
+                          </div>
+                        )}
+
+                        {offer.history?.length > 0 && (
+                          <details className="mt-3">
+                            <summary className="text-sm font-medium text-primary-600 cursor-pointer">
+                              Offer History
+                            </summary>
+                            <ul className="mt-2 space-y-2 text-sm">
+                              {offer.history.map((entry, index) => (
+                                <li
+                                  key={index}
+                                  className="border-l-2 border-primary-200 pl-3"
+                                >
+                                  <div className="flex justify-between">
+                                    <span>Price:</span>
+                                    <span>{entry.price} Rs</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span>Quantity:</span>
+                                    <span>{entry.quantity}</span>
+                                  </div>
+                                  {entry.message && (
+                                    <p className="text-neutral-600">
+                                      <span className="font-medium">
+                                        Message:
+                                      </span>{" "}
+                                      {entry.message}
+                                    </p>
+                                  )}
+                                  <p className="text-xs text-neutral-500 mt-1">
+                                    {new Date(entry.timestamp).toLocaleString()}{" "}
+                                    • Updated by:{" "}
+                                    {entry.updatedBy?.name || entry.updatedBy}
+                                  </p>
+                                </li>
+                              ))}
+                            </ul>
+                          </details>
+                        )}
+
+                        <div className="text-xs text-neutral-500 mt-3">
+                          Created: {formatDate(offer.createdAt)}
                         </div>
-                          <div className="flex justify-between text-sm">
-                          <span>Delievery Days:</span>
-                          <span className="font-medium">
-                            {offer.counterOffer.deliveryDays}
-                          </span>
-                        </div>
-                         {/* <div className="flex justify-between text-sm">
+
+                        {offer.counterOffer && (
+                          <div className="mt-4 p-3 bg-neutral-50 rounded-lg">
+                            <h4 className="text-sm font-medium text-primary-700 mb-2">
+                              Counteroffer Details
+                            </h4>
+                            <div className="flex justify-between text-sm">
+                              <span>New Price:</span>
+                              <span className="font-medium">
+                                {offer.counterOffer.price} Rs
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span>New Quantity:</span>
+                              <span className="font-medium">
+                                {offer.counterOffer.quantity}
+                              </span>
+                            </div>
+                            <div className="flex justify-between text-sm">
+                              <span>Delievery Days:</span>
+                              <span className="font-medium">
+                                {offer.counterOffer.deliveryDays}
+                              </span>
+                            </div>
+                            {/* <div className="flex justify-between text-sm">
                           <span>Sample Needed:</span>
                           <span className="font-medium">
                             {offer.counterOffer.sample_needed}
                           </span>
                         </div> */}
 
-                         {offer?.counterOffer.sample_needed ? (
-                      <div className="flex justify-between">
-                        <span>Sample Needed:</span>
-                        <span className="font-medium text-green-600">Yes</span>
-                      </div>
-                    ) : (
-                      <div className="flex justify-between">
-                        <span>Sample Needed:</span>
-                        <span className="font-medium text-red-600">No</span>
-                      </div>
-                    )}
-                        {offer.counterOffer.message && (
-                          <p className="text-sm text-neutral-600 mt-2">
-                            <span className="font-medium">Message:</span>{" "}
-                            {offer.counterOffer.message}
-                          </p>
+                            {offer?.counterOffer.sample_needed ? (
+                              <div className="flex justify-between">
+                                <span>Sample Needed:</span>
+                                <span className="font-medium text-green-600">
+                                  Yes
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="flex justify-between">
+                                <span>Sample Needed:</span>
+                                <span className="font-medium text-red-600">
+                                  No
+                                </span>
+                              </div>
+                            )}
+                            {offer.counterOffer.message && (
+                              <p className="text-sm text-neutral-600 mt-2">
+                                <span className="font-medium">Message:</span>{" "}
+                                {offer.counterOffer.message}
+                              </p>
+                            )}
+                          </div>
+                        )}
+
+                        {offer.status === "accepted" && (
+                          <div className="mt-2">
+                            {orderIds[offer._id] === undefined ? (
+                              <div className="text-sm text-gray-500">
+                                Checking order status...
+                              </div>
+                            ) : orderIds[offer._id] ? (
+                              <button
+                                onClick={() => handleViewOrder(offer._id)}
+                                className="w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium"
+                              >
+                                View Order Details
+                              </button>
+                            ) : (
+                              <div className="text-sm text-yellow-600">
+                                Order processing not completed
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        {renderReminderButton(offer)}
+                        {offer.reminderActive && (
+                          <div className="text-xs text-green-600 mt-2 font-semibold">
+                            Reminders activated for this offer
+                          </div>
+                        )}
+
+                        {offer.status === "counter" && (
+                          <button
+                            onClick={() => setSelectedOffer(offer)}
+                            disabled={offer.updateCount >= 2}
+                            className={`mt-4 w-full px-4 py-2 rounded-lg text-sm font-medium ${
+                              offer.updateCount >= 2
+                                ? "bg-neutral-300 text-neutral-600 cursor-not-allowed"
+                                : "bg-primary-500 hover:bg-primary-600 text-white"
+                            }`}
+                          >
+                            {offer.updateCount >= 2
+                              ? "Update Limit Reached"
+                              : "Update Offer"}
+                          </button>
                         )}
                       </div>
-                    )}
+                    </div>
 
-                    {offer.status === "accepted" && (
-                  <div className="mt-2">
-                    {orderIds[offer._id] === undefined ? (
-                      <div className="text-sm text-gray-500">
-                        Checking order status...
-                      </div>
-                    ) : orderIds[offer._id] ? (
-                      <button
-                        onClick={() => handleViewOrder(offer._id)}
-                        className="w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium"
-                      >
-                        View Order Details
-                      </button>
-                    ) : (
-                      <div className="text-sm text-yellow-600">
-                        Order processing not completed
-                      </div>
+                    {selectedOffer && selectedOffer._id === offer._id && (
+                      <UpdateOffer
+                        offerId={selectedOffer._id}
+                        currentOffer={selectedOffer}
+                        onClose={() => setSelectedOffer(null)}
+                        onUpdate={handleUpdateOffer}
+                      />
                     )}
-                  </div>
-                )}
-
-                    {renderReminderButton(offer)}
-                    {offer.reminderActive && (
-                      <div className="text-xs text-green-600 mt-2 font-semibold">
-                        Reminders activated for this offer
-                      </div>
-                    )}
-
-                    {offer.status === "counter" && (
-                      <button
-                        onClick={() => setSelectedOffer(offer)}
-                        disabled={offer.updateCount >= 2}
-                        className={`mt-4 w-full px-4 py-2 rounded-lg text-sm font-medium ${
-                          offer.updateCount >= 2
-                            ? "bg-neutral-300 text-neutral-600 cursor-not-allowed"
-                            : "bg-primary-500 hover:bg-primary-600 text-white"
-                        }`}
-                      >
-                        {offer.updateCount >= 2
-                          ? "Update Limit Reached"
-                          : "Update Offer"}
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {selectedOffer && selectedOffer._id === offer._id && (
-                  <UpdateOffer
-                    offerId={selectedOffer._id}
-                    currentOffer={selectedOffer}
-                    onClose={() => setSelectedOffer(null)}
-                    onUpdate={handleUpdateOffer}
-                  />
-                )}
-                {/* {offer.status === "accepted" && (
+                    {/* {offer.status === "accepted" && (
             <button
               onClick={() => handleViewOrder(offer._id)}
               className="mt-4 w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg text-sm font-medium"
@@ -771,9 +777,9 @@ export default function ExporterOffers() {
               {orderIds[offer._id] ? "View Order Details" : "Loading Order..."}
             </button>
           )} */}
-                
-              </motion.div>
-            ))}
+                  </motion.div>
+                ))
+            }
           </div>
         )}
       </motion.div>

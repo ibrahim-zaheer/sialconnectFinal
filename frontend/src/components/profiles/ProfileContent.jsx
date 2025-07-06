@@ -61,7 +61,7 @@
 // const ProfileContent = ({ activeTab, user }) => {
 //   const currentUser = useSelector((state) => state.user);
 //   const userRole = currentUser?.role || user?.role;
-  
+
 //   const renderContent = () => {
 //     // For exporters, only show profile and offers tabs
 //     if (userRole === "exporter" && (activeTab === "payments" || activeTab === "reviews")) {
@@ -101,7 +101,6 @@
 
 // export default ProfileContent;
 
-
 import React from "react";
 import { motion } from "framer-motion";
 import ProfileInfo from "./ProfileInfo";
@@ -113,17 +112,16 @@ import ExporterReviews from "../reviews/ReviewsByExporter";
 import { useSelector } from "react-redux";
 import { useTranslation, Trans } from "react-i18next";
 
-
 const ProfileContent = ({ activeTab, user }) => {
-  const { t, ready } = useTranslation('profile');
+  const { t, ready } = useTranslation("profile");
   const currentUser = useSelector((state) => state.user);
   const userRole = currentUser?.role || user?.role;
-  
-  if (!ready) return <div>{t('loading', { defaultValue: "Loading..." })}</div>;
+
+  if (!ready) return <div>{t("loading", { defaultValue: "Loading..." })}</div>;
 
   const renderContent = () => {
     // For exporters, only show profile and offers tabs
-    if (userRole === "exporter" && (activeTab === "payments")) {
+    if (userRole === "exporter" && activeTab === "payments") {
       return null;
     }
 
@@ -139,7 +137,6 @@ const ProfileContent = ({ activeTab, user }) => {
       case "payments":
         return <PaymentListPage />;
       case "reviews":
-        
         return userRole === "exporter" ? (
           <ExporterReviews exporterId={user.id} />
         ) : (

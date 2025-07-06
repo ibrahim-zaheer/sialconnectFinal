@@ -1,5 +1,3 @@
-
-
 // import React, { useState } from "react";
 // import { useSelector } from "react-redux";
 // import { selectUser } from "../../redux/reducers/userSlice";
@@ -46,7 +44,6 @@
 //       );
 
 //       if (response.data.success) {
-    
 
 //         // ✅ Update UI with new offer details
 //         updateStatus(offerId, "counter", counterData.price, counterData.quantity);
@@ -123,7 +120,7 @@
 
 //                 <button
 //                   type="submit"
-                  
+
 //                   className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
 //                 >
 //                   Submit
@@ -138,7 +135,6 @@
 //     </div>
 //   );
 // }
-
 
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -163,7 +159,7 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
     setCounterData({ ...counterData, [e.target.name]: e.target.value });
   };
 
-    const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = (e) => {
     setCounterData({ ...counterData, sample_needed: e.target.checked }); // Update sample_needed value based on checkbox state
   };
 
@@ -181,7 +177,7 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
     //   return;
     // }
 
-        const deliveryDays = new Date(counterData.deliveryDays);
+    const deliveryDays = new Date(counterData.deliveryDays);
     if (isNaN(deliveryDays.getTime())) {
       setResponseMessage("Please enter a valid delivery date.");
       return;
@@ -191,7 +187,13 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
     setShowForm(false);
 
     // Optimistically update the UI before the API call
-    updateStatus(offerId, "counter", counterData.price, counterData.quantity, counterData.deliveryDays);
+    updateStatus(
+      offerId,
+      "counter",
+      counterData.price,
+      counterData.quantity,
+      counterData.deliveryDays
+    );
 
     try {
       const response = await axios.put(
@@ -207,16 +209,30 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
 
       if (response.data.success) {
         // Update UI with new offer details
-        updateStatus(offerId, "counter", counterData.price, counterData.quantity, counterData.deliveryDays);
+        updateStatus(
+          offerId,
+          "counter",
+          counterData.price,
+          counterData.quantity,
+          counterData.deliveryDays
+        );
         setShowForm(false);
         // Clear form fields for next use
-        setCounterData({ price: "", quantity: "", message: "", deliveryDays: "",sample_needed: false });
+        setCounterData({
+          price: "",
+          quantity: "",
+          message: "",
+          deliveryDays: "",
+          sample_needed: false,
+        });
 
         // Show success message temporarily
         setResponseMessage("Counteroffer sent successfully!");
         setTimeout(() => setResponseMessage(""), 3000);
       } else {
-        setResponseMessage(response.data.message || "Failed to send counteroffer.");
+        setResponseMessage(
+          response.data.message || "Failed to send counteroffer."
+        );
       }
     } catch (error) {
       console.error("Error sending counteroffer:", error);
@@ -234,16 +250,16 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
       >
         {disabled ? "Limit Reached" : "Counter Offer"}
       </button> */}
-   {disabled ? (
-  <p className="text-red-600 font-semibold mb-2">Limit Reached</p>
-) : (
-  <button
-    onClick={() => setShowForm(true)}
-    className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-  >
-    Counter Offer
-  </button>
-)}
+      {disabled ? (
+        <p className="text-red-600 font-semibold mb-2">Limit Reached</p>
+      ) : (
+        <button
+          onClick={() => setShowForm(true)}
+          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+        >
+          Counter Offer
+        </button>
+      )}
 
       {/* Popup Form */}
       {showForm && (
@@ -281,7 +297,7 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
                 className="p-2 border rounded"
               /> */}
 
-                 <input
+              <input
                 type="date" // Changed from number to date input for deliveryDate
                 name="deliveryDays"
                 placeholder="Delivery Date"
@@ -300,8 +316,8 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
                 onChange={handleChange}
                 className="p-2 border rounded"
               />
-               
-                {/* Sample Needed Checkbox */}
+
+              {/* Sample Needed Checkbox */}
               <div className="flex items-center mt-3">
                 <input
                   type="checkbox"
@@ -310,7 +326,10 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
                   onChange={handleCheckboxChange}
                   className="mr-2"
                 />
-                <label htmlFor="sample_needed" className="text-sm text-gray-700">
+                <label
+                  htmlFor="sample_needed"
+                  className="text-sm text-gray-700"
+                >
                   Sample Needed
                 </label>
               </div>
@@ -333,7 +352,9 @@ export default function CounterOffer({ offerId, updateStatus, disabled }) {
               </div>
             </form>
 
-            {responseMessage && <p className="text-sm mt-2">{responseMessage}</p>}
+            {responseMessage && (
+              <p className="text-sm mt-2">{responseMessage}</p>
+            )}
           </div>
         </div>
       )}

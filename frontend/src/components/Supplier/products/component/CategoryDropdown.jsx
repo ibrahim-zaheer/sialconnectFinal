@@ -61,7 +61,7 @@ const categories = [
   // "Automotive Parts",
   // "Renewable Energy Products",
   // "Furniture",
-  "Plastic Products",
+  // "Plastic Products",
   "Leather Goods",
   // "Handicrafts",
   "Packaging Materials",
@@ -70,10 +70,15 @@ const categories = [
   // "Glass Products",
   // "Defense Equipment",
   // "Aerospace Components",
-  "Other"
+  // "Other",
 ];
 
-const CategoryDropdown = ({ value, onChange, required = true, name = "category" }) => {
+const CategoryDropdown = ({
+  value,
+  onChange,
+  required = true,
+  name = "category",
+}) => {
   return (
     <select
       name={name}
@@ -82,7 +87,9 @@ const CategoryDropdown = ({ value, onChange, required = true, name = "category" 
       required={required}
       className="w-full px-4 pr-6 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
     >
-      <option value="" disabled>Select a category</option>
+      <option value="" disabled>
+        Select a category
+      </option>
       {categories.map((cat) => (
         <option key={cat} value={cat}>
           {cat}

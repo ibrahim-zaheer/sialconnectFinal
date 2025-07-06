@@ -1,5 +1,3 @@
-
-
 // import { useState } from "react";
 // import axios from "axios";
 
@@ -74,7 +72,6 @@
 //     </div>
 //   );
 // };
-
 
 // import { useState } from "react";
 // import axios from "axios";
@@ -151,7 +148,6 @@
 //   );
 // };
 
-
 import { useState } from "react";
 import axios from "axios";
 
@@ -166,9 +162,9 @@ export const OrderSent = ({ status, orderId, onSuccess, label }) => {
       const token = localStorage.getItem("token");
       const response = await axios.post(
         `/api/order/order/shipped`, // Endpoint for status update
-        { 
-          orderId, 
-          trackingId,  // Include the trackingId in the request body
+        {
+          orderId,
+          trackingId, // Include the trackingId in the request body
         },
         {
           headers: {
@@ -187,12 +183,12 @@ export const OrderSent = ({ status, orderId, onSuccess, label }) => {
 
   return (
     <div>
-      <input 
-        type="text" 
-        value={trackingId} 
+      <input
+        type="text"
+        value={trackingId}
         onChange={(e) => setTrackingId(e.target.value)} // Update trackingId on input change
-        placeholder="Enter Tracking Link" 
-        className="px-4 py-2 mb-4 border rounded-lg" 
+        placeholder="Enter Tracking Link"
+        className="px-4 py-2 mb-4 border rounded-lg"
       />
       <button
         onClick={handleStatusUpdate}
@@ -230,7 +226,7 @@ export const OrderSent = ({ status, orderId, onSuccess, label }) => {
         ) : status === "order_shipped" ? (
           "Order Shipped" // Display "Order Shipped" if the order is already shipped
         ) : (
-          label || "Order Sent" // Display the custom label if provided, otherwise show "Order Sent"
+          label || "Track" // Display the custom label if provided, otherwise show "Order Sent"
         )}
       </button>
       {message && <div className="text-sm mt-2 text-red-600">{message}</div>}
