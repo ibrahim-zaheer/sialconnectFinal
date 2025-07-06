@@ -1077,6 +1077,7 @@ const SupplierProducts = () => {
                           <h2 className="text-xl font-semibold text-neutral-900">
                             {product.name}
                           </h2>
+                          
                           <p className="text-primary-600 font-medium mt-1">
                             Rs {product.price.toLocaleString()} per piece
                           </p>
@@ -1156,6 +1157,16 @@ const SupplierProducts = () => {
                           </div>
                         )}
                       </div>
+                      {product?.supplier?.name && (
+                          <p className="text-sm text-neutral-600 mt-1">
+                            Supplier ({" "}
+                            <span className="font-medium text-primary-700">
+                              {product.supplier.name.charAt(0).toUpperCase() +
+                                product.supplier.name.slice(1).toLowerCase()}
+                            </span>{" "}
+                            )
+                          </p>
+                        )}
 
                       <div className="mt-4">
                         <p className="text-neutral-600 text-sm">
@@ -1188,6 +1199,7 @@ const SupplierProducts = () => {
                           />
                         </div>
                       )}
+                      
 
                       {/* <div className="mt-6 flex justify-between items-center">
                         <span className={`text-xs px-2 py-1 rounded-full ${

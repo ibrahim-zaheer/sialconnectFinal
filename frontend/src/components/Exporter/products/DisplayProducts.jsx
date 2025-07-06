@@ -10,7 +10,7 @@
 //   useEffect(() => {
 //     const fetchProducts = async () => {
 //       try {
-//         const response = await axios.get("/api/supplier/product/readAllProducts"); // API endpoint for all products
+//         const response = await axios.get("/api/supplier/product/readAllProducts"); // API endpoint for 
 //         setProducts(response.data);
 //       } catch (error) {
 //         console.error("Error fetching products:", error);
