@@ -1,6 +1,3 @@
-
-
-
 // import React, { useState } from "react";
 // import axios from "axios";
 // import OAuth from "./OAuth";
@@ -64,7 +61,7 @@
 //         dispatch(setUser(userData));
 //         localStorage.setItem("user", JSON.stringify(userData));
 //         localStorage.setItem("token", data.token);
-        
+
 //         // Redirect based on role
 //         if (data.role === "admin") {
 //           navigate("/admin");
@@ -102,9 +99,9 @@
 //                   Reset Your Password
 //                 </h2>
 //               </div>
-              
+
 //               <ForgotPasswordFlow />
-              
+
 //               <button
 //                 onClick={handleBackToLogin}
 //                 className="w-full mt-4 py-2 px-4 text-primary-700 hover:text-primary-800 font-medium rounded-lg transition-colors duration-300"
@@ -312,7 +309,6 @@
 
 // export default Auth;
 
-
 // import React, { useState } from "react";
 // import axios from "axios";
 // import OAuth from "./OAuth";
@@ -386,7 +382,7 @@
 //         dispatch(setUser(userData));
 //         localStorage.setItem("user", JSON.stringify(userData));
 //         localStorage.setItem("token", data.token);
-        
+
 //         // Redirect based on role
 //         if (data.role === "admin") {
 //           navigate("/admin");
@@ -424,9 +420,9 @@
 //                   Reset Your Password
 //                 </h2>
 //               </div>
-              
+
 //               <ForgotPasswordFlow />
-              
+
 //               <button
 //                 onClick={handleBackToLogin}
 //                 className="w-full mt-4 py-2 px-4 text-primary-700 hover:text-primary-800 font-medium rounded-lg transition-colors duration-300"
@@ -725,7 +721,8 @@ const Auth = () => {
   // Validate password strength
   const validatePassword = (password) => {
     // Minimum 6 characters, at least one letter, one number and one special character
-    const regex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
+    const regex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$/;
     if (!regex.test(password)) {
       setPasswordError(
         "Password must be at least 6 characters with a combination of letters, numbers, and special characters"
@@ -736,7 +733,7 @@ const Auth = () => {
     return true;
   };
 
-    // Validate name input (only letters and spaces)
+  // Validate name input (only letters and spaces)
   const validateName = (name) => {
     const regex = /^[a-zA-Z\s]*$/;
     if (!regex.test(name)) {
@@ -754,14 +751,14 @@ const Auth = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    
+
     // Validate password in real-time
     // if (name === "password") {
     //   validatePassword(value);
     // }
-     if (isRegister && name === "password") {
-    validatePassword(value);
-  }
+    if (isRegister && name === "password") {
+      validatePassword(value);
+    }
 
     if (name === "name") {
       validateName(value);
@@ -774,7 +771,7 @@ const Auth = () => {
     try {
       // Validate password during registration
       if (isRegister) {
-         if (!validateName(formData.name)) {
+        if (!validateName(formData.name)) {
           return;
         }
         if (!validatePassword(formData.password)) {
@@ -813,14 +810,17 @@ const Auth = () => {
           cnic: data.cnic,
           postalCode: data.postalCode,
           bio: data.bio,
-            subscription: data.subscription || { plan: 'free', expiryDate: null, paymentProviderId: null },
-          adminVerified:data.adminVerified,  
-            
+          subscription: data.subscription || {
+            plan: "free",
+            expiryDate: null,
+            paymentProviderId: null,
+          },
+          adminVerified: data.adminVerified,
         };
         dispatch(setUser(userData));
         localStorage.setItem("user", JSON.stringify(userData));
         localStorage.setItem("token", data.token);
-        
+
         if (data.role === "admin") {
           navigate("/admin");
         } else if (data.role === "supplier") {
@@ -844,28 +844,28 @@ const Auth = () => {
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-neutral-50 flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8 border border-neutral-200">
           {showForgotPassword ? (
-            <>
-              <div className="text-center mb-8">
+            <div className="w-full p-4">
+              <div className="text-center mb-4">
                 <h1 className="text-primary-700 font-bold text-3xl mb-2">
                   SialConnect
                 </h1>
                 <p className="text-neutral-500 text-sm mb-4">
                   Your Export Journey Starts Here
                 </p>
-                <h2 className="text-xl font-semibold text-neutral-800 mt-4 mb-0">
+                {/* <h2 className="text-xl font-semibold text-neutral-800 mt-4 mb-0">
                   Reset Your Password
-                </h2>
+                </h2> */}
               </div>
-              
+
               <ForgotPasswordFlow />
-              
+
               <button
                 onClick={handleBackToLogin}
-                className="w-full mt-4 py-2 px-4 text-primary-700 hover:text-primary-800 font-medium rounded-lg transition-colors duration-300"
+                className="w-full bg-blue-600 hover:bg-blue-700 mt-4 py-2 px-4 text-white font-medium rounded-lg transition-colors duration-300"
               >
-                ← Back to Login
+                <span className="text-lg font-bold">←</span> Back to Login
               </button>
-            </>
+            </div>
           ) : (
             <>
               <div className="text-center mb-8">
@@ -896,10 +896,10 @@ const Auth = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                         pattern="[a-zA-Z\s]+"
+                        pattern="[a-zA-Z\s]+"
                         title="Please enter a valid name (letters and spaces only)"
                       />
-                         {nameError && (
+                      {nameError && (
                         <p className="text-error text-xs mt-1">{nameError}</p>
                       )}
                     </div>
@@ -907,7 +907,7 @@ const Auth = () => {
                     {/* Role Select (only for Register) */}
                     <div className="space-y-2">
                       <label className="block text-neutral-700 text-sm font-medium">
-                        Account Type <span className="text-error">*</span>
+                        Role <span className="text-error">*</span>
                       </label>
                       <select
                         className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-neutral-50 text-neutral-800"
@@ -917,14 +917,10 @@ const Auth = () => {
                         required
                       >
                         <option value="" className="text-neutral-400" disabled>
-                          Select your account type
+                          Select Role
                         </option>
-                        <option value="exporter">
-                          Exporter (Looking for Suppliers)
-                        </option>
-                        <option value="supplier">
-                          Supplier (Offering Products)
-                        </option>
+                        <option value="exporter">Exporter</option>
+                        <option value="supplier">Supplier</option>
                       </select>
                     </div>
                   </>
@@ -951,33 +947,45 @@ const Auth = () => {
                     Password <span className="text-error">*</span>
                   </label>
                   <div className="relative">
-                  {/* <input */}
-                      {/* placeholder="At least 6 characters with letters, numbers, and special chars" */}
-                      {/* className={`w-full px-4 py-3 border ${ */}
-                        {/* passwordError ? "border-error" : "border-neutral-300" */}
-                      {/* } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-neutral-50`} */}
-                      {/* type={showPassword ? "text" : "password"} */}
-                      {/* name="password" */}
-                      {/* value={formData.password} */}
-                      {/* onChange={handleChange} */}
-                      {/* required */}
-                      {/* pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$" */}
-                      {/* title="Password must be at least 6 characters with a combination of letters, numbers, and special characters" */}
+                    {/* <input */}
+                    {/* placeholder="At least 6 characters with letters, numbers, and special chars" */}
+                    {/* className={`w-full px-4 py-3 border ${ */}
+                    {/* passwordError ? "border-error" : "border-neutral-300" */}
+                    {/* } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-neutral-50`} */}
+                    {/* type={showPassword ? "text" : "password"} */}
+                    {/* name="password" */}
+                    {/* value={formData.password} */}
+                    {/* onChange={handleChange} */}
+                    {/* required */}
+                    {/* pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{6,}$" */}
+                    {/* title="Password must be at least 6 characters with a combination of letters, numbers, and special characters" */}
                     {/* /> */}
-                    
-<input
-  placeholder={isRegister ? "At least 6 characters with letters, numbers, and special chars" : "Enter your password"}
-  className={`w-full px-4 py-3 border ${
-    passwordError && isRegister ? "border-error" : "border-neutral-300"
-  } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-neutral-50`}
-  type={showPassword ? "text" : "password"}
-  name="password"
-  value={formData.password}
-  onChange={handleChange}
-  required
-  pattern={isRegister ? "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{6,}$" : undefined}
-  title={isRegister ? "Password must be at least 6 characters with a combination of letters, numbers, and special characters" : undefined}
-/>
+
+                    <input
+                      placeholder={
+                        isRegister ? "Enter Password" : "Enter your password"
+                      }
+                      className={`w-full px-4 py-3 border ${
+                        passwordError && isRegister
+                          ? "border-error"
+                          : "border-neutral-300"
+                      } rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-neutral-50`}
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required
+                      pattern={
+                        isRegister
+                          ? "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{6,}$"
+                          : undefined
+                      }
+                      title={
+                        isRegister
+                          ? "Password must be at least 6 characters with a combination of letters, numbers, and special characters"
+                          : undefined
+                      }
+                    />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
@@ -1027,12 +1035,8 @@ const Auth = () => {
                   )}
                   {isRegister && (
                     <p className="text-neutral-500 text-xs mt-1">
-                      Password must be at least 6 characters and include:
-                      <ul className="list-disc pl-5">
-                        <li>At least one letter</li>
-                        <li>At least one number</li>
-                        <li>At least one special character (@$!%*#?&)</li>
-                      </ul>
+                      Password length 6 characters combination of letter,
+                      number, special characters
                     </p>
                   )}
                 </div>
@@ -1054,7 +1058,9 @@ const Auth = () => {
                       />
                       <button
                         type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                         className="absolute inset-y-0 right-0 flex items-center px-3 text-neutral-600 hover:text-primary-700"
                       >
                         {showConfirmPassword ? (
@@ -1115,7 +1121,7 @@ const Auth = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full bg-primary-700 hover:bg-primary-800 text-white py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-300 mt-6 font-medium shadow-md"
+                  className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-300 mt-6 font-medium shadow-md"
                 >
                   {isRegister ? "Create Account" : "Sign In"}
                 </button>

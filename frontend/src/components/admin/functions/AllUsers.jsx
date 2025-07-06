@@ -217,7 +217,6 @@
 
 // export default AllUsers;
 
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import UserFilters from "./UserFilters";
@@ -308,17 +307,23 @@ const AllUsers = () => {
 
   return (
     <div className="p-6 bg-neutral-50 min-h-screen pt-24">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-8xl px-6 mx-auto">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-neutral-800 mb-2">User Management</h2>
-          <p className="text-neutral-600">View and manage all registered users</p>
+          <h2 className="text-2xl font-bold text-neutral-800 mb-2">
+            User Management
+          </h2>
+          <p className="text-neutral-600">
+            View and manage all registered users
+          </p>
         </div>
 
         {/* Filters Section */}
         <div className="bg-white rounded-xl shadow-xs border border-neutral-200 p-6 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="lg:col-span-1">
-              <label className="block text-sm font-medium text-neutral-700 mb-1">Search</label>
+              <label className="block text-sm font-medium text-neutral-700 mb-1">
+                Search
+              </label>
               <input
                 type="text"
                 placeholder="Search users..."
@@ -327,9 +332,11 @@ const AllUsers = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">City</label>
+              <label className="block text-sm font-medium text-neutral-700 mb-1">
+                City
+              </label>
               <select
                 className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={city}
@@ -345,7 +352,9 @@ const AllUsers = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">Age Range</label>
+              <label className="block text-sm font-medium text-neutral-700 mb-1">
+                Age Range
+              </label>
               <select
                 className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={ageRangeIndex}
@@ -360,7 +369,9 @@ const AllUsers = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-700 mb-1">Role</label>
+              <label className="block text-sm font-medium text-neutral-700 mb-1">
+                Role
+              </label>
               <select
                 className="w-full px-4 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 value={role}
@@ -386,22 +397,42 @@ const AllUsers = () => {
               <table className="min-w-full divide-y divide-neutral-200">
                 <thead className="bg-neutral-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Name</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Email</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Role</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">City</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Business</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">DOB</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">Actions</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                      Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                      Role
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                      City
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                      Business
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                      DOB
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-neutral-200">
                   {filteredUsers.length > 0 ? (
                     filteredUsers.map((user) => (
-                      <tr key={user._id} className="hover:bg-neutral-50 transition-colors">
+                      <tr
+                        key={user._id}
+                        className="hover:bg-neutral-50 transition-colors"
+                      >
                         <td className="px-6 py-4 whitespace-nowrap">
-                          {user.role === "supplier" || user.role === "exporter" ? (
+                          {user.role === "supplier" ||
+                          user.role === "exporter" ? (
                             <a
                               href={`/admin/user/${user.role}/${user._id}`}
                               className="text-primary-600 hover:text-primary-800 font-medium hover:underline"
@@ -409,29 +440,54 @@ const AllUsers = () => {
                               {user.name}
                             </a>
                           ) : (
-                            <span className="text-neutral-900">{user.name}</span>
+                            <span className="text-neutral-900">
+                              {user.name}
+                            </span>
                           )}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-neutral-900">{user.email}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-neutral-900">
+                          {user.email}
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2.5 py-0.5 rounded-full text-xs font-medium capitalize" style={{
-                            backgroundColor: user.role === 'supplier' ? '#ECFDF5' : user.role === 'exporter' ? '#EEF2FF' : '#EFF6FF',
-                            color: user.role === 'supplier' ? '#065F46' : user.role === 'exporter' ? '#3730A3' : '#1E40AF'
-                          }}>
+                          <span
+                            className="px-2.5 py-0.5 rounded-full text-xs font-medium capitalize"
+                            style={{
+                              backgroundColor:
+                                user.role === "supplier"
+                                  ? "#ECFDF5"
+                                  : user.role === "exporter"
+                                  ? "#EEF2FF"
+                                  : "#EFF6FF",
+                              color:
+                                user.role === "supplier"
+                                  ? "#065F46"
+                                  : user.role === "exporter"
+                                  ? "#3730A3"
+                                  : "#1E40AF",
+                            }}
+                          >
                             {user.role}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-neutral-900">{user.city || "—"}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-neutral-900">{user.businessName || "—"}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-neutral-900">
+                          {user.city || "—"}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-neutral-900">
+                          {user.businessName || "—"}
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-neutral-900">
                           {user.dateOfBirth
                             ? new Date(user.dateOfBirth).toLocaleDateString()
                             : "—"}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                            user.status === 'suspended' ? 'bg-error-100 text-error-800' : 'bg-success-100 text-success-800'
-                          }`}>
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              user.status === "suspended"
+                                ? "bg-error-100 text-error-800"
+                                : "bg-success-100 text-success-800"
+                            }`}
+                          >
                             {user.status}
                           </span>
                         </td>
@@ -439,19 +495,24 @@ const AllUsers = () => {
                           <button
                             onClick={() => toggleUserStatus(user._id)}
                             className={`px-3 py-1 rounded-md text-sm font-medium ${
-                              user.status === 'active' 
-                                ? 'bg-warning-100 text-warning-800 hover:bg-warning-200' 
-                                : 'bg-success-100 text-success-800 hover:bg-success-200'
+                              user.status === "active"
+                                ? "bg-warning-100 text-warning-800 hover:bg-warning-200"
+                                : "bg-success-100 text-success-800 hover:bg-success-200"
                             } transition-colors`}
                           >
-                            {user.status === 'active' ? 'Suspend' : 'Reactivate'}
+                            {user.status === "active"
+                              ? "Suspend"
+                              : "Reactivate"}
                           </button>
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="8" className="px-6 py-4 text-center text-neutral-500">
+                      <td
+                        colSpan="8"
+                        className="px-6 py-4 text-center text-neutral-500"
+                      >
                         No users found matching your criteria
                       </td>
                     </tr>

@@ -38,12 +38,7 @@
 // UserRolePieChart.jsx
 import React from "react";
 import { Pie } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -67,34 +62,30 @@ const UserRolePieChart = ({ users, loading }) => {
   const options = {
     plugins: {
       legend: {
-        position: 'right',
+        position: "right",
         labels: {
-          color: '#111827', // text-primary
+          color: "#111827", // text-primary
           font: {
-            size: 14
+            size: 14,
           },
-          padding: 20
-        }
+          padding: 20,
+        },
       },
       tooltip: {
-        backgroundColor: '#1F2937', // neutral-800
-        titleColor: '#F9FAFB', // neutral-50
-        bodyColor: '#E5E7EB', // neutral-200
+        backgroundColor: "#1F2937", // neutral-800
+        titleColor: "#F9FAFB", // neutral-50
+        bodyColor: "#E5E7EB", // neutral-200
         padding: 12,
-        cornerRadius: 8
-      }
+        cornerRadius: 8,
+      },
     },
-    maintainAspectRatio: false
+    maintainAspectRatio: false,
   };
 
   return (
     <div className="h-full w-full">
       {!loading ? (
-        <Pie 
-          data={data} 
-          options={options} 
-          className="max-h-full"
-        />
+        <Pie data={data} options={options} className="max-h-full" />
       ) : (
         <div className="h-full flex items-center justify-center">
           <div className="w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
