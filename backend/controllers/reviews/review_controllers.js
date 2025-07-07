@@ -319,7 +319,7 @@ function initSocket(ioInstance, socketMap, socketIdGetter) {
 
 const submitReviewAndNotify = async (req, res) => {
   try {
-    const { supplierId, productName, rating, reviewText, orderId, reviewerRole } = req.body;
+    const { supplierId, productId,productName, rating, reviewText, orderId, reviewerRole } = req.body;
 
     // Validate required fields
     if (!supplierId || !productName || !rating || !reviewText || !orderId || !reviewerRole) {
@@ -341,6 +341,7 @@ const submitReviewAndNotify = async (req, res) => {
       reviewerRole, // The role of the reviewer (supplier/exporter)
       reviewedUser: reviewedUserId, // The user being reviewed (supplier)
       orderId, // Reference to the order
+       productId: productId || undefined,
       productName,
       rating: Number(rating),
       reviewText,
@@ -562,10 +563,131 @@ const checkReviewExists = async (req, res) => {
   }
 };
 
+// const getReviewsWithProduct = async (req, res) => {
+//   try {
+//     const reviews = await Review.find()
+//       .populate("user", "name email") // optional: show basic user info
+//       .populate("reviewedUser", "name email") // optional
+//       .populate({
+//         path: "orderId",
+//         populate: {
+//           path: "productId",
+//           model: "Product",
+//           select: "name description price image category", // limit fields
+//         },
+//       });
+
+//     res.status(200).json({
+//       success: true,
+//       count: reviews.length,
+//       data: reviews,
+//     });
+//   } catch (err) {
+//     console.error("Error fetching reviews:", err.message);
+//     res.status(500).json({
+//       success: false,
+//       error: "Server Error",
+//     });
+//   }
+// };
 
 
+// const getReviewsByProductId = async (req, res) => {
+//   const { productId } = req.params;
+
+//   try {
+//     const reviews = await Review.find()
+//       .populate({
+//         path: "orderId",
+//         match: { productId: productId }, // match productId in order
+//         populate: {
+//           path: "productId",
+//           model: "Product",
+//           select: "name image price category", // optional
+//         },
+//       })
+//       .populate("user", "name email") // optional: reviewer info
+//       .populate("reviewedUser", "name email"); // optional: who was reviewed
+
+//     // Filter out reviews where orderId was not matched
+//     const filteredReviews = reviews.filter(r => r.orderId !== null);
+
+//     res.status(200).json({
+//       success: true,
+//       count: filteredReviews.length,
+//       data: filteredReviews,
+//     });
+//   } catch (err) {
+//     console.error("Error fetching reviews by product ID:", err.message);
+//     res.status(500).json({
+//       success: false,
+//       error: "Server error",
+//     });
+//   }
+// };
+
+// const getReviewsByProductId = async (req, res) => {
+//   try {
+//     const { productId } = req.params;
+
+//     if (!productId) {
+//       return res.status(400).json({ message: "Product ID is required." });
+//     }
+
+//     const reviews = await Review.find({ productId }) // Only show approved reviews
+//       .populate("user", "name email profilePic") // Populating basic reviewer info
+//       .sort({ createdAt: -1 }); // Newest first
+
+//     if (reviews.length === 0) {
+//       return res.status(404).json({ message: "No reviews found for this product." });
+//     }
+
+//     res.status(200).json({ reviews });
+//   } catch (error) {
+//     console.error("Error fetching reviews by product ID:", error);
+//     res.status(500).json({
+//       message: "Server error while retrieving reviews.",
+//       error: error.message,
+//     });
+//   }
+// };
 
 
+const getReviewsByProductId = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { reviewerRole } = req.query;
+
+    if (!productId) {
+      return res.status(400).json({ message: "Product ID is required." });
+    }
+
+    const filter = {
+      productId,
+      
+    };
+
+    if (reviewerRole) {
+      filter.reviewerRole = reviewerRole;
+    }
+
+    const reviews = await Review.find(filter)
+      .populate("user", "name email profilePic")
+      .sort({ createdAt: -1 });
+
+    if (reviews.length === 0) {
+      return res.status(404).json({ message: "No reviews found for this product." });
+    }
+
+    res.status(200).json({ reviews });
+  } catch (error) {
+    console.error("Error fetching reviews by product ID:", error);
+    res.status(500).json({
+      message: "Server error while retrieving reviews.",
+      error: error.message,
+    });
+  }
+};
 
 // Export the functions for routes
-module.exports =  { WriteReview, getAllReviews, getReviewsBySupplier, getReviewsByExporter,submitReviewAndNotify,checkReviewExists,initSocket };
+module.exports =  { WriteReview, getAllReviews, getReviewsBySupplier, getReviewsByExporter,submitReviewAndNotify,checkReviewExists,initSocket ,getReviewsByProductId};

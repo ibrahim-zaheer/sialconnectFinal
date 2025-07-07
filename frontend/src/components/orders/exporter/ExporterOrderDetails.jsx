@@ -1518,11 +1518,15 @@ const ExporterOrderDetails = () => {
             <p className="text-gray-600 mb-4">
               Supplier: {order.supplierId?.name}
             </p>
+               <p className="text-gray-600 mb-4">
+              Product {order.productId?._id}
+            </p>
             <WriteReview
               supplierId={order.supplierId?._id}
               productName={order.productId?.name}
               reviewerRole={userRole}
               orderId={order._id}
+              productId={order.productId?._id}
             />
           </div>
         )}

@@ -4,7 +4,7 @@ const  authenticateMiddleware = require("../../middleware/authMiddleware");
 
 const  isAuthorized = require("../../middleware/isAuthorized");
 
-const {WriteReview,getAllReviews,getReviewsBySupplier,getReviewsByExporter,submitReviewAndNotify,checkReviewExists} = require("../../controllers/reviews/review_controllers")
+const {WriteReview,getAllReviews,getReviewsBySupplier,getReviewsByExporter,submitReviewAndNotify,checkReviewExists,getReviewsByProductId} = require("../../controllers/reviews/review_controllers")
 
 const router = express.Router();
 
@@ -22,6 +22,9 @@ router.get("/exporter/:exporterId",getReviewsByExporter);
 
 router.get('/check/:orderId', authenticateMiddleware,checkReviewExists);
 
+// router.get("/product", getReviewsWithProduct);
+
+router.get("/product/:productId", getReviewsByProductId);
 
 
 

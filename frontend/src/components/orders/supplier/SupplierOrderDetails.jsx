@@ -1228,6 +1228,7 @@ const SupplierOrderDetails = () => {
               productName={order.productId?.name}
               reviewerRole={userRole}
               orderId={order._id}
+              productId={order.productId?._id}
             />
           </div>
         )}

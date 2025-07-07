@@ -263,6 +263,8 @@ import BackButton from "../../BackButton";
 import RelatedProducts from "./RelatedProducts";
 import { ProductPrice } from "../../../pages/Exporter/components/ProductPrice";
 import BackButtonNewTab from "../../BackButtonNewTab";
+import ProductReviewCarousel from "../../../pages/Exporter/components/ProductReviewCarousel";
+import ProductReviewList from "./ProductReviewList";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -295,11 +297,19 @@ const ProductDetails = () => {
     fetchProductDetails();
   }, [id]);
 
+  // const handleBackClick = () => {
+  //   // navigate(`/SupplierProducts?tab=${activeTab}`);
+  //     // navigate(-1); 
+  //      navigate(`/ExporterProducts?tab=${activeTab}`);
+  // };
   const handleBackClick = () => {
-    // navigate(`/SupplierProducts?tab=${activeTab}`);
-      // navigate(-1); 
-       navigate(`/ExporterProducts?tab=${activeTab}`);
-  };
+  if (role === "exporter") {
+    navigate(`/ExporterProducts?tab=${activeTab}`);
+  } else if (role === "supplier") {
+    navigate("/SupplierProducts");
+  }
+};
+
   // Handle delete functionality
   const handleDelete = async () => {
     try {
@@ -502,6 +512,12 @@ const ProductDetails = () => {
                   <h1 className="text-3xl font-bold text-gray-900">
                     {product.name}
                   </h1>
+                        
+                     
+                   <ProductReviewList productId={product?._id} limit={1} /> 
+
+                        
+                   {/* <ProductReviewCarousel productId={product?._id} limit={1} />
                   {/* <h1 className="text-3xl font-bold text-gray-900">{subscription}</h1> */}
 
                   {/* <div className="flex items-center mt-2">

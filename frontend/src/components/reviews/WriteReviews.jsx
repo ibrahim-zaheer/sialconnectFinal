@@ -322,7 +322,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import MessageSelector from "../MessageSelector";
 
-const WriteReview = ({ supplierId, productName, reviewerRole, orderId }) => {
+const WriteReview = ({ supplierId, productName, reviewerRole, orderId,productId }) => {
   const [rating, setRating] = useState(1);
   const [reviewText, setReviewText] = useState("");
   const [loading, setLoading] = useState(false);
@@ -364,6 +364,7 @@ const WriteReview = ({ supplierId, productName, reviewerRole, orderId }) => {
         "/api/reviews", 
         { 
           supplierId, 
+           productId, 
           productName, 
           rating, 
           reviewText, 
@@ -423,6 +424,8 @@ const WriteReview = ({ supplierId, productName, reviewerRole, orderId }) => {
             className="w-full p-2 border rounded-lg bg-gray-200"
           />
         </div>
+
+        
 
         {/* Rating */}
         <div>
