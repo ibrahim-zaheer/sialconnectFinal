@@ -236,7 +236,14 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     //origin: "http://localhost:5173", // Vite default dev server URL
-    origin: ["http://localhost:5173", "http://localhost:5174","http://localhost:5175","https://sialconnect-final-n013b7tin-ibrahim-zaheers-projects.vercel.app/"],
+    // origin: ["http://localhost:5173", "http://localhost:5174","http://localhost:5175"],
+      origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175",
+      "https://sialconnect-final-n013b7tin-ibrahim-zaheers-projects.vercel.app",
+      "https://*.vercel.app",
+    ],
     // origin: ["*"],
 
   },
