@@ -528,11 +528,11 @@ const ProfileInfo = () => {
               className="mt-10 flex flex-wrap justify-between items-center gap-4"
             >
               {/* <VerifyEmailButton className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" /> */}
-              {!user.emailVerified && (
+              {!user.emailVerified && user.role == "exporter" && (
                 <VerifyEmailButton className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" />
               )}
 
-              <LogoutButton className="px-6 py-3 bg-gradient-to-r from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-400 text-gray-800 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" />
+              {/* <LogoutButton className="px-6 py-3 bg-gradient-to-r from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-400 text-gray-800 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" /> */}
               {user.emailVerified && (
                 <div className="flex items-center mt-1">
                   <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full flex items-center">

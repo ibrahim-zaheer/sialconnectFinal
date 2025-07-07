@@ -801,6 +801,7 @@ const Auth = () => {
           name: data.name,
           email: data.email,
           role: data.role,
+           emailVerified:data. emailVerified,
           profilePicture: data.profilePicture,
           dateOfBirth: data.dateOfBirth,
           phoneNumber: data.phoneNumber,
