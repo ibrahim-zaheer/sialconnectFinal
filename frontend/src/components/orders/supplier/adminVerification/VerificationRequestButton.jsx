@@ -513,7 +513,7 @@ export default function VerificationRequestButton({
           disabled ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >
-        Request Supplier Verification
+        Verify Account
       </button>
       <style jsx>{`
         .request-button {
