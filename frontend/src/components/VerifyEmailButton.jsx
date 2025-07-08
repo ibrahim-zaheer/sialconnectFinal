@@ -10,7 +10,7 @@ const VerifyEmailButton = () => {
   return (
     <div className="flex justify-center items-center">
       <button
-        className="mt-2 border-1 px-5 py-2 text-[1rem] rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-all duration-300"
+        className="border-1 px-5 py-2 text-[1rem] rounded-lg bg-green-600 hover:bg-green-700 hover:to-emerald-700 text-white"
         onClick={handleEmail}
       >
         Verify Email

@@ -168,9 +168,9 @@ const Footer = () => {
       </div>
 
       {/* Copyright */}
-      <div className="max-w-7xl mx-auto pt-8 mt-8 border-t border-neutral-800">
+      <div className="max-w-7xl mx-auto pt-8 mt-8 border-t border-neutral-500">
         <div className="flex flex-col md:flex-row justify-between items-center text-sm text-neutral-400">
-          <p>
+          <p className="w-full text-center">
             &copy; {new Date().getFullYear()} SialConnect.{" "}
             {t("All rights reserved.")}
           </p>

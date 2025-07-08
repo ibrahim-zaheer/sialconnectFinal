@@ -190,7 +190,7 @@ const ProfileInfo = () => {
           className="bg-white rounded-2xl shadow-xl overflow-hidden transform transition-all hover:shadow-2xl"
         >
           {/* Gradient Header */}
-          <div className="relative h-48 bg-gradient-to-r from-indigo-600 to-purple-600">
+          <div className="relative h-36 bg-gradient-to-r from-indigo-600 to-purple-600">
             <div className="absolute -bottom-16 left-6">
               <div className="relative group">
                 <img
@@ -285,29 +285,63 @@ const ProfileInfo = () => {
                   />
                 )}
 
-                <motion.button
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => setShowProfileUpdateForm((prev) => !prev)}
-                  className="flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all shadow-md"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                <div className="flex items-center gap-5">
+                  {/* Action Buttons */}
+                  <motion.div
+                    variants={itemVariants}
+                    className="flex flex-wrap justify-between items-center gap-4"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                    />
-                  </svg>
-                  Edit Profile
-                </motion.button>
+                    {/* <VerifyEmailButton className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" /> */}
+                    {!user.emailVerified && user.role == "exporter" && (
+                      <VerifyEmailButton className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" />
+                    )}
+
+                    {/* <LogoutButton className="px-6 py-3 bg-gradient-to-r from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-400 text-gray-800 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" /> */}
+                    {user.emailVerified && (
+                      <div className="flex items-center">
+                        <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full flex items-center">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-3 w-3 mr-1"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          Email Verified
+                        </span>
+                      </div>
+                    )}
+                  </motion.div>
+
+                  <motion.button
+                    variants={itemVariants}
+                    // whileHover={{ scale: 1.05 }}
+                    // whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowProfileUpdateForm((prev) => !prev)}
+                    className="flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg transition-all shadow-md"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-2"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      />
+                    </svg>
+                    Edit Profile
+                  </motion.button>
+                </div>
               </div>
             </div>
 
@@ -522,38 +556,6 @@ const ProfileInfo = () => {
                   </div>
                 </div>
               </motion.div>
-            </motion.div>
-
-            {/* Action Buttons */}
-            <motion.div
-              variants={itemVariants}
-              className="mt-10 flex flex-wrap justify-between items-center gap-4"
-            >
-              {/* <VerifyEmailButton className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" /> */}
-              {!user.emailVerified && user.role == "exporter" && (
-                <VerifyEmailButton className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" />
-              )}
-
-              {/* <LogoutButton className="px-6 py-3 bg-gradient-to-r from-gray-200 to-gray-300 hover:from-gray-300 hover:to-gray-400 text-gray-800 rounded-lg transition-all shadow-md hover:shadow-lg flex items-center" /> */}
-              {user.emailVerified && (
-                <div className="flex items-center mt-1">
-                  <span className="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full flex items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-3 w-3 mr-1"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Email Verified
-                  </span>
-                </div>
-              )}
             </motion.div>
           </div>
         </motion.div>

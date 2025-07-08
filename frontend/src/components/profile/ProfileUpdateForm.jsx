@@ -481,7 +481,7 @@ export default function ProfileUpdateForm({ onClose }) {
               {/* City - Now a dropdown */}
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">
-                  City
+                  City <span className="text-red-600">*</span>
                 </label>
                 <select
                   name="city"
@@ -505,7 +505,7 @@ export default function ProfileUpdateForm({ onClose }) {
               {/* CNIC */}
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">
-                  CNIC
+                  CNIC <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -526,7 +526,7 @@ export default function ProfileUpdateForm({ onClose }) {
               {/* Phone Number */}
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">
-                  Phone Number
+                  Phone Number <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -548,7 +548,7 @@ export default function ProfileUpdateForm({ onClose }) {
               {/* Business Name */}
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">
-                  Business Name
+                  Business Name <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -570,7 +570,7 @@ export default function ProfileUpdateForm({ onClose }) {
               {/* Business Address */}
               <div className="space-y-1 md:col-span-2">
                 <label className="block text-sm font-medium text-gray-700">
-                  Business Address
+                  Business Address <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -594,7 +594,7 @@ export default function ProfileUpdateForm({ onClose }) {
               {/* Postal Code */}
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">
-                  Postal Code
+                  Postal Code <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -616,7 +616,7 @@ export default function ProfileUpdateForm({ onClose }) {
               {/* Date of Birth */}
               <div className="space-y-1">
                 <label className="block text-sm font-medium text-gray-700">
-                  Date of Birth
+                  Date of Birth <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="date"
@@ -640,7 +640,7 @@ export default function ProfileUpdateForm({ onClose }) {
             {/* Bio */}
             <div className="space-y-1">
               <label className="block text-sm font-medium text-gray-700">
-                Bio
+                Bio <span className="text-red-600">*</span>
               </label>
               <textarea
                 name="bio"
