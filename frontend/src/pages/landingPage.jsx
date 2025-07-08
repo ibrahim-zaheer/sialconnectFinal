@@ -1,5 +1,3 @@
-
-
 // import React, { useState, useRef, useEffect } from "react";
 // import { motion } from "framer-motion";
 // import { useNavigate } from "react-router-dom";
@@ -652,6 +650,490 @@
 //   );
 // }
 
+// import React, { useState, useRef, useEffect } from "react";
+// import { motion } from "framer-motion";
+// import { useNavigate } from "react-router-dom";
+// import { useTranslation, Trans } from "react-i18next";
+// import "../assets/css/landingPage.css";
+// import heroImage from "../assets/images/sial.jpg";
+// import Footer from "./footer";
+// import ProductSearch from "../components/ProductSearch";
+// import TopProducts from "../components/TopProducts";
+// import TopSuppliers from "../components/TopSuppliers";
+// import RecommendedProducts from "../components/Exporter/products/RecommendedProducts";
+// import { useSelector } from "react-redux";
+// import PricingPage from "./pricing/PricingPage";
+
+// /* ────────────────────────────────────────────────────────────
+//    Animation variants
+//    ──────────────────────────────────────────────────────────── */
+// const containerVariants = {
+//   hidden: { opacity: 0 },
+//   visible: {
+//     opacity: 1,
+//     transition: { staggerChildren: 0.1, delayChildren: 0.3 },
+//   },
+// };
+// const itemVariants = {
+//   hidden: { y: 20, opacity: 0 },
+//   visible: { y: 0, opacity: 1, transition: { duration: 0.6, ease: "easeOut" } },
+// };
+// const fadeIn = {
+//   hidden: { opacity: 0 },
+//   visible: { opacity: 1, transition: { duration: 0.8, ease: "easeOut" } },
+// };
+// const scaleUp = {
+//   hidden: { scale: 0.95, opacity: 0 },
+//   visible: {
+//     scale: 1,
+//     opacity: 1,
+//     transition: { duration: 0.8, ease: "easeOut" },
+//   },
+// };
+
+// /* ────────────────────────────────────────────────────────────
+//    Neural-network background (pure Canvas)
+//    ──────────────────────────────────────────────────────────── */
+// const NeuralBackground = () => {
+//   const canvasRef = useRef(null);
+
+//   useEffect(() => {
+//     const canvas = canvasRef.current;
+//     const ctx = canvas.getContext("2d");
+
+//     /* resize for Hi-DPI */
+//     const resize = () => {
+//       const { innerWidth: w, innerHeight: h, devicePixelRatio: dpr } = window;
+//       canvas.width = w * dpr;
+//       canvas.height = h * dpr;
+//       canvas.style.width = `${w}px`;
+//       canvas.style.height = `${h}px`;
+//       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+//     };
+//     resize();
+//     window.addEventListener("resize", resize);
+
+//     /* node logic */
+//     const COUNT = 40;
+//     const MAX_DIST = 160;
+//     const SPEED = 0.4;
+//     let nodes = Array.from({ length: COUNT }, () => ({
+//       x: Math.random() * window.innerWidth,
+//       y: Math.random() * window.innerHeight,
+//       vx: (Math.random() - 0.5) * SPEED,
+//       vy: (Math.random() - 0.5) * SPEED,
+//       r: Math.random() * 2 + 1.2,
+//     }));
+
+//     const step = () => {
+//       nodes.forEach((n) => {
+//         n.x += n.vx;
+//         n.y += n.vy;
+//         if (n.x < 0 || n.x > window.innerWidth) n.vx *= -1;
+//         if (n.y < 0 || n.y > window.innerHeight) n.vy *= -1;
+//       });
+//     };
+
+//     const draw = () => {
+//       ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+//       /* connections */
+//       for (let i = 0; i < nodes.length; i++) {
+//         for (let j = i + 1; j < nodes.length; j++) {
+//           const dx = nodes[i].x - nodes[j].x;
+//           const dy = nodes[i].y - nodes[j].y;
+//           const d = Math.hypot(dx, dy);
+//           if (d < MAX_DIST) {
+//             const o = 1 - d / MAX_DIST;
+//             ctx.strokeStyle = `rgba(99,102,241,${o * 0.25})`;
+//             ctx.beginPath();
+//             ctx.moveTo(nodes[i].x, nodes[i].y);
+//             ctx.lineTo(nodes[j].x, nodes[j].y);
+//             ctx.stroke();
+//           }
+//         }
+//       }
+//       /* nodes */
+//       ctx.fillStyle = "rgba(99,102,241,0.9)";
+//       nodes.forEach((n) => {
+//         ctx.beginPath();
+//         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+//         ctx.fill();
+//       });
+//     };
+
+//     let raf;
+//     const loop = () => {
+//       step();
+//       draw();
+//       raf = requestAnimationFrame(loop);
+//     };
+//     loop();
+
+//     return () => {
+//       cancelAnimationFrame(raf);
+//       window.removeEventListener("resize", resize);
+//     };
+//   }, []);
+
+//   return (
+//     <canvas
+//       ref={canvasRef}
+//       className="absolute inset-0 w-full h-full max-h-screen pointer-events-none opacity-60 z-10"
+//     />
+//   );
+// };
+
+// /* ────────────────────────────────────────────────────────────
+//    Landing Page
+//    ──────────────────────────────────────────────────────────── */
+// export default function LandingPage() {
+//   const { t } = useTranslation();
+//   const user = useSelector((s) => s.user);
+//   const [query, setQuery] = useState("");
+//   const navigate = useNavigate();
+
+//   /* testimonials carousel */
+//   const testimonials = t("testimonials.quotes", { returnObjects: true }) ?? [];
+//   const [idx, setIdx] = useState(0);
+//   const [auto, setAuto] = useState(true);
+
+//   useEffect(() => {
+//     if (!auto || testimonials.length <= 1) return;
+//     const id = setInterval(
+//       () => setIdx((i) => (i === testimonials.length - 1 ? 0 : i + 1)),
+//       5000
+//     );
+//     return () => clearInterval(id);
+//   }, [auto, testimonials.length]);
+
+//   const goTo = (i) => {
+//     setAuto(false);
+//     setIdx(i);
+//     setTimeout(() => setAuto(true), 10000);
+//   };
+
+//   // const heroImage =
+//   //   "https://www.just-style.com/wp-content/uploads/sites/27/2024/08/pak.jpg";
+
+//   return (
+//     <div className="min-h-screen mx-auto bg-white text-gray-900 mt-10 font-sans">
+//       {/* ────────── Hero ────────── */}
+//       <section className="relative w-full min-h-[90vh] flex items-center px-4 sm:px-8 lg:px-16 xl:px-24 overflow-hidden">
+//         <div className="absolute inset-0 z-0" />
+//         <NeuralBackground />
+
+//         <motion.div
+//           className="container mx-auto flex flex-col-reverse lg:flex-row items-center justify-between gap-16 px-4 sm:px-8 lg:px-0 relative z-20"
+//           initial="hidden"
+//           animate="visible"
+//           variants={containerVariants}
+//         >
+//           {/* text */}
+//           <div className="lg:w-1/2 space-y-6 text-center lg:text-left">
+//             <motion.h1
+//               variants={itemVariants}
+//               className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight drop-shadow-xl"
+//             >
+//               <Trans
+//                 i18nKey="hero.title"
+//                 components={{ 1: <span className="text-indigo-600" /> }}
+//               />
+//             </motion.h1>
+//             <motion.p
+//               variants={itemVariants}
+//               className="text-lg md:text-xl max-w-2xl mx-auto lg:mx-0"
+//             >
+//               {t("hero.description")}
+//             </motion.p>
+//             <motion.div variants={itemVariants}>
+//               <ProductSearch
+//                 value={query}
+//                 onChange={(e) => setQuery(e.target.value)}
+//                 onKeyPress={(e) =>
+//                   e.key === "Enter" &&
+//                   query.trim() &&
+//                   navigate(
+//                     `/SupplierProducts?search=${encodeURIComponent(
+//                       query.trim()
+//                     )}`
+//                   )
+//                 }
+//                 onProductSelect={(p) => navigate(`/supplier/product/${p._id}`)}
+//               />
+//             </motion.div>
+//           </div>
+
+//           {/* image */}
+//           <motion.div variants={scaleUp} className="lg:w-1/2 lg:mt-0">
+//             <div className="relative">
+//               <div className="absolute -inset-4 bg-indigo-500/20 rounded-2xl rotate-3" />
+//               <img
+//                 src={heroImage}
+//                 alt="Industry"
+//                 className="relative rounded-2xl shadow-xl object-cover w-full border border-indigo-400/40"
+//                 onError={(e) =>
+//                   (e.target.src =
+//                     "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&auto=format&fit=crop")
+//                 }
+//               />
+//               <motion.div
+//                 initial={{ opacity: 0, y: 20 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ delay: 0.8 }}
+//                 className="absolute -bottom-6 -right-6 bg-indigo-900/90 p-4 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm"
+//               >
+//                 <div className="flex items-center">
+//                   <div className="bg-indigo-500/20 p-3 rounded-lg mr-3 border border-indigo-400/30">
+//                     <svg
+//                       className="h-6 w-6 text-indigo-300"
+//                       fill="none"
+//                       viewBox="0 0 24 24"
+//                       stroke="currentColor"
+//                     >
+//                       <path
+//                         strokeLinecap="round"
+//                         strokeLinejoin="round"
+//                         strokeWidth="2"
+//                         d="M13 10V3L4 14h7v7l9-11h-7z"
+//                       />
+//                     </svg>
+//                   </div>
+//                   <div>
+//                     <p className="font-bold text-white">
+//                       {t("hero.stats.matches")}
+//                     </p>
+//                     <p className="text-sm text-indigo-200">
+//                       {t("hero.stats.matchesLabel")}
+//                     </p>
+//                   </div>
+//                 </div>
+//               </motion.div>
+//             </div>
+//           </motion.div>
+//         </motion.div>
+//       </section>
+
+//       {/* ────────── Best-selling ────────── */}
+//       <motion.section
+//         initial="hidden"
+//         whileInView="visible"
+//         viewport={{ once: true, margin: "-100px" }}
+//         variants={containerVariants}
+//         className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 mx-auto py-16"
+//       >
+//         {/* <motion.div variants={itemVariants} className="text-center mb-12">
+//           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+//             {t("bestSelling.title")}
+//           </h2>
+//           <p className="text-gray-500">{t("bestSelling.description")}</p>
+//         </motion.div> */}
+
+//         {/* Grid for Top Products */}
+//         <motion.div
+//           variants={itemVariants}
+//           className="w-full md:max-w-5xl mx-auto px-4 sm:px-6 lg:px-8"
+//         >
+//           <TopProducts />
+//         </motion.div>
+
+//         <motion.div variants={itemVariants} className="text-center mt-12">
+//           <button
+//             className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all shadow-md"
+//             onClick={() => navigate("/ExporterProducts")}
+//           >
+//             {t("bestSelling.seeAll")}
+//           </button>
+//         </motion.div>
+//       </motion.section>
+
+//       {/* ────────── CTA ────────── */}
+//       <motion.section
+//         initial="hidden"
+//         whileInView="visible"
+//         viewport={{ once: true }}
+//         variants={fadeIn}
+//         className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 mx-auto my-20 bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-xl py-12 text-white"
+//       >
+//         <div className="max-w-2xl  mx-auto text-center">
+//           <motion.h2
+//             variants={itemVariants}
+//             className="text-2xl md:text-3xl font-bold mb-4"
+//           >
+//             {t("cta.title")}
+//           </motion.h2>
+//           <motion.p variants={itemVariants} className="mb-8 text-indigo-100">
+//             {t("cta.description")}
+//           </motion.p>
+//           <motion.div
+//             variants={itemVariants}
+//             className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap"
+//           >
+//             <button
+//               className="bg-white text-indigo-800 hover:bg-gray-100 px-6 py-3 rounded-lg transition-all shadow-md"
+//               onClick={() => navigate("/ExporterProducts")}
+//             >
+//               {t("cta.buttons.explore")}
+//             </button>
+//             {!user.role && (
+//               <button
+//                 className="border border-white text-white hover:bg-indigo-700 px-6 py-3 rounded-lg transition-all"
+//                 onClick={() => navigate("/signIn")}
+//               >
+//                 {t("cta.buttons.signUp")}
+//               </button>
+//             )}
+//           </motion.div>
+//         </div>
+//       </motion.section>
+
+//       {/* ────────── Suppliers ────────── */}
+//       {/* <motion.section
+//         initial="hidden"
+//         whileInView="visible"
+//         viewport={{ once: true, margin: "-100px" }}
+//         variants={containerVariants}
+//         className="w-[90vw] md:w-[80vw] mx-auto py-16"
+//       >
+//         <motion.div variants={itemVariants} className="text-center mb-12">
+//           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+//             {t("suppliers.title")}
+//           </h2>
+//           <p className="text-gray-500">{t("suppliers.description")}</p>
+//         </motion.div>
+//         <TopSuppliers />
+//       </motion.section> */}
+
+//       {/* ────────── Recommended Products ────────── */}
+//       <motion.section
+//         initial="hidden"
+//         whileInView="visible"
+//         viewport={{ once: true, margin: "-100px" }}
+//         variants={containerVariants}
+//         className="w-[90vw] md:max-w-6xl mx-auto py-16"
+//       >
+//         <RecommendedProducts maxItems={3} />
+//       </motion.section>
+
+//       {user?.role === "exporter" && <PricingPage />}
+
+//       {/* ────────── Testimonials ────────── */}
+//       {testimonials.length > 0 && (
+//         <motion.section
+//           initial="hidden"
+//           whileInView="visible"
+//           viewport={{ once: true }}
+//           variants={containerVariants}
+//           className="w-full max-w-5xl px-4 sm:px-6 lg:px-8 mx-auto py-20 relative"
+//         >
+//           <motion.div variants={itemVariants} className="text-center mb-12">
+//             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+//               {t("testimonials.title")}
+//             </h2>
+//             <p className="text-gray-500">{t("testimonials.description")}</p>
+//           </motion.div>
+
+//           {/* arrows */}
+//           <button
+//             onClick={() => goTo(idx === 0 ? testimonials.length - 1 : idx - 1)}
+//             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gray-200 hover:bg-gray-300 p-3 rounded-full shadow-md -ml-4"
+//             aria-label="Prev"
+//           >
+//             <svg
+//               className="w-5 h-5 text-gray-700"
+//               fill="none"
+//               stroke="currentColor"
+//               viewBox="0 0 24 24"
+//             >
+//               <path
+//                 strokeLinecap="round"
+//                 strokeLinejoin="round"
+//                 strokeWidth="2"
+//                 d="M15 19l-7-7 7-7"
+//               />
+//             </svg>
+//           </button>
+
+//           {/* carousel */}
+//           <div className="overflow-hidden">
+//             <div
+//               className="flex transition-transform duration-500 w-full flex-nowrap"
+//               style={{ transform: `translateX(-${idx * 100}%)` }}
+//             >
+//               {testimonials.map((tst, i) => (
+//                 <motion.div
+//                   key={i}
+//                   className="w-full flex-shrink-0 px-4 sm:px-6"
+//                   initial={{ opacity: 0 }}
+//                   animate={{ opacity: 1 }}
+//                 >
+//                   <div
+//                     className={`p-8 rounded-xl max-w-2xl mx-auto shadow-md ${
+//                       i % 2 ? "bg-indigo-50" : "bg-gray-50"
+//                     }`}
+//                   >
+//                     <div className="flex items-center mb-4">
+//                       <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+//                         <span className="text-lg font-bold text-indigo-600">
+//                           {tst.author.charAt(0)}
+//                         </span>
+//                       </div>
+//                       <p className="font-semibold text-gray-800">
+//                         {tst.author}
+//                       </p>
+//                     </div>
+//                     <p className="italic text-gray-700">“{tst.text}”</p>
+//                   </div>
+//                 </motion.div>
+//               ))}
+//             </div>
+//           </div>
+
+//           <button
+//             onClick={() => goTo(idx === testimonials.length - 1 ? 0 : idx + 1)}
+//             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-200 hover:bg-gray-300 p-3 rounded-full shadow-md -mr-4"
+//             aria-label="Next"
+//           >
+//             <svg
+//               className="w-5 h-5 text-gray-700"
+//               fill="none"
+//               stroke="currentColor"
+//               viewBox="0 0 24 24"
+//             >
+//               <path
+//                 strokeLinecap="round"
+//                 strokeLinejoin="round"
+//                 strokeWidth="2"
+//                 d="M9 5l7 7-7 7"
+//               />
+//             </svg>
+//           </button>
+
+//           {/* indicators */}
+//           {testimonials.length > 1 && (
+//             <div className="flex justify-center mt-8 space-x-2">
+//               {testimonials.map((_, i) => (
+//                 <button
+//                   key={i}
+//                   onClick={() => goTo(i)}
+//                   className={`h-3 rounded-full transition-all ${
+//                     idx === i ? "bg-indigo-600 w-6" : "bg-gray-400 w-3"
+//                   }`}
+//                   aria-label={`go to testimonial ${i + 1}`}
+//                 />
+//               ))}
+//             </div>
+//           )}
+//         </motion.section>
+//       )}
+
+//       {/* ────────── Footer ────────── */}
+//       <Footer />
+//     </div>
+//   );
+// }
+
+// =====================================
+
 import React, { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -814,27 +1296,24 @@ export default function LandingPage() {
     setTimeout(() => setAuto(true), 10000);
   };
 
-  // const heroImage =
-  //   "https://www.just-style.com/wp-content/uploads/sites/27/2024/08/pak.jpg";
-
   return (
-    <div className="min-h-screen bg-white text-gray-900 mt-10 font-sans">
+    <div className="min-h-screen mx-auto bg-white text-gray-900 mt-10 font-sans overflow-x-hidden">
       {/* ────────── Hero ────────── */}
-      <section className="relative w-full h-screen flex items-center px-4 sm:px-8 lg:px-16 xl:px-24 overflow-hidden">
+      <section className="relative w-full min-h-[90vh] flex items-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 2xl:px-24 overflow-hidden">
         <div className="absolute inset-0 z-0" />
         <NeuralBackground />
 
         <motion.div
-          className="container mx-auto flex flex-col-reverse lg:flex-row items-center justify-between gap-16 px-4 sm:px-8 lg:px-0 relative z-20"
+          className="container mx-auto flex flex-col-reverse lg:flex-row items-center justify-between gap-8 md:gap-12 lg:gap-16 px-4 sm:px-6 lg:px-0 relative z-20"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
         >
           {/* text */}
-          <div className="lg:w-1/2 space-y-6 text-center lg:text-left">
+          <div className="lg:w-1/2 space-y-4 md:space-y-6 text-center lg:text-left">
             <motion.h1
               variants={itemVariants}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight drop-shadow-xl"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight drop-shadow-xl"
             >
               <Trans
                 i18nKey="hero.title"
@@ -843,11 +1322,11 @@ export default function LandingPage() {
             </motion.h1>
             <motion.p
               variants={itemVariants}
-              className="text-lg md:text-xl max-w-2xl mx-auto lg:mx-0"
+              className="text-base sm:text-lg md:text-xl max-w-2xl mx-auto lg:mx-0"
             >
               {t("hero.description")}
             </motion.p>
-            <motion.div variants={itemVariants}>
+            <motion.div variants={itemVariants} className="px-2 sm:px-0 mt-5">
               <ProductSearch
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -866,13 +1345,13 @@ export default function LandingPage() {
           </div>
 
           {/* image */}
-          <motion.div variants={scaleUp} className="lg:w-1/2 lg:mt-0">
-            <div className="relative">
-              <div className="absolute -inset-4 bg-indigo-500/20 rounded-2xl rotate-3" />
+          <motion.div variants={scaleUp} className="lg:w-1/2 mt-8 lg:mt-0">
+            <div className="relative mx-auto max-w-md lg:max-w-none">
+              <div className="absolute -inset-2 sm:-inset-3 md:-inset-4 bg-indigo-500/20 rounded-xl md:rounded-2xl rotate-3" />
               <img
                 src={heroImage}
                 alt="Industry"
-                className="relative rounded-2xl shadow-xl object-cover w-full border border-indigo-400/40"
+                className="relative rounded-xl md:rounded-2xl shadow-xl object-cover w-full border border-indigo-400/40"
                 onError={(e) =>
                   (e.target.src =
                     "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&auto=format&fit=crop")
@@ -882,12 +1361,12 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8 }}
-                className="absolute -bottom-6 -right-6 bg-indigo-900/90 p-4 rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm"
+                className="absolute -bottom-4 sm:-bottom-6 -right-4 sm:-right-6 bg-indigo-900/90 p-3 sm:p-4 rounded-lg sm:rounded-xl shadow-lg border border-gray-700 backdrop-blur-sm"
               >
                 <div className="flex items-center">
-                  <div className="bg-indigo-500/20 p-3 rounded-lg mr-3 border border-indigo-400/30">
+                  <div className="bg-indigo-500/20 p-2 sm:p-3 rounded-md sm:rounded-lg mr-2 sm:mr-3 border border-indigo-400/30">
                     <svg
-                      className="h-6 w-6 text-indigo-300"
+                      className="h-5 w-5 sm:h-6 sm:w-6 text-indigo-300"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -901,10 +1380,10 @@ export default function LandingPage() {
                     </svg>
                   </div>
                   <div>
-                    <p className="font-bold text-white">
+                    <p className="font-bold text-white text-sm sm:text-base">
                       {t("hero.stats.matches")}
                     </p>
-                    <p className="text-sm text-indigo-200">
+                    <p className="text-xs sm:text-sm text-indigo-200">
                       {t("hero.stats.matchesLabel")}
                     </p>
                   </div>
@@ -921,26 +1400,21 @@ export default function LandingPage() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={containerVariants}
-        className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 mx-auto py-16"
+        className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 mx-auto py-12 md:py-16"
       >
-        {/* <motion.div variants={itemVariants} className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-            {t("bestSelling.title")}
-          </h2>
-          <p className="text-gray-500">{t("bestSelling.description")}</p>
-        </motion.div> */}
-
-        {/* Grid for Top Products */}
         <motion.div
           variants={itemVariants}
-          className="w-[90vw] md:w-[80vw] mx-auto px-4 sm:px-6 lg:px-8"
+          className="w-full md:max-w-5xl mx-auto px-2 sm:px-4"
         >
           <TopProducts />
         </motion.div>
 
-        <motion.div variants={itemVariants} className="text-center mt-12">
+        <motion.div
+          variants={itemVariants}
+          className="text-center mt-8 md:mt-12"
+        >
           <button
-            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all shadow-md"
+            className="px-5 py-2 sm:px-6 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all shadow-md text-sm sm:text-base"
             onClick={() => navigate("/ExporterProducts")}
           >
             {t("bestSelling.seeAll")}
@@ -954,31 +1428,34 @@ export default function LandingPage() {
         whileInView="visible"
         viewport={{ once: true }}
         variants={fadeIn}
-        className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 mx-auto my-20 bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-xl py-12 text-white"
+        className="md:w-full w-[90vw] max-w-6xl px-4 sm:px-6 lg:px-8 mx-auto my-12 sm:my-16 md:my-20 bg-gradient-to-r from-indigo-600 to-indigo-800 rounded-xl py-8 sm:py-12 text-white"
       >
-        <div className="max-w-2xl  mx-auto text-center">
+        <div className="max-w-2xl mx-auto text-center px-2 sm:px-4">
           <motion.h2
             variants={itemVariants}
-            className="text-2xl md:text-3xl font-bold mb-4"
+            className="text-xl sm:text-2xl md:text-3xl font-bold mb-3 sm:mb-4"
           >
             {t("cta.title")}
           </motion.h2>
-          <motion.p variants={itemVariants} className="mb-8 text-indigo-100">
+          <motion.p
+            variants={itemVariants}
+            className="mb-6 sm:mb-8 text-indigo-100 text-sm sm:text-base"
+          >
             {t("cta.description")}
           </motion.p>
           <motion.div
             variants={itemVariants}
-            className="flex flex-col sm:flex-row gap-4 justify-center"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center flex-wrap"
           >
             <button
-              className="bg-white text-indigo-800 hover:bg-gray-100 px-6 py-3 rounded-lg transition-all shadow-md"
+              className="bg-white text-indigo-800 hover:bg-gray-100 px-5 py-2 sm:px-6 sm:py-3 rounded-lg transition-all shadow-md text-sm sm:text-base"
               onClick={() => navigate("/ExporterProducts")}
             >
               {t("cta.buttons.explore")}
             </button>
             {!user.role && (
               <button
-                className="border border-white text-white hover:bg-indigo-700 px-6 py-3 rounded-lg transition-all"
+                className="border border-white text-white hover:bg-indigo-700 px-5 py-2 sm:px-6 sm:py-3 rounded-lg transition-all text-sm sm:text-base"
                 onClick={() => navigate("/signIn")}
               >
                 {t("cta.buttons.signUp")}
@@ -988,30 +1465,13 @@ export default function LandingPage() {
         </div>
       </motion.section>
 
-      {/* ────────── Suppliers ────────── */}
-      {/* <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={containerVariants}
-        className="w-[90vw] md:w-[80vw] mx-auto py-16"
-      >
-        <motion.div variants={itemVariants} className="text-center mb-12">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-            {t("suppliers.title")}
-          </h2>
-          <p className="text-gray-500">{t("suppliers.description")}</p>
-        </motion.div>
-        <TopSuppliers />
-      </motion.section> */}
-
       {/* ────────── Recommended Products ────────── */}
       <motion.section
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={containerVariants}
-        className="w-[90vw] md:max-w-6xl mx-auto py-16"
+        className="w-full max-w-6xl px-4 sm:px-6 mx-auto py-12 md:py-16"
       >
         <RecommendedProducts maxItems={3} />
       </motion.section>
@@ -1025,23 +1485,28 @@ export default function LandingPage() {
           whileInView="visible"
           viewport={{ once: true }}
           variants={containerVariants}
-          className="w-full max-w-5xl px-4 sm:px-6 lg:px-8 mx-auto py-20 relative"
+          className="w-full max-w-5xl px-16 sm:px-6 lg:px-8 mx-auto py-12 md:py-20 relative"
         >
-          <motion.div variants={itemVariants} className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+          <motion.div
+            variants={itemVariants}
+            className="text-center mb-8 md:mb-12"
+          >
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-2">
               {t("testimonials.title")}
             </h2>
-            <p className="text-gray-500">{t("testimonials.description")}</p>
+            <p className="text-gray-500 text-sm sm:text-base">
+              {t("testimonials.description")}
+            </p>
           </motion.div>
 
           {/* arrows */}
           <button
             onClick={() => goTo(idx === 0 ? testimonials.length - 1 : idx - 1)}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-gray-200 hover:bg-gray-300 p-3 rounded-full shadow-md -ml-4"
+            className="absolute md:left-0 left-8 mt-6 top-1/2 -translate-y-1/2 z-10 bg-gray-200 hover:bg-gray-300 p-2 sm:p-3 rounded-full shadow-md -ml-2 sm:-ml-4"
             aria-label="Prev"
           >
             <svg
-              className="w-5 h-5 text-gray-700"
+              className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -1056,34 +1521,36 @@ export default function LandingPage() {
           </button>
 
           {/* carousel */}
-          <div className="overflow-hidden">
+          <div className="overflow-hidden px-2 md:px-0">
             <div
-              className="flex transition-transform duration-500 w-full"
+              className="flex transition-transform duration-500 w-full flex-nowrap"
               style={{ transform: `translateX(-${idx * 100}%)` }}
             >
               {testimonials.map((tst, i) => (
                 <motion.div
                   key={i}
-                  className="min-w-full sm:min-w-[100%] flex-shrink-0 px-2 sm:px-4"
+                  className="w-full flex-shrink-0 px-5 md:px-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 >
                   <div
-                    className={`p-8 rounded-xl max-w-2xl mx-auto shadow-md ${
+                    className={`p-4 sm:p-6 md:p-8 rounded-lg sm:rounded-xl max-w-2xl mx-auto shadow-md ${
                       i % 2 ? "bg-indigo-50" : "bg-gray-50"
                     }`}
                   >
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
-                        <span className="text-lg font-bold text-indigo-600">
+                    <div className="flex items-center mb-3 sm:mb-4">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-3 sm:mr-4">
+                        <span className="text-base sm:text-lg font-bold text-indigo-600">
                           {tst.author.charAt(0)}
                         </span>
                       </div>
-                      <p className="font-semibold text-gray-800">
+                      <p className="font-semibold text-gray-800 text-sm sm:text-base">
                         {tst.author}
                       </p>
                     </div>
-                    <p className="italic text-gray-700">“{tst.text}”</p>
+                    <p className="italic text-gray-700 text-sm sm:text-base">
+                      "{tst.text}"
+                    </p>
                   </div>
                 </motion.div>
               ))}
@@ -1092,11 +1559,11 @@ export default function LandingPage() {
 
           <button
             onClick={() => goTo(idx === testimonials.length - 1 ? 0 : idx + 1)}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-200 hover:bg-gray-300 p-3 rounded-full shadow-md -mr-4"
+            className="absolute right-8 mt-6 md:right-0 top-1/2 -translate-y-1/2 z-10 bg-gray-200 hover:bg-gray-300 p-2 sm:p-3 rounded-full shadow-md -mr-2 sm:-mr-4"
             aria-label="Next"
           >
             <svg
-              className="w-5 h-5 text-gray-700"
+              className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -1112,13 +1579,15 @@ export default function LandingPage() {
 
           {/* indicators */}
           {testimonials.length > 1 && (
-            <div className="flex justify-center mt-8 space-x-2">
+            <div className="flex justify-center mt-8 flex-wrap gap-2">
               {testimonials.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => goTo(i)}
-                  className={`h-3 rounded-full transition-all ${
-                    idx === i ? "bg-indigo-600 w-6" : "bg-gray-400 w-3"
+                  className={`h-2 sm:h-3 rounded-full transition-all ${
+                    idx === i
+                      ? "bg-indigo-600 w-4 sm:w-6"
+                      : "bg-gray-400 w-2 sm:w-3"
                   }`}
                   aria-label={`go to testimonial ${i + 1}`}
                 />
