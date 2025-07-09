@@ -173,22 +173,6 @@
 
 // export default ExporterOrders;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // import React, { useEffect, useState } from "react";
 // import axios from "axios";
 // import TokenPaymentForm from "../../payments/TokenPaymentForm";
@@ -432,7 +416,7 @@
 //                     )}
 //                   </div>
 //                 )}
-                
+
 //               </div>
 //             </motion.div>
 //           ))}
@@ -444,26 +428,227 @@
 
 // export default ExporterOrders;
 
+// import React, { useEffect, useState } from "react";
+// import axios from "axios";
+// import FilterOrders from "../../FilterOrders";
+// import { motion } from "framer-motion";
+// import { Link } from "react-router-dom";
 
+// const ExporterOrders = () => {
+//   const [orders, setOrders] = useState([]);
+//   const [filteredOrders, setFilteredOrders] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState("");
 
+//   const [filterCriteria, setFilterCriteria] = useState({
+//     sampleStatus: "",
+//     paymentStatus: "",
+//   });
 
+//   const formatDate = (dateString) => {
+//     return new Date(dateString).toLocaleDateString("en-GB", {
+//       day: "2-digit",
+//       month: "short",
+//       year: "numeric",
+//       hour: "2-digit",
+//       minute: "2-digit",
+//     });
+//   };
 
+//   const getStatusBadge = (status) => {
+//     const baseClasses = "px-3 py-1 rounded-full text-xs font-bold";
+//     switch (status) {
+//       case "completed":
+//         return `${baseClasses} bg-success-100 text-success-800`;
+//       case "pending":
+//         return `${baseClasses} bg-accent-100 text-accent-800`;
+//       case "sample_rejected":
+//       case "terminated":
+//         return `${baseClasses} bg-error-100 text-error-800`;
+//       default:
+//         return `${baseClasses} bg-neutral-100 text-neutral-800`;
+//     }
+//   };
 
+//   const fetchExporterOrders = async () => {
+//     try {
+//       const token = localStorage.getItem("token");
+//       const response = await axios.get("/api/order/orders/exporter", {
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//         },
+//       });
 
+//       setOrders(response.data.orders);
+//       setFilteredOrders(response.data.orders);
+//       setLoading(false);
+//     } catch (err) {
+//       setError(err.response?.data?.message || "Failed to fetch orders");
+//       setLoading(false);
+//     }
+//   };
 
+//   useEffect(() => {
+//     fetchExporterOrders();
+//   }, []);
 
+//   useEffect(() => {
+//     const filtered = orders.filter((order) => {
+//       const matchesSample =
+//         !filterCriteria.sampleStatus ||
+//         order.sampleStatus === filterCriteria.sampleStatus;
+//       const matchesPayment =
+//         !filterCriteria.paymentStatus ||
+//         order.paymentStatus === filterCriteria.paymentStatus;
+//       return matchesSample && matchesPayment;
+//     });
+//     setFilteredOrders(filtered);
+//   }, [filterCriteria, orders]);
+
+//   return (
+//     <motion.div
+//       initial={{ opacity: 0 }}
+//       animate={{ opacity: 1 }}
+//       className="mt-20 w-[80%] mx-auto"
+//     >
+//       <h2 className="text-2xl font-bold text-primary-800 mb-6">Your Orders</h2>
+
+//       <FilterOrders
+//         filterOptions={{
+//           sampleStatuses: [
+//             "waiting_for_sample",
+//             "sent",
+//             "received",
+//             "sample_accepted",
+//             "sample_rejected",
+//           ],
+//           paymentStatuses: ["pending", "completed"],
+//         }}
+//         onFilterChange={(newFilters) => setFilterCriteria(newFilters)}
+//       />
+
+//       {loading ? (
+//         <div className="animate-pulse">
+//           {[...Array(5)].map((_, i) => (
+//             <div key={i} className="h-16 bg-neutral-100 rounded my-2"></div>
+//           ))}
+//         </div>
+//       ) : error ? (
+//         <div className="bg-error-50 border-l-4 border-error-500 p-4 rounded">
+//           <p className="text-error-700">{error}</p>
+//         </div>
+//       ) : filteredOrders.length === 0 ? (
+//         <div className="bg-surface rounded-xl shadow-sm p-8 text-center">
+//           <svg
+//             className="mx-auto h-12 w-12 text-neutral-400"
+//             fill="none"
+//             viewBox="0 0 24 24"
+//             stroke="currentColor"
+//           >
+//             <path
+//               strokeLinecap="round"
+//               strokeLinejoin="round"
+//               strokeWidth={1}
+//               d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+//             />
+//           </svg>
+//           <h3 className="mt-2 text-lg font-medium text-neutral-900">
+//             No orders found
+//           </h3>
+//           <p className="mt-1 text-neutral-500">
+//             No orders match your current filters
+//           </p>
+//         </div>
+//       ) : (
+//         <div className="overflow-x-auto">
+//           <table className="min-w-full divide-y divide-neutral-200">
+//             <thead className="bg-neutral-50">
+//               <tr>
+//                 <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+//                   Order ID
+//                 </th>
+//                 <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+//                   Product
+//                 </th>
+//                 <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+//                   Status
+//                 </th>
+//                 <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+//                   Quantity
+//                 </th>
+//                 {/* <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+//                   Total
+//                 </th>
+//                 <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+//                   Date
+//                 </th> */}
+//                 <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+//                   Actions
+//                 </th>
+//               </tr>
+//             </thead>
+//             <tbody className="bg-surface divide-y divide-neutral-200">
+//               {filteredOrders.map((order) => (
+//                 <motion.tr
+//                   key={order._id}
+//                   whileHover={{ backgroundColor: "rgba(244, 245, 247, 1)" }}
+//                   className="transition-colors"
+//                 >
+//                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-700">
+//                     #{order.orderId || "Unknown"}
+//                   </td>
+//                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-700">
+//                     {order.auctionId
+//                       ? order.auctionId.title
+//                       : order.productId?.name || "Unknown Product"}
+//                   </td>
+//                   <td className="px-6 py-4 whitespace-nowrap">
+//                     <span className={getStatusBadge(order.paymentStatus)}>
+//                       {order.paymentStatus || "Unknown"}
+//                     </span>
+//                   </td>
+//                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-700">
+//                     {order.quantity}
+//                   </td>
+//                   {/* <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-primary-800">
+//                     {order.price * order.quantity} Rs
+//                   </td>
+//                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+//                     {formatDate(order.createdAt)}
+//                   </td> */}
+//                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
+//                     <Link
+//                       to={`/exporter/order/${order._id}`}
+//                       className="text-primary-600 hover:text-primary-900 transition-colors"
+//                     >
+//                       View Details
+//                     </Link>
+//                   </td>
+//                 </motion.tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       )}
+//     </motion.div>
+//   );
+// };
+
+// export default ExporterOrders;
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FilterOrders from "../../FilterOrders";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ExporterOrders = () => {
   const [orders, setOrders] = useState([]);
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const [filterCriteria, setFilterCriteria] = useState({
     sampleStatus: "",
@@ -607,23 +792,31 @@ const ExporterOrders = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                   Date
                 </th> */}
-                <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                {/* <th className="px-6 py-3 text-left text-xs font-medium text-neutral-500 uppercase tracking-wider">
                   Actions
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody className="bg-surface divide-y divide-neutral-200">
               {filteredOrders.map((order) => (
+                // <motion.tr
+                //   key={order._id}
+                //   whileHover={{ backgroundColor: "rgba(244, 245, 247, 1)" }}
+                //   className="transition-colors"
+                // >
                 <motion.tr
                   key={order._id}
-                  whileHover={{ backgroundColor: 'rgba(244, 245, 247, 1)' }}
-                  className="transition-colors"
+                  whileHover={{ backgroundColor: "rgba(244, 245, 247, 1)" }}
+                  className="cursor-pointer transition-colors"
+                  onClick={() => navigate(`/exporter/order/${order._id}`)}
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-700">
                     #{order.orderId || "Unknown"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-700">
-                    {order.auctionId ? order.auctionId.title : order.productId?.name || "Unknown Product"}
+                    {order.auctionId
+                      ? order.auctionId.title
+                      : order.productId?.name || "Unknown Product"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={getStatusBadge(order.paymentStatus)}>
@@ -639,14 +832,14 @@ const ExporterOrders = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
                     {formatDate(order.createdAt)}
                   </td> */}
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
+                  {/* <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
                     <Link
                       to={`/exporter/order/${order._id}`}
                       className="text-primary-600 hover:text-primary-900 transition-colors"
                     >
                       View Details
                     </Link>
-                  </td>
+                  </td> */}
                 </motion.tr>
               ))}
             </tbody>
