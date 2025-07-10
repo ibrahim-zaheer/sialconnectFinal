@@ -27,6 +27,8 @@ const ProfileInfo = () => {
 
   useEffect(() => {
     console.log("Current adminVerified status:", user.adminVerified);
+    console.log("Current Rejection Message:", user.rejectionReason);
+
   }, [user.adminVerified]);
 
   const getVerificationStatus = () => {
@@ -56,6 +58,7 @@ const ProfileInfo = () => {
           <div className="ml-2">
             <span className="bg-red-100 text-red-800 text-xs font-semibold px-2 py-1 rounded-full uppercase">
               Verification Rejected
+              
             </span>
             {user.rejectionReason && (
               <div className="mt-1 text-xs text-red-600 bg-red-50 p-2 rounded">
@@ -130,7 +133,7 @@ const ProfileInfo = () => {
         // Handle if it's not an array (direct object response)
         else if (response?.adminVerified) {
           dispatch(
-            updateVerificationStatus({ status: response.adminVerified })
+            updateVerificationStatus({ status: response.adminVerified,  rejectionReason: response.rejectionReason || null,  })
           );
           console.log("admin verified:", response.adminVerified);
         }
@@ -226,6 +229,7 @@ const ProfileInfo = () => {
                       Pro
                     </span>
                   )}
+
                   {getVerificationStatus()}
 
                   {/* {user.role === "supplier" && !user.adminVerified && (

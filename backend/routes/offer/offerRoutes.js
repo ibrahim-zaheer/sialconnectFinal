@@ -11,13 +11,15 @@ const {
 
 const authenticateMiddleware = require("../../middleware/authMiddleware.js");
 
+const checkSuspended = require("../../middleware/checkSuspended.js")
+
 // Route to create an offer (Exporter sends an offer)
 router.post("/create", authenticateMiddleware, createOffer);
 //ROute to find offers of the exporter
-router.get("/exporter", authenticateMiddleware, getOffersByExporter); 
+router.get("/exporter", authenticateMiddleware, checkSuspended,getOffersByExporter); 
 
 //ROute to find offers of the exporter
-router.get("/supplier", authenticateMiddleware, getOffersBySupplier); 
+router.get("/supplier", authenticateMiddleware, checkSuspended,getOffersBySupplier); 
 
 // Route to accept an offer (Supplier accepts the exporter's offer)
 router.put("/accept/:offerId", authenticateMiddleware, acceptOffer);

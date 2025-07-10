@@ -520,6 +520,10 @@ export default function SupplierOffers() {
           Authorization: `Bearer ${token}`,
         },
       });
+
+      
+      
+
       setOffers(response.data.offers);
 
       const acceptedOffers = response.data.offers.filter(
@@ -527,7 +531,15 @@ export default function SupplierOffers() {
       );
       await fetchOrderIds(acceptedOffers);
     } catch (err) {
-      setError("We couldn't load your offers. Please try again later.");
+      // setError("We couldn't load your offers. Please try again later.");
+       if (err.response && err.response.status === 403) {
+      // Account suspended, log out and redirect
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/signIn");  // Redirect to login page (or another page if needed)
+    } else {
+      setError("No offers found here.");
+    }
     } finally {
       setLoading(false);
     }

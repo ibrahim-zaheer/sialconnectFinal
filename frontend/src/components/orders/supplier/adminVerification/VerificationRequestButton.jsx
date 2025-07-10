@@ -122,7 +122,7 @@ function VerificationRequestModal({ isOpen, onClose, onSuccess }) {
 
         <form onSubmit={handleSubmit} className="verification-form">
           <div className="form-group">
-            <label htmlFor="websiteUrl">FaceBook Page URL</label>
+            <label htmlFor="websiteUrl">Social Media Page URL</label>
             <input
               id="websiteUrl"
               type="url"
@@ -134,7 +134,7 @@ function VerificationRequestModal({ isOpen, onClose, onSuccess }) {
           </div>
 
           <div className="form-group">
-            <label>Upload Images</label>
+            <label>Upload Image of a Business</label>
             <div
               className="upload-area"
               onClick={() => fileInputRef.current.click()}

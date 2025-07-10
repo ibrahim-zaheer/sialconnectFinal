@@ -285,7 +285,15 @@ export default function ExporterOffers() {
 
         setLoading(false);
       } catch (err) {
-        setError("We couldn't load your offers. Please try again later.");
+         if (err.response && err.response.status === 403) {
+      // Account suspended, log out and redirect
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/signIn");  // Redirect to login page (or another page if needed)
+    } else {
+      setError("No offers found here.");
+    }
+        // setError("We couldn't load your offers. Please try again later.");
         setLoading(false);
       }
     };
