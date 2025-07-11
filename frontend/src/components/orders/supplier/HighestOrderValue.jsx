@@ -150,10 +150,21 @@ const HighestOrderValue = () => {
   const { orders, loading, error } = useOrders();
   const { t } = useTranslation();
 
-  const highestOrder = orders.length > 0
-    ? orders.reduce((max, order) => 
+  // const highestOrder = orders.length > 0
+  //   ? orders.reduce((max, order) => 
+  //       order.price * order.quantity > max.price * max.quantity ? order : max, 
+  //       orders[0]
+  //     )
+  //   : null;
+    // Filter out orders where product is unknown
+  const validOrders = orders.filter(
+    (order) => order.productId?.name
+  );
+
+  const highestOrder = validOrders.length > 0
+    ? validOrders.reduce((max, order) => 
         order.price * order.quantity > max.price * max.quantity ? order : max, 
-        orders[0]
+        validOrders[0]
       )
     : null;
 

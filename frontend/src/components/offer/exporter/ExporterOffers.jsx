@@ -248,11 +248,21 @@ export default function ExporterOffers() {
             Authorization: `Bearer ${token}`,
           },
         });
-        setOffers(response.data.offers);
+          // Filter out offers where productId or productId.name is missing or invalid
+    const validOffers = response.data.offers.filter(
+      (offer) => offer.productId?.name // Ensure productId exists and has a valid name
+    );
 
-        const acceptedOffers = response.data.offers.filter(
-          (offer) => offer.status === "accepted"
-        );
+    setOffers(validOffers);
+
+    const acceptedOffers = validOffers.filter(
+      (offer) => offer.status === "accepted"
+    );
+        // setOffers(response.data.offers);
+
+        // const acceptedOffers = response.data.offers.filter(
+        //   (offer) => offer.status === "accepted"
+        // );
         await fetchOrderIds(acceptedOffers);
 
         // Automatically activate reminders if user plan is pro

@@ -102,11 +102,21 @@ const EstimatedOrderValue = () => {
 
         const orders = response.data.orders || [];
 
-        const total = orders.reduce((sum, order) => {
-          const price = order.price || 0;
-          const quantity = order.quantity || 0;
-          return sum + price * quantity;
-        }, 0);
+          // Filter out orders where product is unknown
+      const validOrders = orders.filter(
+        (order) => order.auctionId?.title || order.productId?.name
+      );
+
+         const total = validOrders.reduce((sum, order) => {
+        const price = order.price || 0;
+        const quantity = order.quantity || 0;
+        return sum + price * quantity;
+      }, 0);
+        // const total = orders.reduce((sum, order) => {
+        //   const price = order.price || 0;
+        //   const quantity = order.quantity || 0;
+        //   return sum + price * quantity;
+        // }, 0);
 
         setTotalValue(total);
       } catch (err) {

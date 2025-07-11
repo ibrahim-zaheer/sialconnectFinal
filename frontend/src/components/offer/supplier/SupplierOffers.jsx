@@ -521,14 +521,22 @@ export default function SupplierOffers() {
         },
       });
 
-      
+         const validOffers = response.data.offers.filter(
+      (offer) => offer.productId?.name // Ensure productId exists and has a valid name
+    );
+
+    setOffers(validOffers);
+
+    const acceptedOffers = validOffers.filter(
+      (offer) => offer.status === "accepted"
+    );
       
 
-      setOffers(response.data.offers);
+      // setOffers(response.data.offers);
 
-      const acceptedOffers = response.data.offers.filter(
-        (offer) => offer.status === "accepted"
-      );
+      // const acceptedOffers = response.data.offers.filter(
+      //   (offer) => offer.status === "accepted"
+      // );
       await fetchOrderIds(acceptedOffers);
     } catch (err) {
       // setError("We couldn't load your offers. Please try again later.");

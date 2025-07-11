@@ -688,9 +688,15 @@ const ExporterOrders = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+ const validOrders = response.data.orders.filter(
+      (order) =>
+        order.auctionId?.title || order.productId?.name
+    );
 
-      setOrders(response.data.orders);
-      setFilteredOrders(response.data.orders);
+    setOrders(validOrders);
+    setFilteredOrders(validOrders);
+      // setOrders(response.data.orders);
+      // setFilteredOrders(response.data.orders);
       setLoading(false);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to fetch orders");
@@ -825,6 +831,9 @@ const ExporterOrders = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-700">
                     {order.quantity}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-primary-800">
+                    {order.price * order.quantity} Rs
                   </td>
                   {/* <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-primary-800">
                     {order.price * order.quantity} Rs

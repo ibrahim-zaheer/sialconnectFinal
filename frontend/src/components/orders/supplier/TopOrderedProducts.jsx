@@ -128,8 +128,16 @@ const TopOrderedProducts = () => {
 
   const productRankings = useMemo(() => {
     const map = {};
-    orders.forEach((order) => {
-      const productName = order.productId?.name || "Unknown";
+    // orders.forEach((order) => {
+    //   const productName = order.productId?.name || "Unknown";
+    //   map[productName] = (map[productName] || 0) + 1;
+    // });
+     const validOrders = orders.filter(
+      (order) => order.productId?.name && order.productId?.name !== "Unknown"
+    );
+
+    validOrders.forEach((order) => {
+      const productName = order.productId?.name;
       map[productName] = (map[productName] || 0) + 1;
     });
     return Object.entries(map)

@@ -1,5 +1,3 @@
-
-
 // import React from "react";
 // import useOrders from "../hook/useOrders";
 // import { Link } from "react-router-dom";
@@ -82,7 +80,6 @@
 
 // export default SupplierOrders;
 
-
 // import React from "react";
 // import useOrders from "../hook/useOrders";
 // import { Link } from "react-router-dom";
@@ -112,7 +109,7 @@
 //         <p className="text-center text-gray-500 text-lg">No orders found.</p>
 //       ) : (
 //         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          
+
 //           {orders.map((order) => (
 //             <div key={order._id} className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 rounded-lg shadow-lg hover:shadow-xl transition transform hover:scale-105">
 //                {/* Display Payment and Order Status Tags */}
@@ -175,16 +172,7 @@
 
 // export default SupplierOrders;
 
-
-
-
-
-
-
-
-
 // ========================
-
 
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
@@ -223,9 +211,9 @@
 
 //   useEffect(() => {
 //     const filtered = orders.filter(order => {
-//       const matchesSample = !filterCriteria.sampleStatus || 
+//       const matchesSample = !filterCriteria.sampleStatus ||
 //                           order.sampleStatus === filterCriteria.sampleStatus;
-//       const matchesPayment = !filterCriteria.paymentStatus || 
+//       const matchesPayment = !filterCriteria.paymentStatus ||
 //                            order.paymentStatus === filterCriteria.paymentStatus;
 //       return matchesSample && matchesPayment;
 //     });
@@ -362,8 +350,6 @@
 
 // export default SupplierOrders;
 
-
-
 // import React, { useState, useEffect } from "react";
 // import axios from "axios";
 // import { motion } from "framer-motion";
@@ -401,9 +387,9 @@
 
 //   useEffect(() => {
 //     const filtered = orders.filter(order => {
-//       const matchesSample = !filterCriteria.sampleStatus || 
+//       const matchesSample = !filterCriteria.sampleStatus ||
 //                           order.sampleStatus === filterCriteria.sampleStatus;
-//       const matchesPayment = !filterCriteria.paymentStatus || 
+//       const matchesPayment = !filterCriteria.paymentStatus ||
 //                            order.paymentStatus === filterCriteria.paymentStatus;
 //       return matchesSample && matchesPayment;
 //     });
@@ -534,17 +520,11 @@
 
 // export default SupplierOrders;
 
-
-
-
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import FilterOrders from "../../FilterOrders";
 import { useNavigate } from "react-router-dom";
-
-
 
 const SupplierOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -552,7 +532,6 @@ const SupplierOrders = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
 
   const [filterCriteria, setFilterCriteria] = useState({
     sampleStatus: "",
@@ -566,8 +545,15 @@ const SupplierOrders = () => {
         const response = await axios.get("/api/order/orders/supplier", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setOrders(response.data.orders);
-        setFilteredOrders(response.data.orders);
+
+        const validOrders = response.data.orders.filter(
+          (order) => order.auctionId?.title || order.productId?.name
+        );
+
+        setOrders(validOrders);
+        setFilteredOrders(validOrders);
+        // setOrders(response.data.orders);
+        // setFilteredOrders(response.data.orders);
         setLoading(false);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to fetch orders");
@@ -579,11 +565,13 @@ const SupplierOrders = () => {
   }, []);
 
   useEffect(() => {
-    const filtered = orders.filter(order => {
-      const matchesSample = !filterCriteria.sampleStatus || 
-                          order.sampleStatus === filterCriteria.sampleStatus;
-      const matchesPayment = !filterCriteria.paymentStatus || 
-                           order.paymentStatus === filterCriteria.paymentStatus;
+    const filtered = orders.filter((order) => {
+      const matchesSample =
+        !filterCriteria.sampleStatus ||
+        order.sampleStatus === filterCriteria.sampleStatus;
+      const matchesPayment =
+        !filterCriteria.paymentStatus ||
+        order.paymentStatus === filterCriteria.paymentStatus;
       return matchesSample && matchesPayment;
     });
     setFilteredOrders(filtered);
@@ -592,12 +580,12 @@ const SupplierOrders = () => {
   const getStatusBadge = (status) => {
     const baseClasses = "px-3 py-1 rounded-full text-xs font-bold";
     switch (status) {
-      case 'completed':
+      case "completed":
         return `${baseClasses} bg-success-100 text-success-800`;
-      case 'pending':
+      case "pending":
         return `${baseClasses} bg-accent-100 text-accent-800`;
-      case 'sample_rejected':
-      case 'terminated':
+      case "sample_rejected":
+      case "terminated":
         return `${baseClasses} bg-error-100 text-error-800`;
       default:
         return `${baseClasses} bg-neutral-100 text-neutral-800`;
@@ -610,11 +598,19 @@ const SupplierOrders = () => {
       animate={{ opacity: 1 }}
       className="mt-8"
     >
-      <h2 className="text-2xl font-bold text-primary-800 mb-6">Order History</h2>
+      <h2 className="text-2xl font-bold text-primary-800 mb-6">
+        Order History
+      </h2>
 
       <FilterOrders
         filterOptions={{
-          sampleStatuses: ["waiting_for_sample", "sent", "received", "sample_accepted", "sample_rejected"],
+          sampleStatuses: [
+            "waiting_for_sample",
+            "sent",
+            "received",
+            "sample_accepted",
+            "sample_rejected",
+          ],
           paymentStatuses: ["pending", "completed"],
         }}
         onFilterChange={(newFilters) => setFilterCriteria(newFilters)}
@@ -632,11 +628,25 @@ const SupplierOrders = () => {
         </div>
       ) : filteredOrders.length === 0 ? (
         <div className="bg-surface rounded-xl shadow-sm p-8 text-center">
-          <svg className="mx-auto h-12 w-12 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <svg
+            className="mx-auto h-12 w-12 text-neutral-400"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1}
+              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
           </svg>
-          <h3 className="mt-2 text-lg font-medium text-neutral-900">No orders found</h3>
-          <p className="mt-1 text-neutral-500">No orders match your current filters</p>
+          <h3 className="mt-2 text-lg font-medium text-neutral-900">
+            No orders found
+          </h3>
+          <p className="mt-1 text-neutral-500">
+            No orders match your current filters
+          </p>
         </div>
       ) : (
         <div className="overflow-x-auto">
@@ -667,24 +677,25 @@ const SupplierOrders = () => {
               </tr>
             </thead>
             <tbody className="bg-surface divide-y divide-neutral-200">
-              {filteredOrders.map(order => (
+              {filteredOrders.map((order) => (
                 // <motion.tr
                 //   key={order._id}
                 //   whileHover={{ backgroundColor: 'rgba(244, 245, 247, 1)' }}
                 //   className="transition-colors"
                 // >
                 <motion.tr
-  key={order._id}
-  whileHover={{ backgroundColor: "rgba(244, 245, 247, 1)" }}
-  className="cursor-pointer transition-colors"
-  onClick={() => navigate(`/supplier/order/${order._id}`)}
->
-
+                  key={order._id}
+                  whileHover={{ backgroundColor: "rgba(244, 245, 247, 1)" }}
+                  className="cursor-pointer transition-colors"
+                  onClick={() => navigate(`/supplier/order/${order._id}`)}
+                >
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary-700">
                     #{order.orderId || "Unknown"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-700">
-                    {order.auctionId ? order.auctionId.title : order.productId?.name || "Unknown Product"}
+                    {order.auctionId
+                      ? order.auctionId.title
+                      : order.productId?.name || "Unknown Product"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={getStatusBadge(order.paymentStatus)}>
