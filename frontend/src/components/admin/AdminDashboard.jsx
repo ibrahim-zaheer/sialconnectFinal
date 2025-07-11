@@ -30,7 +30,7 @@ export default function AdminDashboard() {
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between  items-center mb-8">
           <h1 className="text-3xl font-bold text-primary-800">
-            Admin Dashboard
+            Admin Dashboards
           </h1>
           <LogoutButton />
         </div>
