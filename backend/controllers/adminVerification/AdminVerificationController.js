@@ -123,7 +123,9 @@ const getAllAdminVerifications = async (req, res) => {
       .populate({
         path: 'user',
         select: 'name email role businessName businessAddress phoneNumber cnic profilePicture adminVerified', // Only pull needed fields
-      });
+      })
+      .sort({ requestedAt: -1 });
+      ;
 
     // Transform data to include business info (optional)
     const formattedVerifications = verifications.map(verification => ({

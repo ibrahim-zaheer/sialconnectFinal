@@ -139,8 +139,10 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
+import BackButton from "../../BackButton";
+import AgreementPDFGenerator from "../../orders/components/AgreementPDFGenerator";
 
-const PaymentDetailsModal = ({
+const   PaymentDetailsModal = ({
   isOpen,
   orderID,
   paymentDetails,
@@ -201,7 +203,7 @@ const PaymentDetailsModal = ({
   );
 };
 
-const SupplierOrdersList = ({
+const   SupplierOrdersList = ({
   supplierId,
   apiEndpoint,
   title = "Supplier Orders",
@@ -296,8 +298,11 @@ const SupplierOrdersList = ({
   };
 
   return (
-    <div className="">
-      <h2 className="text-2xl font-bold mb-4">{title}</h2>
+    <div className="mt-12">
+      <div className="w-full flex justify-between items-center mb-6">
+      <h2 className="text-2xl font-bold">{title}</h2>
+        <BackButton className="bg-blue-800 hover:bg-blue-700 text-white" />
+      </div>
       {error && <p className="text-red-600">{error}</p>}
 
       {orders.length === 0 && !error ? (
@@ -317,9 +322,10 @@ const SupplierOrdersList = ({
                 <th className="py-2 px-4 text-left">Payment Method</th>
 
                 <th className="py-2 px-4 text-left">Date</th>
+                <th className="py-2 px-4 text-left">Download Agreement</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="text-sm">
               {orders.map((order) => (
                 <tr key={order._id} className="border-b">
                   <td className="py-2 px-4">
@@ -349,6 +355,13 @@ const SupplierOrdersList = ({
                   </td>
                   <td className="py-2 px-4">
                     {new Date(order.createdAt).toLocaleDateString()}
+                  </td>
+                   <td className="py-2 px-4">
+                    <AgreementPDFGenerator
+                      order={order}
+                      userName={order.exporterId?.name}
+                      userRole="exporter" // Use the appropriate role
+                    />
                   </td>
                 </tr>
               ))}

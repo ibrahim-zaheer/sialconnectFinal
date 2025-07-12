@@ -308,6 +308,10 @@ const ProductDetails = () => {
   } else if (role === "supplier") {
     navigate("/SupplierProducts");
   }
+  else if (role === "admin") {
+    // navigate("/admin/user/supplier/${product.supplier?._id}");
+     navigate(`/admin/user/supplier/${product.supplier?._id}`);
+  }
 };
 
   // Handle delete functionality
@@ -837,12 +841,19 @@ const ProductDetails = () => {
           </div>
         </div>
       )}
-      {product && (
+      {/* {product && (
         <RelatedProducts
           currentProductId={product._id}
           currentCategory={product.category}
         />
-      )}
+      )} */}
+      {product && role !== "admin" && (
+  <RelatedProducts
+    currentProductId={product._id}
+    currentCategory={product.category}
+  />
+)}
+
     </div>
   );
 };

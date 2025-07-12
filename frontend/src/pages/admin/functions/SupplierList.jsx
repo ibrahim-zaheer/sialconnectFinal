@@ -404,7 +404,7 @@ export default function SupplierList() {
           </div>
 
           {/* Chat Button */}
-          <div className="flex justify-center">
+          {/* <div className="flex justify-center">
             <Link
               to={`/chat?supplierId=${supplierId}`}
               className="inline-flex items-center justify-center px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
@@ -424,7 +424,7 @@ export default function SupplierList() {
               </svg>
               Chat with Supplier
             </Link>
-          </div>
+          </div> */}
         </>
       ) : (
         <div className="bg-surface rounded-xl p-6 shadow-xs border border-neutral-200">

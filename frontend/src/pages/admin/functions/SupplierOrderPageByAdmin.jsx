@@ -8,7 +8,8 @@ export default function SupplierOrderPageByAdmin() {
   return (
     <>
       <div className="p-10">
-        <BackButton label="Back to User List" className="mb-4 mt-16" />
+        {/* <BackButton label="Back to User List" className="mb-4 mt-16" /> */}
+        
 
         <SupplierOrdersList
           supplierId={supplierId}
