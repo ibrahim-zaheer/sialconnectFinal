@@ -297,9 +297,9 @@ function NotificationBell({ userId }) {
                     n.message
                   )}
                 </p>
-                <small style={{ color: '#666' }}>
+                {/* <small style={{ color: '#666' }}>
                   {new Date(n.timestamp).toLocaleString()}
-                </small>
+                </small> */}
               </div>
             ))
           )}

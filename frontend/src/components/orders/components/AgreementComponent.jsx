@@ -52,6 +52,7 @@ const AgreementComponent = ({ orderId, onAcceptSuccess, onRejectSuccess, role })
           setErrorMessage(""); // Clear any previous error messages
         }
       } catch (error) {
+            console.error("Error rejecting the agreement:", error);
         setErrorMessage("Error rejecting the agreement. Please try again.");
       } finally {
         setIsLoading(false);
