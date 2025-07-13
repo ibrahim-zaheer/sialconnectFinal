@@ -620,7 +620,11 @@ const OrderDetailsModal = ({ order, closeModal, refreshOrders }) => {
         <p><strong>Supplier:</strong> {order.supplierId?.name}</p>
         <p><strong>Price:</strong> Rs {order.price}</p>
         <p><strong>Quantity:</strong> {order.quantity}</p>
-        <p><strong>Status:</strong> {order.status}</p>
+        {/* <p><strong>Status:</strong> {order.status}</p> */}
+        {order.status && (
+  <p><strong>Status:</strong> {order.status}</p>
+)}
+
         <p><strong>Account Name:</strong> {order.LocalPaymentDetails?.accountName || "N/A"}</p>
         <p><strong>Payment Method:</strong> {order.LocalPaymentDetails?.paymentMethod || "N/A"}</p>
         <p><strong>Payment Status:</strong> {order.LocalPaymentDetails?.paymentStatus || "N/A"}</p>
@@ -735,7 +739,7 @@ export default function LocalOrderPaymentList() {
               <tr>
                 <th className="py-3 px-6 text-left">Order ID</th>
                 <th className="py-3 px-6 text-left">Exporter</th>
-                <th className="py-3 px-6 text-left">Price</th>
+                {/* <th className="py-3 px-6 text-left">Price</th> */}
                 <th className="py-3 px-6 text-left">Quantity</th>
                 <th className="py-3 px-6 text-left">Payment Method</th>
                 <th className="py-3 px-6 text-left">Payment Status</th>
@@ -751,11 +755,11 @@ export default function LocalOrderPaymentList() {
                 >
                   <td className="py-3 px-6 text-blue-500 underline">{order._id}</td>
                   <td className="py-3 px-6">{order.exporterId?.name}</td>
-                  <td className="py-3 px-6">Rs {order.price}</td>
+                  {/* <td className="py-3 px-6">Rs {order.price}</td> */}
                   <td className="py-3 px-6">{order.quantity}</td>
                   <td className="py-3 px-6">{order.LocalPaymentDetails?.paymentMethod || "N/A"}</td>
                   <td className="py-3 px-6">{order.LocalPaymentDetails?.paymentStatus || "N/A"}</td>
-                  <td className="py-3 px-6">Rs {order.paymentDetails?.paymentAmount || "0.00"}</td>
+                  <td className="py-3 px-6">Rs {order.LocalPaymentDetails?.paymentAmount || "0.00"}</td>
                 </tr>
               ))}
             </tbody>
