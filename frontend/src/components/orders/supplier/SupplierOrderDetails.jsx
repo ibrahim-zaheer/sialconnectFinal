@@ -661,6 +661,7 @@ const SupplierOrderDetails = () => {
   const [paymentSubmitted, setPaymentSubmitted] = useState(false);
   const [showPaymentForm, setShowPaymentForm] = useState(true);
   const [isImageVisible, setIsImageVisible] = useState(false);
+    const [showComplaintModal, setShowComplaintModal] = useState(false);
 
   const fetchOrderDetails = async () => {
     try {
@@ -690,6 +691,11 @@ const SupplierOrderDetails = () => {
   const toggleImageVisibility = () => {
     setIsImageVisible(!isImageVisible);
   };
+
+   const toggleComplaintModal = () => {
+    setShowComplaintModal(!showComplaintModal);
+  };
+
 
   const handleSubmitSample = async (e) => {
     e.preventDefault();
@@ -880,7 +886,7 @@ const SupplierOrderDetails = () => {
               Chat with Exporter
             </Link>
           )}
-
+{/* 
           <Link
             to={`/chat?supplierId=673b05acd7ab61f6819baa08`}
             className="inline-flex items-center px-4 py-2.5 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
@@ -900,6 +906,20 @@ const SupplierOrderDetails = () => {
             </svg>
             Complain to Admin
           </Link>
+           */}
+             <button
+          onClick={toggleComplaintModal}
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
+        >
+          Create Complaint
+        </button>
+
+        {showComplaintModal && (
+          <CreateComplaint
+            orderId={orderId}
+            closeModal={toggleComplaintModal}
+          />
+        )}
         </div>
 
         {/* Status Cards */}
@@ -938,7 +958,7 @@ const SupplierOrderDetails = () => {
         )}
 
         {/* Documents Section */}
-        {order.status === "completed" && (
+        {(order.status === "completed"  ||  !order.sample_needed )&& (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Documents
