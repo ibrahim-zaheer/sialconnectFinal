@@ -131,8 +131,9 @@ const getMyAuctions = async (req, res) => {
       const userId = req.user.id; // from authMiddleware
   
       // Find auctions created by the user
-      const auctions = await Auction.find({ createdBy: userId });
-  
+      // const auctions = await Auction.find({ createdBy: userId });
+  const auctions = await Auction.find({ createdBy: userId }).sort({ createdAt: -1 });
+
       if (auctions.length === 0) {
         return res.status(404).json({ message: "No auctions found." });
       }

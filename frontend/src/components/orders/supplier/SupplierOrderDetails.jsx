@@ -820,6 +820,12 @@ const SupplierOrderDetails = () => {
                 <DetailItem label="Product" value={order.productId?.name} />
               )}
               <DetailItem label="Exporter" value={order.exporterId?.name} />
+                {order.productId?.samplePrice !== 0 && (
+                    <DetailItem
+                      label="Sample Price"
+                      value={order.productId?.samplePrice}
+                    />
+                  )}
               <DetailItem label="Supplier" value={order.supplierId?.name} />
               {order?.deliveryDays ? (
                 <div className="my-3">
@@ -966,7 +972,7 @@ const SupplierOrderDetails = () => {
           )}
 
         {/* Payment Forms */}
-        {order.Agreement === "Accepted" &&
+        {(order.Agreement === "Accepted" || order.Agreement === "Rejected") &&
           order.paymentDetails?.paymentStatus === "pending" && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">
@@ -975,13 +981,31 @@ const SupplierOrderDetails = () => {
               <PaymentForm
                 orderId={order._id}
                 onPaymentSubmitted={handlePaymentSubmitted}
-                orderPrice={order.price}
+                // orderPrice={order.price}
+                orderPrice = {order.productId?.samplePrice === 0 ? order.price : order.productId?.samplePrice}
+
               />
             </div>
           )}
+          
 
         {order.sampleStatus === "sample_rejected" &&
           order.paymentStatus !== "completed" &&
+          showPaymentForm && (
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Payment Details
+              </h2>
+              <PaymentForm
+                orderId={order._id}
+                onPaymentSubmitted={handlePaymentSubmitted}
+                orderPrice={order.price / 2}
+              />
+            </div>
+          )}
+            {order.sampleStatus === "sample_rejected" 
+            // && order.paymentStatus !== "completed"
+           &&
           showPaymentForm && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">

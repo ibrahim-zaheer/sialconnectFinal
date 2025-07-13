@@ -606,8 +606,8 @@ const SupplierOrders = () => {
         filterOptions={{
           sampleStatuses: [
             "waiting_for_sample",
-            "sent",
-            "received",
+            // "sent",
+            // "received",
             "sample_accepted",
             "sample_rejected",
           ],

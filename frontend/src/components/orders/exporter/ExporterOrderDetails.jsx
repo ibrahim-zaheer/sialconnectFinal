@@ -1,4 +1,3 @@
-
 // import React, { useEffect, useState } from "react";
 // import { useParams } from "react-router-dom";
 // import axios from "axios";
@@ -625,7 +624,7 @@
 //                             Complain to Admin
 //                           </Link> */}
 //         {/* Status Cards */}
-//         {/* 
+//         {/*
 //            <button
 //           onClick={toggleComplaintModal}
 //           className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
@@ -688,11 +687,11 @@
 //                 Documents
 //               </h2>
 //               <div className="flex flex-wrap gap-4">
-                // <PDFGenerator
-                //   order={order}
-                //   userName={userName}
-                //   userRole={userRole}
-                // />
+// <PDFGenerator
+//   order={order}
+//   userName={userName}
+//   userRole={userRole}
+// />
 //                 <AgreementPDFGenerator
 //                   order={order}
 //                   userName={userName}
@@ -718,9 +717,9 @@
 
 //         {/* Sample Proof Sections */}
 //         {/* {order.sampleProof && (
-//           <ImageCard 
-//             title="Sample Proof" 
-//             imageUrl={order.sampleProof} 
+//           <ImageCard
+//             title="Sample Proof"
+//             imageUrl={order.sampleProof}
 //             description={order.sampleDescription}
 //           />
 //         )} */}
@@ -751,12 +750,12 @@
 //         )}
 
 //         {/* {order.sampleRecievedProof && (
-//           <ImageCard 
-//             title="Sample Received Proof" 
+//           <ImageCard
+//             title="Sample Received Proof"
 //             imageUrl={order.sampleRecievedProof}
 //           />
 //         )}
-        
+
 //         */}
 
 //         {order.sampleRecievedProof && (
@@ -1016,15 +1015,6 @@
 
 // export default ExporterOrderDetails;
 
-
-
-
-
-
-
-
-
-
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
@@ -1090,7 +1080,6 @@ const ExporterOrderDetails = () => {
   const toggleComplaintModal = () => {
     setShowComplaintModal(!showComplaintModal);
   };
-
 
   const handleImageSample = async (e) => {
     e.preventDefault();
@@ -1209,17 +1198,25 @@ const ExporterOrderDetails = () => {
               {order.auctionId ? (
                 <DetailItem label="Auction" value={order.auctionId?.title} />
               ) : (
-                <DetailItem label="Product" value={order.productId?.name} />
+                <>
+                  <DetailItem label="Product" value={order.productId?.name} />
+                  {/* <DetailItem label="Sample Price" value={order.productId?.samplePrice} /> */}
+                  {order.productId?.samplePrice !== 0 && (
+                    <DetailItem
+                      label="Sample Price"
+                      value={order.productId?.samplePrice}
+                    />
+                  )}
+                </>
               )}
               <DetailItem label="Supplier" value={order.supplierId?.name} />
               <DetailItem label="Exporter" value={userName} />
               {order?.deliveryDays ? (
                 <>
-                {/* Delievery Date:     
+                  {/* Delievery Date:     
                 <DateDisplay date={order.deliveryDays} /> */}
-                <span>Delivery Date: </span>
-<DateDisplay date={order.deliveryDays} />
-
+                  <span>Delivery Date: </span>
+                  <DateDisplay date={order.deliveryDays} />
                 </>
               ) : (
                 <DetailItem label="Delivery Date" value="Not set" />
@@ -1227,7 +1224,10 @@ const ExporterOrderDetails = () => {
             </div>
             <div className="space-y-4">
               <DetailItem label="Quantity" value={order.quantity} />
-              <DetailItem label="Price Per Quantity" value={`Rs ${order.price.toLocaleString()}`} />
+              <DetailItem
+                label="Price Per Quantity"
+                value={`Rs ${order.price.toLocaleString()}`}
+              />
               <DetailItem
                 label="Total"
                 value={`Rs ${order?.price * order?.quantity}`}
@@ -1398,7 +1398,7 @@ const ExporterOrderDetails = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold text-gray-900">
-                Sample Received 
+                Sample Received
               </h2>
               <button
                 className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
@@ -1501,7 +1501,7 @@ const ExporterOrderDetails = () => {
         )}
 
         {/* Order Received Section */}
-        {(order.Agreement === "Accepted" && order.status === "order_shipped") ||
+        {order.status === "order_shipped" ||
           (!order.sample_needed && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               {order.trackingId && (
@@ -1515,7 +1515,17 @@ const ExporterOrderDetails = () => {
               />
             </div>
           ))}
-           {/* <OrderReceived
+
+        {order.status === "order_shipped" && (
+          <>
+            <OrderReceived
+              orderId={order._id}
+              onSuccess={handleOrderRecievedSuccess}
+            />
+          </>
+        )}
+
+        {/* <OrderReceived
                 orderId={order._id}
                 onSuccess={handleOrderRecievedSuccess}
               /> */}
@@ -1529,9 +1539,7 @@ const ExporterOrderDetails = () => {
             <p className="text-gray-600 mb-4">
               Supplier: {order.supplierId?.name}
             </p>
-               <p className="text-gray-600 mb-4">
-              Product {order.productId?._id}
-            </p>
+            <p className="text-gray-600 mb-4">Product {order.productId?._id}</p>
             <WriteReview
               supplierId={order.supplierId?._id}
               productName={order.productId?.name}
@@ -1552,12 +1560,40 @@ const ExporterOrderDetails = () => {
                 isOpen={showPaymentPopup}
                 onToggle={togglePaymentPopup}
               >
-                {showPaymentPopup && (
+                <>
+                  {userSubscription === "free"
+                    ? "Additional 20% fee added due to free subscription"
+                    : null}
+                </>
+                {/* {showPaymentPopup && (
                   <PaymentPage
                     orderId={order._id}
                     tokenAmount={
                       userSubscription === "free"
                         ? order.price + order.price * 0.2
+                        : order.price
+                    }
+                    onPaymentSuccess={() => {
+                      setActivePaymentOrder(null);
+                      fetchOrderDetails();
+                    }}
+                  />
+                )}
+                 */}
+                {showPaymentPopup && (
+                  <PaymentPage
+                    orderId={order._id}
+                    // tokenAmount={
+                    //   userSubscription === "free"
+                    //     ? order.price + order.price * 0.2
+                    //     : order.price
+                    // }
+                    tokenAmount={
+                      userSubscription === "free"
+                        ? order.productId.samplePrice === 0
+                          ? order.price + order.price * 0.2
+                          : order.productId.samplePrice +
+                            order.productId.samplePrice * 0.2
                         : order.price
                     }
                     onPaymentSuccess={() => {

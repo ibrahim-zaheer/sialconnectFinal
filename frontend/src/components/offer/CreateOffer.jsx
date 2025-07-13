@@ -527,6 +527,7 @@ export default function CreateOffer({
     "Please provide the details of the product.",
     "Is this product available for immediate delivery?",
   ];
+  
 
   const containsPhoneNumber = (text) => {
     const phonePatterns = [
@@ -589,6 +590,10 @@ export default function CreateOffer({
       setResponseMessage("User not authenticated. Please log in.");
       return;
     }
+     if (parseFloat(offerData.price) <= 0) {
+    setResponseMessage("Offer price must be greater than 0.");
+    return;
+  }
 
     // Validate message content
     if (containsPhoneNumber(offerData.message)) {

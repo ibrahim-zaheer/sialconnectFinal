@@ -3,6 +3,7 @@ const ProductSchema = new mongoose.Schema({
   name: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
+  samplePrice:{type: Number,required: false, default:0},
   supplier: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
