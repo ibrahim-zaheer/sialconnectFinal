@@ -396,7 +396,7 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className="container mx-auto p-6 max-w-6xl mt-20">
+    <div className="container mx-auto p-6 max-w-6xl mt-10">
       {product ? (
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           {/* Product Details Section */}

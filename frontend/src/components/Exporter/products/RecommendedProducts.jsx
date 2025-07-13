@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "../../../pages/Exporter/ProductCard";
+import { useTranslation } from "react-i18next";
 
 // const RecommendedProducts = () => {
 //   const [products, setProducts] = useState([]);
@@ -51,6 +52,7 @@ import ProductCard from "../../../pages/Exporter/ProductCard";
 // };
 
 const RecommendedProducts = ({ maxItems = 3 }) => {
+   const { t } = useTranslation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -87,7 +89,8 @@ const RecommendedProducts = ({ maxItems = 3 }) => {
   return (
     <div>
       <h2 className="text-4xl text-center font-bold text-neutral-900 mb-12">
-        Recommended Products
+        {/* Recommended Products */}
+        {t("other:recommend_produsts")}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
         {displayedProducts.map((product) => (

@@ -197,7 +197,7 @@ const HighestOrderValue = () => {
           
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-surface/10 p-4 rounded-lg backdrop-blur-sm">
-              <p className="text-neutral-200">{t('order:price')}</p>
+              <p className="text-neutral-200">{t('order:price')} per piece</p>
               <p className="font-bold text-white">{highestOrder.price} Rs</p>
             </div>
             <div className="bg-surface/10 p-4 rounded-lg backdrop-blur-sm">

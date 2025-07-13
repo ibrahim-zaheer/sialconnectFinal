@@ -164,6 +164,7 @@ import ExporterLayout from "./components/bidding/ExporterLayout";
 
 import PricingPage from "./pages/pricing/PricingPage";
 import About from "./pages/About";
+import Policies from "./pages/Policies";
 
 import SupplierVerificationRequestPage from "./pages/admin/functions/SupplierVerificationRequestPage";
 
@@ -328,6 +329,8 @@ const Main = () => {
         <Route path="/createOffers" element={<CreateOfferPage />} />
 
         <Route path="/about" element={<About />} />
+        <Route path="/privacy" element={<Policies />} />
+
 
         <Route path="/myOffers" element={<ExporterOfferPage />} />
 

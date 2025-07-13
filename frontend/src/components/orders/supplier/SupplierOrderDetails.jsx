@@ -836,8 +836,12 @@ const SupplierOrderDetails = () => {
             <div className="space-y-4">
               <DetailItem label="Quantity" value={order.quantity} />
               <DetailItem
-                label="Price"
+                label="Price Per Quantity"
                 value={`Rs ${order.price?.toLocaleString()}`}
+              />
+              <DetailItem
+                label="Total"
+                value={`Rs ${order?.price * order?.quantity}`}
               />
               <DetailItem
                 label="Order Date"

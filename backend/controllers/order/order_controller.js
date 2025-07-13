@@ -453,56 +453,106 @@ const markSampleSent = async (req, res) => {
 };
 
 // Route for the exporter to confirm sample receipt
+// const confirmSampleReceipt = async (req, res) => {
+//   const { orderId } = req.body;
+//   const order = await Order.findById(orderId);
+
+//    // Check if the order exists
+//    if (!order) {
+//     return res.status(404).json({ message: "Order not found" });
+//   }
+//   if (order.sampleStatus !== "sent") {
+//     return res.status(400).json({ message: "Sample not sent yet" });
+//   }
+//     // Check if file was uploaded
+//     if (!req.file) {
+//       return res.status(400).json({ message: 'Sample image is required' });
+//     }
+
+
+//   // Once the sample is received, mark it as "sample_received"
+//   order.sampleStatus = "received";
+//   order.sampleRecievedProof = req.file.path;
+//   await order.save();
+
+//   // // Release the token payment to the supplier if the sample is accepted
+//   // if (order.sampleStatus === "received") {
+//   //   await stripe.paymentIntents.capture(order.paymentIntentId);
+//   //   order.paymentStatus = "completed";
+//   //   // order.status = "sample_accepted";  // Mark order as accepted
+//   //   await order.save();
+//   // }
+
+//   // // Optionally, notify the supplier that the sample has been accepted
+//   // res.status(200).json({ message: "Sample received and token payment completed", order });
+//     // Release the token payment to the supplier if the sample is received
+    
+//     try {
+//       // Capture the payment intent
+//       await stripe.paymentIntents.capture(order.paymentIntentId);
+//       order.paymentStatus = "completed"; // Mark payment as completed
+  
+     
+  
+//       await order.save();
+  
+//       res.status(200).json({ message: "Sample received and token payment completed", order });
+//     } catch (error) {
+//       res.status(500).json({
+//         message: "Error capturing payment or updating order status",
+//         error: error.message,
+//       });
+//     }
+// };
+
 const confirmSampleReceipt = async (req, res) => {
   const { orderId } = req.body;
   const order = await Order.findById(orderId);
 
-   // Check if the order exists
-   if (!order) {
+  // Check if the order exists
+  if (!order) {
     return res.status(404).json({ message: "Order not found" });
   }
+
+  // Check if sample was sent
   if (order.sampleStatus !== "sent") {
     return res.status(400).json({ message: "Sample not sent yet" });
   }
-    // Check if file was uploaded
-    if (!req.file) {
-      return res.status(400).json({ message: 'Sample image is required' });
-    }
 
+  // Check if file was uploaded
+  if (!req.file) {
+    return res.status(400).json({ message: "Sample image is required" });
+  }
 
-  // Once the sample is received, mark it as "sample_received"
+  // Mark sample as received and store proof
   order.sampleStatus = "received";
   order.sampleRecievedProof = req.file.path;
   await order.save();
 
-  // // Release the token payment to the supplier if the sample is accepted
-  // if (order.sampleStatus === "received") {
-  //   await stripe.paymentIntents.capture(order.paymentIntentId);
-  //   order.paymentStatus = "completed";
-  //   // order.status = "sample_accepted";  // Mark order as accepted
-  //   await order.save();
-  // }
-
-  // // Optionally, notify the supplier that the sample has been accepted
-  // res.status(200).json({ message: "Sample received and token payment completed", order });
-    // Release the token payment to the supplier if the sample is received
+  // If paymentIntentId exists, try capturing the payment
+  if (order.paymentIntentId) {
     try {
-      // Capture the payment intent
       await stripe.paymentIntents.capture(order.paymentIntentId);
-      order.paymentStatus = "completed"; // Mark payment as completed
-  
-     
-  
+      order.paymentStatus = "completed";
       await order.save();
-  
-      res.status(200).json({ message: "Sample received and token payment completed", order });
+      return res.status(200).json({
+        message: "Sample received and token payment completed",
+        order,
+      });
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: "Error capturing payment or updating order status",
         error: error.message,
       });
     }
+  } else {
+    return res.status(200).json({
+      message: "Sample received, but no paymentIntentId found. Payment not processed.",
+      order,
+    });
+  }
 };
+
 // Route for the exporter to reject the sample
 // Sample Reject Route
 const rejectSample = async (req, res) => {
@@ -514,7 +564,11 @@ const rejectSample = async (req, res) => {
       return res.status(400).json({ message: 'Sample not yet received' });
     }
 
-    await stripe.refunds.create({ payment_intent: order.paymentIntentId });
+    // await stripe.refunds.create({ payment_intent: order.paymentIntentId });
+     // If paymentIntentId exists, issue a refund
+    if (order.paymentIntentId) {
+      await stripe.refunds.create({ payment_intent: order.paymentIntentId });
+    }
 
     order.sampleStatus = 'sample_rejected';
     order.status = 'terminated';
@@ -524,14 +578,45 @@ const rejectSample = async (req, res) => {
     res.status(200).json({ message: 'Sample rejected and refunded' });
   } catch (error) {
     res.status(500).json({ message: 'Error rejecting sample', error });
-    console.log("error");
+    console.log(error);
   }
 };
+
+// const approveSample = async (req, res) => {
+//   try {
+//     const { orderId } = req.body;
+//     const order = await Order.findById(orderId);
+
+//     if (!order) {
+//       return res.status(404).json({ message: 'Order not found' });
+//     }
+
+//     if (order.sampleStatus !== 'received') {
+//       return res.status(400).json({ message: 'Sample not yet received' });
+//     }
+
+//     console.log("Order found and sample status is 'received'");
+
+//     // Capture the payment intent
+//     // await stripe.paymentIntents.capture(order.paymentIntentId);
+//     order.sampleStatus = 'sample_accepted';
+//     order.status = 'completed';
+//     order.paymentStatus = 'completed';
+    
+
+//     await order.save();
+//     res.status(200).json({ message: 'Sample approved, payment released to supplier' });
+//   } catch (error) {
+//     console.error('Error in approveSample:', error);
+//     res.status(500).json({ message: 'Error approving sample', error });
+//   }
+// };
+
 
 const approveSample = async (req, res) => {
   try {
     const { orderId } = req.body;
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate('supplierId exporterId');
 
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
@@ -543,26 +628,138 @@ const approveSample = async (req, res) => {
 
     console.log("Order found and sample status is 'received'");
 
-    // Capture the payment intent
-    // await stripe.paymentIntents.capture(order.paymentIntentId);
+    // Update sample status and order status
     order.sampleStatus = 'sample_accepted';
     order.status = 'completed';
     order.paymentStatus = 'completed';
-    
 
     await order.save();
-    res.status(200).json({ message: 'Sample approved, payment released to supplier' });
+
+    // Send notification to the supplier
+    const supplier = order.supplierId;
+
+    // Check if a notification already exists for this supplier and order (to avoid duplicates)
+    const existingNotification = await Notification.findOne({
+      userId: supplier._id,
+      message: { $regex: `Sample for order ${order.orderId} approved`, $options: 'i' },
+      isRead: false, // Ensure the notification is unread
+      actionUrl: `/supplier/order/${order._id}`,
+    });
+
+    if (existingNotification) {
+      console.log(`Notification already sent to supplier for order ${order.orderId}. Skipping.`);
+    } else {
+      // Send notification to supplier via Firebase Cloud Messaging (FCM)
+      if (supplier.fcmToken) {
+        const notification = new Notification({
+          userId: supplier._id,
+          message: `Your sample for order ${order.orderId} has been approved. The order is now completed.`,
+          actionUrl: `/supplier/order/${order._id}`,
+        });
+        await notification.save();
+
+        const message = {
+          notification: {
+            title: 'Sample Approved',
+            body: `Your sample for order ${order.orderId} has been approved. The order is now completed.`,
+          },
+          token: supplier.fcmToken,
+        };
+
+        // Send notification through Firebase
+        await admin.messaging().send(message);
+
+        // Send real-time notification via Socket.IO
+        const receiverSocketId = getReceiverSocketId(supplier._id);
+        if (receiverSocketId) {
+          io.to(receiverSocketId).emit("new_notification", {
+            message: `Your sample for order ${order.orderId} has been approved. The order is now completed.`,
+            actionUrl: `/supplier/order/${order._id}`,
+            title: "Sample Approved",
+          });
+        }
+
+        console.log("Notification sent to supplier:", supplier.name);
+      }
+    }
+
+    // Notify the exporter (optional)
+    const exporter = order.exporterId;
+    if (exporter && exporter.fcmToken) {
+      const exporterMessage = {
+        notification: {
+          title: 'Sample Approved',
+          body: `The sample for your order ${order.orderId} has been approved by the supplier.`,
+        },
+        token: exporter.fcmToken,
+      };
+
+      // Send notification to the exporter
+      await admin.messaging().send(exporterMessage);
+
+      // Send real-time notification to the exporter via Socket.IO
+      const exporterSocketId = getReceiverSocketId(exporter._id);
+      if (exporterSocketId) {
+        io.to(exporterSocketId).emit("new_notification", {
+          message: `The sample for your order ${order.orderId} has been approved by the supplier.`,
+          actionUrl: `/exporter/order/${order._id}`,
+          title: "Sample Approved",
+        });
+      }
+
+      console.log("Notification sent to exporter:", exporter.name);
+    }
+
+    // Send response to client
+    res.status(200).json({ message: 'Sample approved, payment released to supplier and notifications sent' });
   } catch (error) {
     console.error('Error in approveSample:', error);
     res.status(500).json({ message: 'Error approving sample', error });
   }
 };
 
+// const acceptAgreement = async (req, res) => {
+//   try {
+//     const { orderId, role } = req.body; // `role` indicates if the user is exporter or supplier
+//     const order = await Order.findById(orderId);
+
+//     if (!order) {
+//       return res.status(404).json({ message: "Order not found" });
+//     }
+
+//     // Set the appropriate agreement status based on the role
+//     if (role === "exporter") {
+//       order.exporterAgreementStatus = "Accepted";
+//       if (order.supplierAgreementStatus === "Accepted") {
+//         order.Agreement = "Accepted"; // Both sides accepted
+//         //chatgpt 9 june 2025
+//           order.status = "agreement_accepted"; // Update the status to agreement accepted
+//       } else {
+//         order.Agreement = "waiting_for_supplier"; // Waiting for supplier
+//       }
+//     } else if (role === "supplier") {
+//       order.supplierAgreementStatus = "Accepted";
+//         order.agreementAcceptedDate = new Date();
+//       if (order.exporterAgreementStatus === "Accepted") {
+//         order.Agreement = "Accepted"; // Both sides accepted
+//         order.status = "agreement_accepted"; 
+//       } else {
+//         order.Agreement = "waiting_for_exporter"; // Waiting for exporter
+//       }
+//     }
+
+//     await order.save();
+//     res.status(200).json({ message: "Agreement status updated", order });
+//   } catch (error) {
+//     console.error("Error accepting the agreement:", error);
+//     res.status(500).json({ message: "Error accepting the agreement", error });
+//   }
+// };
 
 const acceptAgreement = async (req, res) => {
   try {
     const { orderId, role } = req.body; // `role` indicates if the user is exporter or supplier
-    const order = await Order.findById(orderId);
+    const order = await Order.findById(orderId).populate('exporterId supplierId');
 
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
@@ -573,14 +770,13 @@ const acceptAgreement = async (req, res) => {
       order.exporterAgreementStatus = "Accepted";
       if (order.supplierAgreementStatus === "Accepted") {
         order.Agreement = "Accepted"; // Both sides accepted
-        //chatgpt 9 june 2025
-          order.status = "agreement_accepted"; // Update the status to agreement accepted
+        order.status = "agreement_accepted"; // Update the status to agreement accepted
       } else {
         order.Agreement = "waiting_for_supplier"; // Waiting for supplier
       }
     } else if (role === "supplier") {
       order.supplierAgreementStatus = "Accepted";
-        order.agreementAcceptedDate = new Date();
+      order.agreementAcceptedDate = new Date();
       if (order.exporterAgreementStatus === "Accepted") {
         order.Agreement = "Accepted"; // Both sides accepted
         order.status = "agreement_accepted"; 
@@ -590,32 +786,146 @@ const acceptAgreement = async (req, res) => {
     }
 
     await order.save();
-    res.status(200).json({ message: "Agreement status updated", order });
+
+    // Get the user details for both exporter and supplier
+    const exporter = order.exporterId;
+    const supplier = order.supplierId;
+
+    // Check if a notification already exists for this order to avoid duplicate notifications
+    const existingNotification = await Notification.findOne({
+      $or: [
+        { userId: exporter._id, message: { $regex: `Agreement for order ${order.orderId}`, $options: 'i' } },
+        { userId: supplier._id, message: { $regex: `Agreement for order ${order.orderId}`, $options: 'i' } }
+      ],
+      isRead: false,
+    });
+
+    if (existingNotification) {
+      console.log(`Notification already sent for order ${order.orderId}. Skipping.`);
+    } else {
+      // Send notifications to both exporter and supplier
+      const sendNotification = async (user, role) => {
+        const message = `The agreement for order ${order.orderId} has been ${role === 'exporter' ? 'accepted by you' : 'accepted by the exporter'}.`;
+
+        const actionUrls = role === 'exporter' 
+    ? `/exporter/order/${order._id}` 
+    : `/supplier/order/${order._id}`;
+
+        // Save the notification in the database
+        const notification = new Notification({
+          userId: user._id,
+          message: message,
+          actionUrl: actionUrls,
+        });
+        await notification.save();
+
+        // Prepare the message for Firebase Cloud Messaging (FCM)
+        const fcmMessage = {
+          notification: {
+            title: 'Agreement Status Updated',
+            body: message,
+          },
+          token: user.fcmToken,
+        };
+
+        // Send the notification through Firebase
+        await admin.messaging().send(fcmMessage);
+
+        // Send real-time notification via Socket.IO
+        const socketId = getReceiverSocketId(user._id);
+        if (socketId) {
+          io.to(socketId).emit("new_notification", {
+            message: message,
+            actionUrl: actionUrls,
+            title: "Agreement Status Updated",
+          });
+        }
+
+        console.log(`Notification sent to ${user.name}: ${message}`);
+      };
+
+      // Send notification to exporter
+      if (exporter.fcmToken) {
+        await sendNotification(exporter, 'exporter');
+      }
+
+      // Send notification to supplier
+      if (supplier.fcmToken) {
+        await sendNotification(supplier, 'supplier');
+      }
+    }
+
+    res.status(200).json({ message: "Agreement status updated and notifications sent", order });
   } catch (error) {
     console.error("Error accepting the agreement:", error);
     res.status(500).json({ message: "Error accepting the agreement", error });
   }
 };
-// Handle rejection of agreement by the exporter
+
+// // Handle rejection of agreement by the exporter
+// const rejectAgreement = async (req, res) => {
+//   try {
+//     const { orderId, AgreementRejectionReason,role } = req.body;
+//     const order = await Order.findById(orderId);
+
+//     // Ensure order exists and sample is received
+//     if (!order) {
+//       return res.status(404).json({ message: "Order not found" });
+//     }
+//     if (order.sampleStatus !== "sample_received") {
+//       return res.status(400).json({ message: "Sample not yet received" });
+//     }
+
+//         // Reject the agreement if either party rejects
+//         if (role === "exporter") {
+//           order.exporterAgreementStatus = "Rejected";
+//         } else if (role === "supplier") {
+//           order.supplierAgreementStatus = "Rejected";
+//         }
+//     // Update the Agreement status to Rejected
+//     order.Agreement = "Rejected";
+//     order.status = "terminated";  // Mark order as terminated
+//     order.AgreementRejectionReason = AgreementRejectionReason;
+
+//     // Refund the token payment if any
+//     if (order.paymentStatus === "pending") {
+//       await stripe.refunds.create({ payment_intent: order.paymentIntentId });
+//       order.paymentStatus = "partial_refund";
+//     }
+
+//     // Save rejection reason
+//     order.AgreementRejectionReason = AgreementRejectionReason;
+
+//     await order.save();
+
+//     res.status(200).json({ message: "Agreement rejected, payment refunded", order });
+//   } catch (error) {
+//     console.error("Error in accept-agreement route:", error); // Log the error
+//     res.status(500).json({ message: "Error rejecting the agreement", error });
+//   }
+// };
+
 const rejectAgreement = async (req, res) => {
   try {
-    const { orderId, AgreementRejectionReason,role } = req.body;
-    const order = await Order.findById(orderId);
+    const { orderId, AgreementRejectionReason, role } = req.body;
+    const order = await Order.findById(orderId).populate('exporterId supplierId');
 
     // Ensure order exists and sample is received
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-    if (order.sampleStatus !== "sample_received") {
-      return res.status(400).json({ message: "Sample not yet received" });
+
+    // if (order.sampleStatus !== "sample_received" || order.sampleStatus !== "sample_accepted" ) {
+    //   return res.status(400).json({ message: "Sample not yet received" });
+    // }
+
+    // Reject the agreement if either party rejects
+    if (role === "exporter") {
+      order.exporterAgreementStatus = "Rejected";
+    } else if (role === "supplier") {
+      order.supplierAgreementStatus = "Rejected";
     }
 
-        // Reject the agreement if either party rejects
-        if (role === "exporter") {
-          order.exporterAgreementStatus = "Rejected";
-        } else if (role === "supplier") {
-          order.supplierAgreementStatus = "Rejected";
-        }
     // Update the Agreement status to Rejected
     order.Agreement = "Rejected";
     order.status = "terminated";  // Mark order as terminated
@@ -632,9 +942,77 @@ const rejectAgreement = async (req, res) => {
 
     await order.save();
 
-    res.status(200).json({ message: "Agreement rejected, payment refunded", order });
+    // Get the user details for both exporter and supplier
+    const exporter = order.exporterId;
+    const supplier = order.supplierId;
+
+    // Check if a notification already exists for this order to avoid duplicate notifications
+    const existingNotification = await Notification.findOne({
+      $or: [
+        { userId: exporter._id, message: { $regex: `Agreement for order ${order.orderId}`, $options: 'i' } },
+        { userId: supplier._id, message: { $regex: `Agreement for order ${order.orderId}`, $options: 'i' } }
+      ],
+      isRead: false,
+    });
+
+    if (existingNotification) {
+      console.log(`Notification already sent for order ${order.orderId}. Skipping.`);
+    } else {
+      // Send notifications to both exporter and supplier
+      const sendNotification = async (user, role) => {
+        const message = `The agreement for order ${order.orderId} has been ${role === 'exporter' ? 'rejected by you' : 'rejected by the exporter'}. Reason: ${AgreementRejectionReason}`;
+
+        const actionUrls = role === 'exporter' 
+          ? `/exporter/order/${order._id}` 
+          : `/supplier/order/${order._id}`;
+
+        // Save the notification in the database
+        const notification = new Notification({
+          userId: user._id,
+          message: message,
+          actionUrl: actionUrls,
+        });
+        await notification.save();
+
+        // Prepare the message for Firebase Cloud Messaging (FCM)
+        const fcmMessage = {
+          notification: {
+            title: 'Agreement Status Updated',
+            body: message,
+          },
+          token: user.fcmToken,
+        };
+
+        // Send the notification through Firebase
+        await admin.messaging().send(fcmMessage);
+
+        // Send real-time notification via Socket.IO
+        const socketId = getReceiverSocketId(user._id);
+        if (socketId) {
+          io.to(socketId).emit("new_notification", {
+            message: message,
+            actionUrl: actionUrls,
+            title: "Agreement Status Updated",
+          });
+        }
+
+        console.log(`Notification sent to ${user.name}: ${message}`);
+      };
+
+      // Send notification to exporter
+      if (exporter.fcmToken) {
+        await sendNotification(exporter, 'exporter');
+      }
+
+      // Send notification to supplier
+      if (supplier.fcmToken) {
+        await sendNotification(supplier, 'supplier');
+      }
+    }
+
+    res.status(200).json({ message: "Agreement rejected, payment refunded, and notifications sent", order });
   } catch (error) {
-    console.error("Error in accept-agreement route:", error); // Log the error
+    console.error("Error in reject-agreement route:", error); // Log the error
     res.status(500).json({ message: "Error rejecting the agreement", error });
   }
 };
@@ -1095,13 +1473,13 @@ const checkDeliveryDateNotificationExporter = async () => {
 // const checkDeliveryDateNotification = async () => {
 //   try {
 //     // Get today's date (for testing purposes, we use the current date)
-    // const today = new Date();
-    // today.setHours(0, 0, 0, 0); // Normalize to start of the day
+//     const today = new Date();
+//     today.setHours(0, 0, 0, 0); // Normalize to start of the day
 
-    // // Find orders with deliveryDays (we will send notifications for all orders here for testing)
-    // const orders = await Order.find({
-    //   status: { $eq: "processing" }, // Ensure the order is not completed
-    // }).populate("supplierId"); // Populate supplier details
+//     // Find orders with deliveryDays (we will send notifications for all orders here for testing)
+//     const orders = await Order.find({
+//       status: { $eq: "processing" }, // Ensure the order is not completed
+//     }).populate("supplierId"); // Populate supplier details
 
 //     // Loop through the orders and send notifications to suppliers
 //     for (let order of orders) {

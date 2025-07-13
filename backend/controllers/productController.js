@@ -64,6 +64,59 @@ const cloudinary = require("../config/cloudinaryConfig");
 //     }
 // };
 
+// exports.createProduct = async (req, res) => {
+//   try {
+//     const { name, description, price, category } = req.body;
+
+//     if (req.user.role !== "supplier") {
+//       return res
+//         .status(403)
+//         .json({ message: "Only suppliers can create products." });
+//     }
+
+//     if (!name || !description || !price || !category) {
+//       return res.status(400).json({ message: "All fields are required." });
+//     }
+//     const imageUrls = [];
+
+//     if (req.files && req.files.length > 0) {
+//       const uploadPromises = req.files.map((file) => {
+//         return new Promise((resolve, reject) => {
+//           const stream = cloudinary.uploader.upload_stream(
+//             {
+//               folder: "products",
+//               resource_type: "image",
+//             },
+//             (error, result) => {
+//               if (error) return reject(error);
+//               resolve(result.secure_url);
+//             }
+//           );
+//           stream.end(file.buffer); // Use file buffer directly
+//         });
+//       });
+
+//       const uploadedImages = await Promise.all(uploadPromises);
+//       imageUrls.push(...uploadedImages);
+//     }
+
+//     const product = new Product({
+//       name,
+//       description,
+//       price,
+//       category,
+//       supplier: req.user.id,
+//       image: imageUrls, // multiple image URLs
+//     });
+
+//     await product.save();
+//     res.status(201).json({ message: "Product created successfully", product });
+//   } catch (error) {
+//     console.error("Product creation error:", error);
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 exports.createProduct = async (req, res) => {
   try {
     const { name, description, price, category } = req.body;
@@ -77,8 +130,8 @@ exports.createProduct = async (req, res) => {
     if (!name || !description || !price || !category) {
       return res.status(400).json({ message: "All fields are required." });
     }
-    const imageUrls = [];
 
+    const imageUrls = [];
     if (req.files && req.files.length > 0) {
       const uploadPromises = req.files.map((file) => {
         return new Promise((resolve, reject) => {
@@ -92,12 +145,22 @@ exports.createProduct = async (req, res) => {
               resolve(result.secure_url);
             }
           );
-          stream.end(file.buffer); // Use file buffer directly
+          stream.end(file.buffer);
         });
       });
 
       const uploadedImages = await Promise.all(uploadPromises);
       imageUrls.push(...uploadedImages);
+    }
+
+    // Parse discounts from JSON string if provided
+    let discounts = [];
+    if (req.body.discounts) {
+      try {
+        discounts = JSON.parse(req.body.discounts);
+      } catch (err) {
+        return res.status(400).json({ message: "Invalid discount format" });
+      }
     }
 
     const product = new Product({
@@ -106,7 +169,8 @@ exports.createProduct = async (req, res) => {
       price,
       category,
       supplier: req.user.id,
-      image: imageUrls, // multiple image URLs
+      image: imageUrls,
+      discounts, // Add parsed discounts
     });
 
     await product.save();
@@ -116,6 +180,8 @@ exports.createProduct = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
 
 // Update a Product
 // exports.updateProduct = async (req, res) => {
@@ -556,7 +622,7 @@ exports.getProductsBySupplier = async (req, res) => {
         .json({ message: "Only suppliers can view their products." });
     }
 
-    const products = await Product.find({ supplier: req.user.id });
+    const products = await Product.find({ supplier: req.user.id }).sort({ createdAt: -1 });
 
     if (products.length === 0) {
       return res

@@ -52,6 +52,9 @@ const SampleApproval = ({ orderId, onApproveSuccess }) => {
         });
       setSampleStatus('sample_rejected');
       alert('Sample rejected successfully!');
+       if (onApproveSuccess) {
+        onApproveSuccess();
+      }
     } catch (error) {
       alert('Error rejecting sample');
     } finally {
@@ -69,7 +72,7 @@ const SampleApproval = ({ orderId, onApproveSuccess }) => {
         <button
           onClick={handleApproveSample}
           disabled={loading || isRejection}
-          className={`btn ${loading ? 'btn-loading' : 'btn-primary hover:bg-blue-700'}`}
+          className={`btn ${loading ? 'btn-loading' : 'btn-primary bg-blue-600 hover:bg-blue-700 p-2 text-white rounded-lg'}`}
           title="If sample is approved then order will be considered accepted and the token amount will be sent to Supplier"
         >
           Approve Sample
@@ -78,7 +81,7 @@ const SampleApproval = ({ orderId, onApproveSuccess }) => {
         <button
           onClick={() => setIsRejection(true)}
           disabled={loading || sampleStatus === 'sample_accepted'}
-          className={`btn ${loading ? 'btn-loading' : 'btn-error hover:bg-red-700'}`}
+          className={`btn ${loading ? 'btn-loading' : 'btn-error bg-red-600 p-2 rounded-lg text-white hover:bg-red-700'}`}
           title="If sample is rejected then order will be considered rejected and the half token amount will be sent to Supplier"
          
         >

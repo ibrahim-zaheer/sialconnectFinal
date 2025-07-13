@@ -187,8 +187,8 @@ export const OrderSent = ({ status, orderId, onSuccess, label }) => {
         type="text"
         value={trackingId}
         onChange={(e) => setTrackingId(e.target.value)} // Update trackingId on input change
-        placeholder="Enter Tracking Link"
-        className="px-4 py-2 mb-4 border rounded-lg"
+        placeholder="Enter Tracking ID (Optional)"
+        className="px-4 py-2 mb-4 border rounded-lg min-w-72"
       />
       <button
         onClick={handleStatusUpdate}
@@ -226,7 +226,7 @@ export const OrderSent = ({ status, orderId, onSuccess, label }) => {
         ) : status === "order_shipped" ? (
           "Order Shipped" // Display "Order Shipped" if the order is already shipped
         ) : (
-          label || "Track" // Display the custom label if provided, otherwise show "Order Sent"
+          label || "Send" // Display the custom label if provided, otherwise show "Order Sent"
         )}
       </button>
       {message && <div className="text-sm mt-2 text-red-600">{message}</div>}

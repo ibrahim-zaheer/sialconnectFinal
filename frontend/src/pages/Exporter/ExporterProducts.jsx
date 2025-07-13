@@ -717,8 +717,8 @@ const ExporterProducts = () => {
 
                     <div className="mt-4">
                       <p className="text-neutral-600 text-sm">
-                        {product.description.length > 50
-                          ? `${product.description.substring(0, 50)}...`
+                        {product.description.length > 40
+                          ? `${product.description.substring(0, 40)}...`
                           : product.description}
                       </p>
 

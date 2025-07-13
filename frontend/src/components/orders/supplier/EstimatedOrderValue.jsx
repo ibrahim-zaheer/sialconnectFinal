@@ -121,7 +121,7 @@ const EstimatedOrderValue = () => {
         setTotalValue(total);
       } catch (err) {
         console.error(err);
-        setError("Failed to fetch orders.");
+        setError("No orders.");
       } finally {
         setLoading(false);
       }

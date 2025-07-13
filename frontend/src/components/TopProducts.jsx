@@ -343,8 +343,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 
 const TopProducts = () => {
+  const { t } = useTranslation();
   const [topProducts, setTopProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -384,79 +386,87 @@ const TopProducts = () => {
   return (
     <div className="container mx-auto p-6">
       <h2 className="text-4xl font-bold text-center mb-8">
-        Top Selling Products
+        {t("other:top_products")}
       </h2>
 
       <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {topProducts.slice(0,3).map((product, index) => (
-          <div
-            key={product._id}
-            className="group relative bg-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 hover:shadow-2xl cursor-pointer"
-          >
-            {/* Product Image */}
-            <div className="w-full flex justify-center items-center">
-              <img
-                src={
-                  Array.isArray(product.productDetails.image)
-                    ? product.productDetails.image[0]
-                    : product.productDetails.image ||
-                      "/default-product-image.jpg"
-                }
-                alt={product.productDetails.name}
-                className="h-48 w-48"
-              />
-            </div>
+        {topProducts.slice(0, 3).map((product, index) => {
+          const p = product.productDetails;
+          return (
+            <div
+              key={product._id}
+              className="group relative bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden hover:shadow-md transition-shadow duration-300"
+            >
+              <div className="p-6">
+                <div className="flex justify-between items-start">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex justify-center items-center">
+                      <div className="mt-4 flex justify-center items-center overflow-hidden">
+                        <img
+                          src={
+                            Array.isArray(p.image)
+                              ? p.image[0]
+                              : p.image ||
+                                "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600"
+                          }
+                          alt={p.name}
+                          className="w-80 h-80 object-cover rounded-md"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src =
+                              "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=600";
+                          }}
+                        />
+                      </div>
+                    </div>
 
-            {/* Badge for ranking */}
-            <div className="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm">
-              #{index + 1}
-            </div>
-
-            <div className="p-4">
-              {/* Product Name */}
-              <h3 className="text-xl font-semibold">
-                {product.productDetails.name}
-              </h3>
-
-              {/* Product Price */}
-              {product.productDetails.price && (
-                <p className="text-lg text-gray-800 mt-2">
-                  Rs {product.productDetails.price.toFixed(0)} per piece
-                </p>
-              )}
-
-              {/* Product Description */}
-              {product.productDetails.description && (
-                <p className="text-sm text-gray-600 mt-2">
-                  {product.productDetails.description
-                    .split(" ")
-                    .slice(0, 10)
-                    .join(" ")}
-                  {product.productDetails.description.split(" ").length > 10
-                    ? "..."
-                    : ""}
-                </p>
-              )}
-
-              {/* Product Category */}
-              {product.productDetails.category && (
-                <div className="mt-3">
-                  <span className="inline-block bg-gray-200 text-gray-800 text-xs py-1 px-2 rounded-full">
-                    {product.productDetails.category}
-                  </span>
+                    <div>
+                      <h3 className="text-lg font-semibold text-neutral-900 line-clamp-2">
+                        {p.name}
+                      </h3>
+                      <p className="text-primary-600 font-medium mt-1">
+                        Rs {p.price?.toLocaleString() || "N/A"} per piece
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              )}
 
-              {/* View Details Button */}
-              <button
-                className="w-full mt-4 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
-                onClick={() => handleProductClick(product._id)}
-              >
-                View Details
-              </button>
+                <div className="mt-4">
+                  <p className="text-neutral-600 text-sm line-clamp-3">
+                    {p.description?.length > 40
+                      ? `${p.description.substring(0, 40)}...`
+                      : p.description}
+                  </p>
+                  {p.category && (
+                    <span className="inline-block mt-2 bg-neutral-100 text-neutral-800 text-xs px-2 py-1 rounded">
+                      {p.category}
+                    </span>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => handleProductClick(product._id)}
+                  className="text-primary-600 hover:text-white hover:bg-primary-800 duration-300 transition-all font-medium text-sm border-2 rounded-lg border-primary-600 p-2 mt-5 flex justify-center items-center w-full"
+                >
+                  View Details
+                  <svg
+                    className="w-4 h-4 ml-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

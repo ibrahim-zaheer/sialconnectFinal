@@ -1,0 +1,75 @@
+{
+  "privacy_policy": {
+    "title": "Privacy Policy",
+    "intro": "At <1>SialConnect</1>, we value your privacy and are committed to protecting your personal information. This policy outlines how we collect, use, and safeguard your data when you use our services.",
+    
+    "section1": {
+      "title": "1. Information We Collect",
+      "items": {
+        "personal": "Personal Information: Name, email address, phone number, business details.",
+        "usage": "Usage Data: Log data, IP address, browser type, interactions with features (e.g., bidding, chat).",
+        "cookies": "Cookies: We may use cookies for session management, language preferences, and analytics."
+      }
+    },
+
+    "section2": {
+      "title": "2. How We Use Your Information",
+      "items": {
+        "provide": "To provide, maintain, and improve our services.",
+        "facilitate": "To facilitate communication between exporters and suppliers.",
+        "secure": "To ensure secure access through authentication and verification.",
+        "personalize": "To personalize product recommendations and user experience.",
+        "notifications": "To send notifications related to bids, messages, and updates."
+      }
+    },
+
+    "section3": {
+      "title": "3. Data Sharing & Disclosure",
+      "text": "We do <1>not</1> sell or rent your personal data to third parties. Data may be shared with trusted service providers (e.g., hosting, authentication) strictly to operate our platform. All third-party services comply with data protection standards."
+    },
+
+    "section4": {
+      "title": "4. Data Security",
+      "text": "We use encryption, secure servers, and access controls to protect your data. Sensitive data such as passwords are hashed and never stored in plain text."
+    },
+
+    "section5": {
+      "title": "5. User Rights",
+      "items": {
+        "access": "Access your data and account information.",
+        "correct": "Request correction or deletion of your data.",
+        "opt_out": "Opt out of non-essential communications.",
+        "disable": "Disable cookies (may affect platform usability)."
+      }
+    },
+
+    "section6": {
+      "title": "6. Data Retention",
+      "text": "We retain user data as long as your account is active or as needed to fulfill legal, contractual, or platform obligations. You may request data deletion at any time."
+    },
+
+    "section7": {
+      "title": "7. Third-Party Links",
+      "text": "Our platform may contain links to third-party websites. We are not responsible for their privacy practices. Please review their policies separately."
+    },
+
+    "section8": {
+      "title": "8. Children's Privacy",
+      "text": "Our platform is not intended for users under the age of 13. We do not knowingly collect personal data from minors."
+    },
+
+    "section9": {
+      "title": "9. Policy Updates",
+      "text": "This privacy policy may be updated occasionally. Changes will be posted here with the revised date. Continued use of the platform implies acceptance of updates."
+    },
+
+    "section10": {
+      "title": "10. Contact Us",
+      "text": "For any questions or concerns regarding your privacy, you may contact us at:",
+      "email": "Email: support@sialconnect.com",
+      "phone": "Phone: +92 301 8818926"
+    },
+
+    "last_updated": "Last Updated: July 8, 2025"
+  }
+}

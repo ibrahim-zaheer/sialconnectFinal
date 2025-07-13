@@ -1,5 +1,7 @@
 const Offer = require("../../models/offer/offerSchema");
 const Order = require("../../models/offer/orderSchema");
+// const Product = require("../../models/Product");
+
 
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -9,6 +11,7 @@ const User = require("../../models/User");
 const crypto = require('crypto');
 
 const nodemailer = require('nodemailer');
+const Product = require("../../models/Product");
 
 const containsPhoneNumber = (text) => {
   const phonePatterns = [
@@ -168,6 +171,82 @@ const acceptOffer = async (req, res) => {
       console.log(error);
     }
   };
+
+
+// const acceptOffer = async (req, res) => {
+//   try {
+//     const offer = await Offer.findById(req.params.offerId);
+//     if (!offer) {
+//       return res.status(404).json({ message: "Offer not found." });
+//     }
+
+//     // Only supplier can accept
+//     if (req.user.id !== offer.supplierId.toString()) {
+//       return res.status(403).json({ message: "Unauthorized action." });
+//     }
+
+//     offer.status = "accepted";
+//     offer.acceptedBy = req.user.id;
+//     await offer.save();
+
+//     // Create an order from the accepted offer
+//     const newOrder = new Order({
+//       offerId: offer._id,
+//       exporterId: offer.exporterId,
+//       supplierId: offer.supplierId,
+//       productId: offer.productId,
+//       price: offer.price,
+//       quantity: offer.quantity,
+//       message: offer.message,
+//       deliveryDays: offer.deliveryDays, 
+//       sample_needed: offer.sample_needed,
+//     });
+
+//     await newOrder.save();
+
+//     // Send email notifications to both the exporter and supplier
+//     const exporter = await User.findById(offer.exporterId);
+//     const supplier = await User.findById(offer.supplierId);
+//     // const Sup = await Product.f
+//     const product = await Product.findById(offer.productId);
+
+//     // Email setup using Nodemailer
+//     const transporter = nodemailer.createTransport({
+//       service: 'Gmail',
+//       auth: {
+//         user: process.env.EMAIL_USER,
+//         pass: process.env.EMAIL_PASS,
+//       },
+//     });
+
+//     const mailOptions = {
+//       from: `"Offer Notification" <${process.env.EMAIL_USER}>`,
+//       subject: 'Offer Accepted Confirmation',
+//       text: `Dear ${exporter.name},\n\nThe offer for the product ${offer.productId} has been accepted by ${supplier.name}.\n\nThank you for your cooperation.`,
+//     };
+
+//     // Send email to exporter
+//     await transporter.sendMail({
+//       ...mailOptions,
+//       to: exporter.email,
+//       text: `Dear ${exporter.name},\n\nThe offer for the product ${product.name} has been accepted by ${supplier.name}.\n\nThank you for your cooperation.`,
+//     });
+
+//     // Send email to supplier
+//     await transporter.sendMail({
+//       ...mailOptions,
+//       to: supplier.email,
+//       text: `Dear ${supplier.name},\n\nYou have successfully accepted the offer for the product ${product.name} from ${exporter.name}.\n\nThank you for your cooperation.`,
+//     });
+
+//     // Return success response
+//     return res.status(200).json({ message: "Offer accepted and order created, confirmation emails sent!" });
+//   } catch (error) {
+//     res.status(500).json({ message: "Error accepting offer", error });
+//     console.log(error);
+//   }
+// };
+
 
 
   const rejectOffer =  async (req, res) => {
@@ -397,7 +476,7 @@ const sendReminderEmail = async (offer) => {
     }
 
     const mailOptions = {
-      from: `"TradeConnect Reminder" <${process.env.EMAIL_USER}>`,
+      from: `"SialConnectConnect Reminder" <${process.env.EMAIL_USER}>`,
       to: offer.supplierId.email,
       subject: `Reminder: Pending Offer for ${offer.productId?.name || "Product"}`,
       text: `Dear Supplier,

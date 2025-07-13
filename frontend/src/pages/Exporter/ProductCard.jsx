@@ -88,8 +88,8 @@ const ProductCard = ({ product, role, favorites, setFavorites, userId }) => {
 
         <div className="mt-4">
           <p className="text-neutral-600 text-sm line-clamp-3">
-            {product.description.length > 100
-              ? `${product.description.substring(0, 100)}...`
+            {product.description.length > 40
+              ? `${product.description.substring(0, 40)}...`
               : product.description}
           </p>
           {product.category && (

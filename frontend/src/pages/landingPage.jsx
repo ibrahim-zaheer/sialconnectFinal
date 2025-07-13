@@ -1326,7 +1326,10 @@ export default function LandingPage() {
             >
               {t("hero.description")}
             </motion.p>
-            <motion.div variants={itemVariants} className="px-2 sm:px-0 mt-5">
+            <motion.div
+              variants={itemVariants}
+              className="px-2 z-30 sm:px-0 mt-5"
+            >
               <ProductSearch
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -1400,11 +1403,11 @@ export default function LandingPage() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={containerVariants}
-        className="w-full max-w-6xl px-4 sm:px-6 lg:px-8 mx-auto py-12 md:py-16"
+        className="w-full max-w-7xl px-4 sm:px-6 lg:px-12 mx-auto py-12 md:py-16"
       >
         <motion.div
           variants={itemVariants}
-          className="w-full md:max-w-5xl mx-auto px-2 sm:px-4"
+          className="w-full md:max-w-7xl mx-auto px-2 sm:px-4"
         >
           <TopProducts />
         </motion.div>
@@ -1413,9 +1416,21 @@ export default function LandingPage() {
           variants={itemVariants}
           className="text-center mt-8 md:mt-12"
         >
-          <button
+          {/* <button
             className="px-5 py-2 sm:px-6 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all shadow-md text-sm sm:text-base"
             onClick={() => navigate("/ExporterProducts")}
+          >
+            {t("bestSelling.seeAll")}
+          </button> */}
+          <button
+            className="px-5 py-2 sm:px-6 sm:py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all shadow-md text-sm sm:text-base"
+            onClick={() =>
+              navigate(
+                user?.role === "supplier"
+                  ? "/SupplierProducts"
+                  : "/ExporterProducts"
+              )
+            }
           >
             {t("bestSelling.seeAll")}
           </button>
@@ -1449,7 +1464,14 @@ export default function LandingPage() {
           >
             <button
               className="bg-white text-indigo-800 hover:bg-gray-100 px-5 py-2 sm:px-6 sm:py-3 rounded-lg transition-all shadow-md text-sm sm:text-base"
-              onClick={() => navigate("/ExporterProducts")}
+              // onClick={() => navigate("/ExporterProducts")}
+              onClick={() =>
+                navigate(
+                  user?.role === "supplier"
+                    ? "/SupplierProducts"
+                    : "/ExporterProducts"
+                )
+              }
             >
               {t("cta.buttons.explore")}
             </button>
@@ -1466,6 +1488,16 @@ export default function LandingPage() {
       </motion.section>
 
       {/* ────────── Recommended Products ────────── */}
+      {/* <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={containerVariants}
+        className="w-full max-w-6xl px-4 sm:px-6 mx-auto py-12 md:py-16"
+      >
+        <RecommendedProducts maxItems={3} />
+      </motion.section> */}
+      {user?.role === "exporter" && (
       <motion.section
         initial="hidden"
         whileInView="visible"
@@ -1475,11 +1507,12 @@ export default function LandingPage() {
       >
         <RecommendedProducts maxItems={3} />
       </motion.section>
+    )}
 
       {user?.role === "exporter" && <PricingPage />}
 
       {/* ────────── Testimonials ────────── */}
-      {testimonials.length > 0 && (
+      {/* {testimonials.length > 0 && (
         <motion.section
           initial="hidden"
           whileInView="visible"
@@ -1499,7 +1532,7 @@ export default function LandingPage() {
             </p>
           </motion.div>
 
-          {/* arrows */}
+      
           <button
             onClick={() => goTo(idx === 0 ? testimonials.length - 1 : idx - 1)}
             className="absolute md:left-0 left-8 mt-6 top-1/2 -translate-y-1/2 z-10 bg-gray-200 hover:bg-gray-300 p-2 sm:p-3 rounded-full shadow-md -ml-2 sm:-ml-4"
@@ -1520,7 +1553,7 @@ export default function LandingPage() {
             </svg>
           </button>
 
-          {/* carousel */}
+         
           <div className="overflow-hidden px-2 md:px-0">
             <div
               className="flex transition-transform duration-500 w-full flex-nowrap"
@@ -1577,7 +1610,6 @@ export default function LandingPage() {
             </svg>
           </button>
 
-          {/* indicators */}
           {testimonials.length > 1 && (
             <div className="flex justify-center mt-8 flex-wrap gap-2">
               {testimonials.map((_, i) => (
@@ -1595,7 +1627,7 @@ export default function LandingPage() {
             </div>
           )}
         </motion.section>
-      )}
+      )} */}
 
       {/* ────────── Footer ────────── */}
       <Footer />

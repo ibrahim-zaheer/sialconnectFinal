@@ -53,6 +53,7 @@ const Footer = () => {
   // Company information links
   const companyLinks = [
     { to: "/about", text: "About Us" },
+    { to: "/privacy", text: "Privacy Policy" },
     // { to: "/careers", text: "Careers" },
     // { to: "/blog", text: "Blog" },
     // { to: "/faq", text: "FAQ" },

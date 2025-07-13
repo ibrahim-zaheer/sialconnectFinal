@@ -134,11 +134,14 @@ export default function UpdateOffer({ offerId, currentOffer, onClose, onUpdate }
 
   useEffect(() => {
     if (currentOffer) {
+      const formattedDate = currentOffer.deliveryDays
+      ? new Date(currentOffer.deliveryDays).toISOString().split("T")[0]
+      : "";
       setOfferData({
         price: currentOffer.price || "",
         quantity: currentOffer.quantity || "",
         message: currentOffer.message || "",
-        deliveryDays: currentOffer.deliveryDays || "", // Initialize deliveryDays
+        deliveryDays: formattedDate || "", // Initialize deliveryDays
           sample_needed: currentOffer.sample_needed || false,
       });
     }

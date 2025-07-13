@@ -753,8 +753,8 @@ export default function LocalOrderPaymentList() {
                   <td className="py-3 px-6">{order.exporterId?.name}</td>
                   <td className="py-3 px-6">Rs {order.price}</td>
                   <td className="py-3 px-6">{order.quantity}</td>
-                  <td className="py-3 px-6">{order.paymentDetails?.paymentMethod || "N/A"}</td>
-                  <td className="py-3 px-6">{order.paymentDetails?.paymentStatus || "N/A"}</td>
+                  <td className="py-3 px-6">{order.LocalPaymentDetails?.paymentMethod || "N/A"}</td>
+                  <td className="py-3 px-6">{order.LocalPaymentDetails?.paymentStatus || "N/A"}</td>
                   <td className="py-3 px-6">Rs {order.paymentDetails?.paymentAmount || "0.00"}</td>
                 </tr>
               ))}

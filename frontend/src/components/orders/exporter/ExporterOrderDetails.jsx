@@ -1215,8 +1215,11 @@ const ExporterOrderDetails = () => {
               <DetailItem label="Exporter" value={userName} />
               {order?.deliveryDays ? (
                 <>
-                Delievery Date:   
-                <DateDisplay date={order.deliveryDays} />
+                {/* Delievery Date:     
+                <DateDisplay date={order.deliveryDays} /> */}
+                <span>Delivery Date: </span>
+<DateDisplay date={order.deliveryDays} />
+
                 </>
               ) : (
                 <DetailItem label="Delivery Date" value="Not set" />
@@ -1224,7 +1227,11 @@ const ExporterOrderDetails = () => {
             </div>
             <div className="space-y-4">
               <DetailItem label="Quantity" value={order.quantity} />
-              <DetailItem label="Price" value={`Rs ${order.price.toLocaleString()}`} />
+              <DetailItem label="Price Per Quantity" value={`Rs ${order.price.toLocaleString()}`} />
+              <DetailItem
+                label="Total"
+                value={`Rs ${order?.price * order?.quantity}`}
+              />
               <DetailItem label="Status" value={order.status} badge />
               <DetailItem
                 label="Order Date"
@@ -1391,7 +1398,7 @@ const ExporterOrderDetails = () => {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-semibold text-gray-900">
-                Sample Receipt
+                Sample Received 
               </h2>
               <button
                 className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
@@ -1508,6 +1515,10 @@ const ExporterOrderDetails = () => {
               />
             </div>
           ))}
+           {/* <OrderReceived
+                orderId={order._id}
+                onSuccess={handleOrderRecievedSuccess}
+              /> */}
 
         {/* Write Review Section */}
         {order.Agreement === "Accepted" && !hasReviewed && (

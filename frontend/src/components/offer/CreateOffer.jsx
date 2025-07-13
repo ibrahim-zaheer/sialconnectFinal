@@ -517,6 +517,8 @@ export default function CreateOffer({
   });
 
   const [responseMessage, setResponseMessage] = useState("");
+  const [invalidDeliveryDate, setInvalidDeliveryDate] = useState(false);
+
 
   const [validationWarning, setValidationWarning] = useState("");
 
@@ -626,8 +628,10 @@ export default function CreateOffer({
 
     if (deliveryDays < minDeliveryDate) {
       setResponseMessage("Delivery date must be at least 72 hours from now.");
+      setInvalidDeliveryDate(true);
       return;
     }
+    setInvalidDeliveryDate(false);
     try {
       const response = await createOffer(offerData, token);
       const successMsg =
@@ -693,7 +697,7 @@ export default function CreateOffer({
         /> */}
 
         {/* Changed from number input to date input for deliveryDate */}
-        <input
+        {/* <input
           type="date" // Using a date input
           name="deliveryDays"
           placeholder="Delivery Date"
@@ -702,7 +706,22 @@ export default function CreateOffer({
           onChange={handleChange}
           required
           className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+        /> */}
+
+
+<input
+  type="date"
+  name="deliveryDays"
+  placeholder="Delivery Date"
+  value={formatDate(offerData.deliveryDays)}
+  onChange={handleChange}
+  required
+  className={`w-full p-2 border rounded-lg focus:outline-none focus:ring-2 ${
+    invalidDeliveryDate
+      ? "border-red-500 focus:ring-red-500"
+      : "border-gray-300 focus:ring-blue-500"
+  }`}
+/>
 
         {/* Sample Needed checkbox */}
         <div className="flex items-center">

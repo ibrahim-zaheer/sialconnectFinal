@@ -593,6 +593,12 @@ const AuctionDetail = () => {
                     {auctionDetails.category}
                   </span>
                 </div>
+                 <div className="flex justify-between">
+                  <span className="text-neutral-600">Quantity:</span>
+                  <span className="font-medium text-neutral-800 capitalize">
+                    {auctionDetails.quantity}
+                  </span>
+                </div>
                 <div className="flex justify-between">
                   <span className="text-neutral-600">Started:</span>
                   <span className="font-medium text-neutral-800">
@@ -605,6 +611,7 @@ const AuctionDetail = () => {
                     {formatDate(auctionDetails.endTime)}
                   </span>
                 </div>
+                
               </div>
             </div>
           </div>

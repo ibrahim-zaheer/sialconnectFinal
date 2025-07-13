@@ -10,7 +10,8 @@ const SupplierReviewsPage = () => {
   return (
     <div>
       <div className="pt-20"></div>
-      <BackButton/>
+      {/* <BackButton/> */}
+      <BackButton className="mb-4 ml-14 bg-primary-800 text-white hover:bg-primary-600"  />
       <SupplierReviews supplierId={id} />
     </div>
   );

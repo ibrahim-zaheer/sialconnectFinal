@@ -248,16 +248,16 @@ export default function ExporterOffers() {
             Authorization: `Bearer ${token}`,
           },
         });
-          // Filter out offers where productId or productId.name is missing or invalid
-    const validOffers = response.data.offers.filter(
-      (offer) => offer.productId?.name // Ensure productId exists and has a valid name
-    );
+        // Filter out offers where productId or productId.name is missing or invalid
+        const validOffers = response.data.offers.filter(
+          (offer) => offer.productId?.name // Ensure productId exists and has a valid name
+        );
 
-    setOffers(validOffers);
+        setOffers(validOffers);
 
-    const acceptedOffers = validOffers.filter(
-      (offer) => offer.status === "accepted"
-    );
+        const acceptedOffers = validOffers.filter(
+          (offer) => offer.status === "accepted"
+        );
         // setOffers(response.data.offers);
 
         // const acceptedOffers = response.data.offers.filter(
@@ -295,14 +295,14 @@ export default function ExporterOffers() {
 
         setLoading(false);
       } catch (err) {
-         if (err.response && err.response.status === 403) {
-      // Account suspended, log out and redirect
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      navigate("/signIn");  // Redirect to login page (or another page if needed)
-    } else {
-      setError("No offers found here.");
-    }
+        if (err.response && err.response.status === 403) {
+          // Account suspended, log out and redirect
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+          navigate("/signIn"); // Redirect to login page (or another page if needed)
+        } else {
+          setError("No offers found here.");
+        }
         // setError("We couldn't load your offers. Please try again later.");
         setLoading(false);
       }
@@ -678,7 +678,7 @@ export default function ExporterOffers() {
                           Created: {formatDate(offer.createdAt)}
                         </div>
 
-                        {offer.counterOffer && (
+                        {offer.counterOffer && offer.counterOffer.price && (
                           <div className="mt-4 p-3 bg-neutral-50 rounded-lg">
                             <h4 className="text-sm font-medium text-primary-700 mb-2">
                               Counteroffer Details
@@ -696,9 +696,22 @@ export default function ExporterOffers() {
                               </span>
                             </div>
                             <div className="flex justify-between text-sm">
-                              <span>Delievery Days:</span>
+                              {/* <span>Delievery Days:</span> */}
                               <span className="font-medium">
-                                {offer.counterOffer.deliveryDays}
+                                {offer.counterOffer.deliveryDays && (
+                                  <>
+                                    <span>Delivery Days: </span>
+                                    <span className="font-medium">
+                                      {new Date(
+                                        offer.counterOffer.deliveryDays
+                                      ).toLocaleDateString("en-GB", {
+                                        day: "numeric",
+                                        month: "long",
+                                        year: "numeric",
+                                      })}
+                                    </span>
+                                  </>
+                                )}
                               </span>
                             </div>
                             {/* <div className="flex justify-between text-sm">

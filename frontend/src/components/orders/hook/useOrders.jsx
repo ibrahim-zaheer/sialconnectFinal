@@ -32,7 +32,7 @@ const useOrders = () => {
 
         setOrders(response.data.orders || []);
       } catch (err) {
-        setError("Failed to fetch orders.");
+        setError("No Orders");
         console.error(err);
       } finally {
         setLoading(false);

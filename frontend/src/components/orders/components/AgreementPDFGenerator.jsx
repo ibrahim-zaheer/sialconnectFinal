@@ -163,14 +163,10 @@ const AgreementPDFGenerator = ({ order, userName, userRole }) => {
 
     const terms = [
       `I, the undersigned ${userRole === 'exporter' ? 'Exporter' : 'Supplier'}, acknowledge and agree to the following terms and conditions:`,
-      "1. I promise to deal directly with the counterpart for the transaction,",
-      "   without involving the platform.",
-      "2. I understand that the platform only provides contact details",
-      "   and cannot guarantee 100% fraud-free dealings.",
-      "3. I will take full responsibility for ensuring safety",
-      "   and due diligence while conducting business.",
-      "4. I understand that the platform provides a marketplace",
-      "   for connections, but the transaction responsibility lies with me."
+      "1. I promise to deal directly with the counterpart for the transaction,without involving the platform.",
+      "2. I understand that the platform only provides contact details and cannot guarantee 100% fraud-free dealings.",
+      "3. I will take full responsibility for ensuring safety and due diligence while conducting business.",
+      "4. I understand that the platform provides a marketplace for connections, but the transaction responsibility lies with me."
     ];
 
     terms.forEach((line, i) => {
@@ -215,9 +211,17 @@ const AgreementPDFGenerator = ({ order, userName, userRole }) => {
     });
 
     // Watermark (behind signature and footer)
-    doc.setFontSize(50);
-    doc.setTextColor(200, 200, 200, 0.3); // light gray + transparent
-    doc.text("SialConnect", 105, doc.lastAutoTable.finalY + 20, { align: "center", angle: 45 });
+    // doc.setFontSize(50);
+    // doc.setTextColor(200, 200, 200, 0.3); // light gray + transparent
+    // doc.text("SialConnect", 105, doc.lastAutoTable.finalY + 20, { align: "center", angle: 45 });
+    // Watermark (faint gray)
+doc.setTextColor(220, 220, 220); // Use very light gray to simulate opacity
+doc.setFontSize(50);
+doc.text("SialConnect", 105, doc.lastAutoTable.finalY + 20, {
+  align: "center",
+  angle: 45
+});
+
 
     // Signature section
     const signatureY = doc.lastAutoTable.finalY + 40;
@@ -240,7 +244,7 @@ const AgreementPDFGenerator = ({ order, userName, userRole }) => {
   return (
     <button
       onClick={generatePDF}
-      className="inline-flex items-center px-4 py-4 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-secondary-600 hover:bg-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500 transition-colors"
+      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-secondary-600 hover:bg-secondary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500 transition-colors"
     >
       <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />

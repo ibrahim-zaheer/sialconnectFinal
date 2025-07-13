@@ -261,6 +261,7 @@ console.log("Received bidId:", bidId);
       price: bid.amount,
       quantity: auction.quantity,
       message: auction.description,
+      sample_needed: true,
     });
 
     return res.status(201).json({
